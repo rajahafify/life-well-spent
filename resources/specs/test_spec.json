@@ -1,0 +1,10 @@
+{
+	"id": "test",
+	"title": "Test Spec",
+	"description": "Baseline spec — proves the spec system works.",
+	"acceptance_criteria": ["Assert true"],
+	"model_dependencies": [],
+	"view_dependencies": [],
+	"priority": 99,
+	"status": "pending"
+}

@@ -17,4 +17,12 @@
 
 - Compiled `architecture/architecture.md` — MVC + SOLID pattern
 - Compiled `architecture/spec-driven-dev.md` — Spec-driven development workflow
+- Compiled `architecture/test-runner.md` — JSON spec runner
+- Updated `index.md`
+
+## [2026-05-08] ingest | Test Runner
+
+- Registered `scripts/managers/test_runner.gd`
+- Registered `resources/specs/test_spec.json`
+- Compiled `architecture/test-runner.md`
 - Updated `index.md`
