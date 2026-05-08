@@ -24,7 +24,7 @@ res://
 │   └── managers/    # Systems (Save, Audio, Input, etc.)
 ├── tests/           # Test scenes + spec files
 │   ├── test_runner.tscn
-│   └── specs/       # JSON spec files (loaded by TestRunner)
+│   └── specs/       # TestCase-based GDScript spec files
 ├── assets/          # Images, fonts, audio, models
 ├── resources/       # Custom resources, themes, data
 └── shaders/         # Custom shader files
@@ -53,29 +53,39 @@ Godot's scene tree is the **View**. Scripts are split into three layers:
 
 ### Spec-Driven Development
 
-Every feature starts with a spec. No code written until the spec is approved.
+Every feature starts with a spec. No code written until the spec is approved. Specs are **executable GDScript** files extending `TestCase`, not JSON data.
 
-#### Spec Format (`tests/specs/*.json`)
+#### Spec Format (`tests/specs/test_<name>.gd`)
 
-```json
-{
-  "id": "feature_name",
-  "title": "Feature Name",
-  "description": "What this spec tests",
-  "acceptance_criteria": ["Criterion 1", "Criterion 2"],
-  "model_dependencies": ["ModelClass"],
-  "view_dependencies": ["ControlNode"],
-  "priority": 1,
-  "status": "pending"
-}
+```gdscript
+# tests/specs/test_player_stats.gd
+class_name TestPlayerStats
+extends TestCase
+
+var player: PlayerStats
+
+func setup():
+	player = PlayerStats.new()
+
+func test_initial_max_hp_is_100():
+	assert_eq(player.max_hp, 100)
+
+func test_quest_deducts_40_hp():
+	player.take_quest()
+	assert_eq(player.max_hp, 60)
 ```
 
-#### Workflow
+#### Red → Green → Refactor Workflow
 
-1. **Draft** the spec — write the `acceptance_criteria` first.
+1. **Red** — Write the spec. It fails (assertion does not pass yet).
+2. **Green** — Write the minimum code to make it pass.
+3. **Refactor** — Clean up, add more edge-case specs, ensure nothing breaks.
+
+At the feature level:
+1. **Draft** the acceptance criteria (in a markdown or spec JSON for approval).
 2. **Approve** — user confirms the criteria are complete and unambiguous.
 3. **Implement** — write the **Model** first (pure logic), then the **Controller** (thin glue), then the **View** (UI update).
-4. **Verify** — walk through each acceptance criterion. If any fail, revert and fix.
+4. **Verify** — run the full spec suite. All must pass.
 
 #### Rule
 > If the spec doesn't cover it, it doesn't exist. Never add "just one more thing" without updating the spec.

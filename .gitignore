@@ -22,8 +22,7 @@ export_templates/
 /windows/
 
 # Pi (Pi Coding Agent) — runtime cache
-.pi/hooks/
-.pi/cache/
+.pi/
 
 # Python / MCP server
 __pycache__/

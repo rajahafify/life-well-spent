@@ -1,9 +1,10 @@
 ---
 title: Test Runner
 type: reference
-updated: 2026-05-08
+updated: 2026-05-09
 sources:
   - scripts/managers/test_runner.gd
+  - tests/test_runner.tscn
   - AGENTS.md
 tags: [architecture]
 ---
@@ -11,35 +12,56 @@ tags: [architecture]
 # Test Runner
 
 ## Purpose
-Runs spec files from `resources/specs/` and reports pass/fail results.
+Discovers and executes all `TestCase`-based specs from `tests/specs/`, reports pass/fail with assertion details.
 
 ## Usage
-- **In-game:** Open `scenes/test_runner_scene.tscn` — runs all specs and displays results on screen.
+- **In-game:** Open `tests/test_runner.tscn` — discovers specs, runs them, displays results.
+- **Headless CI:** `godot --headless --quit res://tests/test_runner.tscn`
 - **Via code:** `TestRunner.run_all()` returns a `Dictionary` with pass/fail counts.
 - **Via code:** `TestRunner.run_with_output()` prints results to console and returns results.
 
 ## Spec Format
-JSON files in `resources/specs/`:
-```json
-{
-	"id": "feature_name",
-	"title": "Feature Name",
-	"description": "What this spec tests",
-	"acceptance_criteria": ["Criterion 1", "Criterion 2"],
-	"model_dependencies": ["ModelClass"],
-	"view_dependencies": ["ControlNode"],
-	"priority": 1,
-	"status": "pending"
-}
+GDScript files extending `TestCase`, stored in `tests/specs/`:
+
+```gdscript
+# tests/specs/test_player_stats.gd
+class_name TestPlayerStats
+extends TestCase
+
+var player: PlayerStats
+
+func setup():
+	player = PlayerStats.new()
+
+func test_initial_max_hp_is_100():
+	assert_eq(player.max_hp, 100)
+
+func test_quest_deducts_hp():
+	player.take_quest()
+	assert_eq(player.max_hp, 60)
 ```
 
-## Criterion Evaluation
-Criteria are matched via `_evaluate_criterion()` in `test_runner.gd`:
-- `"Assert true"` → always passes (baseline test)
-- Extend the match statement to add new criterion types.
+## Runner Behavior
+1. Scans `tests/specs/` for `.gd` files containing classes that extend `TestCase`.
+2. Loads each spec class, instantiates it, runs `class_setup()` once.
+3. For each `test_*` method: calls `setup()`, runs the test, calls `teardown()`.
+4. Aggregates results: total tests, passed, failed, and failure details (assertion + message).
+5. Prints summary to console. Displays results in the test runner scene UI.
+
+## Assertions Available
+| Method | Description |
+|--------|-------------|
+| `assert_eq(a, b)` | `a == b` |
+| `assert_neq(a, b)` | `a != b` |
+| `assert_true(x)` | `x == true` |
+| `assert_false(x)` | `x == false` |
+| `assert_is(obj, cls)` | `obj is cls` |
+| `assert_is_not(obj, cls)` | `obj is not cls` |
+| `assert_in(item, collection)` | `item in collection` |
+| `assert_has(dict, key)` | `key in dict` |
+| `assert_raises(func, args)` | `func` raises an error |
 
 ## File Types
-Specs are loaded as JSON (`.json`) files. GDScript-based specs are not currently supported (Godot resource loading has too many edge cases).
-
-## Screenshots
-![Test Runner Output](architecture/test-runner-screenshot.png)
+- Specs: `tests/specs/test_<name>.gd` — must extend `TestCase`
+- Runner: `tests/test_runner.tscn` — scene that orchestrates discovery and display
+- Spec metadata (optional): `tests/specs/<name>_spec.json` — acceptance criteria reference, not execution
