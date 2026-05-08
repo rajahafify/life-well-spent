@@ -1,0 +1,21 @@
+{
+	"id": "prototype",
+	"title": "Point-and-Click Prototype",
+	"description": "Basic movement, NPC interaction, quest completion with life cost, and death/rebirth cycle.",
+	"acceptance_criteria": [
+		"Clicking on ground moves the player character to that position using pathfinding",
+		"Player stops moving when reaching the target position",
+		"Clicking an NPC opens a quest interaction panel",
+		"Quest panel shows quest name and a 'Take Quest' button",
+		"Taking a quest deducts 40 from Max HP",
+		"Completing a quest deducts 40 from Max HP immediately",
+		"Max HP displays on screen as 'HP: X / 100'",
+		"When Max HP reaches 0, player dies and restarts at level 1 with 100 Max HP",
+		"Facilities unlocked in previous lives remain unlocked after rebirth",
+		"Pressing Escape quits the game"
+	],
+	"model_dependencies": ["PlayerStats", "QuestManager", "GameState"],
+	"view_dependencies": ["PlayerView", "QuestUI", "HUD"],
+	"priority": 1,
+	"status": "pending"
+}

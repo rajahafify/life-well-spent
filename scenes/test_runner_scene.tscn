@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://co4fvqy5gebce"]
+
+[ext_resource type="Script" uid="uid://csjk5emn6kdte" path="res://scripts/controllers/test_runner_controller.gd" id="1_ojde5"]
+
+[node name="TestRunnerScene" type="Node2D" unique_id=1778209525]
+script = ExtResource("1_ojde5")
+
+[node name="UI" type="Control" parent="." unique_id=2028375135]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ResultsLabel" type="Label" parent="UI" unique_id=1812650587]
+layout_mode = 0
