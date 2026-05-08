@@ -11,13 +11,13 @@ config_version=5
 [application]
 
 config/name="Life Well Spent"
-run/main_scene="uid://co4fvqy5gebce"
+run/main_scene="res://scenes/test_runner_scene.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-GDAIMCPRuntime="*uid://dcne7ryelpxmn"
+GDAIMCPRuntime="*res://addons/gdai-mcp-plugin-godot/gdai_mcp_runtime.gd"
 
 [editor_plugins]
 
