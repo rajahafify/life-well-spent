@@ -16,4 +16,5 @@
 ## [2026-05-08] ingest | Architecture Decision
 
 - Compiled `architecture/architecture.md` — MVC + SOLID pattern
+- Compiled `architecture/spec-driven-dev.md` — Spec-driven development workflow
 - Updated `index.md`

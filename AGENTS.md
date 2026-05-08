@@ -48,6 +48,35 @@ Godot's scene tree is the **View**. Scripts are split into three layers:
 - One controller per scene or logical subsystem.
 - Examples: `GameController.gd` — bootstraps the game, switches scenes; `CombatController.gd` — handles attack input.
 
+### Spec-Driven Development
+
+Every feature starts with a spec. No code written until the spec is approved.
+
+#### Spec Format (`resources/specs/*.tres`)
+
+```gdscript
+extends Resource
+
+@export var id: String
+@export var title: String
+@export var description: String
+@export var acceptance_criteria: Array[String]  # numbered list
+@export var model_dependencies: Array[String]   # which models are affected
+@export var view_dependencies: Array[String]    # which scenes/controls are touched
+@export var priority: int                       # 1 = highest
+@export var status: String = "pending"          # pending | approved | implemented | tested
+```
+
+#### Workflow
+
+1. **Draft** the spec — write the `acceptance_criteria` first.
+2. **Approve** — user confirms the criteria are complete and unambiguous.
+3. **Implement** — write the **Model** first (pure logic), then the **Controller** (thin glue), then the **View** (UI update).
+4. **Verify** — walk through each acceptance criterion. If any fail, revert and fix.
+
+#### Rule
+> If the spec doesn't cover it, it doesn't exist. Never add "just one more thing" without updating the spec.
+
 ### SOLID Rules
 
 | Principle | Rule |
