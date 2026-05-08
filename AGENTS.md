@@ -137,6 +137,45 @@ At the feature level:
 4. Test with `godot_mcp_play_scene` (current) or `godot_mcp_play_scene` (main)
 5. Check errors with `godot_mcp_get_godot_errors`
 
+## Sprite Generation
+
+Character spritesheets are generated via a local tool — not the web UI.
+
+**Location:** `tools/lpc-sprite-gen/`
+**Full workflow:** see [`tools/lpc-sprite-gen/spritegen.workflow.md`](tools/lpc-sprite-gen/spritegen.workflow.md)
+
+### Quick reference
+
+```bash
+cd tools/lpc-sprite-gen
+
+# See all available layer options
+python generate.py catalog
+
+# Generate a sprite (AI picks the layers, calls this directly)
+python generate.py make '<json_config>' --out output/<name>.png
+```
+
+JSON config shape:
+```json
+{
+  "body_type": "male",
+  "selections": {
+    "shadow":  { "id": "shadow" },
+    "body":    { "id": "body" },
+    "head":    { "id": "heads_human_male" },
+    "hair":    { "id": "hair_wavy", "palette_variant": "auburn" },
+    "armour":  { "id": "torso_armour_leather" },
+    "legs":    { "id": "legs_pants" },
+    "shoes":   { "id": "feet_boots_basic" },
+    "weapon":  { "id": "weapon_sword_longsword" }
+  }
+}
+```
+
+Output is an 832px-wide LPC spritesheet PNG, ready for the Godot [LPCAnimatedSprite2D](https://github.com/alextrevisan/LPCAnimatedSprite2D) plugin.
+Always include `shadow` and `body`. See `spritegen.workflow.md` for archetype recipes and palette variant guidance.
+
 ## Notes
 
 - No scenes exist yet — this is a fresh project scaffold
