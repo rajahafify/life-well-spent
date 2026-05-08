@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Life Well Spent"
+run/main_scene="uid://co4fvqy5gebce"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
