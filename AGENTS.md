@@ -1,0 +1,96 @@
+# Life Well Spent — Agent Guide
+
+## Project Overview
+
+- **Engine:** Godot 4.6.2 (Forward Plus)
+- **Physics:** Jolt Physics (3D)
+- **Language:** GDScript
+- **Render:** Direct3D 12
+
+A personal life-tracking / productivity game built in Godot.
+
+## Project Structure
+
+```
+res://
+├── .godot/          # Godot auto-generated cache
+├── addons/          # Plugins & MCP integration
+│   └── gdai-mcp-plugin-godot/
+├── scenes/          # All scene files
+├── scripts/         # All GDScript files
+│   ├── controllers/ # UI / scene controllers (thin, delegate)  — M
+│   ├── models/      # Pure business logic & data (no node refs) — M
+│   ├── views/       # UI scene scripts (reads model state)    — V
+│   └── managers/    # Systems (Save, Audio, Input, etc.)
+├── assets/          # Images, fonts, audio, models
+├── resources/       # Custom resources, themes, data
+└── shaders/         # Custom shader files
+```
+
+## Architecture — MVC (Rails-style)
+
+Godot's scene tree is the **View**. Scripts are split into three layers:
+
+### View (`scripts/views/*.gd`)
+- Attached to scene nodes (Control, CharacterBody2D, etc.)
+- **Dumb:** No business logic. Only reads model data and emits signals.
+- Examples: `PlayerView.gd` — moves a sprite; `QuestUI.gd` — updates text labels.
+- **Rule:** If it doesn't touch a `Node` or call a Godot method, it doesn't belong here.
+
+### Model (`scripts/models/*.gd`)
+- **Pure logic.** No `Node` references. No `print()`. No Godot APIs.
+- Exposed via a singleton controller (see below) or direct injection.
+- Examples: `PlayerStats.gd` — HP, level, experience; `QuestManager.gd` — quest state, costs.
+- **Rule:** If you can `import` it and test it without Godot running, it's a model.
+
+### Controller (`scripts/controllers/*.gd`)
+- **Thin glue.** Listens to input/signals, calls model methods, updates views.
+- One controller per scene or logical subsystem.
+- Examples: `GameController.gd` — bootstraps the game, switches scenes; `CombatController.gd` — handles attack input.
+
+### SOLID Rules
+
+| Principle | Rule |
+|-----------|------|
+| **SRP** | One responsibility per script. A model doesn't draw. A view doesn't calculate. |
+| **OCP** | Open for extension: use `Resource` subtypes for quests, enemies, items. |
+| **LSP** | Subclasses must not break contracts. E.g., `Swordsman` extends `Player` without changing base behavior. |
+| **ISP** | Small interfaces. Split `IQuest` into `IQuestProvider` and `IQuestResolver` if a class only needs one. |
+| **DIP** | Depend on abstractions. `CombatSystem` takes `IDamageProvider`, not `Player`. |
+
+### Example: Quest Flow
+
+```
+[Scene] QuestGiver (Node)
+  └── QuestUI.gd (View)    → reads QuestModel.state
+  └── QuestController.gd   → accepts() → QuestModel.accept_quest()
+                              → QuestModel.complete_quest() → emits "quest_completed"
+  └── QuestModel.gd (Model) → deducts MaxHP, updates state, emits signal
+```
+
+### Conventions
+
+- **Naming:** `snake_case` for scripts and nodes, PascalCase for custom classes
+- **Scripts:** One script per scene; keep them thin, delegate to helpers
+- **Nodes:** Use descriptive names, group related nodes under a named parent
+- **Signals:** Prefer signals over direct node references for loose coupling
+- **Autoloads:** Register in Project Settings → AutoLoad; keep them minimal
+
+## Tooling
+
+- **MCP:** `uv run` + `gdai_mcp_server.py` — enables AI-assisted scene/script editing
+- **Config:** `.mcp.json` in project root
+
+## Adding Features
+
+1. Create the scene (`godot_mcp_create_scene`) or script (`godot_mcp_create_script`)
+2. Place under the appropriate directory (`scenes/`, `scripts/`)
+3. Attach script to node if needed (`godot_mcp_attach_script`)
+4. Test with `godot_mcp_play_scene` (current) or `godot_mcp_play_scene` (main)
+5. Check errors with `godot_mcp_get_godot_errors`
+
+## Notes
+
+- No scenes exist yet — this is a fresh project scaffold
+- The `GDAIMCPRuntime` autoload is registered for MCP integration
+- Keep the project lean; every feature should serve the core life-tracking vision

@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "godot-mcp": {
+      "command": "uv",
+      "args": [
+        "run",
+        "D:/godot/life-well-spent/addons/gdai-mcp-plugin-godot/gdai_mcp_server.py"
+      ],
+      "directTools": true
+    }
+  }
+}

@@ -1,0 +1,48 @@
+# Godot 4+ — editor cache, shader cache, import artifacts
+.godot/editor/
+.godot/shader_cache/
+.godot/imported/
+*.import
+
+# Godot — exported builds
+export_templates/
+*.zip
+*.apk
+*.aab
+*.exe
+*.app
+*.dmg
+*.deb
+
+# Godot — platform build directories
+/android/
+/ios/
+/html5/
+/linux/
+/windows/
+
+# Pi (Pi Coding Agent) — runtime cache
+.pi/hooks/
+.pi/cache/
+
+# Python / MCP server
+__pycache__/
+*.py[cod]
+.env
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
