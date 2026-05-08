@@ -3,14 +3,8 @@ name: Tests
 on:
   push:
     branches: [master, main]
-    paths:
-      - 'tests/**'
-      - '.github/workflows/tests.yml'
   pull_request:
     branches: [master, main]
-    paths:
-      - 'tests/**'
-      - '.github/workflows/tests.yml'
   workflow_dispatch:
 
 permissions:
