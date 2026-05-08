@@ -8,11 +8,17 @@ var _player: PlayerStats
 
 
 func _ready() -> void:
+	# Run all specs first
+	var results: Dictionary = TestRunner.run_with_output()
+	var total_passed: int = results["passed"]
+	var total_failed: int = results["failed"]
+	
 	_player = PlayerStats.new()
 	_update_display()
 	_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_label.add_theme_font_size_override("font_size", 32)
+	_label.text = "Tests: %d/%d passed" % [total_passed, total_passed + total_failed]
 
 
 func _input(event: InputEvent) -> void:
