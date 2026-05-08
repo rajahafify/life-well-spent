@@ -1,7 +1,13 @@
+## TestRunner — discovers and executes GDScript-based spec files.
+## Scans tests/specs/ for test_*.gd files, loads the class, runs all
+## test_* methods, and aggregates results.
 class_name TestRunner
+extends Object
 
 const SPEC_DIR: String = "res://tests/specs/"
 
+
+# ── Public API ────────────────────────────────────────────────────────
 
 static func run_all() -> Dictionary:
 	var results: Dictionary = {
@@ -10,81 +16,121 @@ static func run_all() -> Dictionary:
 		"failed": 0,
 		"results": []
 	}
-	
-	var specs: Array = _load_specs()
-	
-	for spec_data: Dictionary in specs:
-		var result: Dictionary = {
-			"id": spec_data.get("id", ""),
-			"title": spec_data.get("title", ""),
-			"passed": true,
-			"failures": []
-		}
-		
-		var criteria: Array = spec_data.get("acceptance_criteria", [])
-		for criterion: String in criteria:
-			var criterion_passed: bool = _evaluate_criterion(criterion)
-			if not criterion_passed:
-				result["passed"] = false
-				result["failures"].append(criterion)
-		
-		if result["passed"]:
+
+	var spec_files: Array[String] = _discover_specs()
+
+	for file_path: String in spec_files:
+		var file_results: Array = _run_spec_file(file_path)
+		results["results"].append_array(file_results)
+
+	for r: Dictionary in results["results"]:
+		if r["passed"]:
 			results["passed"] += 1
 		else:
 			results["failed"] += 1
-		
-		results["results"].append(result)
-	
+
 	results["total"] = results["passed"] + results["failed"]
-	
 	return results
 
 
 static func run_with_output() -> Dictionary:
 	var results: Dictionary = run_all()
-	
-	for result: Dictionary in results["results"]:
-		var status_str: String = "PASS" if result["passed"] else "FAIL"
-		print("[Spec %s] %s: %s" % [status_str, result["id"], result["title"]])
-		for failure: String in result["failures"]:
-			print("  - %s" % failure)
-	
-	var summary: String = "Results: %d/%d passed" % [results["passed"], results["total"]]
-	print(summary)
-	
+
+	for r: Dictionary in results["results"]:
+		var status: String = "PASS" if r["passed"] else "FAIL"
+		print("[%s] %s" % [status, r["id"]])
+		for failure: Dictionary in r["failures"]:
+			print("  %s" % failure["message"])
+
+	print("\nResults: %d/%d passed" % [results["passed"], results["total"]])
 	return results
 
 
-static func _evaluate_criterion(criterion: String) -> bool:
-	match criterion:
-		"Assert true":
-			assert(true, "criterion failed")
-			return true
-		_:
-			push_warning("unknown criterion: %s" % criterion)
-			return false
+# ── Discovery ─────────────────────────────────────────────────────────
 
-
-static func _load_specs() -> Array:
-	var specs: Array = []
+static func _discover_specs() -> Array[String]:
+	var files: Array[String] = []
 	var dir: DirAccess = DirAccess.open(SPEC_DIR)
-	
+
 	if not dir:
 		push_error("Failed to open spec directory: %s" % SPEC_DIR)
-		return specs
-	
+		return files
+
 	dir.list_dir_begin()
 	var file_name: String = dir.get_next()
-	
+
 	while file_name != "":
-		if file_name.ends_with(".json"):
-			var file_path: String = SPEC_DIR + file_name
-			var file_contents: String = FileAccess.get_file_as_string(file_path)
-			var json_result: Variant = JSON.parse_string(file_contents)
-			if json_result is Dictionary:
-				specs.append(json_result as Dictionary)
+		if file_name.begins_with("test_") and file_name.ends_with(".gd"):
+			files.append(SPEC_DIR + file_name)
 		file_name = dir.get_next()
-	
+
 	dir.list_dir_end()
-	
-	return specs
+	return files
+
+
+# ── Execution ─────────────────────────────────────────────────────────
+
+static func _run_spec_file(file_path: String) -> Array:
+	var results: Array = []
+
+	var script: GDScript = load(file_path)
+	var instance: Object = script.new()
+
+	# class_setup once
+	_try(instance, "class_setup")
+
+	# find test_* methods
+	var tests: Array = _find_test_methods(instance)
+
+	for test_name: String in tests:
+		var test_result: Dictionary = {
+			"passed": true,
+			"id": test_name,
+			"title": test_name,
+			"failures": []
+		}
+
+		# setup
+		_try(instance, "setup")
+
+		# test
+		_try(instance, test_name)
+
+		# Check for failures — specs track them via get_failures()
+		var failures: Array = []
+		if instance.has_method("get_failures"):
+			failures = instance.call("get_failures") as Array
+		if failures.size() > 0:
+			test_result["passed"] = false
+			for failure_msg: String in failures:
+				test_result["failures"].append({
+					"name": test_name,
+					"message": failure_msg
+				})
+
+		# teardown
+		_try(instance, "teardown")
+
+		results.append(test_result)
+
+	instance.free()
+	return results
+
+
+# ── Helpers ───────────────────────────────────────────────────────────
+
+static func _try(target: Object, method: String) -> void:
+	if target.has_method(method):
+		target.callv(method, [])
+
+
+static func _find_test_methods(instance: Object) -> Array:
+	var methods: Array = []
+	var method_list: Array = instance.get_method_list()
+
+	for mi: Dictionary in method_list:
+		var name: String = mi.get("name", "")
+		if name.begins_with("test_") and not name.begins_with("test__"):
+			methods.append(name)
+
+	return methods
