@@ -1,32 +1,34 @@
+## TestRunnerScene — live demo of PlayerStats model.
+## Press Q to take quest, R for rebirth. HP displayed on label.
 extends Node2D
 
-@onready var _results_label: Label = $UI/ResultsLabel
+var _player: PlayerStats
+
+@onready var _label: Label = $UI/HPLabel
 
 
 func _ready() -> void:
-	var results: Dictionary = TestRunner.run_with_output()
-	_results_label.text = _format_results(results)
-	_results_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_results_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_results_label.add_theme_font_size_override("font_size", 32)
-
-
-func _format_results(results: Dictionary) -> String:
-	var text: String = "Test Results\n\n"
-	text += "%d/%d passed\n\n" % [
-		results["passed"],
-		results["total"]
-	]
-
-	for result: Dictionary in results["results"]:
-		var status: String = "PASS" if result["passed"] else "FAIL"
-		text += "[%s] %s\n" % [status, result["id"]]
-		for failure: Dictionary in result["failures"]:
-			text += "  ❌ %s\n" % failure["message"]
-
-	return text
+	_player = PlayerStats.new()
+	_update_display()
+	_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_label.add_theme_font_size_override("font_size", 32)
 
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		get_tree().quit(0)
+	if event is InputEventKey and event.pressed:
+		if event.keycode == KEY_Q:
+			_player.take_quest()
+			_update_display()
+		if event.keycode == KEY_R:
+			_player.rebirth()
+			_update_display()
+
+
+func _update_display() -> void:
+	var status = "💀 DEAD" if _player.state == "dead" else "❤️  ALIVE"
+	_label.text = "%s\nLevel %d\nHP: %d" % [
+		status, _player.level, _player.max_hp
+	]

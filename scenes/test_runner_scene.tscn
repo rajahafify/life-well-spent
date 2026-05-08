@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://co4fvqy5gebce"]
 
 [ext_resource type="Script" uid="uid://csjk5emn6kdte" path="res://scripts/controllers/test_runner_controller.gd" id="1_ojde5"]
+[ext_resource type="Texture2D" uid="uid://b2pddxpu1at4t" path="res://assets/player_idle.png" id="2_xeq7y"]
 
 [node name="TestRunnerScene" type="Node2D" unique_id=1778209525]
 script = ExtResource("1_ojde5")
@@ -10,6 +11,13 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="ResultsLabel" type="Label" parent="UI" unique_id=1812650587]
+[node name="HPLabel" type="Label" parent="UI" unique_id=173253933]
 layout_mode = 0
+
+[node name="Player" type="Sprite2D" parent="." unique_id=773599986]
+position = Vector2(400, 300)
+scale = Vector2(2, 2)
+texture = ExtResource("2_xeq7y")
