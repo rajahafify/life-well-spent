@@ -60,7 +60,7 @@ static func _discover_specs() -> Array[String]:
 	var file_name: String = dir.get_next()
 
 	while file_name != "":
-		if file_name.begins_with("test_") and file_name.ends_with(".gd"):
+		if file_name.ends_with(".gd") and (file_name.begins_with("test_") or file_name.ends_with("_test.gd")):
 			files.append(SPEC_DIR + file_name)
 		file_name = dir.get_next()
 
