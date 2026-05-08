@@ -1,0 +1,35 @@
+name: Tests
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'tests/**'
+      - '.github/workflows/tests.yml'
+  pull_request:
+    branches: [master, main]
+    paths:
+      - 'tests/**'
+      - '.github/workflows/tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download Godot
+        run: |
+          curl -L -o godot.zip \
+            "https://downloads.godotengine.org/?version=4.6.2&flavor=stable&slug=linux.x86_64.zip&platform=linux.64"
+          unzip -o godot.zip
+          chmod +x Godot_v*linux.x86_64
+
+      - name: Run test runner
+        run: ./Godot_v*linux.x86_64 --headless --quit tests/test_runner.tscn

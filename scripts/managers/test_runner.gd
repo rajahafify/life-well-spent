@@ -1,6 +1,6 @@
 class_name TestRunner
 
-const SPEC_DIR: String = "res://resources/specs/"
+const SPEC_DIR: String = "res://tests/specs/"
 
 
 static func run_all() -> Dictionary:

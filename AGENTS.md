@@ -22,6 +22,9 @@ res://
 │   ├── models/      # Pure business logic & data (no node refs) — M
 │   ├── views/       # UI scene scripts (reads model state)    — V
 │   └── managers/    # Systems (Save, Audio, Input, etc.)
+├── tests/           # Test scenes + spec files
+│   ├── test_runner.tscn
+│   └── specs/       # JSON spec files (loaded by TestRunner)
 ├── assets/          # Images, fonts, audio, models
 ├── resources/       # Custom resources, themes, data
 └── shaders/         # Custom shader files
@@ -52,19 +55,19 @@ Godot's scene tree is the **View**. Scripts are split into three layers:
 
 Every feature starts with a spec. No code written until the spec is approved.
 
-#### Spec Format (`resources/specs/*.tres`)
+#### Spec Format (`tests/specs/*.json`)
 
-```gdscript
-extends Resource
-
-@export var id: String
-@export var title: String
-@export var description: String
-@export var acceptance_criteria: Array[String]  # numbered list
-@export var model_dependencies: Array[String]   # which models are affected
-@export var view_dependencies: Array[String]    # which scenes/controls are touched
-@export var priority: int                       # 1 = highest
-@export var status: String = "pending"          # pending | approved | implemented | tested
+```json
+{
+  "id": "feature_name",
+  "title": "Feature Name",
+  "description": "What this spec tests",
+  "acceptance_criteria": ["Criterion 1", "Criterion 2"],
+  "model_dependencies": ["ModelClass"],
+  "view_dependencies": ["ControlNode"],
+  "priority": 1,
+  "status": "pending"
+}
 ```
 
 #### Workflow
@@ -104,6 +107,12 @@ extends Resource
 - **Nodes:** Use descriptive names, group related nodes under a named parent
 - **Signals:** Prefer signals over direct node references for loose coupling
 - **Autoloads:** Register in Project Settings → AutoLoad; keep them minimal
+
+## CI / GitHub Actions
+
+- **Workflow:** `.github/workflows/tests.yml`
+- **Trigger:** Push/PR to `master` or `main` when `tests/**` changes
+- **Run:** `Godot --headless --quit tests/test_runner.tscn` on Ubuntu
 
 ## Tooling
 
