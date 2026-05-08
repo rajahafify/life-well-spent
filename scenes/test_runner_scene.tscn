@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://csjk5emn6kdte" path="res://scripts/controllers/test_runner_controller.gd" id="1_ojde5"]
 [ext_resource type="Texture2D" uid="uid://b2pddxpu1at4t" path="res://assets/player_idle.png" id="2_xeq7y"]
+[ext_resource type="Script" uid="uid://bmx2qucwgegs0" path="res://scripts/controllers/player_movement.gd" id="3_vrid3"]
+[ext_resource type="Texture2D" uid="uid://b5yljdw3l1x4t" path="res://assets/marker.png" id="4_s8xv1"]
 
 [node name="TestRunnerScene" type="Node2D" unique_id=1778209525]
 script = ExtResource("1_ojde5")
@@ -18,6 +20,10 @@ grow_vertical = 2
 layout_mode = 0
 
 [node name="Player" type="Sprite2D" parent="." unique_id=773599986]
-position = Vector2(400, 300)
+position = Vector2(640, 360)
 scale = Vector2(2, 2)
 texture = ExtResource("2_xeq7y")
+script = ExtResource("3_vrid3")
+
+[node name="DestinationMarker" type="Sprite2D" parent="." unique_id=1277452741]
+texture = ExtResource("4_s8xv1")

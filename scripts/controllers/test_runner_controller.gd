@@ -1,9 +1,9 @@
 ## TestRunnerScene — live demo of PlayerStats model.
-## Press Q to take quest, R for rebirth. HP displayed on label.
+## Click to move, Q to take quest, R to rebirth. HP displayed on label.
 extends Node2D
 
 var _player: PlayerStats
-
+@onready var _player_sprite: Sprite2D = $Player
 @onready var _label: Label = $UI/HPLabel
 
 
@@ -16,15 +16,26 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		var target: Vector2 = event.position
+		_player_sprite.move_to(target)
+	elif event.is_action_pressed("ui_cancel"):
 		get_tree().quit(0)
-	if event is InputEventKey and event.pressed:
-		if event.keycode == KEY_Q:
-			_player.take_quest()
-			_update_display()
-		if event.keycode == KEY_R:
-			_player.rebirth()
-			_update_display()
+	elif event is InputEventKey and event.pressed:
+		_handle_key(event.keycode)
+
+
+func _handle_key(keycode: int) -> void:
+	if keycode == KEY_Q:
+		_player.take_quest()
+		_update_display()
+	elif keycode == KEY_R:
+		_player.rebirth()
+		_update_display()
+	elif keycode == KEY_F:
+		# Debug: move to bottom-right
+		var target: Vector2 = get_viewport_rect().size * 0.8
+		_player_sprite.move_to(target)
 
 
 func _update_display() -> void:
