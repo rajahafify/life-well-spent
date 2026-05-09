@@ -46,6 +46,6 @@ desktop.ini
 
 # Logs
 *.log
-assets/
+assets/*.import
 .codex/
 .codex/

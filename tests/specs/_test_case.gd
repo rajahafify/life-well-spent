@@ -19,7 +19,7 @@ func setup() -> void:
 
 
 func teardown() -> void:
-	pass
+	_failures.clear()
 
 
 # ── Failure tracking ──────────────────────────────────────────────────

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://co4fvqy5gebce"]
 
 [ext_resource type="Script" uid="uid://csjk5emn6kdte" path="res://scripts/controllers/test_runner_controller.gd" id="1_ojde5"]
-[ext_resource type="Texture2D" uid="uid://63rl1xdw0tbx" path="res://assets/player_anim.png" id="2_s8xv1"]
+[ext_resource type="Texture2D" uid="uid://flnyysibu2t4" path="res://assets/player.png" id="2_s8xv1"]
 [ext_resource type="Script" uid="uid://bmx2qucwgegs0" path="res://scripts/controllers/player_movement.gd" id="3_vrid3"]
 [ext_resource type="Texture2D" uid="uid://b5yljdw3l1x4t" path="res://assets/marker.png" id="4_s8xv1"]
 
@@ -26,7 +26,8 @@ layout_mode = 0
 position = Vector2(640, 360)
 scale = Vector2(2, 2)
 texture = ExtResource("2_s8xv1")
-hframes = 4
+hframes = 13
+vframes = 21
 script = ExtResource("3_vrid3")
 
 [node name="GameWorld" type="Area2D" parent="." unique_id=1034435416]
