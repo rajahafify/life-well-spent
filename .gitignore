@@ -1,6 +1,7 @@
 # Godot 4+ — editor cache, shader cache, import artifacts
 .godot/editor/
 .godot/shader_cache/
+.godot/uid_cache.bin
 .godot/imported/
 *.import
 
