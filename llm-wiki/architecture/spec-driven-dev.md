@@ -27,25 +27,26 @@ func setup():
 	player = PlayerStats.new()
 
 func test_initial_max_hp_is_100():
-	assert_eq(player.max_hp, 100)
+	assert_eq(100, player.max_hp)
 
 func test_quest_deducts_hp():
 	player.take_quest()
-	assert_eq(player.max_hp, 60)
+	assert_eq(60, player.max_hp)
 
 func test_zero_hp_triggers_death():
 	player.max_hp = 40
 	player.take_quest()  # deducts 40 → 0
-	assert_eq(player.state, "dead")
+	assert_eq("dead", player.state)
 ```
 
 ### Spec Conventions
 - **Naming:** `test_<method_name>.gd` — one spec file per model/feature
 - **Class name:** `Test<ClassName>` — matches the class under test
 - **Methods:** `func test_<behavior_description>():` — one assertion per method
-- **Assertions:** `assert_eq()`, `assert_neq()`, `assert_true()`, `assert_false()`, `assert_is()`, `assert_is_not()`, `assert_in()`, `assert_has()`, `assert_raises()`
+- **Assertions:** `assert_eq(expected, actual)`, `assert_neq(unexpected, actual)`, `assert_true()`, `assert_false()`, `assert_in()`, `assert_has()`, `assert_null()`, `assert_not_null()`
 - **Setup/Teardown:** `func setup():` before each test, `func teardown():` after
 - **Class setup:** `func class_setup():` once before all tests in the class
+- **Isolation:** the runner creates a fresh spec instance per test method and clears assertion state before each test.
 
 ### Workflow
 1. **Red** — Write the spec. It should fail (assertion will not pass yet).

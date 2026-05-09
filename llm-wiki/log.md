@@ -26,3 +26,10 @@
 - Registered `resources/specs/test_spec.json`
 - Compiled `architecture/test-runner.md`
 - Updated `index.md`
+
+## [2026-05-10] update | Minitest-style Test Runner
+
+- Moved test assertions to `tests/test_helper.gd`
+- Moved the CI entrypoint to `tests/test_runner.gd` attached to `tests/test_runner.tscn`
+- Split playable demo behavior into `scripts/controllers/demo_controller.gd`
+- Updated test runner architecture docs

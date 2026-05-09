@@ -45,13 +45,13 @@ Every feature starts with a spec (`tests/specs/<name>_test.gd`) extending `TestC
 
 | Feature | Files | Status |
 |---------|-------|--------|
-| **Test Infrastructure** | `tests/specs/_test_case.gd`, `scripts/managers/test_runner.gd` | TestCase base class with `check()`, `check_eq()`, `check_neq()`. Auto-discovers `*_test.gd` files. |
+| **Test Infrastructure** | `tests/test_helper.gd`, `tests/test_runner.gd`, `tests/test_runner.tscn` | Minitest-style `TestCase` with `assert_*` helpers, fresh instance per test, compact output, and CI failure exit codes. |
 | **PlayerStats Model** | `scripts/models/player_stats.gd` | HP, level, state, quest cost, rebirth, facility preservation. 13/13 specs pass. |
 | **PlayerStats Spec** | `tests/specs/player_stats_test.gd` | 13 tests covering initialization, quest cost, death, rebirth, facility preservation. |
-| **Player Sprite** | `assets/player_idle.png` | Single-frame LPC sprite (male, leather armor, longsword, auburn hair). 83×61px at 2× scale. |
+| **Player Sprite** | `assets/player.png` | Full LPC spritesheet, 13 columns × 21 rows, animated through `frame_coords`. |
 | **HP Display** | `scenes/test_runner_scene.tscn` | Live `Label` showing status, level, HP. Updates on quest/rebirth. |
 | **Click-to-Move** | `scripts/controllers/player_movement.gd` | Sprite2D with `move_to(target)` — smooth movement at 200px/s with destination marker. |
-| **Quest/Rebirth Input** | `scripts/controllers/test_runner_controller.gd` | Q = take quest, R = rebirth, F = debug move. |
+| **Quest/Rebirth Input** | `scripts/controllers/demo_controller.gd` | Q = take quest, R = rebirth, F = debug move. |
 
 ### 🔴 Not Started
 
@@ -150,7 +150,7 @@ var destination: Vector2 = Vector2.ZERO
 var moving: bool = false
 ```
 
-### `scripts/controllers/test_runner_controller.gd`
+### `scripts/controllers/demo_controller.gd`
 Scene controller — input → model calls → view updates.
 
 ```gdscript
@@ -164,18 +164,16 @@ func _input(event: InputEvent) -> void:
     # ...
 ```
 
-### `tests/specs/_test_case.gd`
-Shared test base class.
+### `tests/test_helper.gd`
+Shared Minitest-style test base class.
 
 ```gdscript
 class_name TestCase
 extends Object
 
-var _failures: Array[String] = []
-
-func check(condition: bool, msg: String) -> bool: ...
-func check_eq(got, expected, msg: String = "") -> bool: ...
-func check_neq(got, unexpected, msg: String = "") -> bool: ...
+func assert_eq(expected, actual, message: String = "") -> bool: ...
+func assert_true(condition: bool, message: String = "") -> bool: ...
+func assert_in(expected_item, collection, message: String = "") -> bool: ...
 ```
 
 ---
@@ -189,12 +187,34 @@ func check_neq(got, unexpected, msg: String = "") -> bool: ...
 # Click to move, Q/R for quest/rebirth
 ```
 
-### Test Suite (Headless)
+### Test Suite (Godot MCP Preferred)
+For agent work, prefer Godot MCP so results come from the running editor/runtime:
+
+1. Open `tests/test_runner.tscn`.
+2. Call `godot_mcp_play_scene`.
+3. Call `godot_mcp_get_godot_errors`.
+4. Read the output log.
+
+Expected successful output:
+```text
+Running 40 tests
+........................................
+
+40 tests, 40 passed, 0 failed
+```
+
+### Test Suite (Headless / CI)
 ```bash
 "C:\Users\Home\Desktop\Godot\Godot_v4.6.2-stable_win64_console.exe" \
-    --headless --import --quit
+    --headless --quit tests/test_runner.tscn
 ```
-Note: Benign Signal 11 crash on shutdown. Cache is generated before crash.
+The test runner exits with code `1` when any spec fails.
+
+### Filtered Test Run
+```bash
+"C:\Users\Home\Desktop\Godot\Godot_v4.6.2-stable_win64_console.exe" \
+    --headless --quit tests/test_runner.tscn -- --filter TestCase
+```
 
 ### CI/CD (GitHub Actions)
 ```yaml
@@ -226,7 +246,7 @@ python generate.py make '{
 }' --out output/player.png
 ```
 
-Cropped to single frame for `assets/player_idle.png`. Full spritesheet has 10×22 frames for animation rows.
+Runtime uses the full `assets/player.png` sheet. Do not crop it to single-row animation strips.
 
 ---
 

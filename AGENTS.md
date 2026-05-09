@@ -68,11 +68,11 @@ func setup():
 	player = PlayerStats.new()
 
 func test_initial_max_hp_is_100():
-	assert_eq(player.max_hp, 100)
+	assert_eq(100, player.max_hp)
 
 func test_quest_deducts_40_hp():
 	player.take_quest()
-	assert_eq(player.max_hp, 60)
+	assert_eq(60, player.max_hp)
 ```
 
 #### Red → Green → Refactor Workflow
@@ -85,7 +85,7 @@ At the feature level:
 1. **Draft** the acceptance criteria (in a markdown or spec JSON for approval).
 2. **Approve** — user confirms the criteria are complete and unambiguous.
 3. **Implement** — write the **Model** first (pure logic), then the **Controller** (thin glue), then the **View** (UI update).
-4. **Verify** — run the full spec suite. All must pass.
+4. **Verify** — run the full spec suite. All must pass. The runner exits non-zero when any spec fails.
 
 #### Rule
 > If the spec doesn't cover it, it doesn't exist. Never add "just one more thing" without updating the spec.
@@ -123,6 +123,29 @@ At the feature level:
 - **Workflow:** `.github/workflows/tests.yml`
 - **Trigger:** Push/PR to `master` or `main` when `tests/**` changes
 - **Run:** `Godot --headless --quit tests/test_runner.tscn` on Ubuntu
+
+### Running Tests
+
+Prefer Godot MCP for agent validation:
+
+1. Open `tests/test_runner.tscn`.
+2. Run `godot_mcp_play_scene`.
+3. Run `godot_mcp_get_godot_errors`.
+4. Read the output log for the Minitest-style summary.
+
+Use the headless command for CI/local shell fallback:
+
+```powershell
+& "C:\Users\Home\Desktop\Godot\Godot_v4.6.2-stable_win64_console.exe" --headless --quit tests/test_runner.tscn
+```
+
+Filtered run:
+
+```powershell
+& "C:\Users\Home\Desktop\Godot\Godot_v4.6.2-stable_win64_console.exe" --headless --quit tests/test_runner.tscn -- --filter TestCase
+```
+
+`godot_mcp_play_scene` starts the runner scene but does not directly return the test output. `godot_mcp_get_godot_errors` is required to see the test summary.
 
 ## Tooling
 
