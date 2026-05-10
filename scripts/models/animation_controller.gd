@@ -21,10 +21,10 @@ const WALK_FRAME_DURATION: float = 0.1
 
 # Direction → row offset mapping
 const _DIRECTION_ROW: Dictionary = {
-	"down": 0,
-	"right": 1,
-	"left": 2,
-	"up": 3,
+	"up": 0,
+	"left": 1,
+	"down": 2,
+	"right": 3,
 }
 
 var state: String = "idle"
@@ -78,7 +78,7 @@ func tick(delta: float) -> void:
 		_tick_walking(delta)
 
 
-func _tick_idle(delta: float) -> void:
+func _tick_idle(_delta: float) -> void:
 	pass  # static neutral idle
 
 
