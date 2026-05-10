@@ -1,5 +1,6 @@
 ## TownSceneController — manages the town hub scene.
 ## Displays player stats and quest info from models.
+## Handles mouse click-to-move.
 class_name TownSceneController
 extends Node2D
 
@@ -17,6 +18,16 @@ extends Node2D
 func _ready() -> void:
 	_title_label.add_theme_font_size_override("font_size", 24)
 	_update_stats()
+
+
+# ── Input ──────────────────────────────────────────────────────────────
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		var world_pos := get_global_mouse_position()
+		var pm: PlayerMovement = _player.get_node("Sprite") as PlayerMovement
+		if pm:
+			pm.move_to(world_pos)
 
 
 # ── Stats Display ──────────────────────────────────────────────────────

@@ -1,13 +1,11 @@
 ## PlayerMovement — click-to-move with full LPC spritesheet animation.
 ## Uses 832px LPC atlas: 13 columns x 21 rows, 64x64 cells.
 ## Walk rows: 8-11 (up/left/down/right). Idle: spellcast rows 0-3.
+class_name PlayerMovement
 extends Sprite2D
 
 ## Movement speed in pixels per second.
 @export var move_speed: float = 200.0
-
-## Whether the player can move (set by scene controller).
-var can_move: bool = true
 
 var destination: Vector2 = Vector2.ZERO
 var moving: bool = false
@@ -40,14 +38,6 @@ func _ready() -> void:
 		_marker = get_node_or_null("/root/TestRunnerScene/DestinationMarker") as Sprite2D
 	# Start facing down
 	_apply_frame()
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if not can_move:
-		return
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		var world_pos := get_global_mouse_position()
-		move_to(world_pos)
 
 
 func _process(delta: float) -> void:
