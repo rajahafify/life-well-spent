@@ -1,12 +1,13 @@
 ## QuestManager — quest catalog and lifecycle management.
 ## Pure logic. No Node references. Delegates HP deduction to PlayerStats.
+## No hard limit per life — quest pickup blocked by HP affordability.
 class_name QuestManager
 extends Object
 
 var quest_catalog: Array[Dictionary] = []
 var active_quest = null
 var quests_taken: int = 0
-var max_quests_per_life: int = 2
+var last_rejection = null
 const QUEST_HP_COST: int = 40
 
 
@@ -18,12 +19,16 @@ func add_quest(name: String, cost: int, description: String) -> void:
 	})
 
 
-func take_quest() -> bool:
+func take_quest(current_hp: int = 100) -> bool:
 	if quest_catalog.is_empty():
-		return false
-	if quests_taken >= max_quests_per_life:
+		last_rejection = "no_quest_available"
 		return false
 	var quest: Dictionary = quest_catalog.pop_front()
+	if current_hp < quest.cost:
+		last_rejection = "not_enough_hp"
+		quest_catalog.push_front(quest)  # return it
+		return false
+	last_rejection = null
 	active_quest = quest
 	quests_taken += 1
 	return true

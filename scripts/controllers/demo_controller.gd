@@ -46,9 +46,10 @@ func _handle_key(keycode: int) -> void:
 	if not _player:
 		return
 	if keycode == KEY_Q:
-		var taken: bool = _quests.take_quest()
+		var taken: bool = _quests.take_quest(_player.max_hp)
 		if taken:
 			_player.take_quest()
+		_print_rejection(_quests.last_rejection)
 		_update_display()
 	elif keycode == KEY_C:
 		_quests.complete_quest()
@@ -66,6 +67,13 @@ func _handle_key(keycode: int) -> void:
 			_player_sprite.move_to(target)
 
 
+func _print_rejection(reason: String) -> void:
+	if reason == "not_enough_hp":
+		print("You have no more life to sacrifice.")
+	elif reason == "no_quest_available":
+		print("No quests available.")
+
+
 func _update_display() -> void:
 	if _hp_label:
 		var status = "💀 DEAD" if _player.state == "dead" else "❤️  ALIVE"
@@ -74,7 +82,7 @@ func _update_display() -> void:
 		]
 	if _quest_label:
 		var lines: Array[String] = []
-		lines.append("Quests taken: %d/%d" % [_quests.quests_taken, _quests.max_quests_per_life])
+		lines.append("Quests taken: %d" % _quests.quests_taken)
 		if _quests.active_quest != null:
 			lines.append("Active: %s" % _quests.active_quest.name)
 		else:

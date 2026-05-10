@@ -41,10 +41,9 @@ func test_catalog_supports_many_quests() -> void:
 
 # ─── Take Quest ──────────────────────────────────────────────────────
 
-func test_take_quest_deducts_40_hp_and_tracks_taken() -> void:
+func test_take_quest_sets_active_quest() -> void:
 	qm.add_quest("Goblin Scout", 40, "Clear goblin scouts from the ridge")
 	qm.take_quest()
-	assert_eq(1, qm.quests_taken)
 	assert_not_null(qm.active_quest, "should have an active quest after taking")
 	assert_eq("Goblin Scout", qm.active_quest.name)
 
@@ -52,20 +51,21 @@ func test_take_quest_deducts_40_hp_and_tracks_taken() -> void:
 func test_take_quest_returns_false_when_no_catalog() -> void:
 	var result: bool = qm.take_quest()
 	assert_false(result, "should return false when no quests available")
-	assert_eq(0, qm.quests_taken)
+	assert_null(qm.active_quest, "should not have active quest when taking fails")
 
 
-func test_take_quest_returns_false_when_at_limit() -> void:
-	qm.add_quest("Goblin Scout", 40, "Clear goblin scouts")
+func test_take_quest_works_with_many_quests_no_hard_limit() -> void:
+	for i in range(10):
+		qm.add_quest("Quest %d" % i, 40, "Quest %d" % i)
 	qm.take_quest()
 	qm.complete_quest()
-	qm.add_quest("Bandit Camp", 40, "Clear the bandit camp")
 	qm.take_quest()
 	qm.complete_quest()
-	qm.add_quest("Bandit Boss", 40, "Defeat the bandit boss")
-	var result: bool = qm.take_quest()
-	assert_false(result, "should return false at 2-quest limit")
-	assert_eq(2, qm.quests_taken)
+	qm.take_quest()
+	qm.complete_quest()
+	# No hard limit — can take quests across lives
+	assert_null(qm.active_quest, "should be able to take multiple quests")
+	assert_eq(3, qm.quests_taken, "should track total quests taken")
 
 
 # ─── Complete Quest ──────────────────────────────────────────────────
@@ -92,3 +92,33 @@ func test_reset_clears_quest_state() -> void:
 	qm.reset_for_life()
 	assert_eq(0, qm.quests_taken)
 	assert_null(qm.active_quest)
+
+
+# ─── HP-Based Quest Taking ──────────────────────────────────────────
+
+func test_take_quest_checks_hp_cost() -> void:
+	qm.add_quest("Goblin Scout", 40, "Clear goblin scouts")
+	var result: bool = qm.take_quest(39)
+	assert_false(result, "should not take quest when HP < cost")
+	assert_null(qm.active_quest)
+
+
+func test_take_quest_succeeds_when_enough_hp() -> void:
+	qm.add_quest("Goblin Scout", 40, "Clear goblin scouts")
+	var result: bool = qm.take_quest(40)
+	assert_true(result, "should take quest when HP >= cost")
+	assert_not_null(qm.active_quest)
+
+
+func test_take_quest_fails_when_hp_exactly_at_cost() -> void:
+	qm.add_quest("Goblin Scout", 40, "Clear goblin scouts")
+	var result: bool = qm.take_quest(40)
+	assert_true(result, "should take quest when HP == cost")
+	assert_eq("Goblin Scout", qm.active_quest.name)
+
+
+func test_take_quest_gives_rejection_message() -> void:
+	qm.add_quest("Goblin Scout", 40, "Clear goblin scouts")
+	qm.take_quest(39)
+	assert_not_null(qm.last_rejection, "should store rejection reason")
+	assert_eq("not_enough_hp", qm.last_rejection, "rejection reason should be not_enough_hp")
