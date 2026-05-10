@@ -6,6 +6,9 @@ extends Sprite2D
 ## Movement speed in pixels per second.
 @export var move_speed: float = 200.0
 
+## Whether the player can move (set by scene controller).
+var can_move: bool = true
+
 var destination: Vector2 = Vector2.ZERO
 var moving: bool = false
 
@@ -32,9 +35,19 @@ func _ready() -> void:
 	hframes = COLUMNS
 	vframes = ROWS
 	destination = position
-	_marker = get_node_or_null("/root/TestRunnerScene/DestinationMarker") as Sprite2D
+	_marker = get_node_or_null("DestinationMarker") as Sprite2D
+	if not _marker:
+		_marker = get_node_or_null("/root/TestRunnerScene/DestinationMarker") as Sprite2D
 	# Start facing down
 	_apply_frame()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not can_move:
+		return
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		var world_pos := get_global_mouse_position()
+		move_to(world_pos)
 
 
 func _process(delta: float) -> void:
