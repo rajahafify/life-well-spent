@@ -165,3 +165,13 @@
 - Updated game-design, quest-manager, NPC, and plan docs.
 - Manual QA passed in `scenes/town_scene.tscn`: far/near NPC interaction, modal movement lock, free accept, 40 HP completion cost, Vendor/Guard dialogs, and name labels.
 - All 126 tests pass.
+
+## [2026-05-11] refactor | Extract TownDialogView from TownSceneController
+
+- Deleted `reviews/solid-1.md` per request.
+- RED: added TownScene dialog specs for `TownDialogView` scene wiring and `show_dialog()` presentation API.
+- Created `scripts/views/town_dialog_view.gd` for dialog labels, panel visibility, button visibility, and button request signals.
+- Attached `TownDialogView` to `scenes/town_scene.tscn` `UI/DialogPanel`.
+- Refactored `TownSceneController` to delegate dialog presentation while keeping quest orchestration and movement lock behavior.
+- Updated `scenes/town-hub.md`, `architecture/npc-system.md`, and `index.md`.
+- All 128 tests pass.

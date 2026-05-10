@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://xckqw218onds" path="res://scripts/controllers/camera_controller.gd" id="4_4k3pf"]
 [ext_resource type="PackedScene" uid="uid://ctny5ffskwcmv" path="res://scenes/npc.tscn" id="5_4by7u"]
 [ext_resource type="Script" uid="uid://qhpwsdygiy8u" path="res://scripts/controllers/npc_controller.gd" id="6_d0wa2"]
+[ext_resource type="Script" path="res://scripts/views/town_dialog_view.gd" id="7_dialog"]
 
 [node name="TownScene" type="Node2D" unique_id=1689039541]
 script = ExtResource("1_l1y88")
@@ -43,6 +44,7 @@ text = "Quests: 0 active"
 
 [node name="DialogPanel" type="PanelContainer" parent="UI" unique_id=207370001]
 visible = false
+script = ExtResource("7_dialog")
 offset_left = 320.0
 offset_top = 430.0
 offset_right = 960.0

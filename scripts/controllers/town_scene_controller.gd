@@ -7,18 +7,14 @@ extends Node2D
 # Preload forces Godot to parse CharacterMovement before this file,
 # making class_name CharacterMovement available for type annotations.
 const _PMovement = preload("res://scripts/views/character_movement.gd")
+const _DialogView = preload("res://scripts/views/town_dialog_view.gd")
 
 # ── References ─────────────────────────────────────────────────────────
 
 @onready var _hp_label: Label = $UI/HPLabel
 @onready var _quest_label: Label = $UI/QuestLabel
 @onready var _title_label: Label = $UI/StatsTitle
-@onready var _dialog_panel: Control = $UI/DialogPanel
-@onready var _dialog_name_label: Label = $UI/DialogPanel/VBox/NameLabel
-@onready var _dialog_body_label: Label = $UI/DialogPanel/VBox/BodyLabel
-@onready var _accept_quest_button: Button = $UI/DialogPanel/VBox/Buttons/AcceptQuestButton
-@onready var _complete_quest_button: Button = $UI/DialogPanel/VBox/Buttons/CompleteQuestButton
-@onready var _close_dialog_button: Button = $UI/DialogPanel/VBox/Buttons/CloseButton
+@onready var _dialog_view = $UI/DialogPanel
 @onready var _player: CharacterBody2D = $Player
 
 var _player_stats: PlayerStats
@@ -35,7 +31,7 @@ func _ready() -> void:
 	_quest_manager = QuestManager.new()
 	_connect_dialog_buttons()
 	_connect_npcs()
-	_dialog_panel.visible = false
+	_dialog_view.hide_dialog()
 	_update_stats()
 
 
@@ -49,7 +45,7 @@ func _physics_process(_delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if _dialog_panel.visible:
+	if _dialog_view.is_open():
 		return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var world_pos := get_global_mouse_position()
@@ -70,12 +66,13 @@ func update_quest_count(count: int) -> void:
 
 
 func _connect_dialog_buttons() -> void:
-	if not _accept_quest_button.pressed.is_connected(_on_accept_quest_pressed):
-		_accept_quest_button.pressed.connect(_on_accept_quest_pressed)
-	if not _complete_quest_button.pressed.is_connected(_on_complete_quest_pressed):
-		_complete_quest_button.pressed.connect(_on_complete_quest_pressed)
-	if not _close_dialog_button.pressed.is_connected(_on_close_dialog_pressed):
-		_close_dialog_button.pressed.connect(_on_close_dialog_pressed)
+	_dialog_view.ensure_ready()
+	if not _dialog_view.accept_quest_requested.is_connected(_on_accept_quest_pressed):
+		_dialog_view.accept_quest_requested.connect(_on_accept_quest_pressed)
+	if not _dialog_view.complete_quest_requested.is_connected(_on_complete_quest_pressed):
+		_dialog_view.complete_quest_requested.connect(_on_complete_quest_pressed)
+	if not _dialog_view.close_requested.is_connected(_on_close_dialog_pressed):
+		_dialog_view.close_requested.connect(_on_close_dialog_pressed)
 
 
 func _connect_npcs() -> void:
@@ -112,19 +109,20 @@ func _open_dialog(npc: NpcController) -> void:
 		pm.face_target(npc.global_position)
 		pm.can_move = false
 	npc.face_toward_player(_player.global_position)
-	_dialog_panel.visible = true
-	_dialog_name_label.text = npc.display_name
-	_dialog_body_label.text = npc.dialog_text
-	_configure_dialog_buttons()
+	_dialog_view.show_dialog(npc.display_name, npc.dialog_text, _can_offer_quest(), _has_active_quest())
 	_quest_label.text = "Talking to: %s" % npc.name
 
 
 func _configure_dialog_buttons() -> void:
-	var has_active_quest := _quest_manager.active_quests.size() > 0
-	var can_offer_quest := _active_npc != null and _active_npc.role == "quest_giver" and _active_npc.quest_name != "" and not has_active_quest
-	_accept_quest_button.visible = can_offer_quest
-	_complete_quest_button.visible = has_active_quest
-	_close_dialog_button.visible = true
+	_dialog_view.configure_buttons(_can_offer_quest(), _has_active_quest())
+
+
+func _has_active_quest() -> bool:
+	return _quest_manager.active_quests.size() > 0
+
+
+func _can_offer_quest() -> bool:
+	return _active_npc != null and _active_npc.role == "quest_giver" and _active_npc.quest_name != "" and not _has_active_quest()
 
 
 func _on_accept_quest_pressed() -> void:
@@ -133,9 +131,9 @@ func _on_accept_quest_pressed() -> void:
 	var accepted := _quest_manager.take_quest(_player_stats.max_hp)
 	if accepted:
 		_player_stats.take_quest()
-		_dialog_body_label.text = "Quest accepted: %s" % _active_npc.quest_name
+		_dialog_view.set_body("Quest accepted: %s" % _active_npc.quest_name)
 	else:
-		_dialog_body_label.text = "No quests available."
+		_dialog_view.set_body("No quests available.")
 	_update_stats()
 	_configure_dialog_buttons()
 
@@ -143,13 +141,13 @@ func _on_accept_quest_pressed() -> void:
 func _on_complete_quest_pressed() -> void:
 	if _quest_manager.complete_quest():
 		_player_stats.complete_quest()
-		_dialog_body_label.text = "Quest completed. Your life was spent well."
+		_dialog_view.set_body("Quest completed. Your life was spent well.")
 	_update_stats()
 	_configure_dialog_buttons()
 
 
 func _on_close_dialog_pressed() -> void:
-	_dialog_panel.visible = false
+	_dialog_view.hide_dialog()
 	_active_npc = null
 	_pending_npc = null
 	var pm := _player_movement()

@@ -54,9 +54,9 @@ is_player_in_talk_range(player_global_pos) -> bool
 talk_point_for(player_global_pos) -> Vector2
 ```
 
-**Town Dialog (`scenes/town_scene.tscn` + `TownSceneController`):**
+**Town Dialog (`scenes/town_scene.tscn` + `TownSceneController` + `TownDialogView`):**
 ```gdscript
-DialogPanel
+DialogPanel (PanelContainer, script=TownDialogView)
   VBox
     NameLabel
     BodyLabel
@@ -65,10 +65,15 @@ DialogPanel
       CompleteQuestButton
       CloseButton
 
+TownDialogView signals:
+  accept_quest_requested
+  complete_quest_requested
+  close_requested
+
 _pending_npc: NpcController
 _physics_process(delta)  # opens pending dialog after player reaches talk range
 _on_npc_interacted(npc)
-_open_dialog(npc)
+_open_dialog(npc)        # delegates labels/buttons to TownDialogView.show_dialog()
 _on_accept_quest_pressed()
 _on_complete_quest_pressed()
 _on_close_dialog_pressed()
@@ -90,16 +95,17 @@ CharacterBody2D Npc
 - Dialog is modal: opening calls `stop_moving()` and disables player movement; closing re-enables it.
 - Reuse CharacterMovement for player/NPC facing and animation.
 - MVC: model pure, view dumb, controller signals.
+- Dialog presentation extracted to `TownDialogView`; `TownSceneController` owns quest decisions and receives button signals.
 - Collision solid + Area detect.
-- Emits interaction signal with NPC instance; town controller owns dialog/quest UI and model calls.
+- Emits interaction signal with NPC instance; town controller owns quest flow and delegates dialog UI rendering to `TownDialogView`.
 - Horizontal dir prefer (abs(x)>=y).
 
 ## Test Coverage
 - `npc_state_test.gd` (14): initial, face_player dirs/edge, quest assign/clear-to-null, interacting.
 - `npc_controller_test.gd` (8): explicit player target faces right/up, syncs state/view, emits actor, exposes dialog metadata defaults, talk range true/false, talk point, visible overhead name label.
 - `scene_smoke_test.gd`: player scene separated from NPC controller; NPC Sprite static and markerless; collision/talk radii; town UI wiring.
-- `town_scene_dialog_test.gd` (13): dialog panel, NPC metadata, vendor no quest button, accept-free/complete-cost quest UI, close behavior, far-click pending approach, automatic open in range, near-click immediate open, modal movement lock, mutual facing.
-- Full suite: 126 tests pass.
+- `town_scene_dialog_test.gd` (15): dialog panel, TownDialogView scene wiring/API, NPC metadata, vendor no quest button, accept-free/complete-cost quest UI, close behavior, far-click pending approach, automatic open in range, near-click immediate open, modal movement lock, mutual facing.
+- Full suite: 128 tests pass.
 
 ## Related
 - [player-movement.md](player-movement.md)

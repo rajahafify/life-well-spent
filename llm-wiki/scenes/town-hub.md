@@ -18,7 +18,7 @@ TownScene (Node2D)
 │   ├── StatsTitle (Label) — "Stats" title
 │   ├── HPLabel (Label) — "HP: 100 / 100"
 │   ├── QuestLabel (Label) — "Quests: 0 active"
-│   └── DialogPanel (PanelContainer) — NPC name/body + quest buttons
+│   └── DialogPanel (PanelContainer, TownDialogView) — NPC name/body + quest buttons
 ├── Player (CharacterBody2D) — instanced from player.tscn, scale 2×
 ├── DestinationMarker (Sprite2D)
 ├── Camera2D
@@ -43,13 +43,14 @@ extends Node2D
 @onready var _hp_label: Label = $UI/HPLabel
 @onready var _quest_label: Label = $UI/QuestLabel
 @onready var _title_label: Label = $UI/StatsTitle
+@onready var _dialog_view = $UI/DialogPanel
 @onready var _player: CharacterBody2D = $Player
 
 func _ready() -> void:
     _title_label.add_theme_font_size_override("font_size", 24)
     _connect_dialog_buttons()
     _connect_npcs()
-    _dialog_panel.visible = false
+    _dialog_view.hide_dialog()
     _update_stats()
 
 func _physics_process(delta) -> void:
@@ -61,6 +62,7 @@ func _on_npc_interacted(npc) -> void:
 
 func _open_dialog(npc) -> void:
     # Stop movement, face player/NPC, disable CharacterMovement.can_move.
+    # Delegates dialog labels/buttons to TownDialogView.show_dialog().
 
 func _on_close_dialog_pressed() -> void:
     # Hide dialog, clear active/pending NPC, restore movement.
@@ -78,6 +80,12 @@ func get_player() -> CharacterBody2D:
 - Destination marker: shows during movement, hides when idle
 - `can_move` flag: toggle movement on/off
 
+## Dialog View (`scripts/views/town_dialog_view.gd`)
+- Extends `PanelContainer` and is attached to `UI/DialogPanel`.
+- Owns dialog presentation only: name/body labels, button visibility, panel hide/show.
+- Emits `accept_quest_requested`, `complete_quest_requested`, and `close_requested` so `TownSceneController` keeps quest orchestration.
+- Provides `show_dialog(display_name, body_text, can_offer_quest, has_active_quest)`, `configure_buttons()`, `set_body()`, `hide_dialog()`, and `is_open()`.
+
 ## Design Decisions
 - **Simple background:** Solid ColorRect for now. Will be replaced with TileMap.
 - **Stats overlay:** Absolute positioned labels in top-left corner.
@@ -85,10 +93,11 @@ func get_player() -> CharacterBody2D:
 - **Player movement:** Click-to-move with LPC animation rows.
 
 ## Specs
-- `tests/specs/town_scene_dialog_test.gd` covers dialog visibility, NPC metadata, quest accept/complete, pending approach, modal movement lock, close restore, and mutual facing.
+- `tests/specs/town_scene_dialog_test.gd` covers dialog visibility, `TownDialogView` scene wiring, NPC metadata, quest accept/complete, pending approach, modal movement lock, close restore, and mutual facing.
 - `tests/specs/scene_smoke_test.gd` covers town NPC interaction wiring.
 
 ## Related
 - `scripts/models/player_stats.gd` — HP, level, quest state
 - `scripts/models/quest_manager.gd` — quest catalog, take/complete lifecycle
 - `scripts/views/character_movement.gd` — movement + animation
+- `scripts/views/town_dialog_view.gd` — dialog panel presentation + button signals

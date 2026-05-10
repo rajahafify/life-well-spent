@@ -4,6 +4,8 @@
 class_name TestTownSceneDialog
 extends TestCase
 
+const TownDialogViewScript = preload("res://scripts/views/town_dialog_view.gd")
+
 var root: TownSceneController
 
 
@@ -31,6 +33,25 @@ func test_dialog_panel_starts_hidden() -> void:
 	var panel: Control = root.get_node("UI/DialogPanel") as Control
 	assert_not_null(panel, "town scene should include DialogPanel")
 	assert_false(panel.visible, "dialog should start hidden")
+
+
+func test_dialog_panel_uses_town_dialog_view() -> void:
+	var panel: Control = root.get_node("UI/DialogPanel") as Control
+	assert_eq(TownDialogViewScript, panel.get_script(), "DialogPanel should delegate dialog UI to TownDialogView")
+
+
+func test_town_dialog_view_configures_dialog_metadata() -> void:
+	var panel: Control = root.get_node("UI/DialogPanel") as Control
+	panel.show_dialog("Quest Giver", "Can you spare some life?", true, false)
+	var title: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	var accept: Button = root.get_node("UI/DialogPanel/VBox/Buttons/AcceptQuestButton") as Button
+	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
+	assert_true(panel.visible, "dialog view should show panel")
+	assert_eq("Quest Giver", title.text)
+	assert_eq("Can you spare some life?", body.text)
+	assert_true(accept.visible, "accept should show when quest can be offered")
+	assert_false(complete.visible, "complete should hide when no active quest exists")
 
 
 func test_quest_giver_interaction_opens_dialog_with_metadata() -> void:
