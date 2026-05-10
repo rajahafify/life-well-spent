@@ -7,14 +7,14 @@ tags: [architecture, game-design]
 # NPC System
 
 ## Overview
-Static NPCs for town hub (quest givers, vendors). Reusable StaticBody2D scene with Sprite2D anim, solid collision, proximity Area2D. Refactors player_movement to CharacterMovement (is_static for NPC). Interact click/proximity → print stub (future quest UI). Faces player on interact.
+Static NPCs for town hub (quest givers, vendors). Reusable CharacterBody2D scene with Sprite2D anim, solid collision, proximity Area2D. Uses CharacterMovement view (`is_static=true` for NPCs). Interact click/proximity emits `interacted` and faces player.
 
 ## API
 **Model (`scripts/models/npc_state.gd`):**
 ```gdscript
 var state: String = "idle"  # idle/interacting
 var facing: String = "down"
-var current_quest: String = ""
+var current_quest = null
 
 face_player(player_pos: Vector2)
 assign_quest(id: String)
@@ -22,7 +22,7 @@ clear_quest()
 set_interacting(bool)
 ```
 
-**View (`scripts/views/player_movement.gd` → CharacterMovement):**
+**View (`scripts/views/character_movement.gd` → CharacterMovement):**
 ```gdscript
 @export is_static: bool = false
 move_to(target: Vector2)
@@ -35,11 +35,11 @@ Tick anim always, move if not static.
 signal interacted()
 @export character_movement_path: NodePath = ^"Sprite"
 
-_interact() → npc_state.interacting=true, face_player(mouse), print
+_interact() → npc_state.interacting=true, face_player(mouse), emit interacted
 ```
 
 **Scene (`scenes/npc.tscn`):**
-StaticBody2D Npc
+CharacterBody2D Npc
 ├ Sprite2D Sprite (CharacterMovement, player.png)
 ├ CollisionShape2D Collision (Circle20 solid)
 └ Area2D Proximity
@@ -50,13 +50,13 @@ StaticBody2D Npc
 - Reuse player_movement (anim/facing).
 - MVC: model pure, view dumb, controller signals.
 - Collision solid + Area detect.
-- Stub dialog (print) → QuestManager future.
+- Emits interaction signal; dialog/quest UI remains future controller work.
 - Horizontal dir prefer (abs(x)>=y).
 
 ## Test Coverage
-- `npc_state_test.gd` (14): initial, face_player 7 dirs/edge, quest assign/clear, interacting.
-- Integration manual: town_scene play collide/interact/face/print.
-- Full suite 81 pass.
+- `npc_state_test.gd` (14): initial, face_player dirs/edge, quest assign/clear-to-null, interacting.
+- `scene_smoke_test.gd`: player scene separated from NPC controller.
+- Full suite: 98 tests pass.
 
 ## Related
 - [player-movement.md](player-movement.md)

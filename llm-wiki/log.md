@@ -99,3 +99,15 @@
 - Removed unused `_marker_paths` array
 - Updated `architecture/player-movement.md` with new API and physics details
 - All 74 tests pass
+
+## [2026-05-11] fix | TDD review fixes: NPC quest null, scene wiring, GameBalance specs
+
+- RED: added `tests/specs/scene_smoke_test.gd`; confirmed failing player/demo scene wiring.
+- Added `tests/specs/game_balance_test.gd` coverage for `GameBalance`.
+- Fixed `NpcState.current_quest` to clear to `null`.
+- Fixed `test_runner_scene.tscn` to use `scripts/views/character_movement.gd`.
+- Split `player.tscn` from NPC controller/proximity; root is `Player` with CharacterMovement sprite.
+- Tightened `NpcController` and `DemoController` CharacterMovement typing.
+- Cleaned QuestManager spec wording for HP-at-cost behavior.
+- Created `architecture/game-balance.md`; updated NPC, movement, quest, test-runner wiki pages and index.
+- All 98 tests pass.

@@ -4,16 +4,17 @@ class_name DemoController
 extends Node2D
 
 const _G = preload("res://scripts/models/game_balance.gd")
+const _CharacterMovement = preload("res://scripts/views/character_movement.gd")
 
 var _player: PlayerStats
 var _quests: QuestManager
-var _player_sprite: Sprite2D
+var _player_sprite: CharacterMovement
 var _hp_label: Label
 var _quest_label: Label
 
 
 func _ready() -> void:
-	_player_sprite = get_node_or_null("Player")
+	_player_sprite = get_node_or_null("Player") as CharacterMovement
 	_hp_label = get_node_or_null("UI/HPLabel")
 	_quest_label = get_node_or_null("UI/QuestLabel")
 

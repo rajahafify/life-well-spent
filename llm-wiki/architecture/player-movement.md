@@ -3,7 +3,7 @@ title: PlayerMovement
 type: reference
 updated: 2026-05-11
 sources:
-  - scripts/views/player_movement.gd
+  - scripts/views/character_movement.gd
   - tests/specs/player_movement_test.gd
   - scenes/player.tscn
 tags: [architecture, tech]
@@ -12,7 +12,7 @@ tags: [architecture, tech]
 # PlayerMovement
 
 ## Overview
-Click-to-move Sprite2D view. Consumes `AnimationController` model for all frame calculations. Uses `_physics_process` + parent `CharacterBody2D` velocity for physics-compatible movement. Handles destination marker visibility, and direction-from-vector math.
+Click-to-move/static Sprite2D view. Consumes `AnimationController` model for all frame calculations. Uses `_physics_process` + parent `CharacterBody2D` velocity for physics-compatible movement when not static. Handles destination marker visibility and direction-from-vector math.
 
 ## Architecture
 - Lives in `scripts/views/` — view layer (MVC). Manages sprite rendering.
@@ -22,10 +22,11 @@ Click-to-move Sprite2D view. Consumes `AnimationController` model for all frame 
 ## Public API
 
 ```gdscript
-class_name PlayerMovement
+class_name CharacterMovement
 extends Sprite2D
 
 @export var move_speed: float = 200.0
+@export var is_static: bool = false
 @export var marker_path: NodePath = ^"../../DestinationMarker"
 
 var destination: Vector2
@@ -41,7 +42,7 @@ static func _dir_from_vector(v: Vector2) -> String
 ## Design Decisions
 
 ### Why view, not controller?
-`PlayerMovement` manages sprite frame rendering, physics movement, and marker visibility — all view concerns. It contains no business logic.
+`CharacterMovement` manages sprite frame rendering, physics movement, facing, and marker visibility — all view concerns. It contains no business logic.
 
 ### Why consume AnimationController?
 Previous version had duplicated LPC constants (COLUMNS, ROWS, WALK_BASE, etc.) and frame calculation logic. Delegating to AnimationController model ensures animation logic is tested once and reusable for other sprite types (NPCs, enemies).
@@ -69,7 +70,7 @@ return "down" if v.y > 0 else "up"          # vertical
 ```
 
 ## Test Coverage
-10 tests in `tests/specs/player_movement_test.gd`:
+10 direction tests in `tests/specs/player_movement_test.gd` plus scene smoke coverage in `tests/specs/scene_smoke_test.gd`:
 - Right, left, down, up from vectors
 - Equal magnitudes favor horizontal
 - Zero vector defaults to down
@@ -79,3 +80,4 @@ return "down" if v.y > 0 else "up"          # vertical
 - `AnimationController` — model for frame calculation
 - `TownSceneController` — calls `move_to()` on mouse click
 - `DemoController` — calls `move_to()` on mouse click and debug key F
+- `NpcController` — calls `face_player()` on interaction

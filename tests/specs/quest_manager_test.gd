@@ -1,5 +1,5 @@
 # tests/specs/quest_manager_test.gd
-# Spec: QuestManager — quest catalog, take/complete lifecycle, 2-quest limit
+# Spec: QuestManager — quest catalog, take/complete lifecycle, HP affordability
 
 class_name TestQuestManager
 extends TestCase
@@ -123,7 +123,7 @@ func test_take_quest_succeeds_when_enough_hp() -> void:
 	assert_eq(1, qm.active_quests.size())
 
 
-func test_take_quest_fails_when_hp_exactly_at_cost() -> void:
+func test_take_quest_succeeds_when_hp_exactly_at_cost() -> void:
 	qm.add_quest("Goblin Scout", 40, "Clear goblin scouts")
 	var result: bool = qm.take_quest(40)
 	assert_true(result, "should take quest when HP == cost")

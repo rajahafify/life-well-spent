@@ -53,14 +53,14 @@ texture = ExtResource("3_aoy3b")
 script = ExtResource("4_4k3pf")
 player_path = NodePath("../Player")
 
-[node name="QuestGiver" type="StaticBody2D" parent="." unique_id=1463974126 instance=ExtResource("5_4by7u")]
+[node name="QuestGiver" type="CharacterBody2D" parent="." unique_id=1463974126 instance=ExtResource("5_4by7u")]
 position = Vector2(200, 300)
 script = ExtResource("6_d0wa2")
 
-[node name="Vendor" type="StaticBody2D" parent="." unique_id=40226481 instance=ExtResource("5_4by7u")]
+[node name="Vendor" type="CharacterBody2D" parent="." unique_id=40226481 instance=ExtResource("5_4by7u")]
 position = Vector2(500, 300)
 script = ExtResource("6_d0wa2")
 
-[node name="Guard" type="StaticBody2D" parent="." unique_id=1468058084 instance=ExtResource("5_4by7u")]
+[node name="Guard" type="CharacterBody2D" parent="." unique_id=1468058084 instance=ExtResource("5_4by7u")]
 position = Vector2(350, 500)
 script = ExtResource("6_d0wa2")

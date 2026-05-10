@@ -65,7 +65,7 @@ No hard limit per life. If player gets a permanent +40 HP boost, they can take m
 - Reset clears quest state
 - Take quest checks HP cost
 - Take quest succeeds when enough HP
-- Take quest fails when HP exactly at cost
+- Take quest succeeds when HP exactly equals cost
 - Take quest gives rejection message
 - Successful take clears last_rejection
 

@@ -3,7 +3,7 @@ extends RefCounted
 
 var state: String = "idle"
 var facing: String = "down"
-var current_quest: String = ""
+var current_quest = null
 
 func face_player(player_pos: Vector2) -> void:
 	var delta_x: float = player_pos.x
@@ -24,7 +24,7 @@ func assign_quest(quest_id: String) -> void:
 	current_quest = quest_id
 
 func clear_quest() -> void:
-	current_quest = ""
+	current_quest = null
 
 func set_interacting(interacting: bool) -> void:
 	state = "interacting" if interacting else "idle"

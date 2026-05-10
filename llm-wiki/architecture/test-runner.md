@@ -1,7 +1,7 @@
 ---
 title: Test Runner
 type: reference
-updated: 2026-05-09
+updated: 2026-05-11
 sources:
   - tests/test_runner.gd
   - tests/test_helper.gd
@@ -23,10 +23,10 @@ Discovers and executes all `TestCase`-based specs from `tests/specs/`, reports p
 Successful output:
 
 ```text
-Running 74 tests
-..........................................................................
+Running 98 tests
+..................................................................................................
 
-74 tests, 74 passed, 0 failed
+98 tests, 98 passed, 0 failed
 ```
 
 Windows local command:
