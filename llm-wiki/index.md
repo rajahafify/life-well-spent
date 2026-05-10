@@ -9,3 +9,4 @@
 | [architecture/quest-manager](architecture/quest-manager.md) | concept | 2026-05-10 | Quest catalog, multi-quest tracking, HP-based affordability. |
 | [assets/lpc-sprite-generator](assets/lpc-sprite-generator.md) | reference | 2026-05-09 | LPC sprite generator tool — prompt-driven character spritesheet pipeline. |
 | [scenes/main-menu](scenes/main-menu.md) | reference | 2026-05-11 | Main menu scene — title, New Game button, Quit button. Transitions to town hub. |
+| [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-11 | Town hub — background, player character with click-to-move, stats overlay. |

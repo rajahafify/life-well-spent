@@ -48,3 +48,12 @@
 - Title: 36px font via `add_theme_font_size_override`
 - VBoxContainer separation: 16px via `add_theme_constant_override`
 - All 64 tests pass
+
+## [2026-05-11] feat | Town Hub + Player Character
+
+- Created `scenes/town_scene.tscn` — town hub with 1280×720 background, player, stats UI
+- Fleshed out `scenes/player.tscn` — Sprite2D with player.png LPC atlas (13×21), CircleShape2D (radius 20)
+- Attached `player_movement.gd` to player sprite — click-to-move, 8-directional animation
+- Created `scripts/controllers/town_scene_controller.gd` — stats display, quest count updates
+- Updated `main_menu_controller.gd` — transitions to town_scene.tscn
+- Fixed `player_movement.gd` — `get_node_or_null()` for destination marker
