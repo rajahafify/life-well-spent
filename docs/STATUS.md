@@ -1,20 +1,20 @@
-# Life Well Spent — Project Status
+# Life Well Spent - Project Status
 
-> Last updated: 2026-05-09
+> Last updated: 2026-05-10
 
 ## Game Design
 
 A "Your Life is a Currency" roguelite set in a Frieren-like world where the Demon King is gone but Heroes have died. Goal: beat the new Demon King.
 
 ### Core Loop
-1. **Start** — Level 1 Novice, Max HP 100
-2. **Questing** — Choose 1 Quest. Cost: 40 Max HP
-3. **Death** — Player dies by combat. Max HP is gone
-4. **Rebirth** — Restart at Level 1. Unlocked facilities remain
+1. **Start** - Level 1 Novice, Max HP 100
+2. **Questing** - Choose 1 Quest. Cost: 40 Max HP
+3. **Death** - Player dies by combat. Max HP is gone
+4. **Rebirth** - Restart at Level 1. Unlocked facilities remain
 
 ### Quests & Costs
 - **Cost per Quest:** 40 Max HP
-- **Life Economy:** Max 2 quests per life (40 + 40 = 80; 3rd quest = death)
+- **Life Economy:** Quest cost = 40 Max HP. No hard limit per life - pickup blocked by HP affordability. Message: "You have no more life to sacrifice."
 - **Facilities:** Shop, Blacksmith, Storage, Swordsman Guild
 
 ### Progression
@@ -31,11 +31,26 @@ A "Your Life is a Currency" roguelite set in a Frieren-like world where the Demo
 | Layer | Directory | Rule |
 |-------|-----------|------|
 | **Model** | `scripts/models/` | Pure logic, no `Node` refs, no Godot APIs |
-| **Controller** | `scripts/controllers/` | Thin glue — input → model calls → view updates |
-| **View** | `scripts/views/` | Dumb UI — reads model data, emits signals |
+| **Controller** | `scripts/controllers/` | Thin glue - input → model calls → view updates |
+| **View** | `scripts/views/` | Dumb UI - reads model data, emits signals |
 
 ### Spec-Driven Development
 Every feature starts with a spec (`tests/specs/<name>_test.gd`) extending `TestCase`. Red → Green → Refactor.
+
+### TDD Enforcement
+All code changes must follow the red-green-refactor cycle:
+
+1. **RED** - Write a failing spec that describes the new behavior. If the spec doesn't fail, the behavior already exists.
+2. **GREEN** - Write minimal code to make the spec pass. No refactoring yet.
+3. **REFACTOR** - Clean up duplication, improve structure. Run specs after each change.
+
+**Rules:**
+- No implementation without a failing spec first
+- Bug fixes start with a spec that reproduces the bug
+- Model logic always has specs; demo/view scripts get integration tests where practical
+- Specs use Minitest-style `assert_*` helpers (`assert_eq`, `assert_true`, `assert_null`, etc.)
+- One behavior per spec method; name methods after the behavior (`test_take_quest_checks_hp_cost`, not `test_take_quest`)
+- Run full suite: `Godot --headless --quit tests/test_runner.tscn`
 
 ---
 
@@ -50,15 +65,15 @@ Every feature starts with a spec (`tests/specs/<name>_test.gd`) extending `TestC
 | **PlayerStats Spec** | `tests/specs/player_stats_test.gd` | 13 tests covering initialization, quest cost, death, rebirth, facility preservation. |
 | **Player Sprite** | `assets/player.png` | Full LPC spritesheet, 13 columns × 21 rows, animated through `frame_coords`. |
 | **HP Display** | `scenes/test_runner_scene.tscn` | Live `Label` showing status, level, HP. Updates on quest/rebirth. |
-| **Click-to-Move** | `scripts/controllers/player_movement.gd` | Sprite2D with `move_to(target)` — smooth movement at 200px/s with destination marker. |
-| **Quest/Rebirth Input** | `scripts/controllers/demo_controller.gd` | Q = take quest, R = rebirth, F = debug move. |
+| **Click-to-Move** | `scripts/controllers/player_movement.gd` | Sprite2D with `move_to(target)` - smooth movement at 200px/s with destination marker. |
+| **Quest/Rebirth Input** | `scripts/controllers/demo_controller.gd` | Q = take quest, C = complete, A = abandon, R = rebirth, F = debug move. |
 
 ### 🔴 Not Started
 
 | Feature | Priority | Notes |
 |---------|----------|-------|
-| **QuestManager Model** | High | Quest catalog, take/complete/abandon lifecycle |
-| **QuestManager Spec** | High | Needs `test_quest_manager_test.gd` |
+| **QuestManager Model** | `scripts/models/quest_manager.gd` | Catalog, multi-quest tracking, HP-based affordability. 8 active quests max. 55/55 specs pass. |
+| **QuestManager Spec** | `tests/specs/quest_manager_test.gd` | 8 specs: catalog, take, complete, abandon, HP check, rejection message, reset. |
 | **NPC Interaction** | Medium | Quest panel, click-to-interact |
 | **PlayerMovement (full)** | Medium | Pathfinding, direction flip, animation frames |
 | **HUD** | Medium | HP bar, quest tracker, level display |
@@ -78,15 +93,18 @@ Prototype Spec Criteria:
   [❌] Pathfinding
   [❌] NPC → quest panel
   [❌] Quest panel (name + Take button)
-  [❌] Complete quest deducts 40 HP
-  [❌] Escape quits
+  [✅] Complete quest deducts 40 HP
+  [✅] Escape quits
+  [✅] Multiple active quests
+  [✅] HP-based quest affordability
+  [✅] Rejection message on insufficient HP
 ```
 
 ---
 
 ## Scene: TestRunnerScene
 
-`res://scenes/test_runner_scene.tscn` — the interactive demo scene.
+`res://scenes/test_runner_scene.tscn` - the interactive demo scene.
 
 ```
 TestRunnerScene (Node2D, 1280×720)
@@ -99,8 +117,10 @@ TestRunnerScene (Node2D, 1280×720)
 
 **Controls:**
 - **Left-click** → Move player to clicked position
-- **Q** → Take quest (−40 HP)
-- **R** → Rebirth (reset HP to 100, level 1)
+- **Q** → Take quest (-40 HP, if HP ≥ cost)
+- **C** → Complete first active quest
+- **A** → Abandon first active quest
+- **R** → Rebirth (reset HP to 100, level 1, clear quests)
 - **F** → Debug: move to bottom-right
 - **Ctrl+C** → Quit
 
@@ -138,6 +158,33 @@ func rebirth() -> void:
     state = "alive"
 ```
 
+### `scripts/models/quest_manager.gd`
+Quest catalog and lifecycle management. No hard limit per life - affordability checked via HP.
+
+```gdscript
+class_name QuestManager
+extends Object
+
+var quest_catalog: Array[Dictionary] = []
+var active_quests: Array[Dictionary] = []
+var quests_taken: int = 0
+var last_rejection = null
+const QUEST_HP_COST: int = 40
+
+func add_quest(name: String, cost: int, description: String) -> void
+func take_quest(current_hp: int) -> bool   # returns false if HP < cost
+func complete_quest() -> bool               # removes first active quest
+func abandon_quest() -> bool                # removes first active quest
+func reset_for_life() -> void               # clears active quests + counter
+```
+
+**Design decisions:**
+- `active_quests` is an array - player can have multiple active quests
+- `take_quest(current_hp)` checks affordability - rejects with `last_rejection = "not_enough_hp"`
+- `complete_quest()` and `abandon_quest()` remove the **first** active quest (FIFO)
+- No hard limit per life - progression scales with HP
+- `reset_for_life()` clears active quests and counter for rebirth
+
 ### `scripts/controllers/player_movement.gd`
 Handles click-to-move animation with destination marker.
 
@@ -151,7 +198,7 @@ var moving: bool = false
 ```
 
 ### `scripts/controllers/demo_controller.gd`
-Scene controller — input → model calls → view updates.
+Scene controller - input → model calls → view updates.
 
 ```gdscript
 ## Q = quest, R = rebirth, Left-click = move
@@ -200,7 +247,7 @@ Expected successful output:
 Running 40 tests
 ........................................
 
-40 tests, 40 passed, 0 failed
+55 tests, 55 passed, 0 failed
 ```
 
 ### Test Suite (Headless / CI)
@@ -254,19 +301,33 @@ Runtime uses the full `assets/player.png` sheet. Do not crop it to single-row an
 
 | Hash | Message |
 |------|---------|
-| `b80642c` | Add .gdignore to skip LPC spritesheets from Godot import |
-| `c2f9608` | Extract TestCase base class from spec duplication |
-| `dbe8a84` | Rename spec to name_test.gd convention |
-| `22f71d2` | Add player sprite and HP display demo scene |
+| `c830273` | Guard null rejection reason in demo controller |
+| `6c1e4a0` | active_quests array, multi-quest tracking |
+| `d1b2f3e` | HP-based affordability, remove hard quest limit |
+| `8e7a9c1` | Add 50 quests to demo for extended QA |
+| `558c672` | Restructure test framework, Minitest assertions |
+| `0c21cb3` | Stop tracking uid_cache.bin |
+| `74ef677` | Ignore .godot/uid_cache.bin |
+| `94ce4c5` | Bug fixes, movement, LPC sprite, idle animation |
+| `ea28ccd` | Add .codex/ to .gitignore |
+| `9ba5b9c` | Add .codex/ to .gitignore |
+| `336ab9c` | Update Godot UID cache after animation controller changes |
+| `fe4cfc3` | Add AnimationController with idle/walk animation system |
+| `9a3748f` | Add Godot UID cache files for PlayerMovement script |
+| `1b85cc5` | Add project status documentation (docs/STATUS.md) |
 | `cde1a25` | Add click-to-move with player movement system |
+| `22f71d2` | Add player sprite and HP display demo scene |
+| `dbe8a84` | Rename spec to name_test.gd convention |
+| `c2f9608` | Extract TestCase base class from spec duplication |
+| `b80642c` | Add .gdignore to skip LPC spritesheets from Godot import |
 
 ---
 
 ## TODO
 
-1. **QuestManager model** — quest catalog, lifecycle
-2. **QuestManager spec** — red-green-refactor
-3. **NPC scene** — click-to-interact, quest panel
-4. **PlayerAnimation** — frame switching (idle, walk, combat)
-5. **HUD** — HP bar, quest tracker
-6. **Combat** — enemy encounters, damage
+1. **NPC scene** — click-to-interact, quest panel
+2. **PlayerAnimation** — frame switching (idle, walk, combat)
+3. **HUD** — HP bar, quest tracker
+4. **Combat** — enemy encounters, damage
+5. **Facilities** — shop, blacksmith, storage, guild
+6. **Class System** — swordsman unlocks, skills
