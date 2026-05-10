@@ -41,6 +41,40 @@ offset_right = 142.0
 offset_bottom = 79.0
 text = "Quests: 0 active"
 
+[node name="DialogPanel" type="PanelContainer" parent="UI" unique_id=207370001]
+visible = false
+offset_left = 320.0
+offset_top = 430.0
+offset_right = 960.0
+offset_bottom = 690.0
+
+[node name="VBox" type="VBoxContainer" parent="UI/DialogPanel" unique_id=207370002]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="UI/DialogPanel/VBox" unique_id=207370003]
+layout_mode = 2
+text = "NPC"
+
+[node name="BodyLabel" type="Label" parent="UI/DialogPanel/VBox" unique_id=207370004]
+layout_mode = 2
+text = "Hello."
+autowrap_mode = 3
+
+[node name="Buttons" type="HBoxContainer" parent="UI/DialogPanel/VBox" unique_id=207370005]
+layout_mode = 2
+
+[node name="AcceptQuestButton" type="Button" parent="UI/DialogPanel/VBox/Buttons" unique_id=207370006]
+layout_mode = 2
+text = "Accept Quest"
+
+[node name="CompleteQuestButton" type="Button" parent="UI/DialogPanel/VBox/Buttons" unique_id=207370007]
+layout_mode = 2
+text = "Complete Quest"
+
+[node name="CloseButton" type="Button" parent="UI/DialogPanel/VBox/Buttons" unique_id=207370008]
+layout_mode = 2
+text = "Close"
+
 [node name="Player" parent="." unique_id=482611756 instance=ExtResource("1_8ma1e")]
 position = Vector2(640, 360)
 scale = Vector2(2, 2)
@@ -56,11 +90,23 @@ player_path = NodePath("../Player")
 [node name="QuestGiver" type="CharacterBody2D" parent="." unique_id=1463974126 instance=ExtResource("5_4by7u")]
 position = Vector2(200, 300)
 script = ExtResource("6_d0wa2")
+display_name = "Quest Giver"
+role = "quest_giver"
+dialog_text = "Can you spare some life for a worthy task?"
+quest_name = "Gather Wood"
+quest_cost = 40
+quest_description = "Gather wood for the town."
 
 [node name="Vendor" type="CharacterBody2D" parent="." unique_id=40226481 instance=ExtResource("5_4by7u")]
 position = Vector2(500, 300)
 script = ExtResource("6_d0wa2")
+display_name = "Vendor"
+role = "vendor"
+dialog_text = "Shop services are coming soon."
 
 [node name="Guard" type="CharacterBody2D" parent="." unique_id=1468058084 instance=ExtResource("5_4by7u")]
 position = Vector2(350, 500)
 script = ExtResource("6_d0wa2")
+display_name = "Guard"
+role = "guard"
+dialog_text = "Stay safe. Spend your life wisely."

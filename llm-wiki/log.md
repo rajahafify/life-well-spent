@@ -133,3 +133,14 @@
 - Set NPC solid collision radius to 20px and talk/proximity radius to 60px.
 - Hardened `CharacterMovement.set_facing()` to initialize animation/frame layout before `_ready` if needed.
 - All 108 tests pass.
+
+## [2026-05-11] feat | Complete NPC dialog and quest UI
+
+- Attempted planner/scout subagents for NPC system completion; both failed due child pi provider auth (`No API key found for azure-openai-responses`).
+- RED: added `tests/specs/town_scene_dialog_test.gd` and NPC metadata coverage.
+- Added NPC metadata exports: display name, role, dialog text, quest fields.
+- Added `DialogPanel` UI to `town_scene.tscn` with name/body labels and Accept/Complete/Close buttons.
+- `TownSceneController` now connects NPC interactions to dialog UI and wires QuestGiver accept/complete to `QuestManager` + `PlayerStats`.
+- Vendor/Guard show dialog without quest controls.
+- Updated `plans/npc-system.md`, `plans/npc-interaction-animation-fix.md`, and NPC wiki docs.
+- All 115 tests pass.

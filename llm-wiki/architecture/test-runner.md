@@ -23,10 +23,10 @@ Discovers and executes all `TestCase`-based specs from `tests/specs/`, reports p
 Successful output:
 
 ```text
-Running 98 tests
-..................................................................................................
+Running 115 tests
+...................................................................................................................
 
-98 tests, 98 passed, 0 failed
+115 tests, 115 passed, 0 failed
 ```
 
 Windows local command:

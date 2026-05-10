@@ -13,4 +13,4 @@
 | [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-11 | Town hub — background, player character with click-to-move, stats overlay. |
 | [architecture/animation-controller](architecture/animation-controller.md) | reference | 2026-05-11 | LPC spritesheet animation state machine. Idle cycling + walking frame advance via `tick(delta)`. |
 | [architecture/player-movement](architecture/player-movement.md) | reference | 2026-05-11 | CharacterMovement Sprite2D view. Click-to-move/static facing, collision stop, AnimationController frames, marker visibility. |
-| [architecture/npc-system](architecture/npc-system.md) | reference | 2026-05-11 | NPC state/controller/scene wiring with idle animation, static markerless sprites, player-facing interaction. |
+| [architecture/npc-system](architecture/npc-system.md) | reference | 2026-05-11 | NPC scene/controller/dialog wiring with idle animation, static markerless sprites, player-facing interaction, quest accept/complete UI. |

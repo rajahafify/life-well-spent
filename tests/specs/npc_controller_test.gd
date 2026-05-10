@@ -59,3 +59,11 @@ func test_interact_signal_emits_npc_instance() -> void:
 	assert_eq(1, emitted.size())
 	assert_eq(npc, emitted[0])
 	npc.free()
+
+
+func test_npc_exposes_dialog_metadata_defaults() -> void:
+	var npc := NpcController.new()
+	assert_eq("NPC", npc.display_name)
+	assert_eq("generic", npc.role)
+	assert_eq("", npc.quest_name)
+	npc.free()

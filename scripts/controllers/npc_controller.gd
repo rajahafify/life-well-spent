@@ -5,6 +5,12 @@ signal interacted(npc)
 
 @export var character_movement_path: NodePath = ^"Sprite"
 @export var player_path: NodePath = ^"../Player"
+@export var display_name: String = "NPC"
+@export var role: String = "generic"
+@export_multiline var dialog_text: String = "Hello."
+@export var quest_name: String = ""
+@export var quest_cost: int = 40
+@export_multiline var quest_description: String = ""
 
 var npc_state: NpcState
 

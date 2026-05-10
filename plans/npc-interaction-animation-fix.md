@@ -1,6 +1,6 @@
 # NPC Interaction + Animation Fix Plan
 
-**Status:** Implemented via TDD on 2026-05-11. Full suite: 105 tests pass.
+**Status:** Implemented via TDD on 2026-05-11. Superseded by completed NPC dialog/quest UI work. Full suite: 115 tests pass.
 
 ## Goal
 Fix bugs against `plans/npc-system.md`:
@@ -17,6 +17,8 @@ Fix bugs against `plans/npc-system.md`:
 5. NPC interaction faces an explicit player/global target, not the mouse fallback for proximity.
 6. `NpcState.facing` and `CharacterMovement` direction stay synchronized after interaction.
 7. Full suite passes.
+8. Interaction emits `interacted(npc)` and town UI shows visible placeholder feedback.
+9. NPC solid collision radius is 20px and talk/proximity radius is 60px.
 
 ## RED Specs First
 1. `tests/specs/animation_controller_test.gd`
@@ -37,6 +39,8 @@ Fix bugs against `plans/npc-system.md`:
 4. `tests/specs/scene_smoke_test.gd`
    - Assert NPC scene Sprite `is_static == true`.
    - Assert NPC Sprite marker path is empty or absent from marker updates.
+   - Assert collision/talk radii.
+   - Assert town scene placeholder interaction label updates.
 
 ## Implementation Steps
 1. `scripts/models/animation_controller.gd`
@@ -52,13 +56,17 @@ Fix bugs against `plans/npc-system.md`:
    - On click, call `get_viewport().set_input_as_handled()` before `_interact()`.
    - Resolve player global position from body_entered or by finding `../Player` / group fallback.
    - `_interact(target_pos)` calls both `npc_state.face_player(target_pos - global_position)` or equivalent and view facing with same target.
-   - Emit `interacted` after state/view update.
+   - Emit `interacted(self)` after state/view update.
 
 4. `scenes/npc.tscn`
    - Set `Sprite.is_static = true`.
    - Set `Sprite.marker_path = NodePath("")` or ensure static sprites do not touch destination marker.
 
-5. Docs/Wiki
+5. `scripts/controllers/town_scene_controller.gd`
+   - Connect NPC `interacted(npc)` signals.
+   - Update `QuestLabel` with `Talking to: <NPC>` placeholder feedback.
+
+6. Docs/Wiki
    - Update `llm-wiki/architecture/npc-system.md`.
    - Update `llm-wiki/architecture/player-movement.md`.
    - Append `llm-wiki/log.md`.
@@ -67,7 +75,7 @@ Fix bugs against `plans/npc-system.md`:
 ```powershell
 & "C:\Users\Home\Desktop\Godot\Godot_v4.6.2-stable_win64_console.exe" --headless --quit tests/test_runner.tscn
 ```
-Expected: all tests pass.
+Expected: `115 tests, 115 passed, 0 failed`.
 
 ## Risks
 - Scene/unit tests for input-handled state may be hard headless; prefer behavior specs around controller helper methods.

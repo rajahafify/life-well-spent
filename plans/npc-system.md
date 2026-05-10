@@ -1,14 +1,16 @@
 # NPC System Implementation Plan
 
-**Status:** Draft — approval required. No code/spec yet.
+**Status:** Core NPC system complete via TDD. Advanced vendor/shop/facility features remain future work.
 
-**Goal:** NPC system for town hub (quest givers, vendors, etc.). Refactor player movement/animation into reusable Character base for Player + NPC (Sprite2D or Body). NPCs idle/walk, face player, interact on click/near, show quest panel.
+**Current test baseline:** 115 tests, 115 passed, 0 failed.
+
+**Goal:** NPC system for town hub (quest givers, vendors, etc.). Refactor player movement/animation into reusable Character behavior for Player + NPC. NPCs idle, face player, interact on click/near, and show dialog/quest UI.
 
 ## Why
-- Current: only player. No world actors.
-- Design: NPCs for quests, facilities, story.
-- Reuse: idle anim + facing (from player code). No movement needed.
-- Extensible: different NPC types (QuestGiver, Vendor) via resources.
+- Current foundation now supports world actors.
+- Design needs NPCs for quests, facilities, story.
+- Reuse: idle anim + facing from shared `CharacterMovement` and `AnimationController`.
+- Extensible future: different NPC types (QuestGiver, Vendor, Guard) via resources.
 
 ## Inspiration: Ragnarok Online NPC System
 RO NPCs are sprite-based (body + head + accessories), clickable with name tag, and drive progression:
@@ -23,110 +25,147 @@ RO NPCs are sprite-based (body + head + accessories), clickable with name tag, a
 Incorporate: clickable LPC sprite + face player + collision, basic dialog/choice UI (reuse for quests/shops), quest assignment on talk. Later: shop tabs, storage. Matches "life currency" roguelite loop (NPCs gate facilities).
 
 ## Requirements (Acceptance Criteria)
-1. NPC as reusable scene/component (Sprite2D + anim + CollisionShape/Area2D).
-2. Static only (no movement/patrol). Idle anim + 4-dir facing.
-3. NPCs in town_scene: 3 static examples (quest giver, vendor, guard).
-4. Interact: click or proximity (Area2D) → signal "interacted", show dialog/quest UI.
-5. Face player: auto turn to face on interact or enter area.
-6. Collision: solid body (blocks player movement) + Area for detection. No pathfinding.
-7. Pure logic in models where possible (e.g. NPCState).
-8. Specs first: model + integration tests.
-9. Follows player camera, no perf hit.
 
-## Architecture (Refactor + New)
-**Refactor:**
-- Rename `player_movement.gd` → `character_movement.gd` (or keep + base).
-- Create `scripts/models/character.gd` (pure: state, direction, position? or keep view).
-- Better: keep views separate. New `scripts/views/character_view.gd` base? Or composition.
+| # | Criterion | Status |
+|---|-----------|--------|
+| 1 | NPC as reusable scene/component (Sprite2D + anim + CollisionShape/Area2D). | Done |
+| 2 | Static only (no movement/patrol). Idle anim + 4-dir facing. | Done |
+| 3 | NPCs in town_scene: 3 static examples (quest giver, vendor, guard). | Done |
+| 4 | Interact: click or proximity → `interacted(npc)` signal + visible dialog/quest UI. | Done |
+| 5 | Face player: auto turn to face on interact or enter area. | Done |
+| 6 | Collision: solid body blocks player + wider Area2D talk range. No pathfinding. | Done |
+| 7 | Pure logic in models where possible (`NpcState`). | Done |
+| 8 | Specs first: model + integration tests. | Done |
+| 9 | Follows player camera, no perf hit. | Done for current static actors |
 
-**Chosen (MVC + reuse):**
-- **Model:** `scripts/models/npc_state.gd` (pure: idle/walk, facing, quest ref). Extend or compose with PlayerStats?
-- **View:** Refactor `player_movement.gd` to `character_movement.gd` (generic Sprite2D idle/anim/facing; drop move_to). Player uses it. New `npc.tscn` (Sprite2D + CollisionShape2D solid + Area2D proximity).
-- **Controller:** `scripts/controllers/npc_controller.gd` (thin: input for interact, face logic, patrol).
-- Reuse: AnimationController + movement logic shared via script attach or inheritance (GDScript allows extends).
-- Player stays CharacterBody2D + Sprite child (movement on sprite for now, or move script to body).
-- NPC: simple Sprite2D (no body yet) or CharacterBody2D for consistency.
+## Implemented Architecture
 
-**Why?**
-- SRP: movement/anim reusable.
-- LSP: Player/NPC both "Characters".
-- ISP: small interfaces.
-- Future: enemies extend same.
+### Model
+`scripts/models/npc_state.gd`
 
-## Files
-- `plans/npc-system.md` (this).
-- `scripts/models/npc_state.gd` (new, pure).
-- `tests/specs/npc_state_test.gd` (new spec, RED first).
-- `scripts/views/character_movement.gd` (refactor from player_movement.gd).
-- `scenes/npc.tscn` (new, reusable).
-- `scripts/controllers/npc_controller.gd` (new).
-- Update `scenes/player.tscn`, `town_scene.tscn` (add NPCs, attach).
-- Update `player_movement.gd` references (or delete after refactor).
-- `llm-wiki/architecture/npc-system.md` (post GREEN).
-- Update STATUS.md, log.md, index.md.
-
-## TDD Workflow
-1. **RED** — Write `npc_state_test.gd` (model behaviors: state, face, quest).
-2. **GREEN** — Minimal `npc_state.gd`.
-3. **REFACTOR** — Extract common from player_movement into character_movement; update player.
-4. Add integration spec for view/controller.
-5. Scene + attach.
-6. Full suite pass.
-7. Wiki + commit (ref spec).
-
-## Spec Outline (npc_state_test.gd)
+Pure state:
 ```gdscript
-class_name TestNpcState
-extends TestCase
+var state: String = "idle"
+var facing: String = "down"
+var current_quest = null
 
-var npc: NpcState
-
-func setup(): npc = NpcState.new()
-
-func test_initial_state_idle():
-    assert_eq("idle", npc.state)
-
-func test_face_player():
-    npc.face_player(Vector2(100,0))  # player right of npc
-    assert_eq("right", npc.facing)
-
-func test_assign_quest():
-    npc.assign_quest("fetch_wood")
-    assert_eq("fetch_wood", npc.current_quest)
+func face_player(player_delta: Vector2) -> void
+func assign_quest(quest_id: String) -> void
+func clear_quest() -> void
+func set_interacting(interacting: bool) -> void
 ```
 
-## Implementation Steps (Post-Approval)
-1. Create NpcState model (state machine: idle/walk/interact, facing dir, quest_id).
-2. Refactor player_movement.gd → character_movement.gd (generic, no player-specific).
-   - Keep move_to, tick anim, _dir_from_vector.
-   - Add face_toward(target_pos).
-3. Update player.tscn / movement attach (or keep name alias).
-4. Create npc.tscn: Sprite2D (LPC), CollisionShape2D (solid, mask=player), Area2D (talk range ~60px), attach character_movement (static) + npc_controller.
-5. NpcController: _ready set idle anim, on Area entered or click → face player (set_direction), emit interacted.
-6. TownSceneController: place 3 static NPCs, connect interacted → open dialog/quest UI.
-7. Test click + proximity in editor (face + signal).
-8. Update docs/wiki.
-9. Commit.
+### View
+`scripts/views/character_movement.gd`
 
-## Design Details
-- **Facing:** 4-dir. On interact or Area enter: set_direction toward player global pos.
-- **Interact:** Click (unhandled_input) or Area2D body_entered + prompt. Signal `interacted(npc)`.
-- **Collision:** CollisionShape2D (solid, prevents player overlap) + Area2D (detection radius). No movement code.
-- **Quest link:** NpcState.quest_id; on interact → QuestManager / dialog.
-- **Reuse:** LPC + AnimationController (idle only). Shared with player.
-- **Perf:** No _process/_physics (static). Only _ready + signals.
-- **Future:** NPCResource (name, portrait, quests list, shop items).
+Reusable Sprite2D movement/facing/animation view for player and NPCs:
+```gdscript
+@export var move_speed: float = 200.0
+@export var is_static: bool = false
+@export var marker_path: NodePath = ^"../../DestinationMarker"
+
+func move_to(target: Vector2) -> void
+func set_facing(dir: String) -> void
+func face_player(target_pos: Vector2) -> void
+```
+
+Behavior:
+- Player: click-to-move, marker, collision stop.
+- NPC: `is_static = true`, marker path empty, idle animation only.
+- Delegates frame math to `AnimationController`.
+
+### Controller
+`scripts/controllers/npc_controller.gd`
+
+Thin glue:
+```gdscript
+signal interacted(npc)
+@export var character_movement_path: NodePath = ^"Sprite"
+@export var player_path: NodePath = ^"../Player"
+
+func interact_with_player(player_global_pos: Vector2) -> void
+```
+
+Behavior:
+- Click on NPC consumes input via `get_viewport().set_input_as_handled()`.
+- Proximity `body_entered` interacts when body name is `Player`.
+- Faces actual player/global position, not mouse fallback.
+- Syncs `NpcState.facing` and `CharacterMovement` frame direction.
+- Emits `interacted(self)`.
+
+### Scene
+`scenes/npc.tscn`
+
+```text
+CharacterBody2D Npc (NpcController)
+├ Sprite2D Sprite (CharacterMovement, is_static=true, marker_path="")
+├ CollisionShape2D Collision (Circle radius 20 solid)
+└ Area2D Proximity
+  └ CollisionShape2D AreaCollision (Circle radius 60 talk range)
+```
+
+`scenes/town_scene.tscn` includes:
+- `QuestGiver`
+- `Vendor`
+- `Guard`
+
+`TownSceneController` connects NPC `interacted(npc)` signals and shows `UI/DialogPanel` with NPC metadata and quest controls. QuestGiver interactions can accept and complete quests through `QuestManager` + `PlayerStats`.
+
+```gdscript
+func _on_npc_interacted(npc: NpcController) -> void
+func _on_accept_quest_pressed() -> void
+func _on_complete_quest_pressed() -> void
+func _on_close_dialog_pressed() -> void
+```
+
+## TDD Coverage
+
+Implemented specs:
+- `tests/specs/npc_state_test.gd` — model state, facing, quest assignment/clear, interaction state.
+- `tests/specs/npc_controller_test.gd` — explicit player target faces right/up, state/view sync, signal emits NPC instance.
+- `tests/specs/player_movement_test.gd` — direction math, static movement guard, `set_facing()` frame update.
+- `tests/specs/animation_controller_test.gd` — idle frame cycling, walking frame advance, direction preservation.
+- `tests/specs/scene_smoke_test.gd` — player/NPC scene wiring, NPC static+markerless, collision/talk radii, town interaction signal wiring.
+- `tests/specs/town_scene_dialog_test.gd` — dialog panel visibility, NPC metadata, quest accept/complete UI, HP/quest label updates, close behavior.
+
+Validation command:
+```powershell
+& "C:\Users\Home\Desktop\Godot\Godot_v4.6.2-stable_win64_console.exe" --headless --quit tests/test_runner.tscn
+```
+
+Current expected output:
+```text
+115 tests, 115 passed, 0 failed
+```
+
+## Completed Implementation History
+1. RED: `npc_state_test.gd` for pure NPC state.
+2. GREEN: `NpcState` model.
+3. Refactor: `player_movement.gd` → `character_movement.gd` shared view.
+4. Added `scenes/npc.tscn` and three NPCs in town scene.
+5. Fixed interaction bugs:
+   - Click NPC consumes input.
+   - Player animation stops on NPC collision.
+   - NPC idle animation cycles.
+   - NPC faces real player position.
+   - NPC static sprites do not touch destination marker.
+6. Added visible placeholder interaction feedback in town UI.
+7. Added dialog panel, NPC metadata exports, quest accept/complete buttons, and HP/quest UI updates.
+8. Wiki updated and commits made.
+
+## Remaining Future Work
+
+Core NPC system is complete. Future enhancements are outside this plan's current acceptance criteria:
+- Hover/name tag.
+- Dedicated `NPCResource` data assets instead of scene export overrides.
+- Vendor/shop UI.
+- Facility/service NPC behaviors.
+- Portraits and multi-page dialog.
+- Space/keyboard interaction near NPC.
 
 ## Related
-- `PlayerMovement` / `TownSceneController` — interact hook.
-- `QuestManager` — assign/complete via NPC.
-- `AnimationController` — shared.
-- Design: facilities/NPC interaction.
-
-**Approval checklist:**
-- [ ] Refactor scope clear (player → character).
-- [ ] Specs cover model + reuse.
-- [ ] No code written.
-- [ ] Fits SOLID/MVC.
-
-Approve → start RED spec.
+- `plans/npc-interaction-animation-fix.md` — completed bugfix plan for interaction/facing/idle/collision.
+- `llm-wiki/architecture/npc-system.md`
+- `llm-wiki/architecture/player-movement.md`
+- `llm-wiki/architecture/animation-controller.md`
+- `QuestManager` — future quest accept/complete wiring.
