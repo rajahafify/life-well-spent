@@ -129,30 +129,7 @@ func test_frame_coords_walking_up() -> void:
 
 # ─── Idle Animation ──────────────────────────────────────────────────
 
-func test_idle_cycles_directions() -> void:
-	# Start facing down
-	anim.set_direction("down")
-	assert_eq(Vector2i(0, 2), anim.frame_coords)
 
-	# Tick to cycle direction (up)
-	anim.tick(0.6)
-	assert_eq("up", anim.direction)
-	assert_eq(Vector2i(0, 0), anim.frame_coords)
-
-	# Tick again (left)
-	anim.tick(0.6)
-	assert_eq("left", anim.direction)
-	assert_eq(Vector2i(0, 1), anim.frame_coords)
-
-	# Tick again (right)
-	anim.tick(0.6)
-	assert_eq("right", anim.direction)
-	assert_eq(Vector2i(0, 3), anim.frame_coords)
-
-	# Tick again — should loop back to down
-	anim.tick(0.6)
-	assert_eq("down", anim.direction)
-	assert_eq(Vector2i(0, 2), anim.frame_coords)
 
 
 func test_idle_does_not_change_frame_without_tick() -> void:

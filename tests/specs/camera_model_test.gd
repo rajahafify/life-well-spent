@@ -68,24 +68,24 @@ func test_no_deadzone_always_follows() -> void:
 # ─── Bounds ───────────────────────────────────────────────────────────
 
 func test_bounds_clamp_positive() -> void:
-	model.bound_left = -100.0
+	model.bound_left = 100.0
 	model.bound_right = 400.0
-	model.bound_top = -100.0
+	model.bound_top = 100.0
 	model.bound_bottom = 300.0
 	model.target_position = Vector2(500, 500)
-	model.update(0.016)
+	model.update(10.0)
 
 	assert_eq(400.0, model.position.x)
 	assert_eq(300.0, model.position.y)
 
 
 func test_bounds_clamp_negative() -> void:
-	model.bound_left = -500.0
+	model.bound_left = 500.0
 	model.bound_right = 500.0
-	model.bound_top = -500.0
+	model.bound_top = 500.0
 	model.bound_bottom = 500.0
 	model.target_position = Vector2(-600, -600)
-	model.update(0.016)
+	model.update(10.0)
 
 	assert_eq(-500.0, model.position.x)
 	assert_eq(-500.0, model.position.y)
@@ -97,7 +97,7 @@ func test_no_bounds_no_clamping() -> void:
 	model.bound_top = 0.0
 	model.bound_bottom = 0.0
 	model.target_position = Vector2(1000, 1000)
-	model.update(0.016)
+	model.update(10.0)
 
 	assert_eq(1000.0, model.position.x)
 	assert_eq(1000.0, model.position.y)
