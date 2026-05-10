@@ -1,6 +1,6 @@
 ## CameraController — thin glue for Camera2D + CameraModel.
 class_name CameraController
-extends Node
+extends Camera2D
 
 @export var player_path: NodePath
 @export var lerp_speed: float = 5.0
@@ -11,14 +11,12 @@ extends Node
 @export var bound_bottom: float = 0.0
 @export var zoom_level: float = 1.0
 
-var camera
 var model: CameraModel
 var player
 
 
 func _ready() -> void:
-	camera = get_parent()
-	camera.make_current()
+	self.make_current()
 	
 	model = CameraModel.new()
 	model.lerp_speed = lerp_speed
@@ -38,5 +36,5 @@ func _physics_process(delta: float) -> void:
 		
 	model.target_position = player.global_position
 	model.update(delta)
-	camera.offset = model.position
-	camera.zoom = Vector2(model.zoom_level, model.zoom_level)
+	self.offset = model.position
+	self.zoom = Vector2(model.zoom_level, model.zoom_level)

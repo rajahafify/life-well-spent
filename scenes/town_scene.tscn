@@ -49,3 +49,4 @@ texture = ExtResource("3_aoy3b")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=94998249]
 script = ExtResource("4_4k3pf")
+player_path = NodePath("../Player")

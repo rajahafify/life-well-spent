@@ -21,10 +21,10 @@ const WALK_FRAME_DURATION: float = 0.1
 
 # Direction → row offset mapping
 const _DIRECTION_ROW: Dictionary = {
-	"up": 0,
-	"left": 1,
-	"down": 2,
-	"right": 3,
+	"down": 0,
+	"right": 1,
+	"left": 2,
+	"up": 3,
 }
 
 var state: String = "idle"
@@ -33,7 +33,7 @@ var frame_coords: Vector2i = Vector2i(0, 2)  # column 0, row 2 (idle down)
 var walk_frame: int = 0
 
 var _frame_timer: float = 0.0
-var _idle_frame: int = 0
+
 
 
 func _init() -> void:
@@ -79,10 +79,7 @@ func tick(delta: float) -> void:
 
 
 func _tick_idle(delta: float) -> void:
-	_frame_timer += delta
-	if _frame_timer >= IDLE_CYCLE_INTERVAL:
-		_frame_timer -= IDLE_CYCLE_INTERVAL
-		_cycle_direction()
+	pass  # static neutral idle
 
 
 func _tick_walking(delta: float) -> void:
@@ -93,16 +90,10 @@ func _tick_walking(delta: float) -> void:
 		_update_frame_coords()
 
 
-func _cycle_direction() -> void:
-	var directions: Array[String] = ["down", "up", "left", "right"]
-	var current_idx: int = directions.find(direction)
-	var next_idx: int = (current_idx + 1) % 4
-	direction = directions[next_idx]
-	_update_frame_coords()
-
+# _cycle_direction commented out
 
 func _update_frame_coords() -> void:
-	var dir_row: int = _DIRECTION_ROW.get(direction, 2)
+	var dir_row: int = _DIRECTION_ROW.get(direction, 0)
 	if state == "walking":
 		frame_coords = Vector2i(walk_frame, WALK_BASE + dir_row)
 	else:
