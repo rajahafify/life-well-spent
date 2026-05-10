@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://co4fvqy5gebce"]
 
-[ext_resource type="Script" path="res://scripts/controllers/demo_controller.gd" id="1_ojde5"]
+[ext_resource type="Script" uid="uid://cd6sylak8e35g" path="res://scripts/controllers/demo_controller.gd" id="1_ojde5"]
 [ext_resource type="Texture2D" uid="uid://flnyysibu2t4" path="res://assets/player.png" id="2_s8xv1"]
 [ext_resource type="Script" uid="uid://bmx2qucwgegs0" path="res://scripts/controllers/player_movement.gd" id="3_vrid3"]
 [ext_resource type="Texture2D" uid="uid://b5yljdw3l1x4t" path="res://assets/marker.png" id="4_s8xv1"]
@@ -21,6 +21,18 @@ grow_vertical = 2
 
 [node name="HPLabel" type="Label" parent="UI" unique_id=173253933]
 layout_mode = 0
+offset_left = 50.0
+offset_top = 50.0
+offset_right = 51.0
+offset_bottom = 73.0
+
+[node name="QuestLabel" type="Label" parent="UI" unique_id=814576334]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 180.0
+offset_right = 51.0
+offset_bottom = 203.0
+horizontal_alignment = 1
 
 [node name="Player" type="Sprite2D" parent="." unique_id=773599986]
 position = Vector2(640, 360)

@@ -33,6 +33,12 @@ func test_add_quest_populates_catalog() -> void:
 	assert_eq("Clear goblin scouts from the ridge", qm.quest_catalog[0].description)
 
 
+func test_catalog_supports_many_quests() -> void:
+	for i in range(50):
+		qm.add_quest("Quest %d" % i, 40, "Quest %d" % i)
+	assert_eq(50, qm.quest_catalog.size(), "catalog should hold 50 quests")
+
+
 # ─── Take Quest ──────────────────────────────────────────────────────
 
 func test_take_quest_deducts_40_hp_and_tracks_taken() -> void:
