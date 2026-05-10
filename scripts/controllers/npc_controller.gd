@@ -1,5 +1,5 @@
 class_name NpcController
-extends StaticBody2D
+extends CharacterBody2D
 
 signal interacted()
 
@@ -27,6 +27,6 @@ func _on_proximity_body_entered(body):
 
 func _interact():
 	npc_state.set_interacting(true)
-	_character_movement.get_script().call("face_player", get_global_mouse_position())
+	_character_movement.face_player(get_global_mouse_position())
 	print("NPC interacted")
 	interacted.emit()

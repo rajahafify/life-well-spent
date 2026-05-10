@@ -1,12 +1,12 @@
 ## TownSceneController — manages the town hub scene.
 ## Displays player stats and quest info from models.
-## Handles mouse click-to-move via PlayerMovement view.
+## Handles mouse click-to-move via CharacterMovement view.
 class_name TownSceneController
 extends Node2D
 
-# Preload forces Godot to parse PlayerMovement before this file,
-# making class_name PlayerMovement available for type annotations.
-const _PMovement = preload("res://scripts/views/player_movement.gd")
+# Preload forces Godot to parse CharacterMovement before this file,
+# making class_name CharacterMovement available for type annotations.
+const _PMovement = preload("res://scripts/views/character_movement.gd")
 
 # ── References ─────────────────────────────────────────────────────────
 
@@ -33,7 +33,7 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var world_pos := get_global_mouse_position()
-		var pm: PlayerMovement = _player.get_node("Sprite") as PlayerMovement
+		var pm: CharacterMovement = _player.get_node("Sprite") as CharacterMovement
 		if pm:
 			pm.move_to(world_pos)
 
