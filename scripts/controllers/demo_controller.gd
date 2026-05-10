@@ -84,9 +84,12 @@ func _update_display() -> void:
 	if _quest_label:
 		var lines: Array[String] = []
 		lines.append("Quests taken: %d" % _quests.quests_taken)
-		if _quests.active_quest != null:
-			lines.append("Active: %s" % _quests.active_quest.name)
-		else:
+		if _quests.active_quests.is_empty():
 			lines.append("Active: none")
+		else:
+			var names: Array[String] = []
+			for q: Dictionary in _quests.active_quests:
+				names.append(q.name)
+			lines.append("Active: %s" % ", ".join(names))
 		lines.append("Catalog: %d remaining" % _quests.quest_catalog.size())
 		_quest_label.text = "\n".join(lines)

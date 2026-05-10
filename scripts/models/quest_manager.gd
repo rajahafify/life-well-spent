@@ -5,7 +5,7 @@ class_name QuestManager
 extends Object
 
 var quest_catalog: Array[Dictionary] = []
-var active_quest = null
+var active_quests: Array[Dictionary] = []
 var quests_taken: int = 0
 var last_rejection = null
 const QUEST_HP_COST: int = 40
@@ -26,28 +26,28 @@ func take_quest(current_hp: int = 100) -> bool:
 	var quest: Dictionary = quest_catalog.pop_front()
 	if current_hp < quest.cost:
 		last_rejection = "not_enough_hp"
-		quest_catalog.push_front(quest)  # return it
+		quest_catalog.push_front(quest)
 		return false
 	last_rejection = null
-	active_quest = quest
+	active_quests.append(quest)
 	quests_taken += 1
 	return true
 
 
 func complete_quest() -> bool:
-	if active_quest == null:
+	if active_quests.is_empty():
 		return false
-	active_quest = null
+	active_quests.pop_front()
 	return true
 
 
 func abandon_quest() -> bool:
-	if active_quest == null:
+	if active_quests.is_empty():
 		return false
-	active_quest = null
+	active_quests.pop_front()
 	return true
 
 
 func reset_for_life() -> void:
-	active_quest = null
+	active_quests.clear()
 	quests_taken = 0
