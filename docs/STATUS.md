@@ -65,7 +65,7 @@ All code changes must follow the red-green-refactor cycle:
 | **PlayerStats Spec** | `tests/specs/player_stats_test.gd` | 13 tests covering initialization, quest cost, death, rebirth, facility preservation. |
 | **Player Sprite** | `assets/player.png` | Full LPC spritesheet, 13 columns × 21 rows, animated through `frame_coords`. |
 | **HP Display** | `scenes/test_runner_scene.tscn` | Live `Label` showing status, level, HP. Updates on quest/rebirth. |
-| **Click-to-Move** | `scripts/controllers/player_movement.gd` | Sprite2D with `move_to(target)` - smooth movement at 200px/s with destination marker. |
+| **Click-to-Move** | `scripts/views/player_movement.gd` | Sprite2D with `_physics_process` + parent CharacterBody2D `move_and_slide()` — collision-aware at 200px/s, export marker NodePath, snap threshold. |
 | **Quest/Rebirth Input** | `scripts/controllers/demo_controller.gd` | Q = take quest, C = complete, A = abandon, R = rebirth, F = debug move. |
 
 ### 🔴 Not Started
@@ -107,12 +107,16 @@ Prototype Spec Criteria:
 `res://scenes/test_runner_scene.tscn` - the interactive demo scene.
 
 ```
-TestRunnerScene (Node2D, 1280×720)
-├── UI (Control, full-screen)
-│   └── HPLabel (Label)         ← Status, level, HP
-├── Player (Sprite2D)            ← Player sprite, 2× scale
-│   └── player_movement.gd      ← Click-to-move
-└── DestinationMarker (Sprite2D) ← Yellow dot, follows target
+TownScene (Node2D)
+├── Background (ColorRect)       ← Dark background
+├── UI (CanvasLayer)
+│   ├── StatsTitle (Label)       ← "Stats" header
+│   ├── HPLabel (Label)          ← HP display
+│   └── QuestLabel (Label)       ← Active quests count
+├── Player (CharacterBody2D)     ← Position holder, collision
+│   └── Sprite (Sprite2D)        ← Player sprite, player_movement.gd
+│       └── player_movement.gd  ← Physics-based click-to-move
+└── DestinationMarker (Sprite2D) ← Follows destination, hides on stop
 ```
 
 **Controls:**
@@ -185,16 +189,19 @@ func reset_for_life() -> void               # clears active quests + counter
 - No hard limit per life - progression scales with HP
 - `reset_for_life()` clears active quests and counter for rebirth
 
-### `scripts/controllers/player_movement.gd`
-Handles click-to-move animation with destination marker.
+### `scripts/views/player_movement.gd`
+Click-to-move view using physics on parent CharacterBody2D.
 
 ```gdscript
 class_name PlayerMovement
 extends Sprite2D
 
 @export var move_speed: float = 200.0
-var destination: Vector2 = Vector2.ZERO
-var moving: bool = false
+@export var marker_path: NodePath = ^"../../DestinationMarker"
+
+var destination: Vector2
+var moving: bool
+var can_move: bool
 ```
 
 ### `scripts/controllers/demo_controller.gd`

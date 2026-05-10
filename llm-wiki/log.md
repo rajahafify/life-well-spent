@@ -90,3 +90,12 @@
 
 - Created `architecture/animation-controller.md`
 - Created `architecture/player-movement.md`
+
+## [2026-05-11] fix | PlayerMovement physics-based movement, export marker
+
+- Switched `_process` → `_physics_process` — velocity + `move_and_slide()` via parent CharacterBody2D
+- Replaced hardcoded `get_node_or_null` paths with `@export var marker_path: NodePath`
+- Snap threshold (5.0) instead of raw distance-per-frame check
+- Removed unused `_marker_paths` array
+- Updated `architecture/player-movement.md` with new API and physics details
+- All 74 tests pass

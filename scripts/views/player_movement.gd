@@ -12,7 +12,7 @@ var can_move: bool = true
 
 var _anim: AnimationController
 var _marker: Sprite2D
-var _marker_paths: Array[String] = []
+@export var marker_path: NodePath = ^"../../DestinationMarker"
 
 
 func _ready() -> void:
@@ -24,20 +24,28 @@ func _ready() -> void:
 	_apply_frame()
 
 
-func _process(delta: float) -> void:
-	# Position interpolation
+func _physics_process(delta: float) -> void:
+	var body := get_parent() as CharacterBody2D
+	if not body:
+		return
+	# Position/velocity update
 	if moving and can_move:
-		var dir := destination - position
+		var dir := destination - body.position
 		var dist := dir.length()
-		if dist < move_speed * delta:
-			position = destination
+		if dist < 5.0:  # snap threshold
+			body.position = destination
 			moving = false
 			_anim.stop_walking()
+			body.velocity = Vector2.ZERO
 		else:
-			position += dir.normalized() * move_speed * delta
+			var vel := dir.normalized() * move_speed
+			body.velocity = vel
 			if _anim.state != "walking":
 				_anim.start_walking()
 			_anim.set_direction(_dir_from_vector(dir))
+		body.move_and_slide()
+	else:
+		body.velocity = Vector2.ZERO
 
 	_anim.tick(delta)
 	_apply_frame()
@@ -63,10 +71,7 @@ static func _dir_from_vector(v: Vector2) -> String:
 # ── Marker ─────────────────────────────────────────────────────────────
 
 func _find_marker() -> void:
-	# Try common marker locations
-	_marker = get_node_or_null("DestinationMarker") as Sprite2D
-	if not _marker:
-		_marker = get_node_or_null("../DestinationMarker") as Sprite2D
+	_marker = get_node_or_null(marker_path) as Sprite2D
 
 
 func _update_marker_visibility() -> void:
@@ -81,8 +86,10 @@ func _update_marker_visibility() -> void:
 func move_to(target: Vector2) -> void:
 	if not can_move:
 		return
-	destination = target
-	moving = true
-	_anim.start_walking()
-	_anim.set_direction(_dir_from_vector(target - position))
-	_update_marker_visibility()
+	var body := get_parent() as CharacterBody2D
+	if body:
+		destination = target
+		moving = true
+		_anim.start_walking()
+		_anim.set_direction(_dir_from_vector(target - body.position))
+		_update_marker_visibility()
