@@ -24,7 +24,7 @@ func _ready() -> void:
 	hframes = AnimationController.COLUMNS
 	vframes = AnimationController.ROWS
 	destination = position
-	_anim = AnimationController.new()
+	_ensure_anim()
 	_find_marker()
 	_apply_frame()
 
@@ -32,6 +32,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	var body := get_parent() as CharacterBody2D
 
+	_ensure_anim()
 	_anim.tick(delta)
 	_apply_frame()
 	_update_marker_visibility()
@@ -41,17 +42,16 @@ func _physics_process(delta: float) -> void:
 			var dir := destination - body.global_position
 			var dist := dir.length()
 			if dist < 5.0:
-				body.global_position = destination
-				moving = false
-				_anim.stop_walking()
-				body.velocity = Vector2.ZERO
+				_stop_moving(body, true)
 			else:
 				var vel := dir.normalized() * move_speed
 				body.velocity = vel
 				if _anim.state != "walking":
 					_anim.start_walking()
 				_anim.set_direction(_dir_from_vector(dir))
-			body.move_and_slide()
+				var collided := body.move_and_slide()
+				if collided:
+					_stop_moving(body, false)
 		else:
 			body.velocity = Vector2.ZERO
 
@@ -75,11 +75,14 @@ static func _dir_from_vector(v: Vector2) -> String:
 # ── Marker ─────────────────────────────────────────────────────────────
 
 func _find_marker() -> void:
+	if marker_path == NodePath(""):
+		_marker = null
+		return
 	_marker = get_node_or_null(marker_path) as Sprite2D
 
 
 func _update_marker_visibility() -> void:
-	if not _marker:
+	if is_static or not _marker:
 		return
 	_marker.global_position = destination
 	_marker.visible = moving
@@ -98,7 +101,32 @@ func move_to(target: Vector2) -> void:
 		_anim.set_direction(_dir_from_vector(target - body.global_position))
 		_update_marker_visibility()
 
+
+func set_facing(dir: String) -> void:
+	_ensure_anim()
+	_anim.set_direction(dir)
+	_apply_frame()
+
+
 func face_player(target_pos: Vector2) -> void:
 	var body := get_parent()
 	if body:
-		_anim.set_direction(_dir_from_vector(target_pos - body.global_position))
+		set_facing(_dir_from_vector(target_pos - body.global_position))
+
+
+func _stop_moving(body: CharacterBody2D, snap_to_destination: bool) -> void:
+	if snap_to_destination:
+		body.global_position = destination
+	moving = false
+	_anim.stop_walking()
+	body.velocity = Vector2.ZERO
+	_update_marker_visibility()
+
+
+func _ensure_anim() -> void:
+	if hframes != AnimationController.COLUMNS:
+		hframes = AnimationController.COLUMNS
+	if vframes != AnimationController.ROWS:
+		vframes = AnimationController.ROWS
+	if _anim == null:
+		_anim = AnimationController.new()

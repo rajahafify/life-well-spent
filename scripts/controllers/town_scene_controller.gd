@@ -25,6 +25,7 @@ func _ready() -> void:
 	_title_label.add_theme_font_size_override("font_size", 24)
 	_player_stats = PlayerStats.new()
 	_quest_manager = QuestManager.new()
+	_connect_npcs()
 	_update_stats()
 
 
@@ -47,6 +48,18 @@ func _update_stats() -> void:
 
 func update_quest_count(count: int) -> void:
 	_quest_label.text = "Quests: %d active" % count
+
+
+func _connect_npcs() -> void:
+	for child in get_children():
+		if child is NpcController:
+			var npc := child as NpcController
+			if not npc.interacted.is_connected(_on_npc_interacted):
+				npc.interacted.connect(_on_npc_interacted)
+
+
+func _on_npc_interacted(npc: NpcController) -> void:
+	_quest_label.text = "Talking to: %s" % npc.name
 
 
 # ── Player ─────────────────────────────────────────────────────────────

@@ -132,10 +132,23 @@ func test_frame_coords_walking_up() -> void:
 
 
 
-func test_idle_does_not_change_frame_without_tick() -> void:
+func test_idle_does_not_change_frame_before_interval() -> void:
 	var initial_coords = anim.frame_coords
 	anim.tick(0.1)  # Less than 0.5s threshold
 	assert_eq(initial_coords, anim.frame_coords)
+
+
+func test_idle_advances_frame_after_interval() -> void:
+	anim.set_direction("down")
+	anim.tick(AnimationController.IDLE_CYCLE_INTERVAL)
+	assert_eq(Vector2i(1, 2), anim.frame_coords)
+
+
+func test_idle_preserves_direction_when_animating() -> void:
+	anim.set_direction("left")
+	anim.tick(AnimationController.IDLE_CYCLE_INTERVAL)
+	assert_eq("left", anim.direction)
+	assert_eq(Vector2i(1, 1), anim.frame_coords)
 
 
 func test_walking_advances_frame_but_does_not_cycle_direction() -> void:

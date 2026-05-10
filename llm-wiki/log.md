@@ -111,3 +111,25 @@
 - Cleaned QuestManager spec wording for HP-at-cost behavior.
 - Created `architecture/game-balance.md`; updated NPC, movement, quest, test-runner wiki pages and index.
 - All 98 tests pass.
+
+## [2026-05-11] fix | NPC interaction facing, idle animation, and collision stop
+
+- Created `plans/npc-interaction-animation-fix.md` with TDD acceptance criteria.
+- RED: added idle-frame specs, CharacterMovement facing/static specs, NPC controller facing specs, and NPC scene static/marker smoke spec.
+- Implemented idle frame cycling in `AnimationController` while preserving direction.
+- Added `CharacterMovement.set_facing()` and collision-stop behavior so player animation returns to idle when blocked by solid NPCs.
+- Marked NPC sprites static and markerless in `scenes/npc.tscn`.
+- Updated `NpcController` to consume click input and face actual player/global position for click/proximity interactions.
+- Updated wiki pages for animation, NPC system, and movement.
+- Subagents were attempted but child pi provider auth failed (`No API key found for azure-openai-responses`).
+- All 105 tests pass.
+
+## [2026-05-11] fix | Visible NPC interaction and proximity range
+
+- RED: added specs for `interacted(npc)` signal payload, NPC collision/talk radii, and town UI conversation feedback.
+- Changed `NpcController.interacted` to emit the NPC instance.
+- Connected town NPC interaction signals to `TownSceneController._on_npc_interacted()`.
+- Interaction now updates `QuestLabel` to `Talking to: <NPC>` so QA has visible feedback.
+- Set NPC solid collision radius to 20px and talk/proximity radius to 60px.
+- Hardened `CharacterMovement.set_facing()` to initialize animation/frame layout before `_ready` if needed.
+- All 108 tests pass.

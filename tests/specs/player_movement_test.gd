@@ -46,3 +46,25 @@ func test_dir_from_vector_pure_horizontal_right() -> void:
 
 func test_dir_from_vector_pure_horizontal_left() -> void:
 	assert_eq("left", CharacterMovement._dir_from_vector(Vector2(-10, 0)))
+
+
+# ─── Movement / Facing API ───────────────────────────────────────────
+
+func test_static_character_ignores_move_to() -> void:
+	var movement := CharacterMovement.new()
+	movement.is_static = true
+	movement.move_to(Vector2(100, 100))
+	assert_false(movement.moving, "static NPC movement should ignore move_to")
+	movement.free()
+
+
+func test_set_facing_updates_frame_direction() -> void:
+	var movement := CharacterMovement.new()
+	movement._ready()
+	assert_true(movement.has_method("set_facing"), "CharacterMovement should expose set_facing for controllers")
+	if not movement.has_method("set_facing"):
+		movement.free()
+		return
+	movement.call("set_facing", "left")
+	assert_eq(Vector2i(0, 1), movement.frame_coords)
+	movement.free()

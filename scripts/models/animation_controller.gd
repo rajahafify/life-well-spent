@@ -30,6 +30,7 @@ const _DIRECTION_ROW: Dictionary = {
 var state: String = "idle"
 var direction: String = "down"
 var frame_coords: Vector2i = Vector2i(0, 2)  # column 0, row 2 (idle down)
+var idle_frame: int = 0
 var walk_frame: int = 0
 
 var _frame_timer: float = 0.0
@@ -55,6 +56,7 @@ func stop_walking() -> void:
 	if state == "idle":
 		return
 	state = "idle"
+	idle_frame = 0
 	_frame_timer = 0.0
 	_update_frame_coords()
 
@@ -78,8 +80,12 @@ func tick(delta: float) -> void:
 		_tick_walking(delta)
 
 
-func _tick_idle(_delta: float) -> void:
-	pass  # static neutral idle
+func _tick_idle(delta: float) -> void:
+	_frame_timer += delta
+	if _frame_timer >= IDLE_CYCLE_INTERVAL:
+		_frame_timer -= IDLE_CYCLE_INTERVAL
+		idle_frame = (idle_frame + 1) % IDLE_FRAME_COUNT
+		_update_frame_coords()
 
 
 func _tick_walking(delta: float) -> void:
@@ -97,4 +103,4 @@ func _update_frame_coords() -> void:
 	if state == "walking":
 		frame_coords = Vector2i(walk_frame, WALK_BASE + dir_row)
 	else:
-		frame_coords = Vector2i(0, IDLE_BASE + dir_row)
+		frame_coords = Vector2i(idle_frame, IDLE_BASE + dir_row)
