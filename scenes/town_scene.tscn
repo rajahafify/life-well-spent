@@ -4,6 +4,8 @@
 [ext_resource type="Script" uid="uid://hdk6cec1sba" path="res://scripts/controllers/town_scene_controller.gd" id="1_l1y88"]
 [ext_resource type="Texture2D" uid="uid://b5yljdw3l1x4t" path="res://assets/marker.png" id="3_aoy3b"]
 [ext_resource type="Script" uid="uid://xckqw218onds" path="res://scripts/controllers/camera_controller.gd" id="4_4k3pf"]
+[ext_resource type="PackedScene" uid="uid://ctny5ffskwcmv" path="res://scenes/npc.tscn" id="5_4by7u"]
+[ext_resource type="Script" uid="uid://qhpwsdygiy8u" path="res://scripts/controllers/npc_controller.gd" id="6_d0wa2"]
 
 [node name="TownScene" type="Node2D" unique_id=1689039541]
 script = ExtResource("1_l1y88")
@@ -50,3 +52,15 @@ texture = ExtResource("3_aoy3b")
 [node name="Camera2D" type="Camera2D" parent="." unique_id=94998249]
 script = ExtResource("4_4k3pf")
 player_path = NodePath("../Player")
+
+[node name="QuestGiver" type="StaticBody2D" parent="." unique_id=1463974126 instance=ExtResource("5_4by7u")]
+position = Vector2(200, 300)
+script = ExtResource("6_d0wa2")
+
+[node name="Vendor" type="StaticBody2D" parent="." unique_id=40226481 instance=ExtResource("5_4by7u")]
+position = Vector2(500, 300)
+script = ExtResource("6_d0wa2")
+
+[node name="Guard" type="StaticBody2D" parent="." unique_id=1468058084 instance=ExtResource("5_4by7u")]
+position = Vector2(350, 500)
+script = ExtResource("6_d0wa2")

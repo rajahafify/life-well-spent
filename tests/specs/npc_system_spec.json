@@ -1,0 +1,47 @@
+{
+  "feature": "NPC System",
+  "version": "0.1",
+  "status": "spec",
+  "description": "Static NPCs for town hub: quest givers, vendors. Reusable Sprite2D + collision + interact. Refactors player movement into character base. Inspired by Ragnarok Online dialogs and sprites.",
+  "acceptance_criteria": [
+    "NPC scene/component reusable (Sprite2D + idle anim + CollisionShape2D solid + Area2D proximity)",
+    "Static only — no movement or patrol",
+    "Auto face player on interact or area enter (4-dir LPC)",
+    "Click or proximity triggers 'interacted' signal + basic dialog/quest UI hook",
+    "NpcState model pure: idle state, facing, current_quest",
+    "3 example NPCs placed in town_scene.tscn",
+    "All behaviors covered by executable GDScript spec (RED first)",
+    "Follows player camera, no perf impact (static, signal-driven)"
+  ],
+  "test_outline": {
+    "model": [
+      "test_initial_state_is_idle",
+      "test_initial_facing_is_down",
+      "test_face_player_* (right/left/up/down/equal/zero)",
+      "test_assign_quest_sets_id / overwrites / clear",
+      "test_state_idle_on_interact / set_interacting"
+    ],
+    "integration": [
+      "npc_scene_loads_with_collision_and_area",
+      "click_or_proximity_emits_interacted",
+      "face_player_on_interact",
+      "quest_assign_via_controller"
+    ]
+  },
+  "files": [
+    "scripts/models/npc_state.gd",
+    "tests/specs/npc_state_test.gd",
+    "scripts/views/character_movement.gd (refactor)",
+    "scenes/npc.tscn",
+    "scripts/controllers/npc_controller.gd",
+    "scenes/town_scene.tscn (place 3 NPCs)"
+  ],
+  "dependencies": [
+    "AnimationController",
+    "QuestManager",
+    "TownSceneController"
+  ],
+  "inspiration": "Ragnarok Online — sprite NPCs, clickable dialog, face player, quest/shop via choices, collision + talk range",
+  "priority": "medium",
+  "estimated_tests": 13
+}

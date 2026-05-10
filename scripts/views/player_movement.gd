@@ -1,10 +1,15 @@
-## PlayerMovement — click-to-move with LPC spritesheet animation via AnimationController.
-## View layer: manages Sprite2D frame rendering, delegates animation logic to model.
-class_name PlayerMovement
+## CharacterMovement — LPC spritesheet animation + optional physics movement.
+## View layer: manages Sprite2D frame rendering, delegates to AnimationController model.
+## Generic for Player/NPC: is_static=true skips movement.
+
+class_name CharacterMovement
 extends Sprite2D
 
-## Movement speed in pixels per second.
+## Movement speed in pixels per second (ignored if static).
 @export var move_speed: float = 200.0
+
+## If true, no movement — static NPC anim only.
+@export var is_static: bool = false
 
 var destination: Vector2 = Vector2.ZERO
 var moving: bool = false
@@ -26,30 +31,29 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	var body := get_parent() as CharacterBody2D
-	if not body:
-		return
-	# Position/velocity update
-	if moving and can_move:
-		var dir := destination - body.position
-		var dist := dir.length()
-		if dist < 5.0:  # snap threshold
-			body.position = destination
-			moving = false
-			_anim.stop_walking()
-			body.velocity = Vector2.ZERO
-		else:
-			var vel := dir.normalized() * move_speed
-			body.velocity = vel
-			if _anim.state != "walking":
-				_anim.start_walking()
-			_anim.set_direction(_dir_from_vector(dir))
-		body.move_and_slide()
-	else:
-		body.velocity = Vector2.ZERO
 
 	_anim.tick(delta)
 	_apply_frame()
 	_update_marker_visibility()
+
+	if body:
+		if not is_static and moving and can_move:
+			var dir := destination - body.global_position
+			var dist := dir.length()
+			if dist < 5.0:
+				body.global_position = destination
+				moving = false
+				_anim.stop_walking()
+				body.velocity = Vector2.ZERO
+			else:
+				var vel := dir.normalized() * move_speed
+				body.velocity = vel
+				if _anim.state != "walking":
+					_anim.start_walking()
+				_anim.set_direction(_dir_from_vector(dir))
+			body.move_and_slide()
+		else:
+			body.velocity = Vector2.ZERO
 
 
 # ── Frame Application ─────────────────────────────────────────────────
@@ -77,19 +81,24 @@ func _find_marker() -> void:
 func _update_marker_visibility() -> void:
 	if not _marker:
 		return
-	_marker.position = destination
+	_marker.global_position = destination
 	_marker.visible = moving
 
 
 # ── Public API ─────────────────────────────────────────────────────────
 
 func move_to(target: Vector2) -> void:
-	if not can_move:
+	if not can_move or is_static:
 		return
 	var body := get_parent() as CharacterBody2D
 	if body:
 		destination = target
 		moving = true
 		_anim.start_walking()
-		_anim.set_direction(_dir_from_vector(target - body.position))
+		_anim.set_direction(_dir_from_vector(target - body.global_position))
 		_update_marker_visibility()
+
+func face_player(target_pos: Vector2) -> void:
+	var body := get_parent()
+	if body:
+		_anim.set_direction(_dir_from_vector(target_pos - body.global_position))

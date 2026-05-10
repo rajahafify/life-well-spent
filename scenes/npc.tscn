@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://ctny5ffskwcmv"]
+
+[ext_resource type="Texture2D" uid="uid://flnyysibu2t4" path="res://assets/player.png" id="1_abqhh"]
+[ext_resource type="Script" uid="uid://qhpwsdygiy8u" path="res://scripts/controllers/npc_controller.gd" id="1_rv78h"]
+[ext_resource type="Script" uid="uid://dnq4shewqbj08" path="res://scripts/views/player_movement.gd" id="2_rv78h"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7n8xq"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4wlns"]
+
+[node name="Npc" type="StaticBody2D" unique_id=1463974126]
+script = ExtResource("1_rv78h")
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=681182751]
+texture = ExtResource("1_abqhh")
+script = ExtResource("2_rv78h")
+
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=1030186696]
+shape = SubResource("CircleShape2D_7n8xq")
+
+[node name="Proximity" type="Area2D" parent="." unique_id=1492828223]
+
+[node name="AreaCollision" type="CollisionShape2D" parent="Proximity" unique_id=898671463]
+shape = SubResource("CircleShape2D_4wlns")
