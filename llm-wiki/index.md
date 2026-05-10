@@ -2,15 +2,15 @@
 
 | Page | Type | Updated | Summary |
 |------|------|---------|---------|
-| [game-design/game-design](game-design/game-design.md) | synthesis | 2026-05-08 | Core loop, quest costs, facilities, and win condition. |
+| [game-design/game-design](game-design/game-design.md) | synthesis | 2026-05-11 | Core loop, free quest acceptance, completion HP cost, facilities, and win condition. |
 | [architecture/architecture](architecture/architecture.md) | decision | 2026-05-08 | MVC + SOLID architecture pattern. |
 | [architecture/spec-driven-dev](architecture/spec-driven-dev.md) | decision | 2026-05-10 | Spec-driven development workflow + TDD enforcement. |
 | [architecture/test-runner](architecture/test-runner.md) | reference | 2026-05-11 | Minitest-style GDScript spec runner — loads specs, runs tests, reports results. |
-| [architecture/quest-manager](architecture/quest-manager.md) | concept | 2026-05-11 | Quest catalog, multi-quest tracking, HP-based affordability. |
+| [architecture/quest-manager](architecture/quest-manager.md) | concept | 2026-05-11 | Quest catalog, multi-quest tracking, free acceptance, completion HP cost. |
 | [architecture/game-balance](architecture/game-balance.md) | reference | 2026-05-11 | Shared pure constants model for quest cost and animation timings. |
 | [assets/lpc-sprite-generator](assets/lpc-sprite-generator.md) | reference | 2026-05-09 | LPC sprite generator tool — prompt-driven character spritesheet pipeline. |
 | [scenes/main-menu](scenes/main-menu.md) | reference | 2026-05-11 | Main menu scene — title, New Game button, Quit button. Transitions to town hub. |
-| [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-11 | Town hub — background, player character with click-to-move, stats overlay. |
+| [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-11 | Town hub — player click-to-move, stats overlay, NPC dialog/quest UI, RO-style approach interaction. |
 | [architecture/animation-controller](architecture/animation-controller.md) | reference | 2026-05-11 | LPC spritesheet animation state machine. Idle cycling + walking frame advance via `tick(delta)`. |
-| [architecture/player-movement](architecture/player-movement.md) | reference | 2026-05-11 | CharacterMovement Sprite2D view. Click-to-move/static facing, collision stop, AnimationController frames, marker visibility. |
-| [architecture/npc-system](architecture/npc-system.md) | reference | 2026-05-11 | NPC scene/controller/dialog wiring with idle animation, static markerless sprites, player-facing interaction, quest accept/complete UI. |
+| [architecture/player-movement](architecture/player-movement.md) | reference | 2026-05-11 | CharacterMovement Sprite2D view. Click-to-move/static facing, collision/dialog stop, modal move lock, AnimationController frames. |
+| [architecture/npc-system](architecture/npc-system.md) | reference | 2026-05-11 | NPC scene/controller/dialog wiring with RO-style pending approach, talk range, name labels, modal quest UI. |

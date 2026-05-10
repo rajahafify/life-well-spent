@@ -68,3 +68,42 @@ func test_set_facing_updates_frame_direction() -> void:
 	movement.call("set_facing", "left")
 	assert_eq(Vector2i(0, 1), movement.frame_coords)
 	movement.free()
+
+
+func test_stop_moving_clears_moving_and_walking_state() -> void:
+	var body := CharacterBody2D.new()
+	var movement := CharacterMovement.new()
+	body.add_child(movement)
+	movement._ready()
+	movement.move_to(Vector2(100, 0))
+	assert_true(movement.moving, "move_to should start movement")
+	assert_true(movement.has_method("stop_moving"), "CharacterMovement should expose stop_moving for dialog lock")
+	if movement.has_method("stop_moving"):
+		movement.call("stop_moving")
+	assert_false(movement.moving, "stop_moving should clear moving flag")
+	assert_eq(Vector2.ZERO, body.velocity, "stop_moving should clear velocity")
+	assert_true(movement.frame_coords.y < AnimationController.WALK_BASE, "stop_moving should return to idle frames")
+	body.free()
+
+
+func test_face_target_updates_frame_direction() -> void:
+	var body := CharacterBody2D.new()
+	var movement := CharacterMovement.new()
+	body.add_child(movement)
+	movement._ready()
+	assert_true(movement.has_method("face_target"), "CharacterMovement should expose face_target(target_pos)")
+	if movement.has_method("face_target"):
+		movement.call("face_target", Vector2(0, -100))
+	assert_eq(Vector2i(0, 0), movement.frame_coords)
+	body.free()
+
+
+func test_can_move_false_blocks_move_to() -> void:
+	var body := CharacterBody2D.new()
+	var movement := CharacterMovement.new()
+	body.add_child(movement)
+	movement._ready()
+	movement.can_move = false
+	movement.move_to(Vector2(100, 0))
+	assert_false(movement.moving, "can_move=false should block move_to while dialog is open")
+	body.free()

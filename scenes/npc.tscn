@@ -19,6 +19,15 @@ script = ExtResource("3_rv78h")
 is_static = true
 marker_path = NodePath("")
 
+[node name="NameLabel" type="Label" parent="." unique_id=731820411]
+visible = true
+offset_left = -40.0
+offset_top = -58.0
+offset_right = 40.0
+offset_bottom = -35.0
+horizontal_alignment = 1
+text = "NPC"
+
 [node name="Collision" type="CollisionShape2D" parent="." unique_id=1030186696]
 shape = SubResource("CircleShape2D_7n8xq")
 

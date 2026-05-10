@@ -1,5 +1,5 @@
 # tests/specs/quest_manager_test.gd
-# Spec: QuestManager — quest catalog, take/complete lifecycle, HP affordability
+# Spec: QuestManager — quest catalog, take/complete lifecycle, completion cost handled by PlayerStats
 
 class_name TestQuestManager
 extends TestCase
@@ -63,7 +63,7 @@ func test_take_quest_works_with_many_quests_no_hard_limit() -> void:
 	qm.complete_quest()
 	qm.take_quest(100)
 	qm.complete_quest()
-	# No hard limit — can take quests across lives
+	# No hard limit - can take quests across lives
 	assert_eq(0, qm.active_quests.size(), "should be able to take multiple quests")
 	assert_eq(3, qm.quests_taken, "should track total quests taken")
 
@@ -107,39 +107,25 @@ func test_reset_clears_quest_state() -> void:
 	assert_eq(0, qm.active_quests.size(), "all active quests should be cleared")
 
 
-# ─── HP-Based Quest Taking ──────────────────────────────────────────
+# ─── Acceptance Cost Timing ─────────────────────────────────────────
 
-func test_take_quest_checks_hp_cost() -> void:
+func test_take_quest_succeeds_even_when_hp_below_cost() -> void:
 	qm.add_quest("Goblin Scout", 40, "Clear goblin scouts")
 	var result: bool = qm.take_quest(39)
-	assert_false(result, "should not take quest when HP < cost")
-	assert_eq(0, qm.active_quests.size())
+	assert_true(result, "accepting a quest should cost no HP and not require affordability")
+	assert_eq(1, qm.active_quests.size())
+	assert_eq("Goblin Scout", qm.active_quests[0].name)
 
 
 func test_take_quest_succeeds_when_enough_hp() -> void:
 	qm.add_quest("Goblin Scout", 40, "Clear goblin scouts")
 	var result: bool = qm.take_quest(40)
-	assert_true(result, "should take quest when HP >= cost")
+	assert_true(result, "accepting a quest should succeed when catalog has a quest")
 	assert_eq(1, qm.active_quests.size())
 
 
-func test_take_quest_succeeds_when_hp_exactly_at_cost() -> void:
-	qm.add_quest("Goblin Scout", 40, "Clear goblin scouts")
-	var result: bool = qm.take_quest(40)
-	assert_true(result, "should take quest when HP == cost")
-	assert_eq("Goblin Scout", qm.active_quests[0].name)
-
-
-func test_take_quest_gives_rejection_message() -> void:
-	qm.add_quest("Goblin Scout", 40, "Clear goblin scouts")
-	qm.take_quest(39)
-	assert_not_null(qm.last_rejection, "should store rejection reason")
-	assert_eq("not_enough_hp", qm.last_rejection, "rejection reason should be not_enough_hp")
-
-
 func test_successful_take_clears_last_rejection() -> void:
+	qm.last_rejection = "no_quest_available"
 	qm.add_quest("Goblin Scout", 40, "Clear goblin scouts")
-	qm.take_quest(39)  # fail first
-	assert_not_null(qm.last_rejection)
-	qm.take_quest(40)  # then succeed
-	assert_null(qm.last_rejection, "rejection should be cleared on success")
+	qm.take_quest(1)
+	assert_null(qm.last_rejection, "rejection should be cleared on successful accept")

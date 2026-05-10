@@ -24,6 +24,7 @@ const _PMovement = preload("res://scripts/views/character_movement.gd")
 var _player_stats: PlayerStats
 var _quest_manager: QuestManager
 var _active_npc: NpcController
+var _pending_npc: NpcController
 
 
 # ── Bootstrap ──────────────────────────────────────────────────────────
@@ -40,10 +41,19 @@ func _ready() -> void:
 
 # ── Input ──────────────────────────────────────────────────────────────
 
+func _physics_process(_delta: float) -> void:
+	if _pending_npc == null:
+		return
+	if _pending_npc.is_player_in_talk_range(_player.global_position):
+		_open_dialog(_pending_npc)
+
+
 func _unhandled_input(event: InputEvent) -> void:
+	if _dialog_panel.visible:
+		return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var world_pos := get_global_mouse_position()
-		var pm: CharacterMovement = _player.get_node("Sprite") as CharacterMovement
+		var pm := _player_movement()
 		if pm:
 			pm.move_to(world_pos)
 
@@ -84,7 +94,24 @@ func _register_npc_quest(npc: NpcController) -> void:
 
 
 func _on_npc_interacted(npc: NpcController) -> void:
+	if not npc.is_player_in_talk_range(_player.global_position):
+		_pending_npc = npc
+		var pm := _player_movement()
+		if pm:
+			pm.move_to(npc.talk_point_for(_player.global_position))
+		return
+	_open_dialog(npc)
+
+
+func _open_dialog(npc: NpcController) -> void:
+	_pending_npc = null
 	_active_npc = npc
+	var pm := _player_movement()
+	if pm:
+		pm.stop_moving()
+		pm.face_target(npc.global_position)
+		pm.can_move = false
+	npc.face_toward_player(_player.global_position)
 	_dialog_panel.visible = true
 	_dialog_name_label.text = npc.display_name
 	_dialog_body_label.text = npc.dialog_text
@@ -107,8 +134,6 @@ func _on_accept_quest_pressed() -> void:
 	if accepted:
 		_player_stats.take_quest()
 		_dialog_body_label.text = "Quest accepted: %s" % _active_npc.quest_name
-	elif _quest_manager.last_rejection == "not_enough_hp":
-		_dialog_body_label.text = "You have no more life to sacrifice."
 	else:
 		_dialog_body_label.text = "No quests available."
 	_update_stats()
@@ -126,9 +151,17 @@ func _on_complete_quest_pressed() -> void:
 func _on_close_dialog_pressed() -> void:
 	_dialog_panel.visible = false
 	_active_npc = null
+	_pending_npc = null
+	var pm := _player_movement()
+	if pm:
+		pm.can_move = true
 
 
 # ── Player ─────────────────────────────────────────────────────────────
 
 func get_player() -> CharacterBody2D:
 	return _player
+
+
+func _player_movement() -> CharacterMovement:
+	return _player.get_node_or_null("Sprite") as CharacterMovement

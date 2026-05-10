@@ -8,7 +8,7 @@ tags: [scenes, hub, player]
 # Town Hub Scene
 
 ## Overview
-The town hub is the central gameplay area where players interact with the world. Features a 1280×720 room with a player character and stats overlay.
+The town hub is the central gameplay area where players interact with the world. Features a 1280×720 room with a player character, stats overlay, static NPCs, RO-style approach-to-talk interaction, and modal dialog/quest UI.
 
 ## Scene Structure
 ```
@@ -17,8 +17,14 @@ TownScene (Node2D)
 ├── UI (CanvasLayer)
 │   ├── StatsTitle (Label) — "Stats" title
 │   ├── HPLabel (Label) — "HP: 100 / 100"
-│   └── QuestLabel (Label) — "Quests: 0 active"
-└── Player (CharacterBody2D) — instanced from player.tscn, scale 2×
+│   ├── QuestLabel (Label) — "Quests: 0 active"
+│   └── DialogPanel (PanelContainer) — NPC name/body + quest buttons
+├── Player (CharacterBody2D) — instanced from player.tscn, scale 2×
+├── DestinationMarker (Sprite2D)
+├── Camera2D
+├── QuestGiver (NpcController)
+├── Vendor (NpcController)
+└── Guard (NpcController)
 ```
 
 ## Player Scene (`player.tscn`)
@@ -41,16 +47,23 @@ extends Node2D
 
 func _ready() -> void:
     _title_label.add_theme_font_size_override("font_size", 24)
+    _connect_dialog_buttons()
+    _connect_npcs()
+    _dialog_panel.visible = false
     _update_stats()
 
-func _update_stats() -> void:
-    var ps: PlayerStats = PlayerStats.new()
-    _hp_label.text = "HP: %d / %d" % [ps.max_hp, ps.max_hp]
-    _quest_label.text = "Quests: 0 active"
-    ps.free()
+func _physics_process(delta) -> void:
+    # If pending NPC is now in range, stop movement and open dialog.
 
-func update_quest_count(count: int) -> void:
-    _quest_label.text = "Quests: %d active" % count
+func _on_npc_interacted(npc) -> void:
+    # Far: set _pending_npc and move player to npc.talk_point_for(player_pos)
+    # Near: open dialog immediately.
+
+func _open_dialog(npc) -> void:
+    # Stop movement, face player/NPC, disable CharacterMovement.can_move.
+
+func _on_close_dialog_pressed() -> void:
+    # Hide dialog, clear active/pending NPC, restore movement.
 
 func get_player() -> CharacterBody2D:
     return _player
@@ -72,9 +85,10 @@ func get_player() -> CharacterBody2D:
 - **Player movement:** Click-to-move with LPC animation rows.
 
 ## Specs
-- Player scene integration tested via manual play
+- `tests/specs/town_scene_dialog_test.gd` covers dialog visibility, NPC metadata, quest accept/complete, pending approach, modal movement lock, close restore, and mutual facing.
+- `tests/specs/scene_smoke_test.gd` covers town NPC interaction wiring.
 
 ## Related
 - `scripts/models/player_stats.gd` — HP, level, quest state
 - `scripts/models/quest_manager.gd` — quest catalog, take/complete lifecycle
-- `scripts/controllers/player_movement.gd` — movement + animation
+- `scripts/views/character_movement.gd` — movement + animation

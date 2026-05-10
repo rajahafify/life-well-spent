@@ -67,3 +67,51 @@ func test_npc_exposes_dialog_metadata_defaults() -> void:
 	assert_eq("generic", npc.role)
 	assert_eq("", npc.quest_name)
 	npc.free()
+
+
+func test_is_player_in_talk_range_true_inside_radius() -> void:
+	var npc := NpcController.new()
+	npc.global_position = Vector2(100, 100)
+	assert_true(npc.has_method("is_player_in_talk_range"), "NpcController should expose range query")
+	if npc.has_method("is_player_in_talk_range"):
+		assert_true(npc.call("is_player_in_talk_range", Vector2(150, 100)))
+	npc.free()
+
+
+func test_is_player_in_talk_range_false_outside_radius() -> void:
+	var npc := NpcController.new()
+	npc.global_position = Vector2(100, 100)
+	assert_true(npc.has_method("is_player_in_talk_range"), "NpcController should expose range query")
+	if npc.has_method("is_player_in_talk_range"):
+		assert_false(npc.call("is_player_in_talk_range", Vector2(300, 100)))
+	npc.free()
+
+
+func test_talk_point_is_offset_from_npc_toward_player() -> void:
+	var npc := NpcController.new()
+	npc.global_position = Vector2.ZERO
+	assert_true(npc.has_method("talk_point_for"), "NpcController should expose talk point helper")
+	if not npc.has_method("talk_point_for"):
+		npc.free()
+		return
+	var talk_point: Vector2 = npc.call("talk_point_for", Vector2(100, 0))
+	assert_true(talk_point.x > 20.0, "talk point should sit outside solid collision")
+	assert_true(talk_point.x < 60.0, "talk point should stay inside talk radius")
+	assert_eq(0.0, talk_point.y)
+	npc.free()
+
+
+func test_npc_scene_has_visible_name_label() -> void:
+	var scene: PackedScene = load("res://scenes/npc.tscn")
+	assert_not_null(scene, "npc scene should load")
+	if scene == null:
+		return
+	var npc: NpcController = scene.instantiate() as NpcController
+	npc.display_name = "Guide"
+	npc._ready()
+	var label: Label = npc.get_node_or_null("NameLabel") as Label
+	assert_not_null(label, "npc scene should include overhead NameLabel")
+	if label:
+		assert_true(label.visible, "NPC name label should be visible")
+		assert_eq("Guide", label.text)
+	npc.free()

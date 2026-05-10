@@ -2,9 +2,9 @@
 
 **Status:** Core NPC system complete via TDD. Advanced vendor/shop/facility features remain future work.
 
-**Current test baseline:** 115 tests, 115 passed, 0 failed.
+**Current test baseline:** 126 tests, 126 passed, 0 failed.
 
-**Goal:** NPC system for town hub (quest givers, vendors, etc.). Refactor player movement/animation into reusable Character behavior for Player + NPC. NPCs idle, face player, interact on click/near, and show dialog/quest UI.
+**Goal:** NPC system for town hub (quest givers, vendors, etc.). Refactor player movement/animation into reusable Character behavior for Player + NPC. NPCs idle, show overhead names, face player, support RO-style approach-to-talk interaction, and show modal dialog/quest UI.
 
 ## Why
 - Current foundation now supports world actors.
@@ -67,6 +67,8 @@ Reusable Sprite2D movement/facing/animation view for player and NPCs:
 func move_to(target: Vector2) -> void
 func set_facing(dir: String) -> void
 func face_player(target_pos: Vector2) -> void
+func face_target(target_pos: Vector2) -> void
+func stop_moving() -> void
 ```
 
 Behavior:
@@ -84,6 +86,9 @@ signal interacted(npc)
 @export var player_path: NodePath = ^"../Player"
 
 func interact_with_player(player_global_pos: Vector2) -> void
+func face_toward_player(player_global_pos: Vector2) -> void
+func is_player_in_talk_range(player_global_pos: Vector2) -> bool
+func talk_point_for(player_global_pos: Vector2) -> Vector2
 ```
 
 Behavior:
@@ -92,6 +97,7 @@ Behavior:
 - Faces actual player/global position, not mouse fallback.
 - Syncs `NpcState.facing` and `CharacterMovement` frame direction.
 - Emits `interacted(self)`.
+- Exposes talk range and talk point helpers for pending approach flow.
 
 ### Scene
 `scenes/npc.tscn`
@@ -99,6 +105,7 @@ Behavior:
 ```text
 CharacterBody2D Npc (NpcController)
 ├ Sprite2D Sprite (CharacterMovement, is_static=true, marker_path="")
+├ Label NameLabel (overhead display name)
 ├ CollisionShape2D Collision (Circle radius 20 solid)
 └ Area2D Proximity
   └ CollisionShape2D AreaCollision (Circle radius 60 talk range)
@@ -109,10 +116,12 @@ CharacterBody2D Npc (NpcController)
 - `Vendor`
 - `Guard`
 
-`TownSceneController` connects NPC `interacted(npc)` signals and shows `UI/DialogPanel` with NPC metadata and quest controls. QuestGiver interactions can accept and complete quests through `QuestManager` + `PlayerStats`.
+`TownSceneController` connects NPC `interacted(npc)` signals and shows `UI/DialogPanel` with NPC metadata and quest controls. Far NPC clicks set `_pending_npc` and move the player to `npc.talk_point_for(player.global_position)`; dialog opens only once the player enters talk range. QuestGiver interactions can accept quests for free and complete quests for a 40 Max HP cost through `QuestManager` + `PlayerStats`.
 
 ```gdscript
+func _physics_process(delta: float) -> void
 func _on_npc_interacted(npc: NpcController) -> void
+func _open_dialog(npc: NpcController) -> void
 func _on_accept_quest_pressed() -> void
 func _on_complete_quest_pressed() -> void
 func _on_close_dialog_pressed() -> void
@@ -122,11 +131,11 @@ func _on_close_dialog_pressed() -> void
 
 Implemented specs:
 - `tests/specs/npc_state_test.gd` — model state, facing, quest assignment/clear, interaction state.
-- `tests/specs/npc_controller_test.gd` — explicit player target faces right/up, state/view sync, signal emits NPC instance.
-- `tests/specs/player_movement_test.gd` — direction math, static movement guard, `set_facing()` frame update.
+- `tests/specs/npc_controller_test.gd` — explicit player target faces right/up, state/view sync, signal emits NPC instance, talk range/talk point helpers, overhead name label.
+- `tests/specs/player_movement_test.gd` — direction math, static movement guard, `set_facing()` frame update, `stop_moving()`, `face_target()`, movement lock.
 - `tests/specs/animation_controller_test.gd` — idle frame cycling, walking frame advance, direction preservation.
 - `tests/specs/scene_smoke_test.gd` — player/NPC scene wiring, NPC static+markerless, collision/talk radii, town interaction signal wiring.
-- `tests/specs/town_scene_dialog_test.gd` — dialog panel visibility, NPC metadata, quest accept/complete UI, HP/quest label updates, close behavior.
+- `tests/specs/town_scene_dialog_test.gd` — dialog panel visibility, NPC metadata, free quest accept, completion HP cost, HP/quest label updates, close behavior, far-click pending approach, near-click immediate dialog, modal movement lock, mutual facing.
 
 Validation command:
 ```powershell
@@ -135,7 +144,7 @@ Validation command:
 
 Current expected output:
 ```text
-115 tests, 115 passed, 0 failed
+126 tests, 126 passed, 0 failed
 ```
 
 ## Completed Implementation History
@@ -150,13 +159,14 @@ Current expected output:
    - NPC faces real player position.
    - NPC static sprites do not touch destination marker.
 6. Added visible placeholder interaction feedback in town UI.
-7. Added dialog panel, NPC metadata exports, quest accept/complete buttons, and HP/quest UI updates.
+7. Added dialog panel, NPC metadata exports, quest accept/complete buttons, and HP/quest UI updates. Quest acceptance is free; quest completion costs 40 Max HP.
 8. Wiki updated and commits made.
+9. Added RO-style pending approach interaction, mutual facing, modal movement lock, and overhead NPC name labels.
 
 ## Remaining Future Work
 
 Core NPC system is complete. Future enhancements are outside this plan's current acceptance criteria:
-- Hover/name tag.
+- Hover highlight/name emphasis.
 - Dedicated `NPCResource` data assets instead of scene export overrides.
 - Vendor/shop UI.
 - Facility/service NPC behaviors.

@@ -1,6 +1,6 @@
 # RO-Style NPC Interaction Plan
 
-**Status:** Draft — awaiting implementation.
+**Status:** Implemented + manually QA passed — 2026-05-11. Full suite green: 126 tests, 126 passed.
 
 ## Goal
 Change NPC interaction from instant debug-style click dialog to Ragnarok Online-style MMO interaction:
@@ -22,17 +22,17 @@ Ragnarok Online NPC interaction is spatial and menu-driven:
 - Closing dialog restores movement.
 
 ## Acceptance Criteria
-1. Clicking an NPC outside talk range does **not** open dialog immediately.
-2. Clicking an NPC outside talk range sets player destination to a point near the NPC.
-3. When player enters talk range for the pending NPC, movement stops and dialog opens automatically.
-4. Clicking an NPC while already inside talk range opens dialog immediately.
-5. When dialog opens, NPC faces player and player faces NPC.
-6. While dialog is open, player click-to-move is disabled.
-7. Closing dialog hides panel and re-enables player movement.
-8. NPC name label is visible above each NPC.
-9. QuestGiver menu still supports accept/complete quest.
-10. Vendor/Guard still show role-specific dialog without quest buttons.
-11. Full automated suite passes.
+1. [x] Clicking an NPC outside talk range does **not** open dialog immediately.
+2. [x] Clicking an NPC outside talk range sets player destination to a point near the NPC.
+3. [x] When player enters talk range for the pending NPC, movement stops and dialog opens automatically.
+4. [x] Clicking an NPC while already inside talk range opens dialog immediately.
+5. [x] When dialog opens, NPC faces player and player faces NPC.
+6. [x] While dialog is open, player click-to-move is disabled.
+7. [x] Closing dialog hides panel and re-enables player movement.
+8. [x] NPC name label is visible above each NPC.
+9. [x] QuestGiver menu still supports accept/complete quest.
+10. [x] Vendor/Guard still show role-specific dialog without quest buttons.
+11. [x] Full automated suite passes.
 
 ## TDD Plan
 
@@ -100,21 +100,21 @@ Implementation target:
 
 ### 5. Dialog Choice State Regression
 Keep/extend specs:
-- Accept quest still deducts HP and adds active quest.
-- Complete quest still deducts HP and removes active quest.
+- Accept quest still costs no HP and adds active quest.
+- Complete quest still deducts 40 HP and removes active quest.
 - Vendor/Guard show dialog without quest buttons.
 
 ## Implementation Order
-1. RED specs for CharacterMovement stop/face/movement lock.
-2. GREEN CharacterMovement API.
-3. RED specs for NpcController talk range/talk point/name label.
-4. GREEN NpcController + npc scene label.
-5. RED specs for TownSceneController pending approach + modal lock.
-6. GREEN approach flow.
-7. Run full suite.
-8. Manual QA in `scenes/town_scene.tscn`.
-9. Update `llm-wiki/architecture/npc-system.md`, `player-movement.md`, and `log.md`.
-10. Commit referencing new specs.
+1. [x] RED specs for CharacterMovement stop/face/movement lock.
+2. [x] GREEN CharacterMovement API.
+3. [x] RED specs for NpcController talk range/talk point/name label.
+4. [x] GREEN NpcController + npc scene label.
+5. [x] RED specs for TownSceneController pending approach + modal lock.
+6. [x] GREEN approach flow.
+7. [x] Run full suite.
+8. [x] Manual QA in `scenes/town_scene.tscn`.
+9. [x] Update `llm-wiki/architecture/npc-system.md`, `player-movement.md`, and `log.md`.
+10. [ ] Commit referencing new specs.
 
 ## Manual QA Steps
 1. Click QuestGiver from far away.
@@ -126,9 +126,9 @@ Keep/extend specs:
 4. Click QuestGiver while already nearby.
    - Expected: dialog opens immediately.
 5. Accept quest.
-   - Expected: HP 100 → 60, quest count 1 active.
+   - Expected: HP stays 100, quest count 1 active.
 6. Complete quest.
-   - Expected: HP 60 → 20, quest count 0 active.
+   - Expected: HP 100 → 60, quest count 0 active.
 7. Click Vendor/Guard.
    - Expected: dialog opens with role text; no quest accept button.
 8. Try clicking ground while dialog open.

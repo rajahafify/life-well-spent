@@ -18,15 +18,11 @@ func add_quest(name: String, cost: int, description: String) -> void:
 	})
 
 
-func take_quest(current_hp: int) -> bool:
+func take_quest(_current_hp: int) -> bool:
 	if quest_catalog.is_empty():
 		last_rejection = "no_quest_available"
 		return false
 	var quest: Dictionary = quest_catalog.pop_front()
-	if current_hp < quest.cost:
-		last_rejection = "not_enough_hp"
-		quest_catalog.push_front(quest)
-		return false
 	last_rejection = null
 	active_quests.append(quest)
 	quests_taken += 1

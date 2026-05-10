@@ -31,24 +31,24 @@ func test_initial_state_is_alive() -> void:
 
 # ─── Quest Deductions ────────────────────────────────────────────────
 
-func test_take_quest_deducts_40_hp() -> void:
+func test_take_quest_costs_no_hp() -> void:
 	player.take_quest()
-	assert_eq(60, player.max_hp)
+	assert_eq(100, player.max_hp)
 
 
-func test_quest_deducts_multiple_times() -> void:
+func test_taking_multiple_quests_costs_no_hp() -> void:
 	player.max_hp = 100
 	player.take_quest()
 	player.take_quest()
-	assert_eq(20, player.max_hp)
+	assert_eq(100, player.max_hp)
 
 
-func test_quest_cannot_deduct_below_zero() -> void:
+func test_complete_quest_cannot_deduct_below_zero() -> void:
 	player.max_hp = 40
-	player.take_quest()
+	player.complete_quest()
 	assert_eq(0, player.max_hp)
 	assert_eq("dead", player.state)
-	player.take_quest()
+	player.complete_quest()
 	assert_eq(0, player.max_hp)
 
 
@@ -70,13 +70,13 @@ func test_quest_complete_triggers_death() -> void:
 
 func test_death_sets_state_to_dead() -> void:
 	player.max_hp = 40
-	player.take_quest()
+	player.complete_quest()
 	assert_eq("dead", player.state)
 
 
 func test_rebirth_resets_hp_to_100() -> void:
 	player.max_hp = 40
-	player.take_quest()
+	player.complete_quest()
 	player.rebirth()
 	assert_eq(100, player.max_hp)
 
@@ -89,7 +89,7 @@ func test_rebirth_resets_level_to_1() -> void:
 
 func test_rebirth_resets_state_to_alive() -> void:
 	player.max_hp = 40
-	player.take_quest()
+	player.complete_quest()
 	player.rebirth()
 	assert_eq("alive", player.state)
 
@@ -97,6 +97,6 @@ func test_rebirth_resets_state_to_alive() -> void:
 func test_rebirth_preserves_unlocked_facilities() -> void:
 	player.unlocked_facilities.append("workshop")
 	player.max_hp = 40
-	player.take_quest()
+	player.complete_quest()
 	player.rebirth()
 	assert_in("workshop", player.unlocked_facilities, "workshop should survive rebirth")

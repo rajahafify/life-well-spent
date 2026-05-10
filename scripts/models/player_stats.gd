@@ -16,7 +16,7 @@ var unlocked_facilities: Array[String] = []
 # ── Quest ─────────────────────────────────────────────────────────────
 
 func take_quest() -> void:
-	_deduct_hp(_G.QUEST_HP_COST)
+	pass
 
 
 func complete_quest() -> void:

@@ -36,6 +36,8 @@ var can_move: bool
 func move_to(target: Vector2) -> void
 func set_facing(dir: String) -> void  # safe before _ready; initializes frames/model if needed
 func face_player(target_pos: Vector2) -> void
+func face_target(target_pos: Vector2) -> void
+func stop_moving() -> void
 
 # Static utility (testable without instantiation)
 static func _dir_from_vector(v: Vector2) -> String
@@ -49,8 +51,8 @@ static func _dir_from_vector(v: Vector2) -> String
 ### Why consume AnimationController?
 Previous version had duplicated LPC constants (COLUMNS, ROWS, WALK_BASE, etc.) and frame calculation logic. Delegating to AnimationController model ensures animation logic is tested once and reusable for other sprite types (NPCs, enemies).
 
-### Why stop on collision?
-`move_and_slide()` can collide with solid NPCs before reaching the exact click destination. When a collision happens while moving, `CharacterMovement` stops movement and returns to idle so player animation does not walk forever against NPC bodies.
+### Why stop on collision or dialog open?
+`move_and_slide()` can collide with solid NPCs before reaching the exact click destination. When a collision happens while moving, `CharacterMovement` stops movement and returns to idle so player animation does not walk forever against NPC bodies. `stop_moving()` is public so modal dialogs can immediately clear movement/velocity before locking input.
 
 ### Why `_physics_process` and CharacterBody2D?
 Using `_physics_process` with `move_and_slide()` on the parent CharacterBody2D gives:
@@ -75,13 +77,16 @@ return "down" if v.y > 0 else "up"          # vertical
 ```
 
 ## Test Coverage
-12 tests in `tests/specs/player_movement_test.gd` plus scene smoke coverage in `tests/specs/scene_smoke_test.gd`:
+15 tests in `tests/specs/player_movement_test.gd` plus scene smoke coverage in `tests/specs/scene_smoke_test.gd`:
 - Right, left, down, up from vectors
 - Equal magnitudes favor horizontal
 - Zero vector defaults to down
 - Pure vertical/horizontal vectors
 - Static characters ignore `move_to()`
 - `set_facing()` updates frame direction and initializes sprite frame layout if needed
+- `stop_moving()` clears movement and velocity, returning to idle frames
+- `face_target()` faces a world target
+- `can_move = false` blocks `move_to()` while dialog is open
 
 ## Related
 - `AnimationController` — model for frame calculation

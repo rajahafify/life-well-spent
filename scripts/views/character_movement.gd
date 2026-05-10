@@ -93,6 +93,7 @@ func _update_marker_visibility() -> void:
 func move_to(target: Vector2) -> void:
 	if not can_move or is_static:
 		return
+	_ensure_anim()
 	var body := get_parent() as CharacterBody2D
 	if body:
 		destination = target
@@ -114,7 +115,24 @@ func face_player(target_pos: Vector2) -> void:
 		set_facing(_dir_from_vector(target_pos - body.global_position))
 
 
+func face_target(target_pos: Vector2) -> void:
+	face_player(target_pos)
+
+
+func stop_moving() -> void:
+	var body := get_parent() as CharacterBody2D
+	if body:
+		_stop_moving(body, false)
+	else:
+		moving = false
+		_ensure_anim()
+		_anim.stop_walking()
+		_apply_frame()
+		_update_marker_visibility()
+
+
 func _stop_moving(body: CharacterBody2D, snap_to_destination: bool) -> void:
+	_ensure_anim()
 	if snap_to_destination:
 		body.global_position = destination
 	moving = false

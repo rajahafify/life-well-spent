@@ -65,6 +65,7 @@ func test_town_scene_npc_interaction_updates_quest_label() -> void:
 	var root: TownSceneController = scene.instantiate() as TownSceneController
 	root._ready()
 	var npc: NpcController = root.get_node("QuestGiver") as NpcController
+	root.get_player().global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
 	var label: Label = root.get_node("UI/QuestLabel") as Label
 	assert_eq("Talking to: QuestGiver", label.text)

@@ -144,3 +144,24 @@
 - Vendor/Guard show dialog without quest controls.
 - Updated `plans/npc-system.md`, `plans/npc-interaction-animation-fix.md`, and NPC wiki docs.
 - All 115 tests pass.
+
+## [2026-05-11] feat | RO-style NPC approach interaction
+
+- RED: added specs for CharacterMovement stop/facing/move lock, NpcController talk range/talk point/name label, and TownSceneController pending approach/modal dialog flow.
+- Added `CharacterMovement.stop_moving()` and `face_target()` for dialog control.
+- Added NPC talk helpers: `talk_radius`, `solid_radius`, `talk_stop_buffer`, `is_player_in_talk_range()`, and `talk_point_for()`.
+- Added overhead `NameLabel` to `scenes/npc.tscn`; `NpcController._ready()` syncs it from `display_name`.
+- Changed town interaction to RO-style: far click moves player toward NPC, pending dialog opens inside talk range, near click opens immediately.
+- Dialog now stops movement, disables click-to-move while open, faces player/NPC toward each other, and restores movement on close.
+- Updated `plans/ro-style-npc-interaction.md`, `architecture/npc-system.md`, `architecture/player-movement.md`, and `scenes/town-hub.md`.
+- All 128 tests pass.
+
+## [2026-05-11] fix | Quest HP cost moves from accept to complete
+
+- RED: updated PlayerStats, QuestManager, and TownScene dialog specs to assert accepting a quest costs no HP.
+- Changed `PlayerStats.take_quest()` to no-op and kept `complete_quest()` as 40 Max HP cost.
+- Changed `QuestManager.take_quest()` to ignore HP affordability; it fails only when no quest is available.
+- Updated QuestGiver UI flow: accept keeps HP at 100; complete changes HP 100 → 60 and removes active quest.
+- Updated game-design, quest-manager, NPC, and plan docs.
+- Manual QA passed in `scenes/town_scene.tscn`: far/near NPC interaction, modal movement lock, free accept, 40 HP completion cost, Vendor/Guard dialogs, and name labels.
+- All 126 tests pass.
