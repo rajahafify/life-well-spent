@@ -122,3 +122,11 @@ func test_take_quest_gives_rejection_message() -> void:
 	qm.take_quest(39)
 	assert_not_null(qm.last_rejection, "should store rejection reason")
 	assert_eq("not_enough_hp", qm.last_rejection, "rejection reason should be not_enough_hp")
+
+
+func test_successful_take_clears_last_rejection() -> void:
+	qm.add_quest("Goblin Scout", 40, "Clear goblin scouts")
+	qm.take_quest(39)  # fail first
+	assert_not_null(qm.last_rejection)
+	qm.take_quest(40)  # then succeed
+	assert_null(qm.last_rejection, "rejection should be cleared on success")
