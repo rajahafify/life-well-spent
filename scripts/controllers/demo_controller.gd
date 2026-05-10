@@ -1,6 +1,9 @@
 ## DemoController — live demo of PlayerStats + QuestManager.
 ## Click to move, Q=take quest, C=complete, A=abandon, R=rebirth, F=debug.
+class_name DemoController
 extends Node2D
+
+const _G = preload("res://scripts/models/game_balance.gd")
 
 var _player: PlayerStats
 var _quests: QuestManager
@@ -19,7 +22,7 @@ func _ready() -> void:
 
 	# Add sample quests (50 for extended QA)
 	for i in range(50):
-		_quests.add_quest("Quest %d" % i, 40, "Quest %d description" % i)
+		_quests.add_quest("Quest %d" % i, _G.QUEST_HP_COST, "Quest %d description" % i)
 
 	if _hp_label:
 		_hp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

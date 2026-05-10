@@ -244,10 +244,10 @@ For agent work, prefer Godot MCP so results come from the running editor/runtime
 
 Expected successful output:
 ```text
-Running 40 tests
-........................................
+Running 74 tests
+..........................................................................
 
-55 tests, 55 passed, 0 failed
+74 tests, 74 passed, 0 failed
 ```
 
 ### Test Suite (Headless / CI)

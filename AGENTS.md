@@ -73,7 +73,7 @@ Every feature starts with a spec. No code written until the spec is approved. Sp
 **Pre-commit checklist (verify each line):**
 - [ ] Every new behavior has a spec that was RED before the code existed
 - [ ] Every bug fix has a spec that reproduces the bug
-- [ ] All specs pass (`48 tests, 48 passed, 0 failed`)
+- [ ] All specs pass (`74 tests, 74 passed, 0 failed`)
 - [ ] LLM wiki updated with the change
 - [ ] Commit message references the spec file
 

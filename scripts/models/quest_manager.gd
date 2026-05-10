@@ -8,7 +8,6 @@ var quest_catalog: Array[Dictionary] = []
 var active_quests: Array[Dictionary] = []
 var quests_taken: int = 0
 var last_rejection = null
-const QUEST_HP_COST: int = 40
 
 
 func add_quest(name: String, cost: int, description: String) -> void:
@@ -19,7 +18,7 @@ func add_quest(name: String, cost: int, description: String) -> void:
 	})
 
 
-func take_quest(current_hp: int = 100) -> bool:
+func take_quest(current_hp: int) -> bool:
 	if quest_catalog.is_empty():
 		last_rejection = "no_quest_available"
 		return false

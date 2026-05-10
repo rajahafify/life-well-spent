@@ -161,15 +161,16 @@ func test_idle_does_not_change_frame_without_tick() -> void:
 	assert_eq(initial_coords, anim.frame_coords)
 
 
-func test_walking_state_does_not_cycle_direction() -> void:
+func test_walking_advances_frame_but_does_not_cycle_direction() -> void:
 	anim.start_walking()
 	anim.set_direction("down")
 	assert_eq(Vector2i(0, 10), anim.frame_coords)
 
-	# Tick while walking — idle cycling shouldn't happen
+	# Tick while walking — frame advances, direction stays
 	anim.tick(1.0)
 	assert_eq("down", anim.direction)
-	assert_eq(Vector2i(0, 10), anim.frame_coords)
+	# 10 frame advances at 0.1s each → walk_frame = 10 % 9 = 1
+	assert_eq(Vector2i(1, 10), anim.frame_coords)
 
 
 # ─── State + Direction Combination ────────────────────────────────────

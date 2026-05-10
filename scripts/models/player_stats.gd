@@ -3,6 +3,8 @@
 class_name PlayerStats
 extends Object
 
+const _G = preload("res://scripts/models/game_balance.gd")
+
 # ── State ─────────────────────────────────────────────────────────────
 
 var max_hp: int = 100
@@ -10,23 +12,21 @@ var level: int = 1
 var state: String = "alive"
 var unlocked_facilities: Array[String] = []
 
+
 # ── Quest ─────────────────────────────────────────────────────────────
 
-const QUEST_HP_COST: int = 40
-
-
 func take_quest() -> void:
-	if state == "dead":
-		return
-	max_hp = max(max_hp - QUEST_HP_COST, 0)
-	if max_hp <= 0:
-		state = "dead"
+	_deduct_hp(_G.QUEST_HP_COST)
 
 
 func complete_quest() -> void:
+	_deduct_hp(_G.QUEST_HP_COST)
+
+
+func _deduct_hp(amount: int) -> void:
 	if state == "dead":
 		return
-	max_hp = max(max_hp - QUEST_HP_COST, 0)
+	max_hp = max(max_hp - amount, 0)
 	if max_hp <= 0:
 		state = "dead"
 

@@ -1,9 +1,12 @@
 ## TownSceneController — manages the town hub scene.
 ## Displays player stats and quest info from models.
-## Handles mouse click-to-move.
+## Handles mouse click-to-move via PlayerMovement view.
 class_name TownSceneController
 extends Node2D
 
+# Preload forces Godot to parse PlayerMovement before this file,
+# making class_name PlayerMovement available for type annotations.
+const _PMovement = preload("res://scripts/views/player_movement.gd")
 
 # ── References ─────────────────────────────────────────────────────────
 
@@ -12,11 +15,16 @@ extends Node2D
 @onready var _title_label: Label = $UI/StatsTitle
 @onready var _player: CharacterBody2D = $Player
 
+var _player_stats: PlayerStats
+var _quest_manager: QuestManager
+
 
 # ── Bootstrap ──────────────────────────────────────────────────────────
 
 func _ready() -> void:
 	_title_label.add_theme_font_size_override("font_size", 24)
+	_player_stats = PlayerStats.new()
+	_quest_manager = QuestManager.new()
 	_update_stats()
 
 
@@ -33,10 +41,8 @@ func _unhandled_input(event: InputEvent) -> void:
 # ── Stats Display ──────────────────────────────────────────────────────
 
 func _update_stats() -> void:
-	var ps: PlayerStats = PlayerStats.new()
-	_hp_label.text = "HP: %d / %d" % [ps.max_hp, ps.max_hp]
-	_quest_label.text = "Quests: 0 active"
-	ps.free()
+	_hp_label.text = "HP: %d / %d" % [_player_stats.max_hp, _player_stats.max_hp]
+	_quest_label.text = "Quests: %d active" % _quest_manager.active_quests.size()
 
 
 func update_quest_count(count: int) -> void:

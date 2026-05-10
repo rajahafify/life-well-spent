@@ -64,3 +64,29 @@
 - Screen position converted to world position via `get_global_mouse_position()`
 - Added `DestinationMarker` sprite to town scene — shows during movement, hides when idle
 - Added `can_move` flag for toggling movement (set by scene controller)
+
+## [2026-05-11] refactor | Codebase review: all issues fixed
+
+- Created `scripts/models/game_balance.gd` — shared constants (QUEST_HP_COST, animation timings)
+- Extracted `_deduct_hp()` private method in `player_stats.gd` — `take_quest()` and `complete_quest()` now call it
+- Removed default param `current_hp = 100` from `quest_manager.take_quest()` — callers must pass HP explicitly
+- Updated `quest_manager_test.gd` — all `take_quest()` calls now pass explicit HP
+- Added walking frame advance to `AnimationController.tick()` — `_tick_walking()` advances `walk_frame` each frame
+- Updated `animation_controller_test.gd` — walking tick test renamed + expects frame advance
+- Moved `player_movement.gd` from `scripts/controllers/` → `scripts/views/` — proper MVC placement
+- Integrated `AnimationController` into `PlayerMovement` — removed duplicated LPC constants, delegates frames to model
+- Fixed `town_scene_controller.gd` parse error (`const _` → `const _PMovement`)
+- Added `_player_stats` + `_quest_manager` instance vars to `TownSceneController` — no more create+free per update
+- Added `class_name DemoController` to `demo_controller.gd`
+- Updated scene references in `player.tscn` and `test_runner_scene.tscn` for moved script
+- Deleted orphan `tests/specs/test_spec.gd.uid`
+- Added `PlayerMovement._dir_from_vector()` static utility with spec coverage (10 tests)
+- Fixed zero-vector edge case in `_dir_from_vector` (was returning "up" instead of "down")
+- Fixed equal-magnitude edge case (was vertical-preferring, now horizontal-preferring per spec)
+- Updated docs: STATUS.md, AGENTS.md, quest-manager.md, test-runner.md — all test counts current
+- All 74 tests pass
+
+## [2026-05-11] create | Wiki pages for AnimationController and PlayerMovement
+
+- Created `architecture/animation-controller.md`
+- Created `architecture/player-movement.md`

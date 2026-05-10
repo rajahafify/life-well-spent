@@ -52,7 +52,7 @@ No hard limit per life. If player gets a permanent +40 HP boost, they can take m
 `complete_quest()` removes the first (oldest) active quest. `abandon_quest()` does the same. This matches the expectation that you complete quests in the order you started them.
 
 ## Test Coverage
-8 specs in `tests/specs/quest_manager_test.gd`:
+14 specs in `tests/specs/quest_manager_test.gd`:
 - Catalog starts empty
 - Add quest populates catalog
 - Catalog supports 50 quests
@@ -61,6 +61,7 @@ No hard limit per life. If player gets a permanent +40 HP boost, they can take m
 - Take quest works with many quests (no hard limit)
 - Complete quest removes one active
 - Two active quests, complete removes first
+- Complete quest with no active returns false
 - Reset clears quest state
 - Take quest checks HP cost
 - Take quest succeeds when enough HP

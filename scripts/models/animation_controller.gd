@@ -15,6 +15,10 @@ const WALK_BASE := 8   # walk rows 8-11
 const IDLE_FRAME_COUNT: int = 4
 const WALK_FRAME_COUNT: int = 9
 
+# Timing (animation-local tuning, not game-balance)
+const IDLE_CYCLE_INTERVAL: float = 0.5
+const WALK_FRAME_DURATION: float = 0.1
+
 # Direction → row offset mapping
 const _DIRECTION_ROW: Dictionary = {
 	"up": 0,
@@ -26,9 +30,10 @@ const _DIRECTION_ROW: Dictionary = {
 var state: String = "idle"
 var direction: String = "down"
 var frame_coords: Vector2i = Vector2i(0, 2)  # column 0, row 2 (idle down)
-var anim_speed: float = 8.0
+var walk_frame: int = 0
+
 var _frame_timer: float = 0.0
-var _walk_frame: int = 0
+var _idle_frame: int = 0
 
 
 func _init() -> void:
@@ -38,13 +43,19 @@ func _init() -> void:
 # ── State Transitions ─────────────────────────────────────────────────
 
 func start_walking() -> void:
+	if state == "walking":
+		return
 	state = "walking"
-	_walk_frame = 0
+	walk_frame = 0
+	_frame_timer = 0.0
 	_update_frame_coords()
 
 
 func stop_walking() -> void:
+	if state == "idle":
+		return
 	state = "idle"
+	_frame_timer = 0.0
 	_update_frame_coords()
 
 
@@ -63,14 +74,23 @@ func set_direction(dir: String) -> void:
 func tick(delta: float) -> void:
 	if state == "idle":
 		_tick_idle(delta)
+	elif state == "walking":
+		_tick_walking(delta)
 
 
 func _tick_idle(delta: float) -> void:
-	# Idle: cycle through 4 directions slowly
 	_frame_timer += delta
-	if _frame_timer >= 0.5:
-		_frame_timer = 0.0
+	if _frame_timer >= IDLE_CYCLE_INTERVAL:
+		_frame_timer -= IDLE_CYCLE_INTERVAL
 		_cycle_direction()
+
+
+func _tick_walking(delta: float) -> void:
+	_frame_timer += delta
+	if _frame_timer >= WALK_FRAME_DURATION:
+		_frame_timer -= WALK_FRAME_DURATION
+		walk_frame = (walk_frame + 1) % WALK_FRAME_COUNT
+		_update_frame_coords()
 
 
 func _cycle_direction() -> void:
@@ -84,6 +104,6 @@ func _cycle_direction() -> void:
 func _update_frame_coords() -> void:
 	var dir_row: int = _DIRECTION_ROW.get(direction, 2)
 	if state == "walking":
-		frame_coords = Vector2i(_walk_frame, WALK_BASE + dir_row)
+		frame_coords = Vector2i(walk_frame, WALK_BASE + dir_row)
 	else:
 		frame_coords = Vector2i(0, IDLE_BASE + dir_row)
