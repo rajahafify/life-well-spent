@@ -231,8 +231,8 @@ Filtered run:
 6. Attach script to node if needed (`godot_mcp_attach_script`)
 7. Test with `godot_mcp_play_scene` (current) or `godot_mcp_play_scene` (main)
 8. Check errors with `godot_mcp_get_godot_errors`
-9. Update LLM wiki if model/architecture changed
-10. Run full spec suite: `Godot --headless --quit tests/test_runner.tscn`
+9. Run full spec suite: `Godot --headless --quit tests/test_runner.tscn` — all must pass
+10. Update LLM wiki if model/architecture changed
 11. Commit with message referencing the spec file
 
 ## Sprite Generation
