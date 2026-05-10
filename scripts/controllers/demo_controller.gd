@@ -49,8 +49,7 @@ func _handle_key(keycode: int) -> void:
 		var taken: bool = _quests.take_quest(_player.max_hp)
 		if taken:
 			_player.take_quest()
-		if _quests.last_rejection != null:
-			_print_rejection(_quests.last_rejection)
+		_print_rejection(_quests.last_rejection)
 		_update_display()
 	elif keycode == KEY_C:
 		_quests.complete_quest()
@@ -68,7 +67,7 @@ func _handle_key(keycode: int) -> void:
 			_player_sprite.move_to(target)
 
 
-func _print_rejection(reason) -> void:
+func _print_rejection(reason: String) -> void:
 	if reason == "not_enough_hp":
 		print("You have no more life to sacrifice.")
 	elif reason == "no_quest_available":
