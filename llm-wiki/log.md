@@ -27,6 +27,13 @@
 - Compiled `architecture/test-runner.md`
 - Updated `index.md`
 
+## [2026-05-10] ingest | QuestManager + TDD enforcement
+
+- Created `architecture/quest-manager.md` — Quest catalog, multi-quest tracking, HP-based affordability
+- Updated `architecture/spec-driven-dev.md` — Added TDD enforcement rules
+- Updated `index.md` — Added QuestManager page
+- Updated `docs/STATUS.md` — QuestManager docs, TDD rules, commit history
+
 ## [2026-05-10] update | Minitest-style Test Runner
 
 - Moved test assertions to `tests/test_helper.gd`

@@ -62,6 +62,21 @@ func test_zero_hp_triggers_death():
 ## Rule
 > If the spec doesn't cover it, it doesn't exist. Never add "just one more thing" without updating the spec.
 
+## TDD Enforcement
+All code changes must follow the red-green-refactor cycle:
+
+1. **RED** — Write a failing spec that describes the new behavior. If the spec doesn't fail, the behavior already exists.
+2. **GREEN** — Write minimal code to make the spec pass. No refactoring yet.
+3. **REFACTOR** — Clean up duplication, improve structure. Run specs after each change.
+
+**Rules:**
+- No implementation without a failing spec first
+- Bug fixes start with a spec that reproduces the bug
+- Model logic always has specs; demo/view scripts get integration tests where practical
+- Specs use Minitest-style `assert_*` helpers (`assert_eq`, `assert_true`, `assert_null`, etc.)
+- One behavior per spec method; name methods after the behavior (`test_take_quest_checks_hp_cost`, not `test_take_quest`)
+- Run full suite: `Godot --headless --quit tests/test_runner.tscn`
+
 ## Rationale
 - Specs force you to think through edge cases before implementation.
 - They serve as living documentation for each feature.
