@@ -27,6 +27,7 @@ horizontal_alignment = 1
 
 [node name="NewGameButton" type="Button" parent="CenterContainer/UI" unique_id=1855082109]
 custom_minimum_size = Vector2(200, 40)
+default_button = true
 layout_mode = 2
 size_flags_horizontal = 2
 text = "New Game"

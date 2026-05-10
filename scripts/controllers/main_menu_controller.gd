@@ -27,7 +27,7 @@ func _ready() -> void:
 # ── Actions ────────────────────────────────────────────────────────────
 
 func _on_new_game_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/town_hub.tscn")
+	get_tree().change_scene_to_file("res://scenes/town_scene.tscn")
 
 
 func _on_quit_pressed() -> void:

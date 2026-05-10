@@ -32,7 +32,7 @@ func _ready() -> void:
 	hframes = COLUMNS
 	vframes = ROWS
 	destination = position
-	_marker = get_node("/root/TestRunnerScene/DestinationMarker")
+	_marker = get_node_or_null("/root/TestRunnerScene/DestinationMarker") as Sprite2D
 	# Start facing down
 	_apply_frame()
 
