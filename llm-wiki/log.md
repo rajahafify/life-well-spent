@@ -57,3 +57,10 @@
 - Created `scripts/controllers/town_scene_controller.gd` — stats display, quest count updates
 - Updated `main_menu_controller.gd` — transitions to town_scene.tscn
 - Fixed `player_movement.gd` — `get_node_or_null()` for destination marker
+
+## [2026-05-11] feat | Click-to-move for player
+
+- Added `_unhandled_input` handler in `player_movement.gd` for left-click movement
+- Screen position converted to world position via `get_global_mouse_position()`
+- Added `DestinationMarker` sprite to town scene — shows during movement, hides when idle
+- Added `can_move` flag for toggling movement (set by scene controller)

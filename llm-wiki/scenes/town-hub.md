@@ -58,10 +58,12 @@ func get_player() -> CharacterBody2D:
 
 ## Player Movement (`player_movement.gd`)
 - Extends Sprite2D
-- Click-to-move: `move_to(target: Vector2)`
+- **Mouse click-to-move:** Left-click anywhere to set destination
+- Screen→world conversion via `get_global_mouse_position()`
 - LPC spritesheet: 13 columns × 21 rows, 64×64 cells
 - Walk rows: 8-11, Idle: rows 0-3
-- Destination marker at `/root/TestRunnerScene/DestinationMarker` (optional)
+- Destination marker: shows during movement, hides when idle
+- `can_move` flag: toggle movement on/off
 
 ## Design Decisions
 - **Simple background:** Solid ColorRect for now. Will be replaced with TileMap.
