@@ -40,3 +40,12 @@
 - Moved the CI entrypoint to `tests/test_runner.gd` attached to `tests/test_runner.tscn`
 - Split playable demo behavior into `scripts/controllers/demo_controller.gd`
 - Updated test runner architecture docs
+
+## [2026-05-11] feat | Main Menu Scene
+
+- Created `scenes/main_menu.tscn` — title screen with New Game / Quit buttons
+- Created `scripts/controllers/main_menu_controller.gd` — thin controller, handles button signals
+- Created `scenes/town_hub.tscn` — placeholder for post-menu hub
+- Updated `project.godot` — main scene → `res://scenes/main_menu.tscn`
+- Created `tests/specs/main_menu_test.gd` — 8 specs covering scene structure + button text
+- All 64 tests pass
