@@ -55,6 +55,28 @@ Godot's scene tree is the **View**. Scripts are split into three layers:
 
 Every feature starts with a spec. No code written until the spec is approved. Specs are **executable GDScript** files extending `TestCase`, not JSON data.
 
+#### TDD Enforcement
+
+**These rules are non-negotiable. Every commit must pass them.**
+
+| Rule | Enforcement |
+|------|-------------|
+| 1. **RED first** | Write a failing spec BEFORE any implementation. If spec passes immediately, it's not a real test — it tests nothing. |
+| 2. **One behavior per spec** | Name after behavior: `test_take_quest_checks_hp_cost`. Never `test_take_quest` (too vague). |
+| 3. **No implementation without failing spec** | If there's no spec that fails for the new behavior, do not write code. |
+| 4. **Bug fixes start with a reproducing spec** | Before fixing a bug, write a spec that reproduces it. Then fix. |
+| 5. **Model always has specs** | Every `scripts/models/*.gd` file must have a corresponding `tests/specs/*_test.gd` with coverage of its public API. |
+| 6. **Run full suite after every change** | `Godot --headless --quit tests/test_runner.tscn`. All tests must pass before committing. |
+| 7. **Minitest-style assertions** | Use `assert_eq(expected, actual)`, `assert_true()`, `assert_null()`, `assert_not_null()`, `assert_in()`, `assert_has()`. |
+| 8. **Refactor only after GREEN** | Never refactor while RED. Get to GREEN first, then clean up. |
+
+**Pre-commit checklist (verify each line):**
+- [ ] Every new behavior has a spec that was RED before the code existed
+- [ ] Every bug fix has a spec that reproduces the bug
+- [ ] All specs pass (`48 tests, 48 passed, 0 failed`)
+- [ ] LLM wiki updated with the change
+- [ ] Commit message references the spec file
+
 #### Spec Format (`tests/specs/test_<name>.gd`)
 
 ```gdscript
@@ -118,6 +140,53 @@ At the feature level:
 - **Signals:** Prefer signals over direct node references for loose coupling
 - **Autoloads:** Register in Project Settings → AutoLoad; keep them minimal
 
+### LLM Wiki Documentation
+
+**Every commit that touches code must update the wiki. This is not optional.**
+
+#### Wiki Update Rules
+
+| Rule | Enforcement |
+|------|-------------|
+| 1. **New model → new wiki page** | Any new `scripts/models/*.gd` gets a page in `llm-wiki/architecture/` covering API, design decisions, and test coverage. |
+| 2. **Changed behavior → update existing page** | If a public API changes, update the corresponding wiki page. |
+| 3. **New architecture → new wiki page** | New patterns, systems, or conventions get a dedicated page. |
+| 4. **Log every operation** | Append to `llm-wiki/log.md` with date, operation type, and affected pages. |
+| 5. **Update index** | Add new pages to `llm-wiki/index.md` with type, date, summary. |
+
+#### Wiki Page Format
+
+```markdown
+---
+title: <Page Title>
+type: concept | decision | reference | synthesis
+tags: [architecture | game-design | tech]
+---
+
+# <Title>
+
+## Overview
+One paragraph summary.
+
+## API
+Public interface in code blocks.
+
+## Design Decisions
+Why things are the way they are.
+
+## Test Coverage
+List of specs and what they cover.
+
+## Related
+Cross-links to other wiki pages.
+```
+
+#### Pre-commit Checklist (continued)
+- [ ] `llm-wiki/` updated for this change
+- [ ] `llm-wiki/log.md` has an entry for today
+- [ ] `llm-wiki/index.md` includes new pages
+- [ ] Pages have frontmatter with type, tags, sources
+
 ## CI / GitHub Actions
 
 - **Workflow:** `.github/workflows/tests.yml`
@@ -154,11 +223,17 @@ Filtered run:
 
 ## Adding Features
 
-1. Create the scene (`godot_mcp_create_scene`) or script (`godot_mcp_create_script`)
-2. Place under the appropriate directory (`scenes/`, `scripts/`)
-3. Attach script to node if needed (`godot_mcp_attach_script`)
-4. Test with `godot_mcp_play_scene` (current) or `godot_mcp_play_scene` (main)
-5. Check errors with `godot_mcp_get_godot_errors`
+1. **RED** — Write a failing spec in `tests/specs/` for the new behavior
+2. **GREEN** — Write minimal code to make the spec pass
+3. **Refactor** — Clean up, ensure all specs still pass
+4. Create the scene (`godot_mcp_create_scene`) or script (`godot_mcp_create_script`)
+5. Place under the appropriate directory (`scenes/`, `scripts/`)
+6. Attach script to node if needed (`godot_mcp_attach_script`)
+7. Test with `godot_mcp_play_scene` (current) or `godot_mcp_play_scene` (main)
+8. Check errors with `godot_mcp_get_godot_errors`
+9. Update LLM wiki if model/architecture changed
+10. Run full spec suite: `Godot --headless --quit tests/test_runner.tscn`
+11. Commit with message referencing the spec file
 
 ## Sprite Generation
 
