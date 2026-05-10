@@ -41,11 +41,10 @@
 - Split playable demo behavior into `scripts/controllers/demo_controller.gd`
 - Updated test runner architecture docs
 
-## [2026-05-11] feat | Main Menu Scene
+## [2026-05-11] style | Center main menu layout, font sizing, button spacing
 
-- Created `scenes/main_menu.tscn` — title screen with New Game / Quit buttons
-- Created `scripts/controllers/main_menu_controller.gd` — thin controller, handles button signals
-- Created `scenes/town_hub.tscn` — placeholder for post-menu hub
-- Updated `project.godot` — main scene → `res://scenes/main_menu.tscn`
-- Created `tests/specs/main_menu_test.gd` — 8 specs covering scene structure + button text
+- CenterContainer → VBoxContainer with alignment=CENTER, buttons via SHRINK_CENTER size flags
+- Buttons: custom_minimum_size Vector2(200, 40)
+- Title: 36px font via `add_theme_font_size_override`
+- VBoxContainer separation: 16px via `add_theme_constant_override`
 - All 64 tests pass

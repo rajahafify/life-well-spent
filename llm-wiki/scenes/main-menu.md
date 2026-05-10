@@ -34,6 +34,8 @@ func _ready() -> void:
     _title.text = "Life Well Spent"
     _new_game_btn.text = "New Game"
     _quit_btn.text = "Quit"
+    _title.add_theme_font_size_override("font_size", 36)
+    $CenterContainer/UI.add_theme_constant_override("separation", 16)
     _new_game_btn.pressed.connect(_on_new_game_pressed)
     _quit_btn.pressed.connect(_on_quit_pressed)
 
@@ -46,6 +48,10 @@ func _on_quit_pressed() -> void:
 
 ## Design Decisions
 - **Thin controller:** Only handles button signals. No game logic.
+- **Centered layout:** CenterContainer → VBoxContainer with alignment=CENTER, buttons centered via SHRINK_CENTER size flags.
+- **Title:** 36px font size via `add_theme_font_size_override`.
+- **Buttons:** Custom minimum size 200×40px, 16px vertical separation.
+- **Background:** Dark `Color(0.05, 0.05, 0.08)` via `self_modulate` on root.
 - **Scene transition:** Hardcoded path to `town_hub.tscn`. Will be configurable when GameState model exists.
 - **Quit button:** Calls `get_tree().quit()` — standard behavior.
 
