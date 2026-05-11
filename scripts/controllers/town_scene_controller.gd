@@ -55,6 +55,31 @@ func _ready() -> void:
 	_update_stats()
 
 
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		_cleanup_model_refs()
+
+
+func _cleanup_model_refs() -> void:
+	_active_npc = null
+	_pending_npc = null
+	if _progression != null:
+		_progression.free()
+		_progression = null
+	if _life_tracker != null:
+		_life_tracker.free()
+		_life_tracker = null
+	if _quest_manager != null:
+		_quest_manager.free()
+		_quest_manager = null
+	if _player_stats != null:
+		_player_stats.free()
+		_player_stats = null
+	if _settings != null:
+		_settings.free()
+		_settings = null
+
+
 # ── Input ──────────────────────────────────────────────────────────────
 
 func _physics_process(_delta: float) -> void:

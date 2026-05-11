@@ -207,3 +207,12 @@
 - Headless tests no longer emit `ERROR: Capture not registered: 'gdaimcp'` while editor MCP remains enabled.
 - Created `architecture/gdai-mcp-runtime-guard.md`; updated index, todo, and status docs.
 - All 155 tests pass.
+
+## [2026-05-11] fix | Remove Godot cleanup leaks
+
+- Fixed owned model cleanup in `CharacterMovement` (`AnimationController`) via `NOTIFICATION_PREDELETE`.
+- Fixed owned model cleanup in `CameraController` (`CameraModel`) via `NOTIFICATION_PREDELETE`.
+- Fixed owned model cleanup in `TownSceneController` (`PlayerStats`, `QuestManager`, `LifeTracker`, `ProgressionModel`, `SettingsModel`) via `NOTIFICATION_PREDELETE`.
+- Tightened CI output check to fail on any Godot `ERROR:` or `WARNING:` after cleanup warnings were removed.
+- Updated `todo.md`, `docs/STATUS.md`, `architecture/player-movement.md`, and `scenes/town-hub.md`.
+- Full verbose suite: `155 tests, 155 passed, 0 failed`, no leak/resource warnings.

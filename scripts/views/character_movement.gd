@@ -29,6 +29,18 @@ func _ready() -> void:
 	_apply_frame()
 
 
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		_cleanup_model_refs()
+
+
+func _cleanup_model_refs() -> void:
+	if _anim != null:
+		_anim.free()
+		_anim = null
+	_marker = null
+
+
 func _physics_process(delta: float) -> void:
 	var body := get_parent() as CharacterBody2D
 

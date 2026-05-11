@@ -30,6 +30,14 @@ func _ready() -> void:
 	player = get_node(player_path)
 
 
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		if model != null:
+			model.free()
+			model = null
+		player = null
+
+
 func _physics_process(delta: float) -> void:
 	if not player:
 		return

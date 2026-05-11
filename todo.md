@@ -6,12 +6,12 @@ Current validation: `155 tests, 155 passed, 0 failed`.
 
 ## P0 — Cleanup / Correctness
 
-- [ ] Fully fix Godot cleanup warnings.
-  - Current: `ObjectDB instances leaked` still appears.
-  - Current: `6 resources still in use` still appears.
+- [x] Fully fix Godot cleanup warnings.
+  - Fixed model references owned by `CharacterMovement`, `CameraController`, and `TownSceneController` during `NOTIFICATION_PREDELETE`.
+  - Current validation has no `ObjectDB instances leaked` or `resources still in use` output.
 - [x] Investigate `ERROR: Capture not registered: 'gdaimcp'.`
   - Fixed with `scripts/managers/gdai_mcp_runtime_guard.gd`: GDAI MCP stays enabled for editor, runtime skips in headless tests.
-- [x] Update stale plan test counts to current baseline: `152 tests, 152 passed, 0 failed`.
+- [x] Update stale plan test counts to current baseline: `155 tests, 155 passed, 0 failed`.
 - [x] Mark `plans/camera-controller.md` implemented or rewrite its status.
 - [x] Add missing `README.md`.
 
@@ -66,9 +66,8 @@ Current validation: `155 tests, 155 passed, 0 failed`.
 - [~] Add scene transition controller.
   - Request/execute controller exists.
   - Remaining: fade/loading UX and scene integration.
-- [~] Add CI check for Godot warnings/errors, not only exit code.
-  - CI checks output and ignores known cleanup warnings.
-  - Remaining: remove ignores after cleanup warnings are fixed.
+- [x] Add CI check for Godot warnings/errors, not only exit code.
+  - CI imports assets, runs tests, and fails on any `SCRIPT ERROR`, `Parse Error`, `ERROR:`, or `WARNING:` in test output.
 
 ## Legend
 

@@ -6,9 +6,7 @@
 
 - Automated suite: `155 tests, 155 passed, 0 failed`
 - Manual QA: pass for MVP flow
-- Known non-blocking warnings:
-  - `WARNING: ObjectDB instances leaked at exit`
-  - `ERROR: 6 resources still in use at exit`
+- Godot cleanup warnings: fixed. Current run has no `ObjectDB instances leaked` or `resources still in use` output.
 
 ## Current MVP State
 
@@ -41,10 +39,10 @@ MVC + SOLID remains active convention:
 |---------|-------|--------|
 | Test runner | `tests/test_helper.gd`, `tests/test_runner.gd` | Minitest-style GDScript specs. |
 | Main menu | `scenes/main_menu.tscn`, `scripts/controllers/main_menu_controller.gd` | New Game → town hub. |
-| Town hub | `scenes/town_scene.tscn`, `scripts/controllers/town_scene_controller.gd` | Player, NPCs, dialog, daily task UI, settings panel. |
-| Player movement | `scripts/views/character_movement.gd` | Click-to-move, facing, animation, movement lock. |
+| Town hub | `scenes/town_scene.tscn`, `scripts/controllers/town_scene_controller.gd` | Player, NPCs, dialog, daily task UI, settings panel, owned model cleanup. |
+| Player movement | `scripts/views/character_movement.gd` | Click-to-move, facing, animation, movement lock, owned animation-model cleanup. |
 | Animation model | `scripts/models/animation_controller.gd` | LPC idle/walk frame state. |
-| Camera | `scripts/models/camera_model.gd`, `scripts/controllers/camera_controller.gd` | Smooth follow model + Camera2D glue. |
+| Camera | `scripts/models/camera_model.gd`, `scripts/controllers/camera_controller.gd` | Smooth follow model + Camera2D glue with owned model cleanup. |
 | Player stats | `scripts/models/player_stats.gd` | HP, level, death/rebirth, XP, facilities, serialization. |
 | Quest lifecycle | `scripts/models/quest_manager.gd` | Catalog, active quests, linked life-task quests, serialization. |
 | Life tracking | `scripts/models/life_tracker.gd` | Tasks, habits, daily completion, streaks, XP. |

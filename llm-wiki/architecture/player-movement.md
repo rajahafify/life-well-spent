@@ -12,7 +12,7 @@ tags: [architecture, tech]
 # PlayerMovement
 
 ## Overview
-Click-to-move/static Sprite2D view. Consumes `AnimationController` model for all frame calculations. Uses `_physics_process` + parent `CharacterBody2D` velocity for physics-compatible movement when not static. Handles destination marker visibility and direction-from-vector math.
+Click-to-move/static Sprite2D view. Consumes `AnimationController` model for all frame calculations. Uses `_physics_process` + parent `CharacterBody2D` velocity for physics-compatible movement when not static. Handles destination marker visibility, direction-from-vector math, and cleanup of the owned animation model on `NOTIFICATION_PREDELETE`.
 
 ## Architecture
 - Lives in `scripts/views/` — view layer (MVC). Manages sprite rendering.

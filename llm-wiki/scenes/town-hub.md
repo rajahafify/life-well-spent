@@ -8,7 +8,7 @@ tags: [scenes, hub, player]
 # Town Hub Scene
 
 ## Overview
-The town hub is the central gameplay area where players interact with the world. Features a 1280×720 room with a player character, stats overlay, daily task panel, settings panel, static NPCs, RO-style approach-to-talk interaction, and modal dialog/quest UI.
+The town hub is the central gameplay area where players interact with the world. Features a 1280×720 room with a player character, stats overlay, daily task panel, settings panel, static NPCs, RO-style approach-to-talk interaction, modal dialog/quest UI, and deterministic cleanup for owned model objects.
 
 ## Scene Structure
 ```
@@ -80,6 +80,9 @@ func _on_options_pressed() -> void:
 
 func get_player() -> CharacterBody2D:
     return _player
+
+func _notification(NOTIFICATION_PREDELETE) -> void:
+    # Frees owned PlayerStats, QuestManager, LifeTracker, ProgressionModel, and SettingsModel.
 ```
 
 ## Player Movement (`player_movement.gd`)
