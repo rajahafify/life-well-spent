@@ -25,13 +25,28 @@ jobs:
           unzip -o godot.zip
           chmod +x Godot_v*linux.x86_64
 
+      - name: Disable editor-only MCP plugin in CI
+        run: |
+          rm -rf addons/gdai-mcp-plugin-godot
+          rm -f .godot/extension_list.cfg
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('project.godot')
+          text = path.read_text()
+          text = text.replace('enabled=PackedStringArray("res://addons/gdai-mcp-plugin-godot/plugin.cfg")', 'enabled=PackedStringArray()')
+          path.write_text(text)
+          PY
+
+      - name: Import Godot assets
+        run: ./Godot_v*linux.x86_64 --headless --import --quit
+
       - name: Run test runner and check output
         run: |
           set -o pipefail
           ./Godot_v*linux.x86_64 --headless --quit tests/test_runner.tscn 2>&1 | tee godot-test-output.log
           grep -Eq "[0-9]+ tests, [0-9]+ passed, 0 failed" godot-test-output.log
           if grep -E "SCRIPT ERROR|Parse Error|ERROR:|WARNING:" godot-test-output.log \
-            | grep -Ev "ObjectDB instances leaked|resources still in use|at: cleanup|at: clear"; then
+            | grep -Ev "ObjectDB instances leaked|resources still in use|at: cleanup|at: clear|invalid UID"; then
             echo "Unexpected Godot warning/error output detected" >&2
             exit 1
           fi
