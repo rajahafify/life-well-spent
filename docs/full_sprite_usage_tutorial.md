@@ -181,7 +181,7 @@ The correct LPC cell size is `64x64`, and directions are rows, not columns.
 
 ## Fix Checklist For This Project
 
-1. Change `scenes/test_runner_scene.tscn` to use `res://assets/player.png`.
+1. Keep runtime player scenes (`scenes/player.tscn` and `scenes/town_scene.tscn`) using `res://assets/player.png`.
 2. Set the player sprite to `hframes = 13` and `vframes = 21`.
 3. Replace the current `AnimationController.current_frame` direction mapping with row/column coordinates.
 4. Use walk rows `8..11` while moving.

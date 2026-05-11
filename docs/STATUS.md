@@ -6,7 +6,7 @@
 
 - Automated suite: `155 tests, 155 passed, 0 failed`
 - Manual QA: pass for MVP flow
-- Godot cleanup warnings: fixed. Current run has no `ObjectDB instances leaked` or `resources still in use` output.
+- Godot warnings/errors: fixed. Current MCP run reports `Session has no errors`; headless suite passes.
 
 ## Current MVP State
 
@@ -21,6 +21,7 @@ Life Well Spent now has a playable MVP foundation:
 7. Save/load serialization exists for player, quests, and life tracking state.
 8. Settings, audio, and scene transition boundaries exist as minimal systems.
 9. GDAI MCP remains enabled for editor use while headless tests skip runtime startup.
+10. Legacy demo scene/controller have been removed; `town_scene.tscn` is the playable MVP flow.
 
 ## Architecture
 
@@ -37,7 +38,7 @@ MVC + SOLID remains active convention:
 
 | Feature | Files | Status |
 |---------|-------|--------|
-| Test runner | `tests/test_helper.gd`, `tests/test_runner.gd` | Minitest-style GDScript specs. |
+| Test runner | `tests/test_helper.gd`, `tests/test_runner.gd` | Minitest-style GDScript specs; shadow warnings removed. |
 | Main menu | `scenes/main_menu.tscn`, `scripts/controllers/main_menu_controller.gd` | New Game → town hub. |
 | Town hub | `scenes/town_scene.tscn`, `scripts/controllers/town_scene_controller.gd` | Player, NPCs, dialog, daily task UI, settings panel, owned model cleanup. |
 | Player movement | `scripts/views/character_movement.gd` | Click-to-move, facing, animation, movement lock, owned animation-model cleanup. |
@@ -65,7 +66,7 @@ MVC + SOLID remains active convention:
 - `tests/specs/settings_audio_transition_test.gd`
 - `tests/specs/gdai_mcp_runtime_guard_test.gd`
 - `tests/specs/town_scene_dialog_test.gd`
-- Existing model specs updated for serialization/progression support and cleanup.
+- Existing model specs updated for serialization/progression support, cleanup, and legacy demo removal guard.
 
 ## Manual QA Checklist
 
@@ -84,14 +85,12 @@ Passed for MVP:
 
 See `todo.md` for current truth. Major remaining work:
 
-1. Fix Godot cleanup warnings fully.
-2. Wire real save/load flow into startup/menu/autosave.
-3. Build full daily task CRUD and date-aware UX.
-4. Build real vendor/shop/facility gameplay.
-5. Add visible town improvement progression.
-6. Replace placeholder art/audio with production assets.
-7. Wire settings controls to actual display/audio behavior.
-8. Remove CI warning ignores after cleanup issues are fixed.
+1. Wire real save/load flow into startup/menu/autosave.
+2. Build full daily task CRUD and date-aware UX.
+3. Build real vendor/shop/facility gameplay.
+4. Add visible town improvement progression.
+5. Replace placeholder art/audio with production assets.
+6. Wire settings controls to actual display/audio behavior.
 
 ## Run Tests
 

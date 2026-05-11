@@ -91,5 +91,4 @@ return "down" if v.y > 0 else "up"          # vertical
 ## Related
 - `AnimationController` — model for frame calculation
 - `TownSceneController` — calls `move_to()` on mouse click
-- `DemoController` — calls `move_to()` on mouse click and debug key F
 - `NpcController` — calls `face_player()` on interaction

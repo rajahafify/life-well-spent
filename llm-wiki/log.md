@@ -216,3 +216,16 @@
 - Tightened CI output check to fail on any Godot `ERROR:` or `WARNING:` after cleanup warnings were removed.
 - Updated `todo.md`, `docs/STATUS.md`, `architecture/player-movement.md`, and `scenes/town-hub.md`.
 - Full verbose suite: `155 tests, 155 passed, 0 failed`, no leak/resource warnings.
+
+## [2026-05-11] refactor | Remove legacy demo scene/controller
+
+- RED: changed `tests/specs/scene_smoke_test.gd` to assert `test_runner_scene.tscn` and `demo_controller.gd` stay removed; confirmed failure while files still existed.
+- Deleted `scenes/test_runner_scene.tscn`, `scripts/controllers/demo_controller.gd`, and orphan `scripts/controllers/demo_controller.gd.uid`.
+- Updated current docs/wiki references to remove DemoController as active architecture.
+- Updated `docs/STATUS.md` to reflect no-warning validation and legacy demo removal.
+
+## [2026-05-11] fix | Remove test runner shadow warning
+
+- Renamed `_find_test_methods()` local `name` variable to `method_name` to avoid shadowing `Node.name` during GDScript reload.
+- Renamed `AudioManager.play_sfx(name)` parameter to `sfx_name` to avoid `Node.name` shadow warning.
+- Updated `architecture/test-runner.md` successful output example to current 155-test suite.

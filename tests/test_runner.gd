@@ -127,9 +127,9 @@ static func _find_test_methods(instance: Object) -> Array:
 	var method_list: Array = instance.get_method_list()
 
 	for mi: Dictionary in method_list:
-		var name: String = mi.get("name", "")
-		if name.begins_with("test_") and not name.begins_with("test__"):
-			methods.append(name)
+		var method_name: String = mi.get("name", "")
+		if method_name.begins_with("test_") and not method_name.begins_with("test__"):
+			methods.append(method_name)
 
 	methods.sort()
 	return methods

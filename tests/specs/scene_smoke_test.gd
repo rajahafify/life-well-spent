@@ -5,16 +5,9 @@ class_name TestSceneSmoke
 extends TestCase
 
 
-func test_demo_scene_player_uses_character_movement() -> void:
-	var scene: PackedScene = load("res://scenes/test_runner_scene.tscn")
-	assert_not_null(scene, "demo scene should load")
-	if scene == null:
-		return
-	var root: Node = scene.instantiate()
-	var player = root.get_node_or_null("Player")
-	assert_not_null(player, "demo scene should have Player node")
-	assert_true(player is CharacterMovement, "demo Player should use CharacterMovement script")
-	root.free()
+func test_legacy_demo_scene_is_removed() -> void:
+	assert_false(ResourceLoader.exists("res://scenes/test_runner_scene.tscn"), "legacy demo scene should stay removed")
+	assert_false(ResourceLoader.exists("res://scripts/controllers/demo_controller.gd"), "legacy demo controller should stay removed")
 
 
 func test_player_scene_root_is_player_without_npc_controller() -> void:

@@ -1,7 +1,7 @@
 ---
 title: QuestManager
 type: concept
-updated: 2026-05-10
+updated: 2026-05-11
 sources:
   - scripts/models/quest_manager.gd
   - tests/specs/quest_manager_test.gd
@@ -77,5 +77,4 @@ Manual QA clarified intended loop: accepting a quest costs nothing; completing t
 - `PlayerStats` — HP deduction after successful quest completion
 - `LifeTracker` — real-life task completion source
 - `ProgressionModel` — coordinates linked task quest completion
-- `DemoController` — demo scene input → model calls → view updates
 - `spec-driven-dev` — TDD enforcement rules
