@@ -58,6 +58,7 @@ func test_town_scene_first_slice_dialog_opens() -> void:
 	var root: Town = scene.instantiate() as Town
 	root._ready()
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
 	var label: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
 	assert_eq("Guildmaster", label.text)

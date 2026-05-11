@@ -92,12 +92,41 @@ func test_town_has_player_and_camera() -> void:
 	root.free()
 
 
+func test_world_primitives_ignore_mouse_so_ground_clicks_move() -> void:
+	var root := _instantiate_town()
+	if root == null:
+		return
+	for node_path in [
+		"Ground",
+		"Paths/MainPath",
+		"Paths/PortalPath",
+		"Buildings/Shop",
+		"Buildings/SwordsmanGuild",
+		"Buildings/Blacksmith",
+		"StarterAreaPortal/Visual",
+	]:
+		var control := root.get_node(node_path) as Control
+		assert_eq(Control.MOUSE_FILTER_IGNORE, control.mouse_filter, "%s should not consume ground clicks" % node_path)
+	root.free()
+
+
 func test_town_has_dialog_panel() -> void:
 	var root := _instantiate_town()
 	if root == null:
 		return
 	assert_not_null(root.get_node_or_null("UI/DialogPanel"), "Town should have dialog panel")
 	root.free()
+
+
+func test_town_scene_uses_1080p_viewport_settings() -> void:
+	var file := FileAccess.open("res://project.godot", FileAccess.READ)
+	assert_not_null(file, "project settings should be readable")
+	if file == null:
+		return
+	var source := file.get_as_text()
+	file.close()
+	assert_true(source.contains("window/size/viewport_width=1920"), "viewport width should be 1920")
+	assert_true(source.contains("window/size/viewport_height=1080"), "viewport height should be 1080")
 
 
 func test_starter_area_portal_label_and_prompt_copy() -> void:

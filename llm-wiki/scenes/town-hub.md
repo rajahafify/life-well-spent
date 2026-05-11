@@ -50,6 +50,9 @@ Town (Node2D, Town)
 └── UI (CanvasLayer)
     ├── RebornPrompt — "You have been reborn.\nWill you spend this life well?"
     ├── PortalPrompt — "Enter Starter Area?"
+    ├── PortalChoices
+    │   ├── YesButton
+    │   └── NoButton
     └── DialogPanel (TownDialogView)
 ```
 
@@ -105,14 +108,21 @@ Old roads have a way of calling again.
 
 - sets reborn prompt and portal prompt copy in `_ready()`
 - connects worldbuilding NPC `interacted(npc)` signals
-- shows NPC dialog via `TownDialogView.show_dialog()`
-- records Starter Area transition request through `request_starter_area()`
+- routes ground clicks to `CharacterMovement` while dialog is closed
+- follows player with a camera offset for RO-style play
+- blocks click-to-move while dialog is open
+- handles RO-style NPC approach: far click moves to NPC talk point, near/in-range opens dialog
+- shows paged NPC dialog via `TownDialogView.show_dialog()`
+- records Starter Area transition request through portal Yes / `request_starter_area()`
+- shows portal prompt and Yes/No choices when the Player enters `StarterAreaPortal`
+- hides portal prompt when No is pressed
+- hides NPC dialog when `TownDialogView.close_requested` emits
 
 No quest, shop, forge, or life-spend logic is active in this slice.
 
 ## Art Direction
 
-Prototype Town uses primitives/SVG only, except generated character sprites.
+Prototype Town uses primitives/SVG only, except generated character sprites. Project viewport is 1920×1080 for prototype readability. World primitive `Control` nodes set `mouse_filter = ignore` so ground clicks reach Town movement.
 
 - warm tan ground
 - brown path strips
@@ -123,11 +133,27 @@ Prototype Town uses primitives/SVG only, except generated character sprites.
 
 ## Tests
 
-- `tests/specs/town_prototype_test.gd` covers root/class naming, buildings, NPCs, dialog copy, reborn prompt, and portal prompt.
-- `tests/specs/town_scene_dialog_test.gd` covers NPC interactions opening correct worldbuilding dialog and first-slice quest buttons hidden.
+- `tests/specs/town_prototype_test.gd` covers root/class naming, buildings, NPCs, dialog copy, reborn prompt, portal prompt, 1080p viewport, and primitive mouse filter settings.
+- `tests/specs/town_scene_dialog_test.gd` covers paged NPC dialog, RO-style far-click NPC approach, pending dialog open in talk range, camera follow, first-slice quest buttons hidden, click-to-move routing/blocking, dialog close behavior, portal prompt visibility, and Starter Area target request.
 - `tests/specs/scene_smoke_test.gd` covers Town dialog smoke behavior.
 
-Current validation after Town rewrite: `146 tests, 146 passed, 0 failed`.
+Current validation after Town rewrite: `168 tests, 168 passed, 0 failed`.
+
+## Manual QA
+
+Passed on 2026-05-11:
+
+- Town opens with reborn prompt.
+- Ground click-to-move works after world primitives set `mouse_filter = ignore`.
+- Far NPC click moves Player toward NPC before dialog opens.
+- Dialog opens in talk range.
+- Dialog pages advance with Next.
+- Close hides dialog.
+- Dialog blocks movement.
+- Camera follows Player with RO-style offset.
+- Starter Area Portal shows Yes/No prompt.
+- No hides portal prompt.
+- Godot MCP current-scene play reports no errors.
 
 ## Related
 

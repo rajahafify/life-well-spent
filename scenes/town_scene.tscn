@@ -13,7 +13,7 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_portal"]
-radius = 48.0
+radius = 64.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_npc_zone"]
 radius = 56.0
@@ -22,147 +22,169 @@ radius = 56.0
 script = ExtResource("1_town")
 
 [node name="Ground" type="ColorRect" parent="."]
-offset_left = -64.0
-offset_top = -64.0
-offset_right = 1344.0
-offset_bottom = 784.0
+mouse_filter = 2
+offset_left = -128.0
+offset_top = -128.0
+offset_right = 2048.0
+offset_bottom = 1208.0
 color = Color(0.62, 0.45, 0.27, 1)
 
 [node name="Paths" type="Node2D" parent="."]
 
 [node name="MainPath" type="ColorRect" parent="Paths"]
-offset_left = 560.0
-offset_top = 150.0
-offset_right = 720.0
-offset_bottom = 640.0
+mouse_filter = 2
+offset_left = 880.0
+offset_top = 140.0
+offset_right = 1040.0
+offset_bottom = 820.0
 color = Color(0.38, 0.25, 0.14, 1)
 
 [node name="PortalPath" type="ColorRect" parent="Paths"]
-offset_left = 660.0
-offset_top = 560.0
-offset_right = 1100.0
-offset_bottom = 640.0
+mouse_filter = 2
+offset_left = 980.0
+offset_top = 760.0
+offset_right = 1700.0
+offset_bottom = 840.0
 color = Color(0.38, 0.25, 0.14, 1)
 
 [node name="Buildings" type="Node2D" parent="."]
 
 [node name="Shop" type="ColorRect" parent="Buildings"]
-offset_left = 130.0
-offset_top = 70.0
-offset_right = 330.0
-offset_bottom = 190.0
+mouse_filter = 2
+offset_left = 210.0
+offset_top = 90.0
+offset_right = 510.0
+offset_bottom = 250.0
 color = Color(0.75, 0.46, 0.29, 1)
 
 [node name="Label" type="Label" parent="Buildings/Shop"]
 layout_mode = 0
-offset_left = 60.0
-offset_top = 45.0
-offset_right = 160.0
-offset_bottom = 70.0
+offset_left = 105.0
+offset_top = 62.0
+offset_right = 205.0
+offset_bottom = 90.0
 text = "SHOP"
 
 [node name="SwordsmanGuild" type="ColorRect" parent="Buildings"]
-offset_left = 500.0
-offset_top = 50.0
-offset_right = 780.0
-offset_bottom = 210.0
+mouse_filter = 2
+offset_left = 760.0
+offset_top = 70.0
+offset_right = 1160.0
+offset_bottom = 280.0
 color = Color(0.42, 0.37, 0.45, 1)
 
 [node name="Label" type="Label" parent="Buildings/SwordsmanGuild"]
 layout_mode = 0
-offset_left = 67.0
-offset_top = 60.0
-offset_right = 220.0
-offset_bottom = 95.0
+offset_left = 123.0
+offset_top = 82.0
+offset_right = 280.0
+offset_bottom = 125.0
 text = "SWORDSMAN\nGUILD"
 horizontal_alignment = 1
 
 [node name="Blacksmith" type="ColorRect" parent="Buildings"]
-offset_left = 950.0
-offset_top = 70.0
-offset_right = 1150.0
-offset_bottom = 190.0
+mouse_filter = 2
+offset_left = 1410.0
+offset_top = 90.0
+offset_right = 1710.0
+offset_bottom = 250.0
 color = Color(0.31, 0.29, 0.27, 1)
 
 [node name="Label" type="Label" parent="Buildings/Blacksmith"]
 layout_mode = 0
-offset_left = 42.0
-offset_top = 45.0
-offset_right = 170.0
-offset_bottom = 70.0
+offset_left = 82.0
+offset_top = 62.0
+offset_right = 220.0
+offset_bottom = 90.0
 text = "BLACKSMITH"
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
-position = Vector2(640, 510)
+position = Vector2(960, 650)
 scale = Vector2(2, 2)
 
 [node name="Shopkeeper" parent="." instance=ExtResource("3_npc")]
-position = Vector2(230, 255)
+position = Vector2(360, 330)
 display_name = "Shopkeeper"
 role = "shopkeeper"
 dialog_text = "Welcome, traveler.\n\nThis shop once packed bags for heroes.\nNow I sell apples, candles, and thread.\n\nIt is quieter, yes.\nBut quiet days are worth protecting too."
 
 [node name="Guildmaster" parent="." instance=ExtResource("3_npc")]
-position = Vector2(640, 270)
+position = Vector2(960, 355)
 display_name = "Guildmaster"
 role = "guildmaster"
 dialog_text = "The Swordsman Guild still stands.\n\nNot as it was.\nThe halls are quiet, and the old names fade from the register.\n\nBut a guild is not stone or banners.\nIt lives when someone chooses the path.\n\nPerhaps one day, someone will help me raise it again."
 
 [node name="Smith" parent="." instance=ExtResource("3_npc")]
-position = Vector2(1050, 255)
+position = Vector2(1560, 330)
 display_name = "Smith"
 role = "smith"
 dialog_text = "I used to shape steel for adventurers.\n\nNow I mend plows, hinges, and cooking pots.\nHonest work.\n\nStill, I keep the sword molds clean.\nOld roads have a way of calling again."
 
 [node name="StarterAreaPortal" type="Area2D" parent="."]
-position = Vector2(1110, 585)
+position = Vector2(1700, 820)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StarterAreaPortal"]
 shape = SubResource("CircleShape2D_portal")
 
 [node name="Visual" type="ColorRect" parent="StarterAreaPortal"]
-offset_left = -48.0
-offset_top = -48.0
-offset_right = 48.0
-offset_bottom = 48.0
+mouse_filter = 2
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 64.0
+offset_bottom = 64.0
 color = Color(0.1, 0.8, 0.9, 0.55)
 
 [node name="Label" type="Label" parent="StarterAreaPortal"]
-offset_left = -42.0
-offset_top = 55.0
-offset_right = 70.0
-offset_bottom = 78.0
+offset_left = -55.0
+offset_top = 72.0
+offset_right = 90.0
+offset_bottom = 96.0
 text = "Starter Area"
 horizontal_alignment = 1
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(640, 360)
+position = Vector2(960, 500)
 enabled = true
 
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="RebornPrompt" type="Label" parent="UI"]
-offset_left = 20.0
-offset_top = 20.0
-offset_right = 420.0
-offset_bottom = 70.0
+offset_left = 28.0
+offset_top = 24.0
+offset_right = 520.0
+offset_bottom = 86.0
 text = "You have been reborn.\nWill you spend this life well?"
 
 [node name="PortalPrompt" type="Label" parent="UI"]
 visible = false
-offset_left = 900.0
-offset_top = 640.0
-offset_right = 1220.0
-offset_bottom = 670.0
+offset_left = 1480.0
+offset_top = 900.0
+offset_right = 1880.0
+offset_bottom = 940.0
 text = "Enter Starter Area?"
 horizontal_alignment = 1
 
+[node name="PortalChoices" type="HBoxContainer" parent="UI"]
+visible = false
+offset_left = 1590.0
+offset_top = 945.0
+offset_right = 1780.0
+offset_bottom = 990.0
+
+[node name="YesButton" type="Button" parent="UI/PortalChoices"]
+layout_mode = 2
+text = "Yes"
+
+[node name="NoButton" type="Button" parent="UI/PortalChoices"]
+layout_mode = 2
+text = "No"
+
 [node name="DialogPanel" type="PanelContainer" parent="UI"]
 visible = false
-offset_left = 320.0
-offset_top = 430.0
-offset_right = 960.0
-offset_bottom = 690.0
+offset_left = 560.0
+offset_top = 720.0
+offset_right = 1360.0
+offset_bottom = 1020.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_dialog")
 script = ExtResource("4_dialog")
 
@@ -188,6 +210,10 @@ text = "Accept"
 [node name="CompleteQuestButton" type="Button" parent="UI/DialogPanel/VBox/Buttons"]
 layout_mode = 2
 text = "Complete"
+
+[node name="NextButton" type="Button" parent="UI/DialogPanel/VBox/Buttons"]
+layout_mode = 2
+text = "Next"
 
 [node name="CloseButton" type="Button" parent="UI/DialogPanel/VBox/Buttons"]
 layout_mode = 2

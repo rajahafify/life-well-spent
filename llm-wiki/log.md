@@ -243,4 +243,6 @@
 - Rewrote `scripts/controllers/town_scene_controller.gd` as `class_name Town`, thin glue for worldbuilding NPC dialog and portal transition request.
 - Updated `tests/specs/town_scene_dialog_test.gd` and `tests/specs/scene_smoke_test.gd` for first-slice systemic Town behavior.
 - Updated `prototype/components/town.md`, removed duplicate `prototype/town.md`, and updated `scenes/town-hub.md` wiki page.
-- Validation: `146 tests, 146 passed, 0 failed`.
+- Completed pre-Starter Town behavior: 1920×1080 viewport, RO-style camera follow, click-to-move while dialog is closed, world primitives ignore mouse so ground clicks move, dialog blocks movement, far NPC click approaches before dialog, paged NPC dialog with Next/Close, Player entering Starter Area Portal shows Yes/No prompt, No hides it, and Yes records Starter Area target path.
+- Validation: `168 tests, 168 passed, 0 failed`; MCP play current scene reports no errors.
+- Manual QA passed: ground click movement, RO-style NPC approach, paged dialog Next/Close, dialog movement lock, camera follow, and portal Yes/No prompt.

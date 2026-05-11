@@ -102,6 +102,9 @@ Enter Starter Area?
 [Yes] [No]
 ```
 
+- Yes records/request Starter Area transition target.
+- No hides the prompt.
+
 ## Buildings and NPCs
 
 All Town NPCs are simple dialog-only in first Town slice. No quest, shop, or forge mechanics yet.
@@ -204,8 +207,11 @@ Old roads have a way of calling again.
 
 - NPC interaction zones for Guildmaster, Shopkeeper, and Smith.
 - Starter Area Portal interaction zone.
-- Dialog close button.
-- Optional portal confirm buttons: Yes / No.
+- Portal body-enter trigger shows `Enter Starter Area?` prompt.
+- Dialog Next button advances paged dialog.
+- Dialog close button hides dialog.
+- Portal Yes button records Starter Area target.
+- Portal No button hides prompt.
 
 ## Town State Read/Write
 
@@ -280,10 +286,17 @@ Future rules:
 First Town slice:
 
 - On scene start: show reborn prompt.
-- On Guildmaster interact: show Guildmaster worldbuilding dialog.
-- On Shopkeeper interact: show Shopkeeper worldbuilding dialog.
-- On Smith interact: show Smith worldbuilding dialog.
-- On Portal interact: prompt to enter Starter Area.
+- On ground click while dialog is closed: route Player movement to `CharacterMovement`.
+- Camera follows Player with RO-style upward offset.
+- On ground click while dialog is open: block movement.
+- On far NPC click: Player walks toward NPC talk point, dialog remains closed.
+- On pending NPC reaching talk range: Player stops, faces NPC, NPC faces Player, paged dialog opens.
+- On near Guildmaster interact: show Guildmaster worldbuilding dialog.
+- On near Shopkeeper interact: show Shopkeeper worldbuilding dialog.
+- On near Smith interact: show Smith worldbuilding dialog.
+- On Portal body entered by Player: show prompt to enter Starter Area.
+- On portal Yes: record `res://scenes/starter_area.tscn` as requested scene path and keep prompt visible.
+- On portal No: prompt disappears without changing scene.
 
 Future conditions:
 
@@ -297,7 +310,7 @@ Future conditions:
 
 Player can:
 
-- move if no dialog/game over open
+- move by clicking ground if no dialog/game over open
 - talk to Guildmaster, Shopkeeper, Smith
 - leave to Starter Area through glowing portal
 
@@ -321,6 +334,9 @@ Player cannot:
 - Portal: glowing blue/green ring with `Starter Area` label.
 - Interactable NPC zones: faint yellow rings.
 - HUD/dialog: dark translucent or parchment-like rectangles.
+- Dialog pages split on blank lines and advance with `Next`.
+- World primitive `Control` nodes use `mouse_filter = ignore` so ground clicks reach Town movement.
+- Project viewport: 1920×1080.
 
 Color language:
 
@@ -379,11 +395,16 @@ Player can:
 
 1. Start in Town.
 2. Show reborn prompt.
-3. See Shop, Swordsman Guild, Blacksmith, and glowing Starter Area Portal.
-4. Talk to Guildmaster for rebuilding hope dialog.
-5. Talk to Shopkeeper for ordinary-life dialog.
-6. Talk to Smith for old-tools dialog.
-7. Use glowing portal to enter Starter Area.
+3. Click ground to move around Town; camera follows Player.
+4. See Shop, Swordsman Guild, Blacksmith, and glowing Starter Area Portal in 1080p viewport.
+5. Click an NPC from far away; Player approaches before dialog opens.
+6. Talk to Guildmaster for paged rebuilding hope dialog.
+7. Talk to Shopkeeper for paged ordinary-life dialog.
+8. Talk to Smith for paged old-tools dialog.
+9. Use `Next` to advance dialog pages; use `Close` to exit dialog.
+10. Walk into glowing portal.
+11. Portal prompt appears: `Enter Starter Area?` with Yes/No buttons.
+12. Yes records Starter Area target; No hides prompt.
 
 ## Tests
 
@@ -399,3 +420,15 @@ Player can:
 - [ ] Shopkeeper dialog matches first-slice worldbuilding text.
 - [ ] Smith dialog matches first-slice worldbuilding text.
 - [ ] Portal prompts for Starter Area transition.
+- [ ] Portal prompt starts hidden.
+- [ ] Player entering portal shows prompt.
+- [ ] Portal request records Starter Area target path.
+- [ ] Dialog close signal hides dialog.
+- [ ] Dialog Next button advances pages.
+- [ ] Click-to-move works while dialog closed.
+- [ ] Dialog blocks click-to-move.
+- [ ] Far NPC click moves Player toward NPC without opening dialog immediately.
+- [ ] Pending NPC dialog opens when Player reaches talk range.
+- [ ] Camera follows Player with RO-style offset.
+- [ ] Project viewport is 1920×1080.
+- [ ] World primitives ignore mouse input so ground click-to-move works.
