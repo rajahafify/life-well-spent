@@ -59,30 +59,18 @@ func test_field_has_player_camera_gateways_and_objective() -> void:
 		assert_true(objective.visible)
 
 
-func test_field_has_chick_rabbit_slime_placeholders() -> void:
+func test_field_has_no_enemy_nodes_or_combat_hud_while_enemy_system_is_reset() -> void:
 	if root == null:
 		return
-	for enemy_name in ["Chick", "Rabbit", "Slime"]:
-		var enemy := root.get_node_or_null("Enemies/%s" % enemy_name)
-		assert_not_null(enemy, "Field should have %s placeholder" % enemy_name)
-		if enemy:
-			assert_true(enemy.has_meta("enemy_id"), "%s should expose enemy_id metadata" % enemy_name)
+	assert_null(root.get_node_or_null("Enemies"), "Field should have no enemy container while EnemySystem is being rebuilt")
+	assert_null(root.get_node_or_null("UI/CombatHud"), "Field should not show combat HUD while EnemySystem is being rebuilt")
 
 
-func test_field_enemies_use_svg_placeholder_art() -> void:
+func test_field_controller_has_no_enemy_combat_api_while_enemy_system_is_reset() -> void:
 	if root == null:
 		return
-	var expected_paths := {
-		"Chick": "res://assets/enemies/chick.svg",
-		"Rabbit": "res://assets/enemies/rabbit.svg",
-		"Slime": "res://assets/enemies/slime.svg",
-	}
-	for enemy_name in expected_paths.keys():
-		var visual := root.get_node("Enemies/%s/Visual" % enemy_name) as TextureRect
-		assert_not_null(visual, "%s should use TextureRect SVG art" % enemy_name)
-		if visual:
-			assert_not_null(visual.texture, "%s SVG texture should be assigned" % enemy_name)
-			assert_eq(expected_paths[enemy_name], visual.texture.resource_path)
+	assert_false(root.has_method("attack_enemy"), "Field controller should not expose stale enemy attack API")
+	assert_false(root.has_method("_connect_enemies"), "Field controller should not connect stale enemies")
 
 
 func test_field_has_forest_guard_dialog_copy() -> void:
@@ -108,9 +96,6 @@ func test_world_primitives_ignore_mouse_so_ground_clicks_move() -> void:
 		"TownGateway/Visual",
 		"Props/Rock",
 		"Props/Bush",
-		"Enemies/Chick/Visual",
-		"Enemies/Rabbit/Visual",
-		"Enemies/Slime/Visual",
 	]:
 		var control := root.get_node(node_path) as Control
 		assert_eq(Control.MOUSE_FILTER_IGNORE, control.mouse_filter, "%s should not consume ground clicks" % node_path)
@@ -195,14 +180,3 @@ func test_forest_gateway_stays_blocked_and_opens_guard_dialog() -> void:
 	assert_eq("", root.requested_scene_path)
 	var dialog = root.get_node("UI/DialogPanel")
 	assert_true(dialog.visible)
-
-
-func test_clicking_enemy_runs_combat_and_grants_xp_on_defeat() -> void:
-	if root == null:
-		return
-	var chick = root.get_node("Enemies/Chick")
-	root.player_combat_state = {"combat_hp": 20, "attack": 5, "defense": 0, "life": 100, "xp": 0}
-	root.attack_enemy(chick)
-	assert_true(chick.visible == false or chick.get_meta("defeated") == true)
-	assert_eq(2, root.player_combat_state["xp"])
-	assert_eq(100, root.player_combat_state["life"])

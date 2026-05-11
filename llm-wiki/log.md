@@ -279,3 +279,47 @@
 - Removed stale UID from `tests/test_runner.tscn` ext_resource so headless runs do not warn and fall back to text path.
 - Updated player movement wiki docs.
 - Validation: `203 tests, 203 passed, 0 failed`.
+
+## [2026-05-11] feat | Enemy art registry and Slime spritesheet integration
+
+- Created `assets/assets-catalog.md` with enemy sprite integration tasks and current asset list.
+- RED: added specs for `EnemyArtDefinition`, `EnemyView`, and Field Slime spritesheet wiring.
+- Created `scripts/models/enemy_art_definition.gd` for art-only enemy metadata and Field factories.
+- Created `scripts/views/enemy_view.gd` and `scenes/enemy.tscn` as reusable `Area2D` visual/click target.
+- Wired Field Slime to `assets/enemies/slime_water_blue_spritesheet.png` through `EnemyView`; Chick/Rabbit remain SVG fallbacks.
+- Updated Field scene wiki, architecture pages, and index.
+- Validation: `210 tests, 210 passed, 0 failed`; MCP play `scenes/field.tscn` reports no errors.
+
+## [2026-05-11] reset | Remove Field enemies for EnemySystem rebuild
+
+- RED: updated `tests/specs/field_scene_test.gd` to require no `Enemies` node, no `CombatHud`, and no stale Field enemy attack/connect API.
+- Removed all enemy placements from `scenes/field.tscn`.
+- Removed enemy/combat wiring from `scripts/controllers/field.gd`.
+- Removed first-pass EnemySystem implementation files/specs: `EnemyDefinition`, `RandomEnemyRespawnSystem`, `EnemyArtDefinition`, `EnemyView`, and related wiki pages.
+- Kept enemy art assets in `assets/enemies/` for future rebuild.
+- Updated `assets/assets-catalog.md`, Field prototype docs, wiki Field scene page, and index.
+
+## [2026-05-11] feat | Enemy assets viewer gallery
+
+- RED: added `tests/specs/assets_viewer_test.gd` for asset viewer scene load, recursive PNG collection, and gallery card generation.
+- Created `assets/assets-viewer.tscn`.
+- Created `assets/assets_viewer.gd` with `AssetsViewer.collect_asset_paths()` and `rebuild_gallery()`.
+- Viewer scans `res://assets/enemies` recursively and builds a scrollable thumbnail grid for PNG assets.
+- Updated `assets/assets-catalog.md`, wiki assets viewer page, index, and log.
+- Validation: `198 tests, 198 passed, 0 failed`.
+
+## [2026-05-11] feat | Focused Slime asset animation viewer
+
+- RED: added `tests/specs/slime_asset_viewer_test.gd` for focused Slime viewer scene, animation path catalog, animated cards, playback, and 64×64 frame slicing.
+- Created `assets/asset-view.tscn`.
+- Created `assets/asset_view.gd` with `SlimeAssetView`, generated `SpriteFrames`, and `AnimatedSprite2D` preview cards for idle/run/hit/jump/death/ability.
+- Updated `assets/assets-catalog.md`, wiki Slime asset view page, index, and log.
+- Validation: `202 tests, 202 passed, 0 failed`.
+
+## [2026-05-11] fix | Center Slime asset viewer animations
+
+- RED: updated `tests/specs/slime_asset_viewer_test.gd` to require each animation card to reserve a `PreviewArea` and center `AnimatedSprite2D` at `Vector2(110, 80)`.
+- Updated `assets/asset_view.gd` so animated sprites are children of a fixed preview area instead of direct VBox children, fixing clipped/overlapping previews.
+- Reduced Slime preview scale to `Vector2(2.5, 2.5)` for cleaner card fit.
+- Updated Slime asset viewer wiki docs.
+- Validation: `202 tests, 202 passed, 0 failed`.

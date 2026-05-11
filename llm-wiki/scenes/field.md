@@ -9,7 +9,7 @@ tags: [scenes, field, prototype]
 
 ## Overview
 
-`scenes/field.tscn` is playable Field MVP outside Town. Player can click-move, camera follows, enemies are visible/click-attackable, Forest path is blocked by Forest Guard, and Town gateway returns directly to Town.
+`scenes/field.tscn` is playable Field outside Town. Current reset slice has click movement, camera follow, Forest Guard blocking the Forest path, and a direct Town gateway. It intentionally contains **no enemies** while EnemySystem is being rebuilt.
 
 ## Scene Structure
 
@@ -21,14 +21,9 @@ Field (Node2D, Field)
 ├── ForestGateway
 ├── ForestBlocker
 ├── ForestGuard (NpcController, forest_guard.png)
-├── Enemies
-│   ├── Chick
-│   ├── Rabbit
-│   └── Slime
 ├── Camera2D
 └── UI
     ├── ObjectivePrompt
-    ├── CombatHud
     └── DialogPanel (TownDialogView)
 ```
 
@@ -42,27 +37,28 @@ Field (Node2D, Field)
 - handles far-click Guard approach before dialog
 - direct Town gateway request to `res://scenes/town_scene.tscn`
 - blocks Forest gateway and opens Guard warning
-- wires click attacks through `CombatSystem`
 
-## Combat
+No enemy/combat APIs are active in the controller during EnemySystem reset.
 
-Field combat uses `CombatSystem`. Enemy clicks damage HP; defeated enemies hide and grant XP. Player Life remains unchanged.
+## EnemySystem Reset
 
-## Enemy Art
+Removed from Field until rebuilt:
 
-Field enemies now use SVG placeholder art:
+- `Enemies` scene node
+- Chick/Rabbit/Slime placements
+- Combat HUD
+- Field enemy click combat methods
+- `EnemyDefinition`, `RandomEnemyRespawnSystem`, `EnemyArtDefinition`, and `EnemyView` implementation files/specs
 
-- Chick: `assets/enemies/chick.svg`
-- Rabbit: `assets/enemies/rabbit.svg`
-- Slime: `assets/enemies/slime.svg`
+Enemy art assets remain in `assets/enemies/` and future integration tasks live in `assets/assets-catalog.md`.
 
 ## Test Coverage
 
-- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, enemy SVG art, Guard dialog, movement/camera, dialog paging/movement lock, direct Town gateway, blocked Forest gateway, and enemy combat XP.
-- Model specs cover gateway, enemy, combat, respawn, NPC placement, and biome systems.
+- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, absence of enemies/combat HUD during reset, Guard dialog, movement/camera, dialog paging/movement lock, direct Town gateway, and blocked Forest gateway.
+- Gateway, NPC placement, biome, movement, and dialog systems remain covered by their model/scene specs.
 
 ## Related
 
+- `assets/assets-catalog.md`
 - `llm-wiki/scenes/town-hub.md`
-- `llm-wiki/architecture/combat-system.md`
 - `llm-wiki/architecture/gateway-definition.md`

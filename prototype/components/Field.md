@@ -35,11 +35,23 @@ Small dangers still teach first lessons.
 
 - Receive player from Town.
 - Let player move in a larger outdoor space.
-- Introduce first enemy placeholders: Chick, Rabbit, Slime.
 - Show path back to Town.
 - Show Forest path as player-facing objective.
 - Block Forest with Guard.
 - Send player back to Town with Swordsman Guild certification requirement.
+
+## EnemySystem Reset
+
+Field currently contains **no enemies** while EnemySystem is rebuilt from scratch.
+
+Removed from current Field:
+
+- Chick/Rabbit/Slime scene placements.
+- Enemy click combat.
+- Combat HUD.
+- Enemy models/views introduced by the first MVP pass.
+
+Enemy art assets remain in `assets/enemies/`. Rebuild tasks live in `assets/assets-catalog.md`.
 
 Future purpose, after MVP:
 
@@ -246,21 +258,17 @@ If HUD is deferred, Field must still show player movement, enemy placeholders, F
 
 ## Rules
 
-- Field is not safe like Town; first MVP has click-attack combat.
+- Field is currently exploration-only while EnemySystem is reset.
 - Player can move by clicking ground.
 - Player can return to Town via portal.
 - Forest is blocked in prototype.
 - Forest Guard dialog explains certification requirement.
-- Chick/Rabbit/Slime are visible placeholders with model-backed combat stats.
-- Forest Guard is dialog-only in first Field slice.
+- Forest Guard is dialog-only in current reset slice.
 - Field uses the same RO-style movement, camera, NPC, dialog, and portal systems as Town.
-
-- Enemies can engage player in combat.
-- Enemy defeat grants XP.
-- Combat affects Combat HP only, not Life.
 
 Future rules:
 
+- Rebuilt EnemySystem defines enemies, combat, rewards, and feedback.
 - Forest Guard sets `forest_gate_seen = true`.
 - Forest remains inaccessible until future slice.
 
@@ -275,7 +283,7 @@ First Field slice:
 - On far Forest Guard click: Player walks toward Guard talk point, dialog remains closed.
 - On pending Forest Guard reaching talk range: Player stops, faces Guard, Guard faces Player, paged dialog opens.
 - On Town Gateway body entered by Player: record `res://scenes/town_scene.tscn` and transition directly.
-- On enemy click: player attack damages enemy HP; defeated enemy hides and grants XP.
+- Enemy interactions are disabled until EnemySystem is rebuilt.
 
 Future conditions:
 
@@ -288,7 +296,6 @@ Player can:
 
 - move by clicking ground if no dialog/game over open
 - talk to Forest Guard
-- approach and attack enemy placeholders
 - return to Town through glowing gateway
 
 Player cannot:
@@ -309,7 +316,7 @@ Field uses primitive/SVG world art plus generated LPC character sprites.
 - Forest Edge: dark green tree wall / dense shape cluster.
 - Forest Blocker: barricade rectangles or dark collision line.
 - Town Portal: warm/blue portal with `Town` label.
-- Enemy placeholders: SVG art at `assets/enemies/chick.svg`, `assets/enemies/rabbit.svg`, and `assets/enemies/slime.svg`.
+- Enemy art assets are cataloged in `assets/assets-catalog.md` but not currently placed in Field.
 - Forest Guard: generated LPC or reused guard placeholder sprite.
 - Interactable zones: faint yellow rings.
 - HUD/dialog: same Town dialog styling.
@@ -378,9 +385,8 @@ Player can:
 5. Click Forest Guard from far away; Player approaches before dialog opens.
 6. Talk to Forest Guard for paged certification warning dialog.
 7. Use `Next` to advance dialog pages; use `Close` to exit dialog.
-8. Click enemies to damage/defeat them and gain XP without Life damage.
-9. Walk into Town Gateway.
-10. Gateway transitions directly to Town.
+8. Walk into Town Gateway.
+9. Gateway transitions directly to Town.
 
 ## Tests
 
@@ -391,9 +397,8 @@ Player can:
 - [ ] Camera exists and follows Player.
 - [ ] Town Portal exists.
 - [ ] Objective prompt displays on scene start.
-- [ ] Chick placeholder exists.
-- [ ] Rabbit placeholder exists.
-- [ ] Slime placeholder exists.
+- [ ] Enemy container is absent while EnemySystem is reset.
+- [ ] Combat HUD is absent while EnemySystem is reset.
 - [ ] Forest Edge exists.
 - [ ] Forest Blocker exists.
 - [ ] Forest Guard NPC exists.
@@ -402,5 +407,5 @@ Player can:
 - [ ] Far Forest Guard click moves Player toward Guard without opening dialog immediately.
 - [ ] Pending Guard dialog opens when Player reaches talk range.
 - [ ] Player entering Town Gateway records Town target path directly.
-- [ ] Enemy click combat damages enemies and grants XP on defeat.
+- [ ] Field controller exposes no stale enemy attack API.
 - [ ] World primitives ignore mouse input so ground click-to-move works.
