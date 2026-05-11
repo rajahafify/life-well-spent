@@ -4,10 +4,12 @@ One-page component specs for first playable prototype.
 
 System inventory lives in [`../game-systems.md`](../game-systems.md). Append it whenever a new game system is introduced or materially changed.
 
+Field development decisions live in [`../field-development-decisions.md`](../field-development-decisions.md).
+
 ## Components
 
 - `town.md` — safe base and first scene.
-- `starter_area.md` — beginner field and Forest approach.
+- `Field.md` — beginner field and Forest approach.
 - `forest_gate.md` — Guard blocker and quest unlock trigger.
 - `swordsman_guild_quest.md` — 3-step Life-spend chain.
 - `run_state.md` — single source of truth for run progression.
@@ -25,5 +27,5 @@ Spend your life to unlock the Swordsman Guild.
 ## Main Flow
 
 ```text
-Town → Starter Area → Forest Guard blocks path → Return Town → Swordsman Guild Quest x3 → Game Over → Reborn
+Town → Field → Forest Guard blocks path → Return Town → Swordsman Guild Quest x3 → Game Over → Reborn
 ```

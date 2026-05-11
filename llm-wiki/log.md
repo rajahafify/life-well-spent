@@ -252,3 +252,4 @@
 - Validation: `173 tests, 173 passed, 0 failed`; MCP play current scene reports no errors.
 - Manual QA passed: ground click movement, RO-style NPC approach, paged dialog Next/Close, dialog movement lock, camera follow, and portal Yes/No prompt.
 - Created `prototype/game-systems.md` as append-only system inventory using systemic design terms: verbs, components, resources, rules, and conditions.
+- Added `prototype/components/Field.md` and `prototype/field-development-decisions.md` documenting Field terminology, real combat scope, direct gateway transitions, model-first implementation order, Guard LPC sprite, and SVG/primitive monsters.

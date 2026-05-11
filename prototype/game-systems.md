@@ -34,36 +34,89 @@ Each system should list:
 - Shop building
 - Swordsman Guild building
 - Blacksmith building
-- Starter Area Portal
+- Field Gateway
 - UI layer
 
 ### Resources
 
 - screen space
 - world positions
-- portal target path
+- gateway target path
 
 ### Rules
 
 - Town has no combat.
 - Town starts with rebirth prompt.
 - Town contains 3 old institutions.
-- Town exits through Starter Area Portal.
+- Town exits through Field Gateway.
 - Ground clicks move player.
 - UI/dialog can block movement.
 
 ### Conditions
 
 - On scene start: show rebirth prompt.
-- On portal enter: show portal choice.
-- On Yes: record Starter Area target.
-- On No: hide prompt.
+- On Field Gateway enter: transfer to Field.
 
 ---
 
-## 2. NPC System
+## 2. Gateway System
 
-**Core idea:** RO-style NPCs are world actors: visible, clickable, talkable, facing player.
+**Core idea:** controls movement between maps/areas, including locked routes.
+
+### Verbs
+
+- Enter
+- Exit
+- Block
+- Unlock
+- Transfer
+
+### Components
+
+- Gateway
+- source map
+- target map
+- target spawn
+- prompt text if needed
+- lock state
+- unlock condition
+- optional blocker NPC/dialog
+
+### Resources
+
+- `gateway_id`
+- `source_map`
+- `target_map`
+- `target_spawn_id`
+- `is_locked`
+- `unlock_conditions`
+- `requested_scene_path`
+
+### Rules
+
+- Gateway can be open or locked.
+- Open gateway transfers map immediately.
+- Locked gateway blocks transfer.
+- Locked gateway may show dialog or hint.
+- Gateway can be portal, gate, road, cave entrance, or forest path.
+
+### Conditions
+
+- If player enters open gateway: transfer to target map/spawn.
+- If player enters locked gateway: show blocked response.
+- If unlock conditions are met: gateway becomes open.
+
+### Prototype Examples
+
+- Town → Field: open.
+- Field → Town: open.
+- Field → Forest: locked by Swordsman Guild certification.
+
+---
+
+## 3. NPC System
+
+**Core idea:** non-enemy characters are stable identities placed on maps.
 
 ### Verbs
 
@@ -71,34 +124,45 @@ Each system should list:
 - Face
 - Approach
 - Talk
+- Offer
+- Block
+- Relocate
 - Idle
 
 ### Components
 
+- NPC definition
+- NPC instance
 - `NpcController`
 - `NpcState`
 - `CharacterMovement`
-- NPC sprite
-- NPC collision
-- NPC talk radius
-- NPC metadata:
-  - display name
-  - role
-  - dialog text
+- CharacterID
+- map/location
+- sprite
+- dialog set
+- interaction radius
+- optional gateway blocker role
 
 ### Resources
 
-- NPC position
-- player position
-- talk radius
-- solid radius
-- talk stop buffer
-- facing direction
-- dialog text
+- `character_id`
+- `display_name`
+- `role`
+- `map_id`
+- `position: Vector2`
+- `facing`
+- `dialog_id`
+- `sprite_id`
+- `talk_radius`
+- `solid_radius`
+- `talk_stop_buffer`
 
 ### Rules
 
-- NPC does not open dialog from far away.
+- NPC identity is stable across maps/runs.
+- NPC placement is map + x/y.
+- NPC dialogs depend on game state.
+- NPC can block gateway if assigned to gateway.
 - Far NPC click moves player to talk point.
 - Dialog opens only inside talk range.
 - NPC faces player when talked to.
@@ -111,38 +175,52 @@ Each system should list:
 - If player clicks NPC outside talk range: player approaches.
 - If player reaches talk range: dialog opens.
 - If player clicks NPC inside talk range: dialog opens immediately.
+- If NPC has blocker role and gateway locked: show blocker dialog.
+
+### Prototype Characters
+
+- `guildmaster` in Town.
+- `shopkeeper` in Town.
+- `smith` in Town.
+- `forest_guard` in Field.
 
 ---
 
-## 3. Dialog System
+## 4. Dialog System
 
-**Core idea:** conversation UI for NPC/world text, readable at 1080p.
+**Core idea:** state-driven conversation UI for NPC/world text, readable at 1080p.
 
 ### Verbs
 
 - Show
 - Page
 - Advance
+- Choose
 - Close
+- Trigger
 - Present
 
 ### Components
 
-- `TownDialogView`
-- Dialog panel
-- Name label
-- Body label
-- Portrait texture rect
-- Next button
-- Close button
-- Hidden quest buttons for future use
+- Dialog definition
+- `TownDialogView` / shared dialog view
+- speaker
+- pages
+- portrait texture rect
+- choices/buttons
+- conditions
+- effects
 
 ### Resources
 
-- speaker name
-- dialog pages
+- `dialog_id`
+- `speaker_character_id`
+- `pages`
+- `portrait_texture`
+- `choices`
+- `conditions`
+- `effects`
 - current page index
-- portrait texture
 - button visibility
 
 ### Rules
@@ -154,19 +232,20 @@ Each system should list:
 - Dialog blocks player movement.
 - Text must be readable at 1080p.
 - Portrait appears above dialog box.
-- Portrait uses face crop from NPC LPC spritesheet.
-- Quest buttons hidden in Town first slice.
+- Portrait uses face crop from character LPC spritesheet.
+- Choices can trigger effects.
 
 ### Conditions
 
 - On dialog open: page index = 0.
 - If more pages exist: show Next.
 - If final page: hide Next.
+- If choice selected: run effect.
 - If Close pressed: hide dialog and portrait.
 
 ---
 
-## 4. Movement / Camera System
+## 5. Movement / Camera System
 
 **Core idea:** RO-style click movement with camera following player.
 
@@ -184,7 +263,7 @@ Each system should list:
 - Player `CharacterBody2D`
 - Destination
 - `Camera2D`
-- Town controller input routing
+- scene controller input routing
 
 ### Resources
 
@@ -211,7 +290,7 @@ Each system should list:
 
 ---
 
-## 5. Animation System
+## 6. Animation System
 
 **Core idea:** LPC sprites animate as calm RO-style standing/walking characters.
 
@@ -257,51 +336,199 @@ Each system should list:
 
 ---
 
-## 6. Portal System
+## 7. Combat System
 
-**Core idea:** glowing RO-style portal from Town to Starter Area.
+**Core idea:** real combat model for Field encounters.
 
 ### Verbs
 
-- Enter
-- Prompt
-- Confirm
-- Cancel
-- Request
+- Engage
+- Attack
+- Defend
+- Take Damage
+- Defeat
+- Reward
 
 ### Components
 
-- StarterAreaPortal `Area2D`
-- `CollisionShape2D`
-- portal visual
-- portal label
-- PortalPrompt label
-- Yes button
-- No button
+- `CombatSystem`
+- player combat stats
+- enemy combat stats
+- damage calculation
+- defeat result
+- reward hook
 
 ### Resources
 
-- portal visibility state
-- requested scene path
-- Starter Area path
+- player Combat HP
+- enemy HP
+- player attack
+- enemy attack
+- defense
+- XP reward
 
 ### Rules
 
-- Portal does not instantly transition.
-- Player entering portal shows prompt.
-- `Yes` records Starter Area target.
-- `No` hides prompt.
-- Actual scene transition is future work.
+- Combat affects Combat HP, not Life.
+- Player can damage enemies.
+- Enemies can damage player.
+- Enemy defeat grants reward/XP hook.
+- Life cannot be healed or damaged by Field combat.
 
 ### Conditions
 
-- If Player enters portal area: show prompt + choices.
-- If Yes pressed: `requested_scene_path = res://scenes/starter_area.tscn`.
-- If No pressed: hide prompt + choices.
+- If player attacks: enemy HP decreases.
+- If enemy attacks: Combat HP decreases.
+- If enemy HP <= 0: enemy defeated and reward hook fires.
+- If Combat HP <= 0: combat-down behavior TBD.
 
 ---
 
-## 7. Prototype Visual System
+## 8. Enemy System
+
+**Core idea:** defines enemies as map actors with identity, stats, visuals, and rewards.
+
+### Verbs
+
+- Spawn
+- Idle
+- Engage
+- Attack
+- Take Damage
+- Die
+- Reward
+
+### Components
+
+- Enemy definition
+- Enemy instance
+- sprite/visual
+- collision/hitbox
+- combat stats
+- reward table
+
+### Resources
+
+- `enemy_id`
+- `display_name`
+- `hp`
+- `attack`
+- `defense`
+- `xp_reward`
+- `spawn_position`
+- `biome_tags`
+
+### Rules
+
+- Enemies belong to a map/location.
+- Enemies can be passive/hostile later.
+- Defeated enemies grant rewards.
+- Prototype enemy set is Chick, Rabbit, Slime.
+- Prototype monster art uses SVG/primitive visuals.
+
+### Conditions
+
+- If enemy HP <= 0: enemy defeated.
+- If defeated: grant reward and notify respawn system.
+
+---
+
+## 9. Random Enemy Respawn System
+
+**Core idea:** keeps Field populated over time.
+
+### Verbs
+
+- Spawn
+- Despawn
+- Respawn
+- Roll
+- Limit
+
+### Components
+
+- spawn zone
+- enemy pool
+- spawn timer
+- max active count
+- biome filter
+
+### Resources
+
+- `spawn_zone_id`
+- `enemy_pool`
+- `respawn_interval`
+- `max_active`
+- `active_count`
+- `biome_type`
+
+### Rules
+
+- Spawn zones roll enemies from pool.
+- Active enemies cannot exceed max.
+- Dead enemies can respawn after delay.
+- Enemy pool can depend on biome.
+
+### Conditions
+
+- If active_count < max_active and timer elapsed: spawn enemy.
+- If enemy defeated: schedule respawn.
+- If player leaves map: pause or clear respawn TBD.
+
+---
+
+## 10. Biome System
+
+**Core idea:** map regions define visual style, enemy pools, props, and environmental rules.
+
+### Verbs
+
+- Define
+- Tint
+- Filter
+- Spawn
+- Signal
+
+### Components
+
+- biome definition
+- color palette
+- enemy pool
+- prop set
+- ambient rules
+- map region
+
+### Resources
+
+- `biome_type`
+- `palette`
+- `enemy_pool`
+- `prop_pool`
+- `music_id`
+- `ambient_tags`
+
+### Rules
+
+- Each map/region has biome type.
+- Biome influences enemy spawn pool.
+- Biome influences props/colors.
+- Biome can influence music/ambience later.
+
+### Conditions
+
+- If map loads: apply biome palette/props.
+- If spawn system rolls enemy: filter by biome enemy pool.
+- If player enters biome region: update ambience/UI TBD.
+
+### Prototype Biomes
+
+- Town: warm/safe.
+- Field: grassland/beginner.
+- Forest: dark/locked/danger.
+
+---
+
+## 11. Prototype Visual System
 
 **Core idea:** readable prototype art with primitives/SVG world and LPC characters.
 
@@ -317,6 +544,7 @@ Each system should list:
 - primitive `ColorRect`s
 - simple paths/buildings
 - generated LPC NPC sprites
+- SVG/primitive monsters
 - 1920×1080 viewport
 - dark/padded UI panels
 
@@ -331,13 +559,15 @@ Each system should list:
 
 - World uses primitives/SVG, not detailed tiles.
 - Characters use generated LPC sprites.
+- Field monsters use SVG/primitive visuals.
 - NPCs scale to match player.
 - Warm colors communicate Town safety.
-- Portal uses blue/green glow.
+- Field colors communicate grassland/beginner zone.
+- Forest colors communicate danger/lock.
 - Dialog uses padding and large text.
 
 ### Conditions
 
 - If object is world primitive Control: mouse filter ignore.
-- If NPC is in Town: use unique generated sprite.
+- If NPC is in Town/Field: use unique generated sprite where available.
 - If UI is dialog: use padded dark panel.
