@@ -41,10 +41,8 @@ Small dangers still teach first lessons.
 - Block Forest with Guard.
 - Send player back to Town with Swordsman Guild certification requirement.
 
-Future purpose, not first slice:
+Future purpose, after MVP:
 
-- Add simple combat.
-- Add enemy rewards/XP.
 - Add item drops.
 - Trigger `forest_gate_seen` for Town Swordsman Guild quest unlock.
 
@@ -55,8 +53,8 @@ Future purpose, not first slice:
 - Root node should be `Field`.
 - Controller script should be `scripts/controllers/field.gd`.
 - Controller class should be `class_name Field`.
-- Town portal text/target should eventually change from `Starter Area` to `Field`.
-- No `FieldModel` yet. Field-specific pure rules belong in future combat/enemy/gate models if needed.
+- Town portal text/target changed from `Starter Area` to `Field`.
+- No `FieldModel` yet. Field-specific pure rules live in combat, enemy, gateway, respawn, NPC placement, and biome models.
 
 ## Layout
 
@@ -86,12 +84,7 @@ Future purpose, not first slice:
 
 Return portal back to Town. This is the safe exit.
 
-Prompt:
-
-```text
-Return to Town?
-[Yes] [No]
-```
+Entering the Town Gateway transitions directly back to Town.
 
 ### Lower Center — Player Spawn
 
@@ -111,7 +104,7 @@ Forest Guard stands near the blocked Forest path. He blocks progression and poin
 
 ## Field Enemies
 
-All enemies are placeholders in first Field slice. Combat may be added later.
+All enemies are prototype placeholders with real click-attack combat through `CombatSystem`.
 
 ### Chick
 
@@ -183,10 +176,9 @@ Future effect:
 
 ## Devices
 
-- Town Portal interaction zone.
-- Portal body-enter trigger shows `Return to Town?` prompt.
-- Portal Yes button records Town target.
-- Portal No button hides prompt.
+- Town Gateway interaction zone.
+- Gateway body-enter transitions directly to Town.
+- Enemy click interaction runs one player attack and possible enemy counterattack.
 - Forest Gate interaction zone.
 - Forest Blocker collision.
 - Forest Guard interaction zone.
@@ -227,22 +219,26 @@ Future Field writes:
 - Block
 - Return
 
-Future verbs:
-
 - Fight
 - Attack
 - Take Damage
 - Defeat
-- Consume
 - Gain XP
+
+Future verbs:
+
+- Consume
 
 ## Resources Shown
 
-First Field slice may show:
+First Field slice shows:
 
 - objective text
 - Combat HP
 - XP
+
+Future Field may show:
+
 - equipped weapon
 - consumable count
 
@@ -250,20 +246,21 @@ If HUD is deferred, Field must still show player movement, enemy placeholders, F
 
 ## Rules
 
-- Field is not safe like Town, but first slice has no active combat yet.
+- Field is not safe like Town; first MVP has click-attack combat.
 - Player can move by clicking ground.
 - Player can return to Town via portal.
 - Forest is blocked in prototype.
 - Forest Guard dialog explains certification requirement.
-- Chick/Rabbit/Slime are visible placeholders only in first Field slice.
+- Chick/Rabbit/Slime are visible placeholders with model-backed combat stats.
 - Forest Guard is dialog-only in first Field slice.
 - Field uses the same RO-style movement, camera, NPC, dialog, and portal systems as Town.
-
-Future rules:
 
 - Enemies can engage player in combat.
 - Enemy defeat grants XP.
 - Combat affects Combat HP only, not Life.
+
+Future rules:
+
 - Forest Guard sets `forest_gate_seen = true`.
 - Forest remains inaccessible until future slice.
 
@@ -277,9 +274,8 @@ First Field slice:
 - On ground click while dialog is open: block movement.
 - On far Forest Guard click: Player walks toward Guard talk point, dialog remains closed.
 - On pending Forest Guard reaching talk range: Player stops, faces Guard, Guard faces Player, paged dialog opens.
-- On Town Portal body entered by Player: show prompt to return to Town.
-- On portal Yes: record `res://scenes/town_scene.tscn` as requested scene path and keep prompt visible.
-- On portal No: prompt disappears without changing scene.
+- On Town Gateway body entered by Player: record `res://scenes/town_scene.tscn` and transition directly.
+- On enemy click: player attack damages enemy HP; defeated enemy hides and grants XP.
 
 Future conditions:
 
@@ -292,13 +288,12 @@ Player can:
 
 - move by clicking ground if no dialog/game over open
 - talk to Forest Guard
-- approach enemy placeholders
-- return to Town through glowing portal
+- approach and attack enemy placeholders
+- return to Town through glowing gateway
 
 Player cannot:
 
 - enter Forest in first slice
-- fight enemies in first Field slice
 - take Life damage in Field
 - unlock Swordsman Guild directly from Field
 
@@ -331,10 +326,8 @@ Color language:
 
 ## First Slice Non-Goals
 
-- No combat damage.
 - No enemy AI.
 - No enemy drops.
-- No XP rewards.
 - No inventory use.
 - No playable Forest.
 - No Swordsman Guild quest chain.
@@ -345,12 +338,12 @@ Color language:
 ### Documentation
 
 - `prototype/components/Field.md` is the Field source of truth.
-- Field terminology replaces Starter Area in future docs and UI.
+- Field terminology replaces Starter Area in docs and UI.
 - Field first-slice scope and non-goals are documented here.
 
 ### Spec
 
-Future RED specs should cover root naming, controller class naming, player/camera, return portal, enemy placeholders, Forest Guard, Forest blocker, dialog copy, and objective prompt.
+RED specs cover root naming, controller class naming, player/camera, return gateway, enemy placeholders/combat, Forest Guard, Forest blocker, dialog copy, and objective prompt.
 
 ### Scene
 
@@ -385,9 +378,9 @@ Player can:
 5. Click Forest Guard from far away; Player approaches before dialog opens.
 6. Talk to Forest Guard for paged certification warning dialog.
 7. Use `Next` to advance dialog pages; use `Close` to exit dialog.
-8. Walk into Town Portal.
-9. Portal prompt appears: `Return to Town?` with Yes/No buttons.
-10. Yes records Town target; No hides prompt.
+8. Click enemies to damage/defeat them and gain XP without Life damage.
+9. Walk into Town Gateway.
+10. Gateway transitions directly to Town.
 
 ## Tests
 
@@ -408,8 +401,6 @@ Player can:
 - [ ] Forest Guard dialog is paged.
 - [ ] Far Forest Guard click moves Player toward Guard without opening dialog immediately.
 - [ ] Pending Guard dialog opens when Player reaches talk range.
-- [ ] Town Portal prompt starts hidden.
-- [ ] Player entering Town Portal shows prompt.
-- [ ] Portal Yes records Town target path.
-- [ ] Portal No hides prompt.
+- [ ] Player entering Town Gateway records Town target path directly.
+- [ ] Enemy click combat damages enemies and grants XP on defeat.
 - [ ] World primitives ignore mouse input so ground click-to-move works.

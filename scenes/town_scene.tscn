@@ -151,13 +151,13 @@ dialog_text = "I used to shape steel for adventurers.\n\nNow I mend plows, hinge
 texture = ExtResource("7_smith")
 idle_cycle_interval = 0.78
 
-[node name="StarterAreaPortal" type="Area2D" parent="."]
+[node name="FieldGateway" type="Area2D" parent="."]
 position = Vector2(1700, 820)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StarterAreaPortal"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FieldGateway"]
 shape = SubResource("CircleShape2D_portal")
 
-[node name="Visual" type="ColorRect" parent="StarterAreaPortal"]
+[node name="Visual" type="ColorRect" parent="FieldGateway"]
 mouse_filter = 2
 offset_left = -64.0
 offset_top = -64.0
@@ -165,12 +165,12 @@ offset_right = 64.0
 offset_bottom = 64.0
 color = Color(0.1, 0.8, 0.9, 0.55)
 
-[node name="Label" type="Label" parent="StarterAreaPortal"]
+[node name="Label" type="Label" parent="FieldGateway"]
 offset_left = -55.0
 offset_top = 72.0
 offset_right = 90.0
 offset_bottom = 96.0
-text = "Starter Area"
+text = "Field"
 horizontal_alignment = 1
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -185,30 +185,6 @@ offset_top = 24.0
 offset_right = 520.0
 offset_bottom = 86.0
 text = "You have been reborn.\nWill you spend this life well?"
-
-[node name="PortalPrompt" type="Label" parent="UI"]
-visible = false
-offset_left = 1480.0
-offset_top = 900.0
-offset_right = 1880.0
-offset_bottom = 940.0
-text = "Enter Starter Area?"
-horizontal_alignment = 1
-
-[node name="PortalChoices" type="HBoxContainer" parent="UI"]
-visible = false
-offset_left = 1590.0
-offset_top = 945.0
-offset_right = 1780.0
-offset_bottom = 990.0
-
-[node name="YesButton" type="Button" parent="UI/PortalChoices"]
-layout_mode = 2
-text = "Yes"
-
-[node name="NoButton" type="Button" parent="UI/PortalChoices"]
-layout_mode = 2
-text = "No"
 
 [node name="DialogPortrait" type="TextureRect" parent="UI"]
 visible = false

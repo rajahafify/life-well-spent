@@ -9,14 +9,14 @@ tags: [scenes, town, prototype]
 
 ## Overview
 
-`scenes/town_scene.tscn` is the first-slice **Town** scene for the prototype. It replaces the previous MVP town-hub task/quest UI with a systemic prototype slice: hopeful post-Demon-King worldbuilding, three old institutions, simple NPC dialog, and a glowing portal to Starter Area.
+`scenes/town_scene.tscn` is the first-slice **Town** scene for the prototype. It replaces the previous MVP town-hub task/quest UI with a systemic prototype slice: hopeful post-Demon-King worldbuilding, three old institutions, simple NPC dialog, and a direct glowing gateway to Field.
 
 First-slice goal:
 
 1. Player is reborn in Town.
-2. Player sees Shop, Swordsman Guild, Blacksmith, and Starter Area Portal.
+2. Player sees Shop, Swordsman Guild, Blacksmith, and Field Gateway.
 3. Player talks to Guildmaster, Shopkeeper, and Smith.
-4. Player exits through the portal toward Starter Area.
+4. Player exits through the gateway toward Field.
 
 ## Naming
 
@@ -42,17 +42,13 @@ Town (Node2D, Town)
 ├── Shopkeeper (NpcController, `assets/npcs/shopkeeper.png`)
 ├── Guildmaster (NpcController, `assets/npcs/guildmaster.png`)
 ├── Smith (NpcController, `assets/npcs/smith.png`)
-├── StarterAreaPortal (Area2D)
+├── FieldGateway (Area2D)
 │   ├── CollisionShape2D
 │   ├── Visual (ColorRect)
-│   └── Label — "Starter Area"
+│   └── Label — "Field"
 ├── Camera2D
 └── UI (CanvasLayer)
     ├── RebornPrompt — "You have been reborn.\nWill you spend this life well?"
-    ├── PortalPrompt — "Enter Starter Area?"
-    ├── PortalChoices
-    │   ├── YesButton
-    │   └── NoButton
     └── DialogPanel (TownDialogView)
 ```
 
@@ -106,16 +102,15 @@ Old roads have a way of calling again.
 
 `Town` is thin glue:
 
-- sets reborn prompt and portal prompt copy in `_ready()`
+- sets reborn prompt copy in `_ready()`
 - connects worldbuilding NPC `interacted(npc)` signals
 - routes ground clicks to `CharacterMovement` while dialog is closed
 - follows player with a camera offset for RO-style play
 - blocks click-to-move while dialog is open
 - handles RO-style NPC approach: far click moves to NPC talk point, near/in-range opens dialog
 - shows paged NPC dialog via `TownDialogView.show_dialog()`
-- records Starter Area transition request through portal Yes / `request_starter_area()`
-- shows portal prompt and Yes/No choices when the Player enters `StarterAreaPortal`
-- hides portal prompt when No is pressed
+- records Field transition request through `request_field()`
+- changes scene directly when the Player enters `FieldGateway`
 - hides NPC overhead names; names appear in dialog only
 - passes NPC sprite texture to `TownDialogView` for face portrait display above the dialog box
 - hides NPC dialog when `TownDialogView.close_requested` emits
@@ -135,11 +130,11 @@ Prototype Town uses primitives/SVG world art with generated LPC sprites for Play
 
 ## Tests
 
-- `tests/specs/town_prototype_test.gd` covers root/class naming, buildings, NPCs, custom NPC sprite textures, NPC scale matching player, dialog copy, reborn prompt, portal prompt, 1080p viewport, and primitive mouse filter settings.
-- `tests/specs/town_scene_dialog_test.gd` covers readable 1080p dialog text, NPC face portrait crop above the box, paged NPC dialog, RO-style far-click NPC approach, pending dialog open in talk range, camera follow, desynced NPC idle timing, hidden overhead NPC names, first-slice quest buttons hidden, click-to-move routing/blocking, dialog close behavior, portal prompt visibility, and Starter Area target request.
+- `tests/specs/town_prototype_test.gd` covers root/class naming, buildings, NPCs, custom NPC sprite textures, NPC scale matching player, dialog copy, reborn prompt, Field gateway label, 1080p viewport, and primitive mouse filter settings.
+- `tests/specs/town_scene_dialog_test.gd` covers readable 1080p dialog text, NPC face portrait crop above the box, paged NPC dialog, RO-style far-click NPC approach, pending dialog open in talk range, camera follow, desynced NPC idle timing, hidden overhead NPC names, first-slice quest buttons hidden, click-to-move routing/blocking, dialog close behavior, and direct Field gateway request.
 - `tests/specs/scene_smoke_test.gd` covers Town dialog smoke behavior.
 
-Current validation after Town rewrite: `173 tests, 173 passed, 0 failed`.
+Current validation after Field MVP: `202 tests, 202 passed, 0 failed`.
 
 Systems introduced by Town are cataloged in `prototype/game-systems.md` using systemic design terms: verbs, components, resources, rules, and conditions.
 
@@ -155,8 +150,7 @@ Passed on 2026-05-11:
 - Close hides dialog.
 - Dialog blocks movement.
 - Camera follows Player with RO-style offset.
-- Starter Area Portal shows Yes/No prompt.
-- No hides portal prompt.
+- Field Gateway transitions directly to Field.
 - Godot MCP current-scene play reports no errors.
 
 ## Related

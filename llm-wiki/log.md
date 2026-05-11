@@ -253,3 +253,13 @@
 - Manual QA passed: ground click movement, RO-style NPC approach, paged dialog Next/Close, dialog movement lock, camera follow, and portal Yes/No prompt.
 - Created `prototype/game-systems.md` as append-only system inventory using systemic design terms: verbs, components, resources, rules, and conditions.
 - Added `prototype/components/Field.md` and `prototype/field-development-decisions.md` documenting Field terminology, real combat scope, direct gateway transitions, model-first implementation order, Guard LPC sprite, and SVG/primitive monsters.
+
+## [2026-05-11] feat | Playable Field MVP
+
+- RED: added specs for gateway, enemy, combat, respawn, NPC placement, biome, Field scene, and direct Town → Field gateway behavior.
+- Created pure models: `GatewayDefinition`, `EnemyDefinition`, `CombatSystem`, `RandomEnemyRespawnSystem`, `NpcPlacement`, and `BiomeDefinition`.
+- Created `scenes/field.tscn` and `scripts/controllers/field.gd` with click movement, camera follow, direct Town gateway, blocked Forest gateway, Forest Guard dialog, Chick/Rabbit/Slime placeholders, and click-attack combat.
+- Updated Town gateway from Starter Area prompt flow to direct Field transition.
+- Generated `assets/npcs/forest_guard.png` with local LPC sprite generator.
+- Updated prototype docs and wiki pages for new models, Field scene, and Town gateway behavior.
+- Validation: `202 tests, 202 passed, 0 failed`; MCP play `scenes/field.tscn` reports no errors.

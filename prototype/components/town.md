@@ -4,7 +4,7 @@
 
 Town is safe base and first scene. The Demon King is dead, heroes won long ago, and the old starting town has grown quiet. Guilds, shops, and roads are not dead — only waiting.
 
-Player begins here after rebirth. First Town slice is about mood, orientation, and worldbuilding: talk to three NPCs, understand the old world, then enter the glowing portal to Starter Area.
+Player begins here after rebirth. First Town slice is about mood, orientation, and worldbuilding: talk to three NPCs, understand the old world, then enter the glowing gateway to Field.
 
 ## Start Prompt
 
@@ -38,7 +38,7 @@ Now someone must care for what remains.
 - Introduce post-hero world.
 - Show old Town institutions: Shop, Swordsman Guild, Blacksmith.
 - Let player talk to simple worldbuilding NPCs.
-- Provide glowing portal to Starter Area.
+- Provide glowing gateway to Field.
 
 Future purpose, not first slice:
 
@@ -70,8 +70,8 @@ Future purpose, not first slice:
 │                                              │
 │                 [Player Spawn]               │
 │                                              │
-│                            [Glowing Portal]  │
-│                             Starter Area     │
+│                            [Glowing Gateway] │
+│                             Field            │
 └──────────────────────────────────────────────┘
 ```
 
@@ -91,19 +91,12 @@ Swordsman Guild sits center and should be most visually important.
 
 Player starts lower center, facing Town. From spawn, player can see the old institutions and the portal.
 
-### Lower Right / Right Edge — Starter Area Portal
+### Lower Right / Right Edge — Field Gateway
 
-The Town exit is a glowing RO-style portal, not a physical gate.
+The Town exit is a glowing RO-style gateway. Entering it transitions directly to Field.
 
-Portal prompt:
-
-```text
-Enter Starter Area?
-[Yes] [No]
-```
-
-- Yes records/request Starter Area transition target.
-- No hides the prompt.
+- Player body entering the gateway records/requests Field transition target.
+- No confirmation prompt appears.
 
 ## Buildings and NPCs
 
@@ -199,19 +192,17 @@ Old roads have a way of calling again.
 - Guildmaster NPC with generated LPC sprite: `assets/npcs/guildmaster.png`
 - Blacksmith building
 - Smith NPC with generated LPC sprite: `assets/npcs/smith.png`
-- Glowing Starter Area Portal
+- Glowing Field Gateway
 - Swordsman Guild sign/emblem
 - Primitive paths
 
 ## Devices
 
 - NPC interaction zones for Guildmaster, Shopkeeper, and Smith.
-- Starter Area Portal interaction zone.
-- Portal body-enter trigger shows `Enter Starter Area?` prompt.
+- Field Gateway interaction zone.
+- Gateway body-enter triggers direct Field transition.
 - Dialog Next button advances paged dialog.
 - Dialog close button hides dialog.
-- Portal Yes button records Starter Area target.
-- Portal No button hides prompt.
 
 ## Town State Read/Write
 
@@ -221,7 +212,7 @@ First Town slice reads:
 
 First Town slice writes:
 
-- requested transition to Starter Area.
+- requested transition to Field.
 
 Future Town reads:
 
@@ -270,7 +261,7 @@ If HUD is deferred, Town must still show start prompt and NPC dialog.
 - No enemies in Town.
 - Player can talk to Guildmaster, Shopkeeper, and Smith.
 - NPCs are dialog-only in first slice.
-- Player can leave Town via Starter Area Portal.
+- Player can leave Town via Field Gateway.
 - Shop and Blacksmith services are not available yet.
 - Swordsman Guild quest mechanics are not active in first Town slice.
 
@@ -294,9 +285,7 @@ First Town slice:
 - On near Guildmaster interact: show Guildmaster worldbuilding dialog.
 - On near Shopkeeper interact: show Shopkeeper worldbuilding dialog.
 - On near Smith interact: show Smith worldbuilding dialog.
-- On Portal body entered by Player: show prompt to enter Starter Area.
-- On portal Yes: record `res://scenes/starter_area.tscn` as requested scene path and keep prompt visible.
-- On portal No: prompt disappears without changing scene.
+- On Field Gateway body entered by Player: record `res://scenes/field.tscn` and transition directly.
 
 Future conditions:
 
@@ -312,7 +301,7 @@ Player can:
 
 - move by clicking ground if no dialog/game over open
 - talk to Guildmaster, Shopkeeper, Smith
-- leave to Starter Area through glowing portal
+- leave to Field through glowing gateway
 
 Player cannot:
 
@@ -333,7 +322,7 @@ Town uses primitive/SVG world art plus generated LPC character sprites for Playe
 - Guild: largest/center building with sword/guild emblem SVG.
 - Shop: warm storefront, apple/sign SVG optional.
 - Blacksmith: darker building, anvil/hammer SVG optional.
-- Portal: glowing blue/green ring with `Starter Area` label.
+- Portal: glowing blue/green ring with `Field` label.
 - Interactable NPC zones: faint yellow rings.
 - HUD/dialog: dark translucent or parchment-like rectangles.
 - Dialog text uses 1080p-readable sizes: name 28, body 30, buttons 24.
@@ -380,7 +369,7 @@ Color language:
 
 - `scenes/town_scene.tscn` remains the scene file.
 - Root node should be named `Town`.
-- Scene should contain Player, Camera, UI, three buildings, three NPCs, and Starter Area Portal.
+- Scene should contain Player, Camera, UI, three buildings, three NPCs, and Field Gateway.
 
 ### Script
 
@@ -394,24 +383,23 @@ Player can:
 
 1. Spawn in Town.
 2. Read reborn prompt.
-3. See Shop, Swordsman Guild, Blacksmith, and glowing Starter Area Portal.
+3. See Shop, Swordsman Guild, Blacksmith, and glowing Field Gateway.
 4. Talk to Guildmaster, Shopkeeper, and Smith.
-5. Use portal to request Starter Area transition.
+5. Use gateway to request Field transition.
 
 ## First Slice
 
 1. Start in Town.
 2. Show reborn prompt.
 3. Click ground to move around Town; camera follows Player.
-4. See Shop, Swordsman Guild, Blacksmith, and glowing Starter Area Portal in 1080p viewport.
+4. See Shop, Swordsman Guild, Blacksmith, and glowing Field Gateway in 1080p viewport.
 5. Click an NPC from far away; Player approaches before dialog opens.
 6. Talk to Guildmaster for paged rebuilding hope dialog.
 7. Talk to Shopkeeper for paged ordinary-life dialog.
 8. Talk to Smith for paged old-tools dialog.
 9. Use `Next` to advance dialog pages; use `Close` to exit dialog.
-10. Walk into glowing portal.
-11. Portal prompt appears: `Enter Starter Area?` with Yes/No buttons.
-12. Yes records Starter Area target; No hides prompt.
+10. Walk into glowing Field gateway.
+11. Gateway records Field target and transitions directly.
 
 ## Tests
 
@@ -421,15 +409,13 @@ Player can:
 - [ ] Player spawns lower center.
 - [ ] Shop, Swordsman Guild, and Blacksmith buildings exist.
 - [ ] Shopkeeper, Guildmaster, and Smith NPCs exist.
-- [ ] Starter Area Portal exists.
+- [ ] Field Gateway exists.
 - [ ] Reborn prompt displays on scene start.
 - [ ] Guildmaster dialog matches first-slice worldbuilding text.
 - [ ] Shopkeeper dialog matches first-slice worldbuilding text.
 - [ ] Smith dialog matches first-slice worldbuilding text.
-- [ ] Portal prompts for Starter Area transition.
-- [ ] Portal prompt starts hidden.
-- [ ] Player entering portal shows prompt.
-- [ ] Portal request records Starter Area target path.
+- [ ] Player entering Field Gateway requests Field target path directly.
+- [ ] Confirmation prompt/choices are absent.
 - [ ] Dialog close signal hides dialog.
 - [ ] Dialog Next button advances pages.
 - [ ] Dialog text is readable at 1080p.

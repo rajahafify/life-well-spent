@@ -4,12 +4,12 @@
 class_name TestTownSceneDialog
 extends TestCase
 
-var root: Town
+var root: Node
 
 
 func setup() -> void:
 	var scene: PackedScene = load("res://scenes/town_scene.tscn")
-	root = scene.instantiate() as Town
+	root = scene.instantiate()
 	root._ready()
 
 
@@ -151,7 +151,7 @@ func test_camera_follows_player_with_ro_style_offset() -> void:
 	var camera: Camera2D = root.get_node("Camera2D") as Camera2D
 	player.global_position = Vector2(1200, 700)
 	root._physics_process(0.016)
-	assert_eq(player.global_position + Town.CAMERA_OFFSET, camera.global_position)
+	assert_eq(player.global_position + Vector2(0, -150), camera.global_position)
 
 
 func test_town_npc_idle_animation_has_distinct_timing() -> void:
@@ -172,36 +172,12 @@ func test_close_button_signal_hides_dialog() -> void:
 	assert_false(dialog.visible)
 
 
-func test_portal_prompt_starts_hidden() -> void:
-	var prompt: Label = root.get_node("UI/PortalPrompt") as Label
-	var choices: Control = root.get_node("UI/PortalChoices") as Control
-	assert_false(prompt.visible)
-	assert_false(choices.visible)
-
-
-func test_portal_yes_button_records_starter_area_target() -> void:
-	root.show_portal_prompt()
-	var yes: Button = root.get_node("UI/PortalChoices/YesButton") as Button
-	yes.pressed.emit()
-	var prompt: Label = root.get_node("UI/PortalPrompt") as Label
-	assert_eq(Town.STARTER_AREA_PATH, root.requested_scene_path)
-	assert_true(prompt.visible)
-
-
-func test_portal_body_entered_shows_prompt_and_choices() -> void:
+func test_field_gateway_body_entered_requests_field_directly() -> void:
 	var player: Node = root.get_node("Player")
-	root._on_starter_area_portal_body_entered(player)
-	var prompt: Label = root.get_node("UI/PortalPrompt") as Label
-	var choices: Control = root.get_node("UI/PortalChoices") as Control
-	assert_true(prompt.visible)
-	assert_true(choices.visible)
+	root._on_field_gateway_body_entered(player)
+	assert_eq("res://scenes/field.tscn", root.requested_scene_path)
 
 
-func test_portal_no_button_hides_prompt() -> void:
-	root.show_portal_prompt()
-	var no: Button = root.get_node("UI/PortalChoices/NoButton") as Button
-	no.pressed.emit()
-	var prompt: Label = root.get_node("UI/PortalPrompt") as Label
-	var choices: Control = root.get_node("UI/PortalChoices") as Control
-	assert_false(prompt.visible)
-	assert_false(choices.visible)
+func test_field_gateway_uses_direct_transition_without_prompt() -> void:
+	assert_null(root.get_node_or_null("UI/PortalChoices"), "direct gateways should not show confirmation choices")
+	assert_null(root.get_node_or_null("UI/PortalPrompt"), "direct gateways should not show confirmation prompt")

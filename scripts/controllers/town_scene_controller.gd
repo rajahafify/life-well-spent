@@ -3,16 +3,12 @@
 class_name Town
 extends Node2D
 
-const STARTER_AREA_PATH := "res://scenes/starter_area.tscn"
+const FIELD_PATH := "res://scenes/field.tscn"
 const CAMERA_OFFSET := Vector2(0, -150)
 
 @onready var _dialog_view: TownDialogView = $UI/DialogPanel
-@onready var _portal_prompt: Label = $UI/PortalPrompt
-@onready var _portal_choices: Control = $UI/PortalChoices
-@onready var _portal_yes_button: Button = $UI/PortalChoices/YesButton
-@onready var _portal_no_button: Button = $UI/PortalChoices/NoButton
 @onready var _reborn_prompt: Label = $UI/RebornPrompt
-@onready var _starter_area_portal: Area2D = $StarterAreaPortal
+@onready var _field_gateway: Area2D = $FieldGateway
 @onready var _player: CharacterBody2D = $Player
 
 var requested_scene_path: String = ""
@@ -21,12 +17,9 @@ var _pending_npc: NpcController
 
 func _ready() -> void:
 	_reborn_prompt.text = "You have been reborn.\nWill you spend this life well?"
-	_portal_prompt.text = "Enter Starter Area?"
-	hide_portal_prompt()
 	_dialog_view.hide_dialog()
 	_connect_dialog()
 	_connect_portal()
-	_connect_portal_buttons()
 	_connect_worldbuilding_npcs()
 	_update_camera()
 
@@ -38,15 +31,8 @@ func _connect_dialog() -> void:
 
 
 func _connect_portal() -> void:
-	if _starter_area_portal and not _starter_area_portal.body_entered.is_connected(_on_starter_area_portal_body_entered):
-		_starter_area_portal.body_entered.connect(_on_starter_area_portal_body_entered)
-
-
-func _connect_portal_buttons() -> void:
-	if _portal_yes_button and not _portal_yes_button.pressed.is_connected(_on_portal_yes_pressed):
-		_portal_yes_button.pressed.connect(_on_portal_yes_pressed)
-	if _portal_no_button and not _portal_no_button.pressed.is_connected(hide_portal_prompt):
-		_portal_no_button.pressed.connect(hide_portal_prompt)
+	if _field_gateway and not _field_gateway.body_entered.is_connected(_on_field_gateway_body_entered):
+		_field_gateway.body_entered.connect(_on_field_gateway_body_entered)
 
 
 func _connect_worldbuilding_npcs() -> void:
@@ -96,28 +82,15 @@ func move_player_to(target: Vector2) -> bool:
 	return true
 
 
-func request_starter_area() -> void:
-	requested_scene_path = STARTER_AREA_PATH
-	show_portal_prompt()
+func request_field() -> void:
+	requested_scene_path = FIELD_PATH
+	if is_inside_tree():
+		get_tree().change_scene_to_file(FIELD_PATH)
 
 
-func show_portal_prompt() -> void:
-	_portal_prompt.visible = true
-	_portal_choices.visible = true
-
-
-func hide_portal_prompt() -> void:
-	_portal_prompt.visible = false
-	_portal_choices.visible = false
-
-
-func _on_portal_yes_pressed() -> void:
-	request_starter_area()
-
-
-func _on_starter_area_portal_body_entered(body: Node) -> void:
+func _on_field_gateway_body_entered(body: Node) -> void:
 	if body.name == "Player":
-		show_portal_prompt()
+		request_field()
 
 
 func close_dialog() -> void:

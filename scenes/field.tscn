@@ -1,0 +1,301 @@
+[gd_scene load_steps=14 format=3]
+
+[ext_resource type="Script" path="res://scripts/controllers/field.gd" id="1_field"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/npc.tscn" id="3_npc"]
+[ext_resource type="Script" path="res://scripts/views/town_dialog_view.gd" id="4_dialog"]
+[ext_resource type="Texture2D" path="res://assets/npcs/forest_guard.png" id="5_guard"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog"]
+content_margin_left = 28.0
+content_margin_top = 22.0
+content_margin_right = 28.0
+content_margin_bottom = 22.0
+bg_color = Color(0.08, 0.10, 0.07, 0.92)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gateway"]
+radius = 64.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_enemy"]
+radius = 42.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_forest_gate"]
+size = Vector2(180, 90)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_blocker"]
+size = Vector2(520, 70)
+
+[node name="Field" type="Node2D"]
+script = ExtResource("1_field")
+
+[node name="Ground" type="ColorRect" parent="."]
+mouse_filter = 2
+offset_left = -128.0
+offset_top = -128.0
+offset_right = 2048.0
+offset_bottom = 1208.0
+color = Color(0.36, 0.72, 0.24, 1)
+
+[node name="Paths" type="Node2D" parent="."]
+
+[node name="MainPath" type="ColorRect" parent="Paths"]
+mouse_filter = 2
+offset_left = 200.0
+offset_top = 785.0
+offset_right = 1040.0
+offset_bottom = 865.0
+color = Color(0.45, 0.28, 0.12, 1)
+
+[node name="ForestPath" type="ColorRect" parent="Paths"]
+mouse_filter = 2
+offset_left = 1000.0
+offset_top = 260.0
+offset_right = 1530.0
+offset_bottom = 355.0
+color = Color(0.45, 0.28, 0.12, 1)
+
+[node name="ForestEdge" type="ColorRect" parent="."]
+mouse_filter = 2
+offset_left = -128.0
+offset_top = -128.0
+offset_right = 2048.0
+offset_bottom = 205.0
+color = Color(0.05, 0.22, 0.08, 1)
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Rock" type="ColorRect" parent="Props"]
+mouse_filter = 2
+offset_left = 690.0
+offset_top = 500.0
+offset_right = 760.0
+offset_bottom = 555.0
+color = Color(0.42, 0.43, 0.40, 1)
+
+[node name="Bush" type="ColorRect" parent="Props"]
+mouse_filter = 2
+offset_left = 1210.0
+offset_top = 575.0
+offset_right = 1305.0
+offset_bottom = 650.0
+color = Color(0.10, 0.42, 0.14, 1)
+
+[node name="GrassPatch" type="ColorRect" parent="Props"]
+mouse_filter = 2
+offset_left = 420.0
+offset_top = 430.0
+offset_right = 520.0
+offset_bottom = 475.0
+color = Color(0.24, 0.60, 0.18, 1)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(620, 790)
+scale = Vector2(2, 2)
+
+[node name="TownGateway" type="Area2D" parent="."]
+position = Vector2(215, 830)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TownGateway"]
+shape = SubResource("CircleShape2D_gateway")
+
+[node name="Visual" type="ColorRect" parent="TownGateway"]
+mouse_filter = 2
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 64.0
+offset_bottom = 64.0
+color = Color(0.1, 0.8, 0.9, 0.55)
+
+[node name="Label" type="Label" parent="TownGateway"]
+offset_left = -48.0
+offset_top = 72.0
+offset_right = 48.0
+offset_bottom = 98.0
+text = "Town"
+horizontal_alignment = 1
+
+[node name="ForestGateway" type="Area2D" parent="."]
+position = Vector2(1500, 305)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ForestGateway"]
+shape = SubResource("RectangleShape2D_forest_gate")
+
+[node name="ForestBlocker" type="StaticBody2D" parent="."]
+position = Vector2(1500, 245)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ForestBlocker"]
+shape = SubResource("RectangleShape2D_blocker")
+
+[node name="Visual" type="ColorRect" parent="ForestBlocker"]
+mouse_filter = 2
+offset_left = -260.0
+offset_top = -35.0
+offset_right = 260.0
+offset_bottom = 35.0
+color = Color(0.18, 0.10, 0.08, 1)
+
+[node name="ForestGuard" parent="." instance=ExtResource("3_npc")]
+position = Vector2(1500, 385)
+scale = Vector2(2, 2)
+display_name = "Forest Guard"
+talk_radius = 140.0
+solid_radius = 40.0
+talk_stop_buffer = 60.0
+role = "forest_guard"
+dialog_text = "Stop.\n\nThe Demon King is gone.\nBut old places do not become safe overnight.\n\nThe Forest remembers what we forgot.\nReturn to Town.\nEarn certification from the Swordsman Guild."
+
+[node name="Sprite" parent="ForestGuard"]
+texture = ExtResource("5_guard")
+idle_cycle_interval = 0.95
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Chick" type="Area2D" parent="Enemies"]
+position = Vector2(430, 610)
+metadata/enemy_id = "chick"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/Chick"]
+shape = SubResource("CircleShape2D_enemy")
+
+[node name="Visual" type="ColorRect" parent="Enemies/Chick"]
+mouse_filter = 2
+offset_left = -32.0
+offset_top = -28.0
+offset_right = 32.0
+offset_bottom = 28.0
+color = Color(1, 0.88, 0.18, 1)
+
+[node name="Label" type="Label" parent="Enemies/Chick"]
+offset_left = -34.0
+offset_top = 36.0
+offset_right = 34.0
+offset_bottom = 60.0
+text = "Chick"
+horizontal_alignment = 1
+
+[node name="Rabbit" type="Area2D" parent="Enemies"]
+position = Vector2(1420, 690)
+metadata/enemy_id = "rabbit"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/Rabbit"]
+shape = SubResource("CircleShape2D_enemy")
+
+[node name="Visual" type="ColorRect" parent="Enemies/Rabbit"]
+mouse_filter = 2
+offset_left = -38.0
+offset_top = -30.0
+offset_right = 38.0
+offset_bottom = 30.0
+color = Color(0.92, 0.92, 0.86, 1)
+
+[node name="Label" type="Label" parent="Enemies/Rabbit"]
+offset_left = -44.0
+offset_top = 38.0
+offset_right = 44.0
+offset_bottom = 62.0
+text = "Rabbit"
+horizontal_alignment = 1
+
+[node name="Slime" type="Area2D" parent="Enemies"]
+position = Vector2(910, 400)
+metadata/enemy_id = "slime"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/Slime"]
+shape = SubResource("CircleShape2D_enemy")
+
+[node name="Visual" type="ColorRect" parent="Enemies/Slime"]
+mouse_filter = 2
+offset_left = -48.0
+offset_top = -26.0
+offset_right = 48.0
+offset_bottom = 26.0
+color = Color(0.08, 0.75, 0.30, 0.95)
+
+[node name="Label" type="Label" parent="Enemies/Slime"]
+offset_left = -38.0
+offset_top = 36.0
+offset_right = 38.0
+offset_bottom = 60.0
+text = "Slime"
+horizontal_alignment = 1
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(620, 640)
+enabled = true
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="ObjectivePrompt" type="Label" parent="UI"]
+offset_left = 28.0
+offset_top = 24.0
+offset_right = 620.0
+offset_bottom = 70.0
+theme_override_font_sizes/font_size = 30
+text = "Objective: Find the Forest path."
+
+[node name="CombatHud" type="Label" parent="UI"]
+offset_left = 28.0
+offset_top = 72.0
+offset_right = 340.0
+offset_bottom = 108.0
+theme_override_font_sizes/font_size = 24
+text = "Combat HP: 20    XP: 0"
+
+[node name="DialogPortrait" type="TextureRect" parent="UI"]
+visible = false
+offset_left = 585.0
+offset_top = 545.0
+offset_right = 705.0
+offset_bottom = 665.0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DialogPanel" type="PanelContainer" parent="UI"]
+visible = false
+offset_left = 560.0
+offset_top = 720.0
+offset_right = 1360.0
+offset_bottom = 1020.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dialog")
+script = ExtResource("4_dialog")
+
+[node name="VBox" type="VBoxContainer" parent="UI/DialogPanel"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="UI/DialogPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "NPC"
+
+[node name="BodyLabel" type="Label" parent="UI/DialogPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+autowrap_mode = 3
+text = "Hello."
+
+[node name="Buttons" type="HBoxContainer" parent="UI/DialogPanel/VBox"]
+layout_mode = 2
+
+[node name="AcceptQuestButton" type="Button" parent="UI/DialogPanel/VBox/Buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Accept"
+
+[node name="CompleteQuestButton" type="Button" parent="UI/DialogPanel/VBox/Buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Complete"
+
+[node name="NextButton" type="Button" parent="UI/DialogPanel/VBox/Buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Next"
+
+[node name="CloseButton" type="Button" parent="UI/DialogPanel/VBox/Buttons"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Close"

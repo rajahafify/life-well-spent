@@ -55,7 +55,7 @@ func test_town_scene_first_slice_dialog_opens() -> void:
 	assert_not_null(scene, "town scene should load")
 	if scene == null:
 		return
-	var root: Town = scene.instantiate() as Town
+	var root: Node = scene.instantiate()
 	root._ready()
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)

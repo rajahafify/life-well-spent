@@ -8,8 +8,7 @@ const TOWN_SCENE := "res://scenes/town_scene.tscn"
 const TOWN_SCRIPT := "res://scripts/controllers/town_scene_controller.gd"
 
 const REBORN_PROMPT := "You have been reborn.\nWill you spend this life well?"
-const PORTAL_LABEL := "Starter Area"
-const PORTAL_PROMPT := "Enter Starter Area?"
+const PORTAL_LABEL := "Field"
 
 const GUILDMASTER_DIALOG := "The Swordsman Guild still stands.\n\nNot as it was.\nThe halls are quiet, and the old names fade from the register.\n\nBut a guild is not stone or banners.\nIt lives when someone chooses the path.\n\nPerhaps one day, someone will help me raise it again."
 
@@ -64,11 +63,11 @@ func test_town_has_three_worldbuilding_npcs() -> void:
 	root.free()
 
 
-func test_town_has_starter_area_portal() -> void:
+func test_town_has_field_gateway() -> void:
 	var root := _instantiate_town()
 	if root == null:
 		return
-	assert_not_null(root.get_node_or_null("StarterAreaPortal"), "Town should have glowing Starter Area portal")
+	assert_not_null(root.get_node_or_null("FieldGateway"), "Town should have glowing Field gateway")
 	root.free()
 
 
@@ -103,7 +102,7 @@ func test_world_primitives_ignore_mouse_so_ground_clicks_move() -> void:
 		"Buildings/Shop",
 		"Buildings/SwordsmanGuild",
 		"Buildings/Blacksmith",
-		"StarterAreaPortal/Visual",
+		"FieldGateway/Visual",
 	]:
 		var control := root.get_node(node_path) as Control
 		assert_eq(Control.MOUSE_FILTER_IGNORE, control.mouse_filter, "%s should not consume ground clicks" % node_path)
@@ -129,18 +128,14 @@ func test_town_scene_uses_1080p_viewport_settings() -> void:
 	assert_true(source.contains("window/size/viewport_height=1080"), "viewport height should be 1080")
 
 
-func test_starter_area_portal_label_and_prompt_copy() -> void:
+func test_field_gateway_label_copy() -> void:
 	var root := _instantiate_town()
 	if root == null:
 		return
-	var label := root.get_node_or_null("StarterAreaPortal/Label") as Label
-	var prompt := root.get_node_or_null("UI/PortalPrompt") as Label
-	assert_not_null(label, "Starter Area portal should have label")
-	assert_not_null(prompt, "Town should define portal prompt copy")
+	var label := root.get_node_or_null("FieldGateway/Label") as Label
+	assert_not_null(label, "Field gateway should have label")
 	if label:
 		assert_eq(PORTAL_LABEL, label.text)
-	if prompt:
-		assert_eq(PORTAL_PROMPT, prompt.text)
 	root.free()
 
 
