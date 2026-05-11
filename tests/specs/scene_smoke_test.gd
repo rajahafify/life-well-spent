@@ -50,16 +50,15 @@ func test_npc_scene_collision_and_talk_range_radii() -> void:
 	root.free()
 
 
-func test_town_scene_npc_interaction_updates_quest_label() -> void:
+func test_town_scene_first_slice_dialog_opens() -> void:
 	var scene: PackedScene = load("res://scenes/town_scene.tscn")
 	assert_not_null(scene, "town scene should load")
 	if scene == null:
 		return
-	var root: TownSceneController = scene.instantiate() as TownSceneController
+	var root: Town = scene.instantiate() as Town
 	root._ready()
-	var npc: NpcController = root.get_node("QuestGiver") as NpcController
-	root.get_player().global_position = npc.global_position + Vector2(40, 0)
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	npc.interacted.emit(npc)
-	var label: Label = root.get_node("UI/QuestLabel") as Label
-	assert_eq("Talking to: QuestGiver", label.text)
+	var label: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
+	assert_eq("Guildmaster", label.text)
 	root.free()

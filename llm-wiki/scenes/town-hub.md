@@ -1,121 +1,138 @@
 ---
-title: Town Hub Scene
+title: Town Scene
 type: reference
 updated: 2026-05-11
-tags: [scenes, hub, player]
+tags: [scenes, town, prototype]
 ---
 
-# Town Hub Scene
+# Town Scene
 
 ## Overview
-The town hub is the central gameplay area where players interact with the world. Features a 1280×720 room with a player character, stats overlay, daily task panel, settings panel, static NPCs, RO-style approach-to-talk interaction, modal dialog/quest UI, and deterministic cleanup for owned model objects.
+
+`scenes/town_scene.tscn` is the first-slice **Town** scene for the prototype. It replaces the previous MVP town-hub task/quest UI with a systemic prototype slice: hopeful post-Demon-King worldbuilding, three old institutions, simple NPC dialog, and a glowing portal to Starter Area.
+
+First-slice goal:
+
+1. Player is reborn in Town.
+2. Player sees Shop, Swordsman Guild, Blacksmith, and Starter Area Portal.
+3. Player talks to Guildmaster, Shopkeeper, and Smith.
+4. Player exits through the portal toward Starter Area.
+
+## Naming
+
+- Scene file: `scenes/town_scene.tscn`
+- Root node: `Town`
+- Controller script: `scripts/controllers/town_scene_controller.gd`
+- Controller class: `Town`
+- No `TownModel` yet; future pure rules belong in `RunState`, inventory, combat, and quest-chain models.
 
 ## Scene Structure
-```
-TownScene (Node2D)
-├── Background (ColorRect) — 1280×720, Color(0.15, 0.12, 0.1)
-├── UI (CanvasLayer)
-│   ├── StatsTitle (Label) — "Stats" title
-│   ├── HPLabel (Label) — "HP: 100 / 100"
-│   ├── QuestLabel (Label) — "Quests: 0 active"
-│   ├── DailyTaskPanel (PanelContainer) — task buttons + XP label
-│   ├── SettingsPanel (PanelContainer) — options overlay
-│   └── DialogPanel (PanelContainer, TownDialogView) — NPC name/body + quest buttons
-├── Player (CharacterBody2D) — instanced from player.tscn, scale 2×
-├── DestinationMarker (Sprite2D)
+
+```text
+Town (Node2D, Town)
+├── Ground (ColorRect)
+├── Paths (Node2D)
+│   ├── MainPath (ColorRect)
+│   └── PortalPath (ColorRect)
+├── Buildings (Node2D)
+│   ├── Shop (ColorRect)
+│   ├── SwordsmanGuild (ColorRect)
+│   └── Blacksmith (ColorRect)
+├── Player (instance: player.tscn)
+├── Shopkeeper (NpcController)
+├── Guildmaster (NpcController)
+├── Smith (NpcController)
+├── StarterAreaPortal (Area2D)
+│   ├── CollisionShape2D
+│   ├── Visual (ColorRect)
+│   └── Label — "Starter Area"
 ├── Camera2D
-├── QuestGiver (NpcController)
-├── Vendor (NpcController)
-└── Guard (NpcController)
+└── UI (CanvasLayer)
+    ├── RebornPrompt — "You have been reborn.\nWill you spend this life well?"
+    ├── PortalPrompt — "Enter Starter Area?"
+    └── DialogPanel (TownDialogView)
 ```
 
-## Player Scene (`player.tscn`)
-```
-Player (CharacterBody2D)
-├── Sprite (Sprite2D) — player.png, hframes=13, vframes=21, script=player_movement.gd
-└── CollisionShape2D — CircleShape2D, radius=20
-```
+## NPC Dialog
 
-## Controller: TownSceneController
+### Guildmaster
 
-```gdscript
-class_name TownSceneController
-extends Node2D
+Reveals old institutions / rebuilding hope.
 
-@onready var _hp_label: Label = $UI/HPLabel
-@onready var _quest_label: Label = $UI/QuestLabel
-@onready var _title_label: Label = $UI/StatsTitle
-@onready var _dialog_view = $UI/DialogPanel
-@onready var _daily_task_list: VBoxContainer = $UI/DailyTaskPanel/VBox/TaskList
-@onready var _xp_label: Label = $UI/DailyTaskPanel/VBox/XPLabel
-@onready var _settings_panel: Control = $UI/SettingsPanel
-@onready var _player: CharacterBody2D = $Player
+```text
+The Swordsman Guild still stands.
 
-func _ready() -> void:
-    _title_label.add_theme_font_size_override("font_size", 24)
-    _connect_dialog_buttons()
-    _connect_npcs()
-    _dialog_view.hide_dialog()
-    _update_stats()
+Not as it was.
+The halls are quiet, and the old names fade from the register.
 
-func _physics_process(delta) -> void:
-    # If pending NPC is now in range, stop movement and open dialog.
+But a guild is not stone or banners.
+It lives when someone chooses the path.
 
-func _on_npc_interacted(npc) -> void:
-    # Far: set _pending_npc and move player to npc.talk_point_for(player_pos)
-    # Near: open dialog immediately.
-
-func _open_dialog(npc) -> void:
-    # Stop movement, face player/NPC, disable CharacterMovement.can_move.
-    # Delegates dialog labels/buttons to TownDialogView.show_dialog().
-
-func _on_close_dialog_pressed() -> void:
-    # Hide dialog, clear active/pending NPC, restore movement.
-
-func complete_daily_task(task_id, date) -> bool:
-    # Complete LifeTracker task through ProgressionModel, play SFX, refresh XP/quest/HP labels.
-
-func _on_options_pressed() -> void:
-    # Show settings panel.
-
-func get_player() -> CharacterBody2D:
-    return _player
-
-func _notification(NOTIFICATION_PREDELETE) -> void:
-    # Frees owned PlayerStats, QuestManager, LifeTracker, ProgressionModel, and SettingsModel.
+Perhaps one day, someone will help me raise it again.
 ```
 
-## Player Movement (`player_movement.gd`)
-- Extends Sprite2D
-- **Mouse click-to-move:** Left-click anywhere to set destination
-- Screen→world conversion via `get_global_mouse_position()`
-- LPC spritesheet: 13 columns × 21 rows, 64×64 cells
-- Walk rows: 8-11, Idle: rows 0-3
-- Destination marker: shows during movement, hides when idle
-- `can_move` flag: toggle movement on/off
+### Shopkeeper
 
-## Dialog View (`scripts/views/town_dialog_view.gd`)
-- Extends `PanelContainer` and is attached to `UI/DialogPanel`.
-- Owns dialog presentation only: name/body labels, button visibility, panel hide/show.
-- Emits `accept_quest_requested`, `complete_quest_requested`, and `close_requested` so `TownSceneController` keeps quest orchestration.
-- Provides `show_dialog(display_name, body_text, can_offer_quest, has_active_quest)`, `configure_buttons()`, `set_body()`, `hide_dialog()`, and `is_open()`.
+Reveals ordinary life worth protecting.
 
-## Design Decisions
-- **Simple background:** Solid ColorRect for now. Will be replaced with TileMap.
-- **Stats overlay:** Absolute positioned labels in top-left corner.
-- **Daily task panel:** Buttons call `complete_daily_task()` and update XP via `LifeTracker` + `ProgressionModel`.
-- **Settings panel:** Lightweight options overlay; model validation lives in `SettingsModel`.
-- **Player scale:** 2× for visibility (64px → 128px).
-- **Player movement:** Click-to-move with LPC animation rows.
+```text
+Welcome, traveler.
 
-## Specs
-- `tests/specs/town_scene_dialog_test.gd` covers dialog visibility, `TownDialogView` scene wiring, NPC metadata, quest accept/complete, pending approach, modal movement lock, close restore, mutual facing, daily task UI, XP update, and settings panel opening.
-- `tests/specs/scene_smoke_test.gd` covers town NPC interaction wiring.
+This shop once packed bags for heroes.
+Now I sell apples, candles, and thread.
+
+It is quieter, yes.
+But quiet days are worth protecting too.
+```
+
+### Smith
+
+Reveals old tools waiting / practical nostalgia.
+
+```text
+I used to shape steel for adventurers.
+
+Now I mend plows, hinges, and cooking pots.
+Honest work.
+
+Still, I keep the sword molds clean.
+Old roads have a way of calling again.
+```
+
+## Controller
+
+`Town` is thin glue:
+
+- sets reborn prompt and portal prompt copy in `_ready()`
+- connects worldbuilding NPC `interacted(npc)` signals
+- shows NPC dialog via `TownDialogView.show_dialog()`
+- records Starter Area transition request through `request_starter_area()`
+
+No quest, shop, forge, or life-spend logic is active in this slice.
+
+## Art Direction
+
+Prototype Town uses primitives/SVG only, except generated character sprites.
+
+- warm tan ground
+- brown path strips
+- rectangle buildings
+- central Swordsman Guild landmark
+- blue/green glowing portal
+- parchment/dark dialog panel
+
+## Tests
+
+- `tests/specs/town_prototype_test.gd` covers root/class naming, buildings, NPCs, dialog copy, reborn prompt, and portal prompt.
+- `tests/specs/town_scene_dialog_test.gd` covers NPC interactions opening correct worldbuilding dialog and first-slice quest buttons hidden.
+- `tests/specs/scene_smoke_test.gd` covers Town dialog smoke behavior.
+
+Current validation after Town rewrite: `146 tests, 146 passed, 0 failed`.
 
 ## Related
-- `scripts/models/player_stats.gd` — HP, level, quest state
-- `scripts/models/quest_manager.gd` — quest catalog, take/complete lifecycle
-- `scripts/models/life_tracker.gd` — daily tasks, habits, completions, streaks, XP
-- `scripts/models/progression_model.gd` — task completion rewards, linked quest completion, facility unlocks
-- `scripts/views/character_movement.gd` — movement + animation
-- `scripts/views/town_dialog_view.gd` — dialog panel presentation + button signals
+
+- `prototype/components/town.md`
+- `scripts/controllers/town_scene_controller.gd`
+- `scripts/views/town_dialog_view.gd`
+- `scripts/controllers/npc_controller.gd`
+- `scenes/npc.tscn`

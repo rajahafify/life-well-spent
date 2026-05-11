@@ -235,3 +235,12 @@
 - Created `prototype-checklists.md` with systemic design checklist, component inventory, rules, permissions, restrictions, conditions, and primitive/SVG art direction.
 - Created `prototype/components/` one-page specs for Town, Run State, Starter Area, Forest Gate, Swordsman Guild Quest, Inventory, Combat, UI, and Rebirth.
 - Created `llm-wiki/game-design/prototype-systemic-design.md` and updated wiki index.
+
+## [2026-05-11] feat | Prototype Town first slice
+
+- RED: added `tests/specs/town_prototype_test.gd` for Town root/class naming, buildings, NPCs, dialog copy, reborn prompt, and Starter Area Portal.
+- Rewrote `scenes/town_scene.tscn` as first-slice Town: Shop, Swordsman Guild, Blacksmith, Guildmaster, Shopkeeper, Smith, reborn prompt, dialog panel, and glowing portal.
+- Rewrote `scripts/controllers/town_scene_controller.gd` as `class_name Town`, thin glue for worldbuilding NPC dialog and portal transition request.
+- Updated `tests/specs/town_scene_dialog_test.gd` and `tests/specs/scene_smoke_test.gd` for first-slice systemic Town behavior.
+- Updated `prototype/components/town.md`, removed duplicate `prototype/town.md`, and updated `scenes/town-hub.md` wiki page.
+- Validation: `146 tests, 146 passed, 0 failed`.

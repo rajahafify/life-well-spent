@@ -11,7 +11,9 @@
 - [ ] Opening cinematic placeholder/TBD.
 - [ ] Player starts in Town.
 - [ ] Player talks to NPCs optionally.
-- [ ] Player leaves Town to Starter Area.
+- [ ] Player sees reborn prompt in Town.
+- [ ] Player talks to Guildmaster, Shopkeeper, and Smith for simple worldbuilding dialog.
+- [ ] Player leaves Town to Starter Area through glowing portal.
 - [ ] Player fights Chick/Rabbit/Slime optionally.
 - [ ] Player approaches Forest path.
 - [ ] Forest Guard blocks player.
@@ -141,7 +143,7 @@
 
 - [ ] Player: new adventurer seeking Forest access.
 - [ ] Forest Guard: gatekeeper who blocks Forest path.
-- [ ] Swordsman Guild NPC: certification quest giver.
+- [ ] Swordsman Guild NPC: first-slice worldbuilding NPC; later certification quest giver.
 - [ ] Vendor: optional placeholder.
 - [ ] Elder: optional theme explainer.
 - [ ] Town Guard: optional tutorial hint.
@@ -153,7 +155,7 @@
 
 - [ ] Swordsman Guild sign.
 - [ ] Swordsman Guild door/building placeholder.
-- [ ] Town exit marker/sign.
+- [ ] Glowing Starter Area portal.
 - [ ] Notice board placeholder.
 - [ ] Vendor stall placeholder.
 - [ ] Benches/crates/barrels.
@@ -171,7 +173,7 @@
 
 ## Devices
 
-- [ ] Town Exit Trigger.
+- [ ] Starter Area Portal Trigger.
 - [ ] Starter Area Return Trigger.
 - [ ] Forest Gate Trigger.
 - [ ] Forest Blocker.
@@ -280,7 +282,7 @@
   - [ ] player spawn
   - [ ] NPCs
   - [ ] Swordsman Guild NPC
-  - [ ] exit/path to Starter Area
+  - [ ] glowing portal to Starter Area
 - [ ] `Starter Area`
   - [ ] player spawn
   - [ ] Chick enemy
