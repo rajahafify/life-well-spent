@@ -3,6 +3,7 @@
 | Page | Type | Updated | Summary |
 |------|------|---------|---------|
 | [game-design/game-design](game-design/game-design.md) | synthesis | 2026-05-11 | Core loop, free quest acceptance, completion HP cost, facilities, and win condition. |
+| [game-design/prototype-systemic-design](game-design/prototype-systemic-design.md) | synthesis | 2026-05-11 | First playable prototype: Town, Starter Area, Forest Guard gate, Swordsman Guild life-spend chain, primitive/SVG art direction. |
 | [architecture/architecture](architecture/architecture.md) | decision | 2026-05-08 | MVC + SOLID architecture pattern. |
 | [architecture/spec-driven-dev](architecture/spec-driven-dev.md) | decision | 2026-05-10 | Spec-driven development workflow + TDD enforcement. |
 | [architecture/test-runner](architecture/test-runner.md) | reference | 2026-05-11 | Minitest-style GDScript spec runner — loads specs, runs tests, reports results. |

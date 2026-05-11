@@ -229,3 +229,9 @@
 - Renamed `_find_test_methods()` local `name` variable to `method_name` to avoid shadowing `Node.name` during GDScript reload.
 - Renamed `AudioManager.play_sfx(name)` parameter to `sfx_name` to avoid `Node.name` shadow warning.
 - Updated `architecture/test-runner.md` successful output example to current 155-test suite.
+
+## [2026-05-11] docs | Prototype systemic design and art direction
+
+- Created `prototype-checklists.md` with systemic design checklist, component inventory, rules, permissions, restrictions, conditions, and primitive/SVG art direction.
+- Created `prototype/components/` one-page specs for Town, Run State, Starter Area, Forest Gate, Swordsman Guild Quest, Inventory, Combat, UI, and Rebirth.
+- Created `llm-wiki/game-design/prototype-systemic-design.md` and updated wiki index.
