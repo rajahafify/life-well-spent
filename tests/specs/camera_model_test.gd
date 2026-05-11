@@ -13,6 +13,10 @@ func setup() -> void:
 	model.target_position = Vector2.ZERO
 
 
+func teardown() -> void:
+	model.free()
+
+
 # ─── Follow Target ───────────────────────────────────────────────────
 
 func test_follows_target_with_default_lerp_speed() -> void:

@@ -15,6 +15,10 @@ func setup() -> void:
 	player = PlayerStats.new()
 
 
+func teardown() -> void:
+	player.free()
+
+
 # ─── Initialization ──────────────────────────────────────────────────
 
 func test_initial_max_hp_is_100() -> void:

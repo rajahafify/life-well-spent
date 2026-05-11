@@ -11,10 +11,12 @@ signal interacted(npc)
 @export var quest_name: String = ""
 @export var quest_cost: int = 40
 @export_multiline var quest_description: String = ""
+@export var life_task_id: String = ""
 @export var talk_radius: float = 60.0
 @export var solid_radius: float = 20.0
 @export var talk_stop_buffer: float = 24.0
 @export var name_label_path: NodePath = ^"NameLabel"
+@export var definition: Resource
 
 var npc_state: NpcState
 
@@ -23,6 +25,7 @@ var _proximity: Area2D
 var _name_label: Label
 
 func _ready():
+	_apply_definition()
 	_ensure_state()
 	_character_movement = get_node_or_null(character_movement_path) as CharacterMovement
 	_proximity = get_node_or_null("Proximity") as Area2D
@@ -72,6 +75,18 @@ func talk_point_for(player_global_pos: Vector2) -> Vector2:
 func _ensure_state() -> void:
 	if npc_state == null:
 		npc_state = NpcState.new()
+
+
+func _apply_definition() -> void:
+	if definition == null:
+		return
+	display_name = definition.display_name
+	role = definition.role
+	dialog_text = definition.dialog_text
+	quest_name = definition.quest_name
+	quest_cost = definition.quest_cost
+	quest_description = definition.quest_description
+	life_task_id = definition.life_task_id
 
 
 func _resolve_player_position() -> Vector2:

@@ -15,6 +15,10 @@ func setup() -> void:
 	anim = AnimationController.new()
 
 
+func teardown() -> void:
+	anim.free()
+
+
 # ─── Initialization ──────────────────────────────────────────────────
 
 func test_initial_state_is_idle() -> void:

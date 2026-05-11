@@ -161,3 +161,22 @@ func test_dialog_open_faces_player_and_npc() -> void:
 	var movement: CharacterMovement = root.get_player().get_node("Sprite") as CharacterMovement
 	assert_eq("right", npc.npc_state.facing)
 	assert_eq(Vector2i(0, 1), movement.frame_coords)
+
+
+func test_town_scene_has_daily_task_panel() -> void:
+	var panel := root.get_node_or_null("UI/DailyTaskPanel") as PanelContainer
+	assert_not_null(panel, "town scene should include daily task panel")
+	assert_not_null(root.get_node_or_null("UI/DailyTaskPanel/VBox/TaskList"), "daily panel should include task list")
+
+
+func test_complete_daily_task_updates_xp_label() -> void:
+	root.complete_daily_task("hydrate", "2026-05-11")
+	var xp_label := root.get_node("UI/DailyTaskPanel/VBox/XPLabel") as Label
+	assert_eq("XP: 10", xp_label.text)
+
+
+func test_options_button_opens_settings_panel() -> void:
+	var panel := root.get_node("UI/SettingsPanel") as Control
+	assert_false(panel.visible)
+	root._on_options_pressed()
+	assert_true(panel.visible)

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="NpcDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/models/npc_definition.gd" id="1_npcdef"]
+
+[resource]
+script = ExtResource("1_npcdef")
+display_name = "Gardener"
+role = "facility"
+dialog_text = "Town Garden improves as your habits grow."
+facility_id = "garden"
+facility_name = "Town Garden"

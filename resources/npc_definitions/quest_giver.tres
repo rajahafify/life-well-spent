@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="NpcDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/models/npc_definition.gd" id="1_npcdef"]
+
+[resource]
+script = ExtResource("1_npcdef")
+display_name = "Quest Giver"
+role = "quest_giver"
+dialog_text = "Can you spare some life for a worthy task?"
+quest_name = "Gather Wood"
+quest_cost = 40
+quest_description = "Gather wood for the town."
+life_task_id = "gather_wood"

@@ -1,6 +1,6 @@
 # RO-Style NPC Interaction Plan
 
-**Status:** Implemented + manually QA passed — 2026-05-11. Full suite green: 126 tests, 126 passed.
+**Status:** Implemented + manually QA passed — 2026-05-11. Full suite green: 152 tests, 152 passed.
 
 ## Goal
 Change NPC interaction from instant debug-style click dialog to Ragnarok Online-style MMO interaction:

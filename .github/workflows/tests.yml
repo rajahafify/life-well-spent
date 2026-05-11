@@ -25,5 +25,13 @@ jobs:
           unzip -o godot.zip
           chmod +x Godot_v*linux.x86_64
 
-      - name: Run test runner
-        run: ./Godot_v*linux.x86_64 --headless --quit tests/test_runner.tscn
+      - name: Run test runner and check output
+        run: |
+          set -o pipefail
+          ./Godot_v*linux.x86_64 --headless --quit tests/test_runner.tscn 2>&1 | tee godot-test-output.log
+          grep -Eq "[0-9]+ tests, [0-9]+ passed, 0 failed" godot-test-output.log
+          if grep -E "SCRIPT ERROR|Parse Error|ERROR:|WARNING:" godot-test-output.log \
+            | grep -Ev "ObjectDB instances leaked|resources still in use|at: cleanup|at: clear"; then
+            echo "Unexpected Godot warning/error output detected" >&2
+            exit 1
+          fi

@@ -1,6 +1,6 @@
 # Camera Controller Implementation Plan
 
-**Status:** Draft — awaiting approval before any code or spec written.
+**Status:** Implemented via TDD on 2026-05-11. Current suite: 152 tests, 152 passed, 0 failed.
 
 **Goal:** Add a 2D camera that smoothly follows the player character in the town hub (and future scenes). Camera stays centered on player with optional deadzone, limits, and zoom.
 
@@ -38,13 +38,11 @@
 - Matches existing pattern (TownSceneController, MainMenuController).
 
 ## Files to Create / Modify
-- `plans/camera-controller.md` — this plan (current).
-- `scripts/controllers/camera_controller.gd` — new controller script (after spec approved).
-- `tests/specs/camera_controller_test.gd` — new executable spec (RED first).
-- `scenes/town_scene.tscn` — add Camera2D child to TownScene root + attach script.
-- `llm-wiki/architecture/camera-controller.md` — new wiki page (after GREEN).
-- Update `docs/STATUS.md` — add to Current State + TODO.
-- Update `llm-wiki/log.md` + `llm-wiki/index.md`.
+- `scripts/models/camera_model.gd` — pure follow/deadzone/bounds/zoom logic.
+- `scripts/controllers/camera_controller.gd` — thin Camera2D glue.
+- `tests/specs/camera_model_test.gd` — executable specs.
+- `scenes/town_scene.tscn` — Camera2D child attached and targeting Player.
+- `llm-wiki/architecture/camera-model.md` — architecture page.
 
 ## TDD Workflow (Non-Negotiable)
 1. **RED** — Write failing spec `tests/specs/camera_controller_test.gd` first.

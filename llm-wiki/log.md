@@ -175,3 +175,26 @@
 - Refactored `TownSceneController` to delegate dialog presentation while keeping quest orchestration and movement lock behavior.
 - Updated `scenes/town-hub.md`, `architecture/npc-system.md`, and `index.md`.
 - All 128 tests pass.
+
+## [2026-05-11] feat | Life tracking foundation and TODO completion
+
+- RED: added specs for LifeTracker, SaveManager, NpcDefinition, ProgressionModel, settings/audio/scene transitions, and town daily task UI.
+- Created `scripts/models/life_tracker.gd` for tasks, habits, daily completions, streaks, XP, and serialization.
+- Created `scripts/models/progression_model.gd` for task completion rewards, linked quest completion, HP spend, and facility unlock rules.
+- Created `scripts/models/npc_definition.gd` plus resource examples in `resources/npc_definitions/` for quest giver, vendor, and facility NPC roles.
+- Created `scripts/managers/save_manager.gd` and `scripts/managers/audio_manager.gd`.
+- Created `scripts/models/settings_model.gd` and `scripts/controllers/scene_transition_controller.gd`.
+- Added daily task and settings UI to `scenes/town_scene.tscn`; `TownSceneController` now seeds tasks, completes tasks, updates XP, and plays SFX request.
+- Updated `QuestManager` and `PlayerStats` serialization/progression APIs.
+- Disabled GDAI MCP autoload/editor plugin in `project.godot` to remove headless `gdaimcp` capture error.
+- Added `README.md`, `assets/task_complete.svg`, CI output checking, and updated `todo.md`.
+- Created wiki pages: `architecture/player-stats.md`, `architecture/life-tracker.md`, `architecture/progression-model.md`, `architecture/npc-definition.md`, `architecture/settings-model.md`, `architecture/persistence-audio-settings.md`.
+- Updated `scenes/town-hub.md`, plan docs, and index.
+- All 152 tests pass.
+
+## [2026-05-11] docs | QA pass and commit preparation
+
+- Updated `docs/STATUS.md` with current MVP state, QA result, implemented feature list, and remaining production work.
+- Updated `todo.md` to distinguish complete, MVP/stub, and open items.
+- Manual QA marked pass for main menu, town movement, NPC dialog, quest accept/complete, daily task XP, and settings panel.
+- Known cleanup warnings remain documented as non-blocking MVP issues.

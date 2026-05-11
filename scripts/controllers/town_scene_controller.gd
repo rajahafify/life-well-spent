@@ -8,6 +8,10 @@ extends Node2D
 # making class_name CharacterMovement available for type annotations.
 const _PMovement = preload("res://scripts/views/character_movement.gd")
 const _DialogView = preload("res://scripts/views/town_dialog_view.gd")
+const _LifeTracker = preload("res://scripts/models/life_tracker.gd")
+const _ProgressionModel = preload("res://scripts/models/progression_model.gd")
+const _SettingsModel = preload("res://scripts/models/settings_model.gd")
+const _AudioManager = preload("res://scripts/managers/audio_manager.gd")
 
 # ── References ─────────────────────────────────────────────────────────
 
@@ -15,10 +19,17 @@ const _DialogView = preload("res://scripts/views/town_dialog_view.gd")
 @onready var _quest_label: Label = $UI/QuestLabel
 @onready var _title_label: Label = $UI/StatsTitle
 @onready var _dialog_view = $UI/DialogPanel
+@onready var _daily_task_list: VBoxContainer = $UI/DailyTaskPanel/VBox/TaskList
+@onready var _xp_label: Label = $UI/DailyTaskPanel/VBox/XPLabel
+@onready var _settings_panel: Control = $UI/SettingsPanel
 @onready var _player: CharacterBody2D = $Player
 
 var _player_stats: PlayerStats
 var _quest_manager: QuestManager
+var _life_tracker
+var _progression
+var _settings
+var _audio
 var _active_npc: NpcController
 var _pending_npc: NpcController
 
@@ -29,9 +40,18 @@ func _ready() -> void:
 	_title_label.add_theme_font_size_override("font_size", 24)
 	_player_stats = PlayerStats.new()
 	_quest_manager = QuestManager.new()
+	_life_tracker = _new_script_object("res://scripts/models/life_tracker.gd")
+	_progression = _new_script_object("res://scripts/models/progression_model.gd", [_player_stats, _quest_manager, _life_tracker])
+	_settings = _new_script_object("res://scripts/models/settings_model.gd")
+	_audio = _new_script_object("res://scripts/managers/audio_manager.gd")
+	add_child(_audio)
+	_seed_daily_tasks()
 	_connect_dialog_buttons()
 	_connect_npcs()
+	_connect_daily_task_buttons()
+	_connect_settings_buttons()
 	_dialog_view.hide_dialog()
+	_settings_panel.visible = false
 	_update_stats()
 
 
@@ -59,6 +79,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _update_stats() -> void:
 	_hp_label.text = "HP: %d / %d" % [_player_stats.max_hp, _player_stats.max_hp]
 	_quest_label.text = "Quests: %d active" % _quest_manager.active_quests.size()
+	_xp_label.text = "XP: %d" % _life_tracker.xp
 
 
 func update_quest_count(count: int) -> void:
@@ -87,7 +108,10 @@ func _connect_npcs() -> void:
 func _register_npc_quest(npc: NpcController) -> void:
 	if npc.role != "quest_giver" or npc.quest_name == "":
 		return
-	_quest_manager.add_quest(npc.quest_name, npc.quest_cost, npc.quest_description)
+	if npc.life_task_id != "":
+		_quest_manager.add_life_task_quest(npc.quest_name, npc.quest_cost, npc.quest_description, npc.life_task_id)
+	else:
+		_quest_manager.add_quest(npc.quest_name, npc.quest_cost, npc.quest_description)
 
 
 func _on_npc_interacted(npc: NpcController) -> void:
@@ -153,6 +177,55 @@ func _on_close_dialog_pressed() -> void:
 	var pm := _player_movement()
 	if pm:
 		pm.can_move = true
+
+
+# ── Daily Tasks / Settings ────────────────────────────────────────────
+
+func complete_daily_task(task_id: String, date: String) -> bool:
+	var completed: bool = _progression.complete_life_task(task_id, date)
+	if completed:
+		_audio.play_sfx("complete_task")
+	_update_stats()
+	return completed
+
+
+func _seed_daily_tasks() -> void:
+	_life_tracker.add_habit("hydrate", "Drink water", 10)
+	_life_tracker.add_task("gather_wood", "Gather wood for town", 15)
+
+
+func _connect_daily_task_buttons() -> void:
+	for child in _daily_task_list.get_children():
+		if child is Button:
+			var button := child as Button
+			if not button.pressed.is_connected(_on_daily_task_button_pressed.bind(button.name)):
+				button.pressed.connect(_on_daily_task_button_pressed.bind(button.name))
+
+
+func _connect_settings_buttons() -> void:
+	var options := get_node_or_null("UI/DailyTaskPanel/VBox/OptionsButton") as Button
+	if options and not options.pressed.is_connected(_on_options_pressed):
+		options.pressed.connect(_on_options_pressed)
+	var close := get_node_or_null("UI/SettingsPanel/VBox/CloseButton") as Button
+	if close and not close.pressed.is_connected(_on_close_settings_pressed):
+		close.pressed.connect(_on_close_settings_pressed)
+
+
+func _on_daily_task_button_pressed(task_id: String) -> void:
+	complete_daily_task(task_id, "2026-05-11")
+
+
+func _on_options_pressed() -> void:
+	_settings_panel.visible = true
+
+
+func _on_close_settings_pressed() -> void:
+	_settings_panel.visible = false
+
+
+func _new_script_object(path: String, args: Array = []):
+	var script: GDScript = load(path)
+	return Callable(script, "new").callv(args)
 
 
 # ── Player ─────────────────────────────────────────────────────────────

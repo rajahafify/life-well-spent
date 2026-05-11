@@ -12,6 +12,10 @@ func setup() -> void:
 	subject._framework_before_test("res://tests/specs/test_case_test.gd", "inner_test")
 
 
+func teardown() -> void:
+	subject.free()
+
+
 func test_assert_eq_records_expected_and_actual() -> void:
 	subject.assert_eq("expected", "actual", "values should match")
 

@@ -42,6 +42,60 @@ offset_right = 142.0
 offset_bottom = 79.0
 text = "Quests: 0 active"
 
+[node name="DailyTaskPanel" type="PanelContainer" parent="UI"]
+offset_left = 20.0
+offset_top = 90.0
+offset_right = 260.0
+offset_bottom = 260.0
+
+[node name="VBox" type="VBoxContainer" parent="UI/DailyTaskPanel"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="UI/DailyTaskPanel/VBox"]
+layout_mode = 2
+text = "Daily Tasks"
+
+[node name="XPLabel" type="Label" parent="UI/DailyTaskPanel/VBox"]
+layout_mode = 2
+text = "XP: 0"
+
+[node name="TaskList" type="VBoxContainer" parent="UI/DailyTaskPanel/VBox"]
+layout_mode = 2
+
+[node name="hydrate" type="Button" parent="UI/DailyTaskPanel/VBox/TaskList"]
+layout_mode = 2
+text = "Drink water (+10 XP)"
+
+[node name="gather_wood" type="Button" parent="UI/DailyTaskPanel/VBox/TaskList"]
+layout_mode = 2
+text = "Gather wood (+15 XP)"
+
+[node name="OptionsButton" type="Button" parent="UI/DailyTaskPanel/VBox"]
+layout_mode = 2
+text = "Options"
+
+[node name="SettingsPanel" type="PanelContainer" parent="UI"]
+visible = false
+offset_left = 900.0
+offset_top = 90.0
+offset_right = 1180.0
+offset_bottom = 230.0
+
+[node name="VBox" type="VBoxContainer" parent="UI/SettingsPanel"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="UI/SettingsPanel/VBox"]
+layout_mode = 2
+text = "Settings"
+
+[node name="VolumeLabel" type="Label" parent="UI/SettingsPanel/VBox"]
+layout_mode = 2
+text = "Master Volume: 100%"
+
+[node name="CloseButton" type="Button" parent="UI/SettingsPanel/VBox"]
+layout_mode = 2
+text = "Close"
+
 [node name="DialogPanel" type="PanelContainer" parent="UI" unique_id=207370001]
 visible = false
 script = ExtResource("7_dialog")
@@ -98,6 +152,7 @@ dialog_text = "Can you spare some life for a worthy task?"
 quest_name = "Gather Wood"
 quest_cost = 40
 quest_description = "Gather wood for the town."
+life_task_id = "gather_wood"
 
 [node name="Vendor" type="CharacterBody2D" parent="." unique_id=40226481 instance=ExtResource("5_4by7u")]
 position = Vector2(500, 300)

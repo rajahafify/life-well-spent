@@ -12,7 +12,7 @@ tags: [architecture, game-design]
 # QuestManager
 
 ## Overview
-Quest catalog and lifecycle management. Quest acceptance is free; completion cost is applied by `PlayerStats.complete_quest()`.
+Quest catalog and lifecycle management. Quest acceptance is free; completion cost is applied by `PlayerStats.complete_quest()`. Quests can optionally link to a real-life `life_task_id`.
 
 ## Design
 - `active_quests` is an **array** — player can have multiple active quests simultaneously
@@ -20,6 +20,8 @@ Quest catalog and lifecycle management. Quest acceptance is free; completion cos
 - `complete_quest()` and `abandon_quest()` remove the **first** active quest (FIFO)
 - No HP cost on accept; 40 Max HP cost happens on completion via `PlayerStats`.
 - `reset_for_life()` clears active quests and counter for rebirth
+- `add_life_task_quest()` links quest completion to `LifeTracker` task IDs
+- `to_dict()` / `apply_dict()` support SaveManager persistence
 
 ## Public API
 
@@ -34,10 +36,14 @@ var last_rejection = null
 const QUEST_HP_COST: int = 40
 
 func add_quest(name: String, cost: int, description: String) -> void
-func take_quest(current_hp: int) -> bool   # false only when no quest is available
-func complete_quest() -> bool               # removes first active quest; caller applies HP cost
-func abandon_quest() -> bool                # removes first active quest
-func reset_for_life() -> void               # clears active quests + counter
+func add_life_task_quest(name: String, cost: int, description: String, life_task_id: String) -> void
+func take_quest(current_hp: int) -> bool      # false only when no quest is available
+func complete_quest() -> bool                 # removes first active quest; caller applies HP cost
+func complete_quest_for_life_task(life_task_id: String) -> bool
+func abandon_quest() -> bool                  # removes first active quest
+func reset_for_life() -> void                 # clears active quests + counter
+func to_dict() -> Dictionary
+func apply_dict(data: Dictionary) -> void
 ```
 
 ## Design Decisions
@@ -52,7 +58,7 @@ Manual QA clarified intended loop: accepting a quest costs nothing; completing t
 `complete_quest()` removes the first (oldest) active quest. `abandon_quest()` does the same. This matches the expectation that you complete quests in the order you started them.
 
 ## Test Coverage
-14 specs in `tests/specs/quest_manager_test.gd`:
+13 specs in `tests/specs/quest_manager_test.gd`, plus linked quest coverage in `tests/specs/progression_model_test.gd`:
 - Catalog starts empty
 - Add quest populates catalog
 - Catalog supports 50 quests
@@ -69,5 +75,7 @@ Manual QA clarified intended loop: accepting a quest costs nothing; completing t
 
 ## Related
 - `PlayerStats` — HP deduction after successful quest completion
+- `LifeTracker` — real-life task completion source
+- `ProgressionModel` — coordinates linked task quest completion
 - `DemoController` — demo scene input → model calls → view updates
 - `spec-driven-dev` — TDD enforcement rules

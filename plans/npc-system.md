@@ -1,8 +1,8 @@
 # NPC System Implementation Plan
 
-**Status:** Core NPC system complete via TDD. Advanced vendor/shop/facility features remain future work.
+**Status:** Core NPC system complete via TDD. Resource-backed NPC variants, vendor role, and facility role model are implemented; advanced shop/storage UI remains future work.
 
-**Current test baseline:** 126 tests, 126 passed, 0 failed.
+**Current test baseline:** 152 tests, 152 passed, 0 failed.
 
 **Goal:** NPC system for town hub (quest givers, vendors, etc.). Refactor player movement/animation into reusable Character behavior for Player + NPC. NPCs idle, show overhead names, face player, support RO-style approach-to-talk interaction, and show modal dialog/quest UI.
 

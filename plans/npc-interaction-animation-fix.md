@@ -1,6 +1,6 @@
 # NPC Interaction + Animation Fix Plan
 
-**Status:** Implemented via TDD on 2026-05-11. Superseded by completed NPC dialog/quest UI work. Full suite: 115 tests pass.
+**Status:** Implemented via TDD on 2026-05-11. Superseded by completed NPC dialog/quest UI work. Full suite: 152 tests pass.
 
 ## Goal
 Fix bugs against `plans/npc-system.md`:

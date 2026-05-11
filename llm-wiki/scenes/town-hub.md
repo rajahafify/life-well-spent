@@ -8,7 +8,7 @@ tags: [scenes, hub, player]
 # Town Hub Scene
 
 ## Overview
-The town hub is the central gameplay area where players interact with the world. Features a 1280×720 room with a player character, stats overlay, static NPCs, RO-style approach-to-talk interaction, and modal dialog/quest UI.
+The town hub is the central gameplay area where players interact with the world. Features a 1280×720 room with a player character, stats overlay, daily task panel, settings panel, static NPCs, RO-style approach-to-talk interaction, and modal dialog/quest UI.
 
 ## Scene Structure
 ```
@@ -18,6 +18,8 @@ TownScene (Node2D)
 │   ├── StatsTitle (Label) — "Stats" title
 │   ├── HPLabel (Label) — "HP: 100 / 100"
 │   ├── QuestLabel (Label) — "Quests: 0 active"
+│   ├── DailyTaskPanel (PanelContainer) — task buttons + XP label
+│   ├── SettingsPanel (PanelContainer) — options overlay
 │   └── DialogPanel (PanelContainer, TownDialogView) — NPC name/body + quest buttons
 ├── Player (CharacterBody2D) — instanced from player.tscn, scale 2×
 ├── DestinationMarker (Sprite2D)
@@ -44,6 +46,9 @@ extends Node2D
 @onready var _quest_label: Label = $UI/QuestLabel
 @onready var _title_label: Label = $UI/StatsTitle
 @onready var _dialog_view = $UI/DialogPanel
+@onready var _daily_task_list: VBoxContainer = $UI/DailyTaskPanel/VBox/TaskList
+@onready var _xp_label: Label = $UI/DailyTaskPanel/VBox/XPLabel
+@onready var _settings_panel: Control = $UI/SettingsPanel
 @onready var _player: CharacterBody2D = $Player
 
 func _ready() -> void:
@@ -67,6 +72,12 @@ func _open_dialog(npc) -> void:
 func _on_close_dialog_pressed() -> void:
     # Hide dialog, clear active/pending NPC, restore movement.
 
+func complete_daily_task(task_id, date) -> bool:
+    # Complete LifeTracker task through ProgressionModel, play SFX, refresh XP/quest/HP labels.
+
+func _on_options_pressed() -> void:
+    # Show settings panel.
+
 func get_player() -> CharacterBody2D:
     return _player
 ```
@@ -89,15 +100,19 @@ func get_player() -> CharacterBody2D:
 ## Design Decisions
 - **Simple background:** Solid ColorRect for now. Will be replaced with TileMap.
 - **Stats overlay:** Absolute positioned labels in top-left corner.
+- **Daily task panel:** Buttons call `complete_daily_task()` and update XP via `LifeTracker` + `ProgressionModel`.
+- **Settings panel:** Lightweight options overlay; model validation lives in `SettingsModel`.
 - **Player scale:** 2× for visibility (64px → 128px).
 - **Player movement:** Click-to-move with LPC animation rows.
 
 ## Specs
-- `tests/specs/town_scene_dialog_test.gd` covers dialog visibility, `TownDialogView` scene wiring, NPC metadata, quest accept/complete, pending approach, modal movement lock, close restore, and mutual facing.
+- `tests/specs/town_scene_dialog_test.gd` covers dialog visibility, `TownDialogView` scene wiring, NPC metadata, quest accept/complete, pending approach, modal movement lock, close restore, mutual facing, daily task UI, XP update, and settings panel opening.
 - `tests/specs/scene_smoke_test.gd` covers town NPC interaction wiring.
 
 ## Related
 - `scripts/models/player_stats.gd` — HP, level, quest state
 - `scripts/models/quest_manager.gd` — quest catalog, take/complete lifecycle
+- `scripts/models/life_tracker.gd` — daily tasks, habits, completions, streaks, XP
+- `scripts/models/progression_model.gd` — task completion rewards, linked quest completion, facility unlocks
 - `scripts/views/character_movement.gd` — movement + animation
 - `scripts/views/town_dialog_view.gd` — dialog panel presentation + button signals
