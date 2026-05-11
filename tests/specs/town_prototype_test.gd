@@ -177,6 +177,29 @@ func test_smith_dialog_copy_is_defined() -> void:
 	root.free()
 
 
+func test_worldbuilding_npc_sprites_use_custom_textures() -> void:
+	var root := _instantiate_town()
+	if root == null:
+		return
+	var guild_sprite: Sprite2D = root.get_node("Guildmaster/Sprite") as Sprite2D
+	var shop_sprite: Sprite2D = root.get_node("Shopkeeper/Sprite") as Sprite2D
+	var smith_sprite: Sprite2D = root.get_node("Smith/Sprite") as Sprite2D
+	assert_true(guild_sprite.texture.resource_path.ends_with("guildmaster.png"))
+	assert_true(shop_sprite.texture.resource_path.ends_with("shopkeeper.png"))
+	assert_true(smith_sprite.texture.resource_path.ends_with("smith.png"))
+	root.free()
+
+
+func test_worldbuilding_npcs_are_player_scale() -> void:
+	var root := _instantiate_town()
+	if root == null:
+		return
+	assert_eq(Vector2(2, 2), root.get_node("Guildmaster").scale)
+	assert_eq(Vector2(2, 2), root.get_node("Shopkeeper").scale)
+	assert_eq(Vector2(2, 2), root.get_node("Smith").scale)
+	root.free()
+
+
 func test_worldbuilding_npc_roles_are_defined() -> void:
 	var root := _instantiate_town()
 	if root == null:

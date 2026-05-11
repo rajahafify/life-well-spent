@@ -1,11 +1,18 @@
-[gd_scene load_steps=8 format=3 uid="uid://bj1twltdyxki8"]
+[gd_scene load_steps=11 format=3 uid="uid://bj1twltdyxki8"]
 
 [ext_resource type="Script" uid="uid://hdk6cec1sba" path="res://scripts/controllers/town_scene_controller.gd" id="1_town"]
 [ext_resource type="PackedScene" uid="uid://do27uk7ly48pb" path="res://scenes/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://ctny5ffskwcmv" path="res://scenes/npc.tscn" id="3_npc"]
 [ext_resource type="Script" path="res://scripts/views/town_dialog_view.gd" id="4_dialog"]
+[ext_resource type="Texture2D" path="res://assets/npcs/guildmaster.png" id="5_guildmaster"]
+[ext_resource type="Texture2D" path="res://assets/npcs/shopkeeper.png" id="6_shopkeeper"]
+[ext_resource type="Texture2D" path="res://assets/npcs/smith.png" id="7_smith"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog"]
+content_margin_left = 28.0
+content_margin_top = 22.0
+content_margin_right = 28.0
+content_margin_bottom = 22.0
 bg_color = Color(0.12, 0.09, 0.06, 0.92)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
@@ -104,21 +111,45 @@ scale = Vector2(2, 2)
 
 [node name="Shopkeeper" parent="." instance=ExtResource("3_npc")]
 position = Vector2(360, 330)
+scale = Vector2(2, 2)
 display_name = "Shopkeeper"
+talk_radius = 140.0
+solid_radius = 40.0
+talk_stop_buffer = 60.0
 role = "shopkeeper"
 dialog_text = "Welcome, traveler.\n\nThis shop once packed bags for heroes.\nNow I sell apples, candles, and thread.\n\nIt is quieter, yes.\nBut quiet days are worth protecting too."
 
+[node name="Sprite" parent="Shopkeeper"]
+texture = ExtResource("6_shopkeeper")
+idle_cycle_interval = 0.92
+
 [node name="Guildmaster" parent="." instance=ExtResource("3_npc")]
 position = Vector2(960, 355)
+scale = Vector2(2, 2)
 display_name = "Guildmaster"
+talk_radius = 140.0
+solid_radius = 40.0
+talk_stop_buffer = 60.0
 role = "guildmaster"
 dialog_text = "The Swordsman Guild still stands.\n\nNot as it was.\nThe halls are quiet, and the old names fade from the register.\n\nBut a guild is not stone or banners.\nIt lives when someone chooses the path.\n\nPerhaps one day, someone will help me raise it again."
 
+[node name="Sprite" parent="Guildmaster"]
+texture = ExtResource("5_guildmaster")
+idle_cycle_interval = 1.1
+
 [node name="Smith" parent="." instance=ExtResource("3_npc")]
 position = Vector2(1560, 330)
+scale = Vector2(2, 2)
 display_name = "Smith"
+talk_radius = 140.0
+solid_radius = 40.0
+talk_stop_buffer = 60.0
 role = "smith"
 dialog_text = "I used to shape steel for adventurers.\n\nNow I mend plows, hinges, and cooking pots.\nHonest work.\n\nStill, I keep the sword molds clean.\nOld roads have a way of calling again."
+
+[node name="Sprite" parent="Smith"]
+texture = ExtResource("7_smith")
+idle_cycle_interval = 0.78
 
 [node name="StarterAreaPortal" type="Area2D" parent="."]
 position = Vector2(1700, 820)
@@ -179,6 +210,15 @@ text = "Yes"
 layout_mode = 2
 text = "No"
 
+[node name="DialogPortrait" type="TextureRect" parent="UI"]
+visible = false
+offset_left = 585.0
+offset_top = 545.0
+offset_right = 705.0
+offset_bottom = 665.0
+expand_mode = 1
+stretch_mode = 5
+
 [node name="DialogPanel" type="PanelContainer" parent="UI"]
 visible = false
 offset_left = 560.0
@@ -193,10 +233,12 @@ layout_mode = 2
 
 [node name="NameLabel" type="Label" parent="UI/DialogPanel/VBox"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 28
 text = "NPC"
 
 [node name="BodyLabel" type="Label" parent="UI/DialogPanel/VBox"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 autowrap_mode = 3
 text = "Hello."
 
@@ -205,16 +247,20 @@ layout_mode = 2
 
 [node name="AcceptQuestButton" type="Button" parent="UI/DialogPanel/VBox/Buttons"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Accept"
 
 [node name="CompleteQuestButton" type="Button" parent="UI/DialogPanel/VBox/Buttons"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Complete"
 
 [node name="NextButton" type="Button" parent="UI/DialogPanel/VBox/Buttons"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Next"
 
 [node name="CloseButton" type="Button" parent="UI/DialogPanel/VBox/Buttons"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Close"

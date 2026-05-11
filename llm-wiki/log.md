@@ -244,5 +244,11 @@
 - Updated `tests/specs/town_scene_dialog_test.gd` and `tests/specs/scene_smoke_test.gd` for first-slice systemic Town behavior.
 - Updated `prototype/components/town.md`, removed duplicate `prototype/town.md`, and updated `scenes/town-hub.md` wiki page.
 - Completed pre-Starter Town behavior: 1920×1080 viewport, RO-style camera follow, click-to-move while dialog is closed, world primitives ignore mouse so ground clicks move, dialog blocks movement, far NPC click approaches before dialog, paged NPC dialog with Next/Close, Player entering Starter Area Portal shows Yes/No prompt, No hides it, and Yes records Starter Area target path.
-- Validation: `168 tests, 168 passed, 0 failed`; MCP play current scene reports no errors.
+- Generated distinct LPC sprites for Guildmaster, Shopkeeper, and Smith using `tools/lpc-sprite-gen` and wired them into `scenes/town_scene.tscn`.
+- Scaled Town NPC instances to `Vector2(2, 2)` so they match player size.
+- Enlarged dialog typography for 1080p and moved NPC face portrait above the dialog box using cropped LPC spritesheet face frame.
+- Reworked idle animation to use calm standing walk-row frames instead of LPC spellcast/prayer frames; Town NPCs use varied idle timing for desync.
+- Hid NPC overhead name labels by default; NPC names remain in dialog.
+- Validation: `173 tests, 173 passed, 0 failed`; MCP play current scene reports no errors.
 - Manual QA passed: ground click movement, RO-style NPC approach, paged dialog Next/Close, dialog movement lock, camera follow, and portal Yes/No prompt.
+- Created `prototype/game-systems.md` as append-only system inventory using systemic design terms: verbs, components, resources, rules, and conditions.

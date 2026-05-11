@@ -194,11 +194,11 @@ Old roads have a way of calling again.
 - HUD or start prompt banner
 - Dialog Panel
 - Shop building
-- Shopkeeper NPC
+- Shopkeeper NPC with generated LPC sprite: `assets/npcs/shopkeeper.png`
 - Swordsman Guild building
-- Guildmaster NPC
+- Guildmaster NPC with generated LPC sprite: `assets/npcs/guildmaster.png`
 - Blacksmith building
-- Smith NPC
+- Smith NPC with generated LPC sprite: `assets/npcs/smith.png`
 - Glowing Starter Area Portal
 - Swordsman Guild sign/emblem
 - Primitive paths
@@ -325,6 +325,8 @@ Player cannot:
 
 ## Primitive / SVG Art Direction
 
+Town uses primitive/SVG world art plus generated LPC character sprites for Player and NPCs.
+
 - Ground: warm tan `ColorRect`/primitive plane.
 - Path: brown strips from spawn to buildings and portal.
 - Buildings: simple rectangles with triangle roofs.
@@ -334,7 +336,12 @@ Player cannot:
 - Portal: glowing blue/green ring with `Starter Area` label.
 - Interactable NPC zones: faint yellow rings.
 - HUD/dialog: dark translucent or parchment-like rectangles.
+- Dialog text uses 1080p-readable sizes: name 28, body 30, buttons 24.
+- NPC overhead name labels are hidden by default; names appear in dialog only.
+- Dialog shows NPC face portrait above the dialog box using an AtlasTexture face crop from the NPC LPC spritesheet.
 - Dialog pages split on blank lines and advance with `Next`.
+- Character idle uses calm walk-row standing frames instead of LPC spellcast/prayer rows.
+- Town NPC idle cycles use different intervals for subtle desync.
 - World primitive `Control` nodes use `mouse_filter = ignore` so ground clicks reach Town movement.
 - Project viewport: 1920×1080.
 
@@ -425,6 +432,11 @@ Player can:
 - [ ] Portal request records Starter Area target path.
 - [ ] Dialog close signal hides dialog.
 - [ ] Dialog Next button advances pages.
+- [ ] Dialog text is readable at 1080p.
+- [ ] NPC overhead name labels are hidden.
+- [ ] Dialog shows NPC face portrait cropped from the NPC spritesheet above the dialog box.
+- [ ] Character idle does not use prayer/spellcast frames.
+- [ ] Town NPC idle animation timing differs per NPC.
 - [ ] Click-to-move works while dialog closed.
 - [ ] Dialog blocks click-to-move.
 - [ ] Far NPC click moves Player toward NPC without opening dialog immediately.
@@ -432,3 +444,5 @@ Player can:
 - [ ] Camera follows Player with RO-style offset.
 - [ ] Project viewport is 1920×1080.
 - [ ] World primitives ignore mouse input so ground click-to-move works.
+- [ ] Guildmaster, Shopkeeper, and Smith use distinct generated LPC sprites.
+- [ ] Guildmaster, Shopkeeper, and Smith scale to `Vector2(2, 2)` to match player size.

@@ -83,7 +83,7 @@ func _open_dialog(npc: NpcController) -> void:
 		movement.stop_moving()
 		movement.face_target(npc.global_position)
 	npc.face_toward_player(_player.global_position)
-	_dialog_view.show_dialog(npc.display_name, npc.dialog_text, false, false)
+	_dialog_view.show_dialog(npc.display_name, npc.dialog_text, false, false, _npc_portrait_texture(npc))
 
 
 func move_player_to(target: Vector2) -> bool:
@@ -129,6 +129,11 @@ func _update_camera() -> void:
 	var camera := get_node_or_null("Camera2D") as Camera2D
 	if camera:
 		camera.global_position = _player.global_position + CAMERA_OFFSET
+
+
+func _npc_portrait_texture(npc: NpcController) -> Texture2D:
+	var sprite := npc.get_node_or_null("Sprite") as Sprite2D
+	return sprite.texture if sprite else null
 
 
 func _player_movement() -> CharacterMovement:

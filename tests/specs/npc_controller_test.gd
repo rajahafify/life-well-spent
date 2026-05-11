@@ -22,7 +22,7 @@ func test_interact_with_player_faces_right_when_player_is_right() -> void:
 	npc.call("interact_with_player", Vector2(100, 0))
 	assert_eq("interacting", npc.npc_state.state)
 	assert_eq("right", npc.npc_state.facing)
-	assert_eq(Vector2i(0, 3), sprite.frame_coords)
+	assert_eq(Vector2i(1, 11), sprite.frame_coords)
 	npc.free()
 
 
@@ -42,7 +42,7 @@ func test_interact_with_player_faces_up_when_player_is_above() -> void:
 	npc.global_position = Vector2.ZERO
 	npc.call("interact_with_player", Vector2(0, -100))
 	assert_eq("up", npc.npc_state.facing)
-	assert_eq(Vector2i(0, 0), sprite.frame_coords)
+	assert_eq(Vector2i(1, 8), sprite.frame_coords)
 	npc.free()
 
 
@@ -101,7 +101,7 @@ func test_talk_point_is_offset_from_npc_toward_player() -> void:
 	npc.free()
 
 
-func test_npc_scene_has_visible_name_label() -> void:
+func test_npc_scene_hides_overhead_name_label() -> void:
 	var scene: PackedScene = load("res://scenes/npc.tscn")
 	assert_not_null(scene, "npc scene should load")
 	if scene == null:
@@ -110,8 +110,7 @@ func test_npc_scene_has_visible_name_label() -> void:
 	npc.display_name = "Guide"
 	npc._ready()
 	var label: Label = npc.get_node_or_null("NameLabel") as Label
-	assert_not_null(label, "npc scene should include overhead NameLabel")
+	assert_not_null(label, "npc scene may keep NameLabel node for future hover labels")
 	if label:
-		assert_true(label.visible, "NPC name label should be visible")
-		assert_eq("Guide", label.text)
+		assert_false(label.visible, "NPC name label should be hidden by default")
 	npc.free()

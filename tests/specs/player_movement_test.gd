@@ -66,7 +66,7 @@ func test_set_facing_updates_frame_direction() -> void:
 		movement.free()
 		return
 	movement.call("set_facing", "left")
-	assert_eq(Vector2i(0, 1), movement.frame_coords)
+	assert_eq(Vector2i(1, 9), movement.frame_coords)
 	movement.free()
 
 
@@ -82,7 +82,7 @@ func test_stop_moving_clears_moving_and_walking_state() -> void:
 		movement.call("stop_moving")
 	assert_false(movement.moving, "stop_moving should clear moving flag")
 	assert_eq(Vector2.ZERO, body.velocity, "stop_moving should clear velocity")
-	assert_true(movement.frame_coords.y < AnimationController.WALK_BASE, "stop_moving should return to idle frames")
+	assert_eq(Vector2i(1, 10), movement.frame_coords, "stop_moving should return to calm standing idle frame")
 	body.free()
 
 
@@ -94,7 +94,7 @@ func test_face_target_updates_frame_direction() -> void:
 	assert_true(movement.has_method("face_target"), "CharacterMovement should expose face_target(target_pos)")
 	if movement.has_method("face_target"):
 		movement.call("face_target", Vector2(0, -100))
-	assert_eq(Vector2i(0, 0), movement.frame_coords)
+	assert_eq(Vector2i(1, 8), movement.frame_coords)
 	body.free()
 
 

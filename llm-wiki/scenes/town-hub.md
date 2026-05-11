@@ -39,9 +39,9 @@ Town (Node2D, Town)
 │   ├── SwordsmanGuild (ColorRect)
 │   └── Blacksmith (ColorRect)
 ├── Player (instance: player.tscn)
-├── Shopkeeper (NpcController)
-├── Guildmaster (NpcController)
-├── Smith (NpcController)
+├── Shopkeeper (NpcController, `assets/npcs/shopkeeper.png`)
+├── Guildmaster (NpcController, `assets/npcs/guildmaster.png`)
+├── Smith (NpcController, `assets/npcs/smith.png`)
 ├── StarterAreaPortal (Area2D)
 │   ├── CollisionShape2D
 │   ├── Visual (ColorRect)
@@ -116,13 +116,15 @@ Old roads have a way of calling again.
 - records Starter Area transition request through portal Yes / `request_starter_area()`
 - shows portal prompt and Yes/No choices when the Player enters `StarterAreaPortal`
 - hides portal prompt when No is pressed
+- hides NPC overhead names; names appear in dialog only
+- passes NPC sprite texture to `TownDialogView` for face portrait display above the dialog box
 - hides NPC dialog when `TownDialogView.close_requested` emits
 
 No quest, shop, forge, or life-spend logic is active in this slice.
 
 ## Art Direction
 
-Prototype Town uses primitives/SVG only, except generated character sprites. Project viewport is 1920×1080 for prototype readability. World primitive `Control` nodes set `mouse_filter = ignore` so ground clicks reach Town movement.
+Prototype Town uses primitives/SVG world art with generated LPC sprites for Player and NPCs. Project viewport is 1920×1080 for prototype readability. World primitive `Control` nodes set `mouse_filter = ignore` so ground clicks reach Town movement.
 
 - warm tan ground
 - brown path strips
@@ -133,11 +135,13 @@ Prototype Town uses primitives/SVG only, except generated character sprites. Pro
 
 ## Tests
 
-- `tests/specs/town_prototype_test.gd` covers root/class naming, buildings, NPCs, dialog copy, reborn prompt, portal prompt, 1080p viewport, and primitive mouse filter settings.
-- `tests/specs/town_scene_dialog_test.gd` covers paged NPC dialog, RO-style far-click NPC approach, pending dialog open in talk range, camera follow, first-slice quest buttons hidden, click-to-move routing/blocking, dialog close behavior, portal prompt visibility, and Starter Area target request.
+- `tests/specs/town_prototype_test.gd` covers root/class naming, buildings, NPCs, custom NPC sprite textures, NPC scale matching player, dialog copy, reborn prompt, portal prompt, 1080p viewport, and primitive mouse filter settings.
+- `tests/specs/town_scene_dialog_test.gd` covers readable 1080p dialog text, NPC face portrait crop above the box, paged NPC dialog, RO-style far-click NPC approach, pending dialog open in talk range, camera follow, desynced NPC idle timing, hidden overhead NPC names, first-slice quest buttons hidden, click-to-move routing/blocking, dialog close behavior, portal prompt visibility, and Starter Area target request.
 - `tests/specs/scene_smoke_test.gd` covers Town dialog smoke behavior.
 
-Current validation after Town rewrite: `168 tests, 168 passed, 0 failed`.
+Current validation after Town rewrite: `173 tests, 173 passed, 0 failed`.
+
+Systems introduced by Town are cataloged in `prototype/game-systems.md` using systemic design terms: verbs, components, resources, rules, and conditions.
 
 ## Manual QA
 
@@ -157,6 +161,7 @@ Passed on 2026-05-11:
 
 ## Related
 
+- `prototype/game-systems.md`
 - `prototype/components/town.md`
 - `scripts/controllers/town_scene_controller.gd`
 - `scripts/views/town_dialog_view.gd`

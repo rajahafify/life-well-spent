@@ -34,7 +34,7 @@ func _ready():
 	_name_label = get_node_or_null(name_label_path) as Label
 	if _name_label:
 		_name_label.text = display_name
-		_name_label.visible = true
+		_name_label.visible = false
 
 func _input(event):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:

@@ -30,8 +30,8 @@ func test_initial_direction_is_down() -> void:
 
 
 func test_initial_frame_coords_idle_down() -> void:
-	# Idle + down → column 0, row 2 (IDLE_BASE=0 + down=2)
-	assert_eq(Vector2i(0, 2), anim.frame_coords)
+	# Idle pose uses a calm standing frame from walk rows, not LPC spellcast/prayer rows.
+	assert_eq(Vector2i(1, 10), anim.frame_coords)
 
 
 # ─── State Transitions ───────────────────────────────────────────────
@@ -100,22 +100,22 @@ func test_direction_changes_during_walking() -> void:
 
 func test_frame_coords_idle_down() -> void:
 	anim.set_direction("down")
-	assert_eq(Vector2i(0, 2), anim.frame_coords)  # col 0, row IDLE_BASE+down=2
+	assert_eq(Vector2i(1, 10), anim.frame_coords)
 
 
 func test_frame_coords_idle_up() -> void:
 	anim.set_direction("up")
-	assert_eq(Vector2i(0, 0), anim.frame_coords)  # col 0, row IDLE_BASE+up=0
+	assert_eq(Vector2i(1, 8), anim.frame_coords)
 
 
 func test_frame_coords_idle_left() -> void:
 	anim.set_direction("left")
-	assert_eq(Vector2i(0, 1), anim.frame_coords)  # col 0, row IDLE_BASE+left=1
+	assert_eq(Vector2i(1, 9), anim.frame_coords)
 
 
 func test_frame_coords_idle_right() -> void:
 	anim.set_direction("right")
-	assert_eq(Vector2i(0, 3), anim.frame_coords)  # col 0, row IDLE_BASE+right=3
+	assert_eq(Vector2i(1, 11), anim.frame_coords)
 
 
 func test_frame_coords_walking_down() -> void:
@@ -142,17 +142,17 @@ func test_idle_does_not_change_frame_before_interval() -> void:
 	assert_eq(initial_coords, anim.frame_coords)
 
 
-func test_idle_advances_frame_after_interval() -> void:
+func test_idle_has_subtle_two_frame_cycle_after_interval() -> void:
 	anim.set_direction("down")
 	anim.tick(AnimationController.IDLE_CYCLE_INTERVAL)
-	assert_eq(Vector2i(1, 2), anim.frame_coords)
+	assert_eq(Vector2i(2, 10), anim.frame_coords)
 
 
 func test_idle_preserves_direction_when_animating() -> void:
 	anim.set_direction("left")
 	anim.tick(AnimationController.IDLE_CYCLE_INTERVAL)
 	assert_eq("left", anim.direction)
-	assert_eq(Vector2i(1, 1), anim.frame_coords)
+	assert_eq(Vector2i(2, 9), anim.frame_coords)
 
 
 func test_walking_advances_frame_but_does_not_cycle_direction() -> void:
@@ -171,7 +171,7 @@ func test_walking_advances_frame_but_does_not_cycle_direction() -> void:
 
 func test_start_walking_updates_frame() -> void:
 	anim.set_direction("up")
-	assert_eq(Vector2i(0, 0), anim.frame_coords)
+	assert_eq(Vector2i(1, 8), anim.frame_coords)
 
 	anim.start_walking()
 	# Frame should still be up but now on walk row
@@ -185,4 +185,4 @@ func test_stop_walking_preserves_direction() -> void:
 
 	anim.stop_walking()
 	assert_eq("left", anim.direction)
-	assert_eq(Vector2i(0, 1), anim.frame_coords)  # col 0, row IDLE_BASE+left=1
+	assert_eq(Vector2i(1, 9), anim.frame_coords)

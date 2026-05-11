@@ -11,6 +11,9 @@ extends Sprite2D
 ## If true, no movement — static NPC anim only.
 @export var is_static: bool = false
 
+## Idle animation cycle length. Set per NPC for subtle RO-style desync.
+@export var idle_cycle_interval: float = AnimationController.IDLE_CYCLE_INTERVAL
+
 var destination: Vector2 = Vector2.ZERO
 var moving: bool = false
 var can_move: bool = true
@@ -160,3 +163,4 @@ func _ensure_anim() -> void:
 		vframes = AnimationController.ROWS
 	if _anim == null:
 		_anim = AnimationController.new()
+	_anim.idle_cycle_interval = idle_cycle_interval

@@ -2,6 +2,8 @@
 
 One-page component specs for first playable prototype.
 
+System inventory lives in [`../game-systems.md`](../game-systems.md). Append it whenever a new game system is introduced or materially changed.
+
 ## Components
 
 - `town.md` — safe base and first scene.
