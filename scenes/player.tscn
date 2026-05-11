@@ -9,6 +9,10 @@
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=681182751]
 texture = ExtResource("1_3vyb7")
+hframes = 13
+vframes = 21
+frame = 131
+frame_coords = Vector2i(1, 10)
 script = ExtResource("3_dqkch")
 
 [node name="Collision" type="CollisionShape2D" parent="." unique_id=1030186696]

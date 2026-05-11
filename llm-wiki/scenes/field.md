@@ -48,9 +48,17 @@ Field (Node2D, Field)
 
 Field combat uses `CombatSystem`. Enemy clicks damage HP; defeated enemies hide and grant XP. Player Life remains unchanged.
 
+## Enemy Art
+
+Field enemies now use SVG placeholder art:
+
+- Chick: `assets/enemies/chick.svg`
+- Rabbit: `assets/enemies/rabbit.svg`
+- Slime: `assets/enemies/slime.svg`
+
 ## Test Coverage
 
-- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, enemies, Guard dialog, movement/camera, dialog paging/movement lock, direct Town gateway, blocked Forest gateway, and enemy combat XP.
+- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, enemy SVG art, Guard dialog, movement/camera, dialog paging/movement lock, direct Town gateway, blocked Forest gateway, and enemy combat XP.
 - Model specs cover gateway, enemy, combat, respawn, NPC placement, and biome systems.
 
 ## Related

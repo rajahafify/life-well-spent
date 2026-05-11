@@ -263,3 +263,19 @@
 - Generated `assets/npcs/forest_guard.png` with local LPC sprite generator.
 - Updated prototype docs and wiki pages for new models, Field scene, and Town gateway behavior.
 - Validation: `202 tests, 202 passed, 0 failed`; MCP play `scenes/field.tscn` reports no errors.
+
+## [2026-05-11] art | SVG enemy placeholders for Field
+
+- RED: added `tests/specs/field_scene_test.gd` coverage requiring Chick/Rabbit/Slime SVG art resources.
+- Created `assets/enemies/chick.svg`, `assets/enemies/rabbit.svg`, and `assets/enemies/slime.svg` plus import metadata.
+- Replaced Field enemy `ColorRect` visuals with `TextureRect` SVG visuals while preserving mouse-filter ignore behavior.
+- Updated Field prototype docs and scene wiki.
+- Validation: `203 tests, 203 passed, 0 failed`; MCP play `scenes/field.tscn` reports no errors.
+
+## [2026-05-11] fix | Editor preview LPC sprites and test runner UID warning
+
+- RED: added `tests/specs/scene_smoke_test.gd` coverage requiring Player/NPC scene sprites to store LPC sheet slicing and standing-down preview frame.
+- Updated `scenes/player.tscn` and `scenes/npc.tscn` with `hframes = 13`, `vframes = 21`, and `frame_coords = Vector2i(1, 10)` so Field editor view no longer displays full LPC sheets tiled across the map.
+- Removed stale UID from `tests/test_runner.tscn` ext_resource so headless runs do not warn and fall back to text path.
+- Updated player movement wiki docs.
+- Validation: `203 tests, 203 passed, 0 failed`.

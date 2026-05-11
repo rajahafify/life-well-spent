@@ -309,7 +309,7 @@ Field uses primitive/SVG world art plus generated LPC character sprites.
 - Forest Edge: dark green tree wall / dense shape cluster.
 - Forest Blocker: barricade rectangles or dark collision line.
 - Town Portal: warm/blue portal with `Town` label.
-- Enemy placeholders: simple primitive/SVG Chick, Rabbit, Slime.
+- Enemy placeholders: SVG art at `assets/enemies/chick.svg`, `assets/enemies/rabbit.svg`, and `assets/enemies/slime.svg`.
 - Forest Guard: generated LPC or reused guard placeholder sprite.
 - Interactable zones: faint yellow rings.
 - HUD/dialog: same Town dialog styling.

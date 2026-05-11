@@ -1,10 +1,13 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://scripts/controllers/field.gd" id="1_field"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://scenes/npc.tscn" id="3_npc"]
 [ext_resource type="Script" path="res://scripts/views/town_dialog_view.gd" id="4_dialog"]
 [ext_resource type="Texture2D" path="res://assets/npcs/forest_guard.png" id="5_guard"]
+[ext_resource type="Texture2D" path="res://assets/enemies/chick.svg" id="6_chick"]
+[ext_resource type="Texture2D" path="res://assets/enemies/rabbit.svg" id="7_rabbit"]
+[ext_resource type="Texture2D" path="res://assets/enemies/slime.svg" id="8_slime"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog"]
 content_margin_left = 28.0
@@ -161,13 +164,15 @@ metadata/enemy_id = "chick"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/Chick"]
 shape = SubResource("CircleShape2D_enemy")
 
-[node name="Visual" type="ColorRect" parent="Enemies/Chick"]
+[node name="Visual" type="TextureRect" parent="Enemies/Chick"]
 mouse_filter = 2
-offset_left = -32.0
-offset_top = -28.0
-offset_right = 32.0
-offset_bottom = 28.0
-color = Color(1, 0.88, 0.18, 1)
+offset_left = -48.0
+offset_top = -48.0
+offset_right = 48.0
+offset_bottom = 48.0
+texture = ExtResource("6_chick")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Label" type="Label" parent="Enemies/Chick"]
 offset_left = -34.0
@@ -184,13 +189,15 @@ metadata/enemy_id = "rabbit"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/Rabbit"]
 shape = SubResource("CircleShape2D_enemy")
 
-[node name="Visual" type="ColorRect" parent="Enemies/Rabbit"]
+[node name="Visual" type="TextureRect" parent="Enemies/Rabbit"]
 mouse_filter = 2
-offset_left = -38.0
-offset_top = -30.0
-offset_right = 38.0
-offset_bottom = 30.0
-color = Color(0.92, 0.92, 0.86, 1)
+offset_left = -48.0
+offset_top = -48.0
+offset_right = 48.0
+offset_bottom = 48.0
+texture = ExtResource("7_rabbit")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Label" type="Label" parent="Enemies/Rabbit"]
 offset_left = -44.0
@@ -207,13 +214,15 @@ metadata/enemy_id = "slime"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemies/Slime"]
 shape = SubResource("CircleShape2D_enemy")
 
-[node name="Visual" type="ColorRect" parent="Enemies/Slime"]
+[node name="Visual" type="TextureRect" parent="Enemies/Slime"]
 mouse_filter = 2
-offset_left = -48.0
-offset_top = -26.0
-offset_right = 48.0
-offset_bottom = 26.0
-color = Color(0.08, 0.75, 0.30, 0.95)
+offset_left = -56.0
+offset_top = -48.0
+offset_right = 56.0
+offset_bottom = 48.0
+texture = ExtResource("8_slime")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Label" type="Label" parent="Enemies/Slime"]
 offset_left = -38.0

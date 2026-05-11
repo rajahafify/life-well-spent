@@ -21,6 +21,9 @@ func test_player_scene_root_is_player_without_npc_controller() -> void:
 	assert_null(root.get_node_or_null("Proximity"), "player scene should not include NPC proximity trigger")
 	var sprite = root.get_node_or_null("Sprite")
 	assert_true(sprite is CharacterMovement, "player Sprite should use CharacterMovement")
+	assert_eq(AnimationController.COLUMNS, sprite.hframes, "player editor preview should slice LPC sheet columns")
+	assert_eq(AnimationController.ROWS, sprite.vframes, "player editor preview should slice LPC sheet rows")
+	assert_eq(Vector2i(1, 10), sprite.frame_coords, "player editor preview should show standing-down frame")
 	root.free()
 
 
@@ -34,6 +37,9 @@ func test_npc_scene_sprite_is_static_without_marker() -> void:
 	assert_not_null(sprite, "npc scene should have CharacterMovement Sprite")
 	assert_true(sprite.is_static, "npc Sprite should be static")
 	assert_eq(NodePath(""), sprite.marker_path, "npc Sprite should not control shared destination marker")
+	assert_eq(AnimationController.COLUMNS, sprite.hframes, "npc editor preview should slice LPC sheet columns")
+	assert_eq(AnimationController.ROWS, sprite.vframes, "npc editor preview should slice LPC sheet rows")
+	assert_eq(Vector2i(1, 10), sprite.frame_coords, "npc editor preview should show standing-down frame")
 	root.free()
 
 

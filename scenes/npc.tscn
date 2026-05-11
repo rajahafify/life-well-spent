@@ -15,6 +15,10 @@ script = ExtResource("1_rv78h")
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=681182751]
 texture = ExtResource("1_abqhh")
+hframes = 13
+vframes = 21
+frame = 131
+frame_coords = Vector2i(1, 10)
 script = ExtResource("3_rv78h")
 is_static = true
 marker_path = NodePath("")

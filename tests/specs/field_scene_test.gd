@@ -69,6 +69,22 @@ func test_field_has_chick_rabbit_slime_placeholders() -> void:
 			assert_true(enemy.has_meta("enemy_id"), "%s should expose enemy_id metadata" % enemy_name)
 
 
+func test_field_enemies_use_svg_placeholder_art() -> void:
+	if root == null:
+		return
+	var expected_paths := {
+		"Chick": "res://assets/enemies/chick.svg",
+		"Rabbit": "res://assets/enemies/rabbit.svg",
+		"Slime": "res://assets/enemies/slime.svg",
+	}
+	for enemy_name in expected_paths.keys():
+		var visual := root.get_node("Enemies/%s/Visual" % enemy_name) as TextureRect
+		assert_not_null(visual, "%s should use TextureRect SVG art" % enemy_name)
+		if visual:
+			assert_not_null(visual.texture, "%s SVG texture should be assigned" % enemy_name)
+			assert_eq(expected_paths[enemy_name], visual.texture.resource_path)
+
+
 func test_field_has_forest_guard_dialog_copy() -> void:
 	if root == null:
 		return
