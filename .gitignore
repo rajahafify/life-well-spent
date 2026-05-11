@@ -1,9 +1,8 @@
-# Godot 4+ — editor cache, shader cache, import artifacts
+# Godot 4+ — editor cache and generated import cache
 .godot/editor/
 .godot/shader_cache/
 .godot/uid_cache.bin
 .godot/imported/
-*.import
 
 # Godot — exported builds
 export_templates/
@@ -47,7 +46,6 @@ desktop.ini
 
 # Logs
 *.log
-assets/*.import
 .codex/
 .codex/
 nul

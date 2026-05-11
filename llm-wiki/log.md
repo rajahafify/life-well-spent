@@ -198,3 +198,12 @@
 - Updated `todo.md` to distinguish complete, MVP/stub, and open items.
 - Manual QA marked pass for main menu, town movement, NPC dialog, quest accept/complete, daily task XP, and settings panel.
 - Known cleanup warnings remain documented as non-blocking MVP issues.
+
+## [2026-05-11] fix | Guard GDAI MCP runtime in headless tests
+
+- RED: added `tests/specs/gdai_mcp_runtime_guard_test.gd` for headless skip, non-headless allow, and autoload path.
+- Created `scripts/managers/gdai_mcp_runtime_guard.gd` wrapper around `GDAIRuntimeServer` startup.
+- Re-enabled GDAI MCP plugin/autoload in `project.godot`, pointing autoload to the guard.
+- Headless tests no longer emit `ERROR: Capture not registered: 'gdaimcp'` while editor MCP remains enabled.
+- Created `architecture/gdai-mcp-runtime-guard.md`; updated index, todo, and status docs.
+- All 155 tests pass.

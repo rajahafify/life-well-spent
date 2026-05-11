@@ -4,7 +4,7 @@
 
 ## QA Status
 
-- Automated suite: `152 tests, 152 passed, 0 failed`
+- Automated suite: `155 tests, 155 passed, 0 failed`
 - Manual QA: pass for MVP flow
 - Known non-blocking warnings:
   - `WARNING: ObjectDB instances leaked at exit`
@@ -22,6 +22,7 @@ Life Well Spent now has a playable MVP foundation:
 6. Linked quests can complete from real-life task completion.
 7. Save/load serialization exists for player, quests, and life tracking state.
 8. Settings, audio, and scene transition boundaries exist as minimal systems.
+9. GDAI MCP remains enabled for editor use while headless tests skip runtime startup.
 
 ## Architecture
 
@@ -55,6 +56,7 @@ MVC + SOLID remains active convention:
 | Settings model | `scripts/models/settings_model.gd` | Volume clamp, fullscreen flag, serialization. |
 | Scene transitions | `scripts/controllers/scene_transition_controller.gd` | Transition request/execute boundary. |
 | CI output check | `.github/workflows/tests.yml` | Runs tests and checks Godot output for unexpected errors. |
+| GDAI MCP runtime guard | `scripts/managers/gdai_mcp_runtime_guard.gd`, `project.godot` | Keeps Godot MCP enabled in editor while skipping runtime autoload in headless tests. |
 
 ## Tests Added / Updated
 
@@ -63,6 +65,7 @@ MVC + SOLID remains active convention:
 - `tests/specs/npc_definition_test.gd`
 - `tests/specs/progression_model_test.gd`
 - `tests/specs/settings_audio_transition_test.gd`
+- `tests/specs/gdai_mcp_runtime_guard_test.gd`
 - `tests/specs/town_scene_dialog_test.gd`
 - Existing model specs updated for serialization/progression support and cleanup.
 

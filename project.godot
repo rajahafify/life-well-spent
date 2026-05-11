@@ -15,9 +15,13 @@ run/main_scene="res://scenes/main_menu.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+GDAIMCPRuntime="*res://scripts/managers/gdai_mcp_runtime_guard.gd"
+
 [editor_plugins]
 
-enabled=PackedStringArray()
+enabled=PackedStringArray("res://addons/gdai-mcp-plugin-godot/plugin.cfg")
 
 [physics]
 

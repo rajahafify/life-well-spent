@@ -9,7 +9,8 @@ Personal life-tracking / productivity game built in Godot 4.6.2.
 - Quests can link to real-life tasks.
 - Completing life tasks grants XP; linked quest completion spends HP.
 - SaveManager serializes player, quest, and life-tracking state.
-- Test baseline: `152 tests, 152 passed, 0 failed`.
+- GDAI MCP remains enabled for editor use and is skipped during headless tests.
+- Test baseline: `155 tests, 155 passed, 0 failed`.
 
 ## Run Tests
 

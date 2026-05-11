@@ -20,3 +20,4 @@
 | [architecture/npc-definition](architecture/npc-definition.md) | reference | 2026-05-11 | Resource-backed NPC role variants for quest givers, vendors, and facilities. |
 | [architecture/settings-model](architecture/settings-model.md) | reference | 2026-05-11 | User options state with volume clamp and fullscreen flag. |
 | [architecture/persistence-audio-settings](architecture/persistence-audio-settings.md) | reference | 2026-05-11 | SaveManager, AudioManager, SettingsModel, and SceneTransitionController system boundaries. |
+| [architecture/gdai-mcp-runtime-guard](architecture/gdai-mcp-runtime-guard.md) | reference | 2026-05-11 | Keeps GDAI MCP enabled in editor while skipping runtime startup during headless tests. |

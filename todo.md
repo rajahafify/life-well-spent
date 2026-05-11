@@ -2,7 +2,7 @@
 
 Status: **Partially done. MVP foundation exists, production-complete work remains.**
 
-Current validation: `152 tests, 152 passed, 0 failed`.
+Current validation: `155 tests, 155 passed, 0 failed`.
 
 ## P0 — Cleanup / Correctness
 
@@ -10,7 +10,7 @@ Current validation: `152 tests, 152 passed, 0 failed`.
   - Current: `ObjectDB instances leaked` still appears.
   - Current: `6 resources still in use` still appears.
 - [x] Investigate `ERROR: Capture not registered: 'gdaimcp'.`
-  - Fixed by disabling GDAI MCP autoload/editor plugin in `project.godot` for headless tests.
+  - Fixed with `scripts/managers/gdai_mcp_runtime_guard.gd`: GDAI MCP stays enabled for editor, runtime skips in headless tests.
 - [x] Update stale plan test counts to current baseline: `152 tests, 152 passed, 0 failed`.
 - [x] Mark `plans/camera-controller.md` implemented or rewrite its status.
 - [x] Add missing `README.md`.
