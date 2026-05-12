@@ -181,6 +181,22 @@ func side_quest_step(chain_id: String) -> int:
 	return int(Dictionary(side_quest_chains[chain_id]).get("step", 0))
 
 
+func current_side_quest_objective_text(chain_id: String) -> String:
+	if not side_quest_chains.has(chain_id):
+		return ""
+	var chain: Dictionary = side_quest_chains[chain_id]
+	var step := int(chain.get("step", 0))
+	match step:
+		0:
+			return "Train with the Guildmaster: learn the old stance."
+		1:
+			return "Train with the Guildmaster: practice guard and footwork."
+		2:
+			return "Swear the Guildmaster's Life oath."
+		_:
+			return "Swordsman Guild unlocked."
+
+
 func advance_side_quest_step(chain_id: String) -> bool:
 	if not is_side_quest_active(chain_id):
 		return false

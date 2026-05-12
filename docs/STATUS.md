@@ -4,7 +4,7 @@
 
 ## QA Status
 
-- Automated suite: `369 tests, 369 passed, 0 failed`
+- Automated suite: `375 tests, 375 passed, 0 failed`
 - Manual QA: pass for MVP flow
 - Godot warnings/errors: headless suite passes. Current known non-failing output includes existing `assets-gallery.tscn` invalid UID fallback warnings and resource cleanup warnings.
 
@@ -23,7 +23,7 @@ Life Well Spent now has a playable MVP foundation:
 9. GDAI MCP remains enabled for editor use while headless tests skip runtime startup.
 10. Legacy demo scene/controller have been removed; `town_scene.tscn` is the playable MVP flow.
 11. Field is playable with shared HUD, Slime/Bat/Rat combat, drops, respawn polling, Forest Guard gate, and extracted camera/spawn/combat helper controllers.
-12. Swordsman Guild certification is playable from the Guildmaster after the Forest Guard checkpoint, spends Max Life in three quest-completion steps, unlocks `swordsman_guild`, advances the quest objective to `Enter the Forest.`, and changes the Forest Guard and Forest gate to an open Forest path endpoint without reverting the objective.
+12. Swordsman Guild certification is playable from the Guildmaster after the Forest Guard checkpoint as three named quest steps: old stance training, guard/footwork training, and the Life oath. Each step spends Max Life, unlocks `swordsman_guild` on completion, advances the quest objective to `Enter the Forest.`, and changes the Forest Guard and Forest gate to an open Forest path endpoint without reverting the objective.
 13. Town/Field movement supports updating the destination while the left mouse button is held, except while the pointer is over HUD controls.
 14. Player aging visuals are driven by Max Life: Town and Field start with `player_age_1.png`, certification at `60` Max Life uses `player_age_2.png`, and final certification at `20` or lower uses `player_age_3.png`.
 

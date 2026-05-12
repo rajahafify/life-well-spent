@@ -22,7 +22,7 @@ complete_swordsman_certification_step() -> bool
 - Coordinates existing models instead of duplicating state.
 - Life task XP flows to `LifeTracker.xp` and `PlayerStats.xp`.
 - Linked quests complete by `life_task_id`; quest completion still delegates HP cost to `PlayerStats.complete_quest()`.
-- Swordsman certification is quest-completion driven: each step calls `PlayerStats.complete_quest()` and advances the `Rebuilding Swordsman Guild` side-chain step.
+- Swordsman certification is quest-completion driven: each Guildmaster step calls `PlayerStats.complete_quest()` and advances the `Rebuilding Swordsman Guild` side-chain step.
 - Step 3 completes the side chain, grants `swordsman_certification`, advances the main objective to `Enter the Forest.`, unlocks `swordsman_guild`, and leaves `PlayerStats.game_over_requested` true via Max Life reaching zero.
 
 ## Test Coverage

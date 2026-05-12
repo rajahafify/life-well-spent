@@ -52,6 +52,10 @@ func side_quest_step(chain_id: String) -> int:
 	return quests.side_quest_step(chain_id)
 
 
+func current_side_quest_objective_text(chain_id: String) -> String:
+	return quests.current_side_quest_objective_text(chain_id)
+
+
 func advance_side_quest_step(chain_id: String) -> bool:
 	return quests.advance_side_quest_step(chain_id)
 

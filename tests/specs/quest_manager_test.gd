@@ -182,6 +182,36 @@ func test_swordsman_guild_chain_starts_at_step_zero() -> void:
 	assert_eq(0, qm.side_quest_step("rebuilding_swordsman_guild"))
 
 
+func test_swordsman_guild_chain_step_zero_objective_is_guildmaster_stance_training() -> void:
+	qm.setup_core_quests()
+	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	assert_eq("Train with the Guildmaster: learn the old stance.", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+
+
+func test_swordsman_guild_chain_step_one_objective_is_guildmaster_guard_training() -> void:
+	qm.setup_core_quests()
+	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	assert_eq("Train with the Guildmaster: practice guard and footwork.", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+
+
+func test_swordsman_guild_chain_step_two_objective_is_guildmaster_life_oath() -> void:
+	qm.setup_core_quests()
+	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	assert_eq("Swear the Guildmaster's Life oath.", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+
+
+func test_swordsman_guild_chain_step_three_objective_is_guild_unlocked() -> void:
+	qm.setup_core_quests()
+	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	assert_eq("Swordsman Guild unlocked.", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+
+
 func test_swordsman_guild_chain_advances_to_next_step() -> void:
 	qm.setup_core_quests()
 	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")

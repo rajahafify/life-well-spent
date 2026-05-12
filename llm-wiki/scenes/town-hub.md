@@ -75,7 +75,7 @@ It lives when someone chooses the path.
 Perhaps one day, someone will help me raise it again.
 ```
 
-After Field advances the main quest objective to `Get Swordsman Certification.`, the Guildmaster offers quest-completion certification steps for the `Rebuilding Swordsman Guild` side quest chain:
+After Field advances the main quest objective to `Get Swordsman Certification.`, the Guildmaster offers three named quest-completion steps for the `Rebuilding Swordsman Guild` side quest chain:
 
 ```text
 You found the Forest gate, and now you need Swordsman Certification.
@@ -83,10 +83,10 @@ You found the Forest gate, and now you need Swordsman Certification.
 Certification is not earned with coin.
 It is earned with life.
 
-Complete certification step 1 to help rebuild the Swordsman Guild.
+Train with the Guildmaster: learn the old stance.
 ```
 
-Each completion spends 40 Max Life until the third step spends the remaining Life, grants `swordsman_certification`, unlocks `swordsman_guild`, and shows `SWORDSMAN GUILD UNLOCKED`.
+Each completion spends 40 Max Life until the third step spends the remaining Life. The sequence is old stance training, guard and footwork training, then the Guildmaster's Life oath. The final step grants `swordsman_certification`, unlocks `swordsman_guild`, and shows `SWORDSMAN GUILD UNLOCKED`.
 
 ### Shopkeeper
 

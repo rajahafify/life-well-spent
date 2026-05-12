@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-13] feature | Name Guildmaster certification quest steps
+
+- RED: added QuestManager and Town specs for three Guildmaster-owned Swordsman Guild quest objectives.
+- `QuestManager` now exposes current side quest objective text for the `Rebuilding Swordsman Guild` chain.
+- Guildmaster certification copy now shows old stance training, guard and footwork training, then the Life oath instead of generic numbered steps.
+- Validation: full suite `375 tests, 375 passed, 0 failed`.
+
 ## [2026-05-13] feature | Add player aging sprites
 
 - RED: added PlayerAgingModel, Town, and Field specs for Life-based player sprite aging.

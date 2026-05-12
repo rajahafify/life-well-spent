@@ -106,9 +106,13 @@ Certification is not earned with coin.
 It is earned with life.
 ```
 
-### Step 3 - Certification Step 1
+### Step 3 - Guildmaster Quest 1: Old Stance
 
-Player completes the first certification step.
+Player completes the first Guildmaster certification quest:
+
+```text
+Train with the Guildmaster: learn the old stance.
+```
 
 Effects:
 
@@ -118,9 +122,13 @@ Effects:
 - Player sprite changes to aging stage 2, `assets/player_age_2.png`
 - Swordsman Guild remains locked
 
-### Step 4 - Certification Step 2
+### Step 4 - Guildmaster Quest 2: Guard And Footwork
 
-Player completes the second certification step.
+Player completes the second Guildmaster certification quest:
+
+```text
+Train with the Guildmaster: practice guard and footwork.
+```
 
 Effects:
 
@@ -130,9 +138,13 @@ Effects:
 - Player sprite changes to aging stage 3, `assets/player_age_3.png`
 - Swordsman Guild remains locked
 
-### Step 5 - Certification Step 3
+### Step 5 - Guildmaster Quest 3: Life Oath
 
-Player completes the final certification step.
+Player completes the final Guildmaster certification quest:
+
+```text
+Swear the Guildmaster's Life oath.
+```
 
 Effects:
 
@@ -292,11 +304,11 @@ Current implemented conditions:
 Next slice conditions:
 
 - If Guildmaster is clicked before Forest Guard checkpoint: show worldbuilding dialog.
-- If Guildmaster is clicked after Forest Guard checkpoint and chain step is `0`: show certification step 1 offer.
+- If Guildmaster is clicked after Forest Guard checkpoint and chain step is `0`: show old stance training.
 - If player accepts step 1: spend Max Life from `100` to `60`, clamp current Life, update HUD, and set chain step `1`.
-- If chain step is `1`: show certification step 2 offer.
+- If chain step is `1`: show guard and footwork training.
 - If player accepts step 2: spend Max Life from `60` to `20`, clamp current Life, update HUD, and set chain step `2`.
-- If chain step is `2`: show final certification offer.
+- If chain step is `2`: show the Life oath.
 - If player accepts step 3: spend remaining Max Life, unlock Swordsman Guild, advance the main objective to `Enter the Forest.`, request game over, and show unlock message.
 - If player rebirths after unlock: reset run Life state but preserve Swordsman Guild unlock in `PlayerStats.unlocked_facilities`.
 - If player reaches Forest Gateway after unlock: show the open-path prototype endpoint instead of the original certification block.
@@ -432,9 +444,9 @@ Player can:
 4. See the objective change to `Get Swordsman Certification`.
 5. Return to Town.
 6. Talk to Guildmaster and see certification-specific dialog.
-7. Complete certification step 1 and see Max Life become `60`.
-8. Complete certification step 2 and see Max Life become `20`.
-9. Complete certification step 3 and see Swordsman Guild unlock.
+7. Complete old stance training and see Max Life become `60`.
+8. Complete guard and footwork training and see Max Life become `20`.
+9. Complete the Life oath and see Swordsman Guild unlock.
 10. See the objective change to `Enter the Forest.`
 11. Rebirth with Life / Max Life reset to `100 / 100`.
 12. Keep Swordsman Guild unlocked after rebirth.
@@ -449,11 +461,11 @@ Player can:
 5. Forest Guard blocks entry and sends player back for certification.
 6. Return to Town.
 7. Talk to Guildmaster.
-8. Choose certification step 1.
+8. Choose old stance training.
 9. Life / Max Life updates to `60 / 60`.
-10. Choose certification step 2.
+10. Choose guard and footwork training.
 11. Life / Max Life updates to `20 / 20`.
-12. Choose certification step 3.
+12. Choose the Life oath.
 13. Swordsman Guild unlocks and game over is requested.
 14. Rebirth resets the run while preserving the Guild unlock.
 

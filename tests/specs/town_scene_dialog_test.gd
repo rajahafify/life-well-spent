@@ -145,6 +145,29 @@ func test_guildmaster_offers_swordsman_chain_after_forest_gate_objective() -> vo
 	assert_true(QuestSystem.is_side_quest_active("rebuilding_swordsman_guild"))
 
 
+func test_guildmaster_step_one_advances_to_next_guildmaster_quest() -> void:
+	_close_start_dialog()
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
+	complete.pressed.emit()
+	assert_eq("Train with the Guildmaster: practice guard and footwork.", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+
+
+func test_guildmaster_step_two_advances_to_life_oath_quest() -> void:
+	_close_start_dialog()
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	QuestSystem.advance_side_quest_step("rebuilding_swordsman_guild")
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
+	complete.pressed.emit()
+	assert_eq("Swear the Guildmaster's Life oath.", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+
+
 func test_guildmaster_certification_completion_spends_life_to_60() -> void:
 	_close_start_dialog()
 	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
