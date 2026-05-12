@@ -75,15 +75,18 @@ It lives when someone chooses the path.
 Perhaps one day, someone will help me raise it again.
 ```
 
-After Field advances the main quest objective to `Get Swordsman Certification.`, the Guildmaster points the player at the `Rebuilding Swordsman Guild` side quest chain:
+After Field advances the main quest objective to `Get Swordsman Certification.`, the Guildmaster offers quest-completion certification steps for the `Rebuilding Swordsman Guild` side quest chain:
 
 ```text
 You found the Forest gate, and now you need Swordsman Certification.
 
-Then you understand why the old rules exist.
+Certification is not earned with coin.
+It is earned with life.
 
-Help rebuild the Swordsman Guild first.
+Complete certification step 1 to help rebuild the Swordsman Guild.
 ```
+
+Each completion spends 40 Max Life until the third step spends the remaining Life, grants `swordsman_certification`, unlocks `swordsman_guild`, and shows `SWORDSMAN GUILD UNLOCKED`.
 
 ### Shopkeeper
 
@@ -125,6 +128,8 @@ Old roads have a way of calling again.
 - handles RO-style NPC approach after sprite click: far NPC click moves Player to the NPC talk point, near/in-range sprite click opens dialog
 - shows paged NPC dialog via `TownDialogView.show_dialog()`
 - reads `QuestSystem.current_main_objective_id()` so Guildmaster dialog can react to the Forest Gate objective
+- routes Guildmaster quest-completion button presses through `ProgressionModel.complete_swordsman_certification_step()`
+- updates the shared HUD after certification changes Life / Max Life
 - updates `SharedHUDView` with player Life and the current main quest objective
 - starts Player at named spawn point `SpawnPoints/FromFieldGateway`, up the south road and outside the FieldGateway trigger
 - records Field transition request through `request_field()`
@@ -133,7 +138,7 @@ Old roads have a way of calling again.
 - passes NPC sprite texture to `TownDialogView` for face portrait display above the dialog box
 - hides NPC dialog when `TownDialogView.close_requested` emits
 
-Shop, forge, and life-spend quest completion logic are not active in this slice. Town can now read QuestSystem state and present the Guildmaster certification prompt after the Forest Gate is reached.
+Shop and forge logic are not active in this slice. Town can now read QuestSystem state, present the Guildmaster certification prompt after the Forest Gate is reached, and complete the three-step Swordsman Guild Life-spend chain.
 
 ## Art Direction
 
@@ -154,7 +159,7 @@ Tiny Town visual art is imported as `TownMap`, an instanced generated scene from
 - `tests/specs/town_prototype_test.gd` also covers the generated Tiny Town `TownMap` and `TownCollision` instance paths, position, scale, and collision blocker shape.
 - `tests/specs/town_prototype_test.gd` covers the Tiny Town-facing NPC placements: Shopkeeper at `Vector2(512, 1140)`, Guildmaster at `Vector2(960, 450)`, and Smith at `Vector2(1472, 820)`.
 - `tests/specs/town_prototype_test.gd` covers the south-road Field gateway at `Vector2(960, 1320)` and its safe spawn at `Vector2(960, 980)`, far enough to avoid auto-transition.
-- `tests/specs/town_scene_dialog_test.gd` covers startup reborn dialog, readable 1080p dialog text, shared HUD, top-right Quest Tracker, NPC face portrait crop above the box, paged NPC dialog, RO-style sprite-click NPC approach, pending dialog open in talk range after click, camera follow, desynced NPC idle timing, hidden overhead NPC names, first-slice quest buttons hidden, QuestSystem Guildmaster certification prompt, click-to-move routing/blocking, dialog close behavior, and direct Field gateway request.
+- `tests/specs/town_scene_dialog_test.gd` covers startup reborn dialog, readable 1080p dialog text, shared HUD, top-right Quest Tracker, NPC face portrait crop above the box, paged NPC dialog, RO-style sprite-click NPC approach, pending dialog open in talk range after click, camera follow, desynced NPC idle timing, hidden overhead NPC names, first-slice quest buttons hidden, QuestSystem Guildmaster certification prompt, certification Life spend, final Swordsman Guild unlock, click-to-move routing/blocking, dialog close behavior, and direct Field gateway request.
 - `tests/specs/npc_controller_test.gd` and `tests/specs/scene_smoke_test.gd` cover removal of proximity-based NPC dialog triggers.
 - `tests/specs/scene_smoke_test.gd` covers Town dialog smoke behavior.
 

@@ -48,6 +48,14 @@ func is_side_quest_active(chain_id: String) -> bool:
 	return quests.is_side_quest_active(chain_id)
 
 
+func side_quest_step(chain_id: String) -> int:
+	return quests.side_quest_step(chain_id)
+
+
+func advance_side_quest_step(chain_id: String) -> bool:
+	return quests.advance_side_quest_step(chain_id)
+
+
 func complete_side_quest_chain(chain_id: String) -> bool:
 	return quests.complete_side_quest_chain(chain_id)
 

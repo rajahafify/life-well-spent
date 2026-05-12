@@ -33,7 +33,25 @@ func complete_life_task(task_id: String, date: String) -> bool:
 	return true
 
 
+func complete_swordsman_certification_step() -> bool:
+	if player_stats == null or quest_manager == null:
+		return false
+	var chain_id := "rebuilding_swordsman_guild"
+	if not quest_manager.is_side_quest_active(chain_id):
+		return false
+	var current_step: int = quest_manager.side_quest_step(chain_id)
+	if current_step < 0 or current_step >= 3:
+		return false
+	player_stats.complete_quest()
+	if not quest_manager.advance_side_quest_step(chain_id):
+		return false
+	if quest_manager.side_quest_step(chain_id) >= 3:
+		quest_manager.complete_side_quest_chain(chain_id)
+		player_stats.unlock_facility("swordsman_guild")
+	return true
+
+
 func _apply_unlocks() -> void:
 	for facility_id in unlock_rules.keys():
-		if player_stats.xp >= int(unlock_rules[facility_id]) and not facility_id in player_stats.unlocked_facilities:
-			player_stats.unlocked_facilities.append(facility_id)
+		if player_stats.xp >= int(unlock_rules[facility_id]):
+			player_stats.unlock_facility(facility_id)

@@ -11,6 +11,7 @@ Field development decisions live in [`../field-development-decisions.md`](../fie
 - `town.md` — safe base and first scene.
 - `Field.md` — beginner field and Forest approach.
 - `forest_gate.md` — Guard blocker and quest unlock trigger.
+- progression.md - Town/Field certification arc and persistent Guild unlock.
 - `swordsman_guild_quest.md` — 3-step Life-spend chain.
 - `run_state.md` — single source of truth for run progression.
 - `inventory.md` — 1 weapon, 1 armor, 1 consumable stack.

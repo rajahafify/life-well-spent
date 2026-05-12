@@ -4,7 +4,7 @@
 
 ## QA Status
 
-- Automated suite: `328 tests, 328 passed, 0 failed`
+- Automated suite: `341 tests, 341 passed, 0 failed`
 - Manual QA: pass for MVP flow
 - Godot warnings/errors: headless suite passes. Current known non-failing output includes existing `assets-gallery.tscn` invalid UID fallback warnings and resource cleanup warnings.
 
@@ -23,6 +23,7 @@ Life Well Spent now has a playable MVP foundation:
 9. GDAI MCP remains enabled for editor use while headless tests skip runtime startup.
 10. Legacy demo scene/controller have been removed; `town_scene.tscn` is the playable MVP flow.
 11. Field is playable with shared HUD, Slime/Bat/Rat combat, drops, respawn polling, Forest Guard gate, and extracted camera/spawn/combat helper controllers.
+12. Swordsman Guild certification is playable from the Guildmaster after the Forest Guard checkpoint, spends Max Life in three quest-completion steps, unlocks `swordsman_guild`, and changes the Forest gate to a `To be continued` endpoint.
 
 ## Architecture
 
@@ -45,10 +46,10 @@ MVC + SOLID remains active convention:
 | Player movement | `scripts/views/character_movement.gd` | Click-to-move, facing, animation, movement lock, owned animation-model cleanup. |
 | Animation model | `scripts/models/animation_controller.gd` | LPC idle/walk frame state. |
 | Camera | `scripts/models/camera_model.gd`, `scripts/controllers/camera_controller.gd` | Smooth follow model + Camera2D glue with owned model cleanup. |
-| Player stats | `scripts/models/player_stats.gd` | HP, level, death/rebirth, XP, facilities, serialization. |
-| Quest lifecycle | `scripts/models/quest_manager.gd` | Catalog, active quests, linked life-task quests, serialization. |
+| Player stats | `scripts/models/player_stats.gd` | HP, level, death/rebirth, game-over request, XP, persistent facilities, serialization. |
+| Quest lifecycle | `scripts/models/quest_manager.gd` | Catalog, active quests, linked life-task quests, side-chain steps, certifications, serialization. |
 | Life tracking | `scripts/models/life_tracker.gd` | Tasks, habits, daily completion, streaks, XP. |
-| Progression | `scripts/models/progression_model.gd` | Task completion → XP, linked quest completion, facility unlocks. |
+| Progression | `scripts/models/progression_model.gd` | Task completion -> XP, linked quest completion, facility unlocks, Swordsman certification steps. |
 | NPC data resources | `scripts/models/npc_definition.gd`, `resources/npc_definitions/` | Quest giver, vendor, facility role definitions. |
 | Dialog view | `scripts/views/town_dialog_view.gd` | Dumb dialog panel with button signals. |
 | Save manager | `scripts/managers/save_manager.gd` | Build/apply save data and JSON file round trip. |

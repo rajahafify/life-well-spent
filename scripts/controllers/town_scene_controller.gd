@@ -6,6 +6,8 @@ extends Node2D
 const FIELD_PATH := "res://scenes/field.tscn"
 const CAMERA_OFFSET := Vector2(0, -150)
 const INVENTORY_SCRIPT := preload("res://scripts/models/inventory_model.gd")
+const PLAYER_STATS_SCRIPT := preload("res://scripts/models/player_stats.gd")
+const PROGRESSION_SCRIPT := preload("res://scripts/models/progression_model.gd")
 const REBORN_DIALOG := "You have been reborn.\nWill you spend this life well?"
 
 @onready var _dialog_view: TownDialogView = $UI/DialogPanel
@@ -14,18 +16,27 @@ const REBORN_DIALOG := "You have been reborn.\nWill you spend this life well?"
 @onready var _player: CharacterBody2D = $Player
 
 var requested_scene_path: String = ""
+var player_stats: PlayerStats = PLAYER_STATS_SCRIPT.new()
 var _pending_npc: NpcController
 var _local_inventory_model = null
+var _progression = null
 
 
 func _exit_tree() -> void:
 	if _local_inventory_model:
 		_local_inventory_model.free()
 		_local_inventory_model = null
+	if _progression:
+		_progression.free()
+		_progression = null
+	if player_stats:
+		player_stats.free()
+		player_stats = null
 
 
 func _ready() -> void:
 	QuestSystem.setup_core_quests()
+	_progression = PROGRESSION_SCRIPT.new(player_stats, QuestSystem.quests, null)
 	_connect_hud()
 	_update_quest_window()
 	_connect_dialog()
@@ -39,13 +50,15 @@ func _connect_hud() -> void:
 	if _hud:
 		_hud.ensure_ready()
 		_hud.set_inventory_model(_inventory_model_for_hud())
-		_hud.set_life(100, 100)
+		_update_life_hud()
 
 
 func _connect_dialog() -> void:
 	_dialog_view.ensure_ready()
 	if not _dialog_view.close_requested.is_connected(close_dialog):
 		_dialog_view.close_requested.connect(close_dialog)
+	if not _dialog_view.complete_quest_requested.is_connected(_on_complete_quest_requested):
+		_dialog_view.complete_quest_requested.connect(_on_complete_quest_requested)
 
 
 func _show_reborn_dialog() -> void:
@@ -91,7 +104,7 @@ func _open_dialog(npc: NpcController) -> void:
 		movement.stop_moving()
 		movement.face_target(npc.global_position)
 	npc.face_toward_player(_player.global_position)
-	_dialog_view.show_dialog(npc.display_name, _dialog_text_for(npc), false, false, _npc_portrait_texture(npc))
+	_dialog_view.show_dialog(npc.display_name, _dialog_text_for(npc), false, _can_complete_swordsman_step(npc), _npc_portrait_texture(npc))
 
 
 func move_player_to(target: Vector2) -> bool:
@@ -145,8 +158,34 @@ func _dialog_text_for(npc: NpcController) -> String:
 		if QuestSystem.has_certification("swordsman_certification"):
 			return "You carry Swordsman Certification now.\n\nThe Forest gate will recognize you."
 		QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
-		return "You found the Forest gate, and now you need Swordsman Certification.\n\nThen you understand why the old rules exist.\n\nHelp rebuild the Swordsman Guild first."
+		var step := QuestSystem.side_quest_step("rebuilding_swordsman_guild") + 1
+		return "You found the Forest gate, and now you need Swordsman Certification.\n\nCertification is not earned with coin.\nIt is earned with life.\n\nComplete certification step %d to help rebuild the Swordsman Guild." % step
 	return npc.dialog_text
+
+
+func _can_complete_swordsman_step(npc: NpcController) -> bool:
+	return npc.role == "guildmaster" and QuestSystem.is_side_quest_active("rebuilding_swordsman_guild")
+
+
+func _on_complete_quest_requested() -> void:
+	if _progression == null:
+		return
+	if not _progression.complete_swordsman_certification_step():
+		return
+	_update_life_hud()
+	_update_quest_window()
+	if QuestSystem.has_certification("swordsman_certification"):
+		_dialog_view.set_body("SWORDSMAN GUILD UNLOCKED\n\nYou spent this life well.\n\nTo be continued.")
+		_dialog_view.configure_buttons(false, false)
+		return
+	var step := QuestSystem.side_quest_step("rebuilding_swordsman_guild") + 1
+	_dialog_view.set_body("Life given. The old halls remember.\n\nComplete certification step %d to continue rebuilding the Swordsman Guild." % step)
+	_dialog_view.configure_buttons(false, true)
+
+
+func _update_life_hud() -> void:
+	if _hud:
+		_hud.set_life(player_stats.max_hp, player_stats.max_hp)
 
 
 func _player_movement() -> CharacterMovement:

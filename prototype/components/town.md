@@ -264,6 +264,7 @@ Town must show the start/reborn copy through the dialog panel.
 - Player can leave Town via Field Gateway.
 - Shop and Blacksmith services are not available yet.
 - Guildmaster reacts when QuestSystem says the main objective is `Get Swordsman Certification`.
+- Guildmaster certification uses quest completion: each complete press spends Max Life and advances the `Rebuilding Swordsman Guild` side-chain step.
 
 Future rules:
 
@@ -290,7 +291,7 @@ First Town slice:
 Future conditions:
 
 - If main objective is `Find the Forest path`: Guildmaster shows worldbuilding dialog.
-- If main objective is `Get Swordsman Certification` and `swordsman_chain_step = 0`: Guildmaster points player at `Rebuilding Swordsman Guild`.
+- If main objective is `Get Swordsman Certification` and `swordsman_chain_step = 0`: Guildmaster offers certification step 1.
 - If `swordsman_chain_step = 1`: Guildmaster offers step 2.
 - If `swordsman_chain_step = 2`: Guildmaster offers step 3.
 - If `swordsman_chain_step = 3`: Swordsman Guild is unlocked, Game Over requested.
@@ -310,7 +311,7 @@ Player cannot:
 - heal Life
 - use Shop inventory in first slice
 - use Blacksmith services in first slice
-- complete Swordsman Guild quest steps in this slice
+- complete Swordsman Guild quest steps before the Forest Guard checkpoint
 
 ## Primitive / SVG Art Direction
 

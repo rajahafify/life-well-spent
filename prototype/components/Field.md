@@ -385,9 +385,9 @@ Current Field slice:
 - On enemy movement into collision: movement is rejected.
 - On Forest Gateway body entered by Player: scene transition remains blocked, QuestSystem marks `forest_guard`, advances `Explore the World` to `Get Swordsman Certification`, `Rebuilding Swordsman Guild` becomes active, and Guard warning opens.
 
-Future conditions:
+Certified endpoint:
 
-- If player approaches Forest Gate after future unlock: behavior TBD.
+- If player approaches Forest Gate after Swordsman Certification: show `The Forest path opens. To be continued.`
 
 ## Permissions
 
@@ -400,7 +400,7 @@ Player can:
 
 Player cannot:
 
-- enter Forest in current prototype
+- enter Forest in current prototype; certification changes the block into a `To be continued` endpoint
 - unlock Swordsman Guild directly from Field
 
 ## Art Direction
@@ -428,7 +428,7 @@ Color language:
 
 - Enemy drops are model-backed and shown through the inventory window / loot toast, not world pickup sprites.
 - No playable Forest.
-- No Swordsman Guild quest completion UI.
+- Swordsman Guild quest completion UI lives in Town, not Field.
 - No drop pickup animation yet.
 - No weapon/armor combat effect yet.
 
@@ -532,4 +532,5 @@ Player can:
 - [x] `Rebuilding Swordsman Guild` activates from the Forest Gateway flow.
 - [x] Enemy drops exist.
 - [x] Inventory/consume behavior exists in Field.
+- [x] Certified Forest Gateway shows `To be continued` instead of the original Guard block.
 - [ ] Weapon/armor equipment effects exist in Field.

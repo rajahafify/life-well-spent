@@ -172,6 +172,25 @@ func is_side_quest_active(chain_id: String) -> bool:
 	return bool(chain.get("active", false)) and not bool(chain.get("completed", false))
 
 
+func side_quest_step(chain_id: String) -> int:
+	if not side_quest_chains.has(chain_id):
+		return -1
+	return int(Dictionary(side_quest_chains[chain_id]).get("step", 0))
+
+
+func advance_side_quest_step(chain_id: String) -> bool:
+	if not is_side_quest_active(chain_id):
+		return false
+	var chain: Dictionary = side_quest_chains[chain_id]
+	var step := int(chain.get("step", 0))
+	var max_step := int(chain.get("max_step", 1))
+	if step >= max_step:
+		return false
+	chain["step"] = step + 1
+	side_quest_chains[chain_id] = chain
+	return true
+
+
 func complete_side_quest_chain(chain_id: String) -> bool:
 	if not side_quest_chains.has(chain_id):
 		return false

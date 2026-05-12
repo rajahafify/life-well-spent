@@ -48,6 +48,8 @@ func mark_main_checkpoint(main_id: String, checkpoint_id: String) -> bool
 func has_main_checkpoint(main_id: String, checkpoint_id: String) -> bool
 func current_main_checkpoint_text(main_id: String = "explore_the_world") -> String
 func is_side_quest_active(chain_id: String) -> bool
+func side_quest_step(chain_id: String) -> int
+func advance_side_quest_step(chain_id: String) -> bool
 func complete_side_quest_chain(chain_id: String) -> bool
 func has_certification(certification_id: String) -> bool
 
@@ -61,12 +63,13 @@ func apply_dict(data: Dictionary) -> void
 - `QuestSystem` exists because Field and Town both need the same quest state across scene changes.
 - The main quest starts as `Explore the World` with objective `Find the Forest path.`
 - Reaching the Field Forest Gate marks the `forest_guard` checkpoint, advances the objective to `Get Swordsman Certification.`, and activates the `Rebuilding Swordsman Guild` side quest chain.
+- The `Rebuilding Swordsman Guild` side chain tracks ordered step state from 0 to 3.
 - Completing `Rebuilding Swordsman Guild` grants `swordsman_certification`.
 - Acceptance remains free; Max Life spending belongs to quest completion/progression callers.
 
 ## Test Coverage
 
-- `tests/specs/quest_manager_test.gd` covers catalog quests, active quest lifecycle, free acceptance, reset, core main quest setup, Forest Guard checkpoint state, Forest Gate objective advancement, side chain activation, certification grant, and save round-trip.
+- `tests/specs/quest_manager_test.gd` covers catalog quests, active quest lifecycle, free acceptance, reset, core main quest setup, Forest Guard checkpoint state, Forest Gate objective advancement, side chain activation, side-chain step advancement/bounds, certification grant, and save round-trip.
 - `tests/specs/field_scene_test.gd` covers Field using `QuestSystem` and advancing the main objective when the player enters the Forest Gateway.
 - `tests/specs/town_scene_dialog_test.gd` covers the Guildmaster reacting to the `Get Swordsman Certification` objective.
 

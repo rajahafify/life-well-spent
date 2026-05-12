@@ -161,15 +161,40 @@ func test_completing_swordsman_guild_chain_grants_certification() -> void:
 	assert_false(qm.is_side_quest_active("rebuilding_swordsman_guild"))
 
 
+func test_swordsman_guild_chain_starts_at_step_zero() -> void:
+	qm.setup_core_quests()
+	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	assert_eq(0, qm.side_quest_step("rebuilding_swordsman_guild"))
+
+
+func test_swordsman_guild_chain_advances_to_next_step() -> void:
+	qm.setup_core_quests()
+	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	assert_true(qm.advance_side_quest_step("rebuilding_swordsman_guild"))
+	assert_eq(1, qm.side_quest_step("rebuilding_swordsman_guild"))
+
+
+func test_swordsman_guild_chain_step_cannot_exceed_max_step() -> void:
+	qm.setup_core_quests()
+	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	assert_false(qm.advance_side_quest_step("rebuilding_swordsman_guild"))
+	assert_eq(3, qm.side_quest_step("rebuilding_swordsman_guild"))
+
+
 func test_core_quest_state_round_trips_through_save_data() -> void:
 	qm.setup_core_quests()
 	qm.mark_main_checkpoint("explore_the_world", "forest_guard")
 	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	qm.advance_side_quest_step("rebuilding_swordsman_guild")
 	qm.complete_side_quest_chain("rebuilding_swordsman_guild")
 	var restored := QuestManager.new()
 	restored.apply_dict(qm.to_dict())
 	assert_eq("get_swordsman_certification", restored.current_main_objective_id())
 	assert_true(restored.has_main_checkpoint("explore_the_world", "forest_guard"))
 	assert_true(restored.has_certification("swordsman_certification"))
+	assert_eq(1, restored.side_quest_step("rebuilding_swordsman_guild"))
 	assert_false(restored.is_side_quest_active("rebuilding_swordsman_guild"))
 	restored.free()

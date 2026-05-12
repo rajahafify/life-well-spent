@@ -1,5 +1,16 @@
 # Wiki Log
 
+## [2026-05-13] feature | Complete Swordsman Guild certification progression
+
+- RED: added model specs for side-chain steps, certification step completion, game-over request, and persistent `swordsman_guild` unlock after rebirth.
+- RED: added scene specs for Guildmaster quest-completion certification, final achievement unlock, HUD Life update, and certified Forest `To be continued` endpoint.
+- Added `QuestManager.side_quest_step()` / `advance_side_quest_step()` plus `QuestSystem` wrappers.
+- Added `PlayerStats.game_over_requested` and idempotent `unlock_facility()`.
+- Added `ProgressionModel.complete_swordsman_certification_step()` for the three Life-spend certification completions.
+- Wired Town Guildmaster completion button to certification progression and Field Forest Gateway to the certified prototype endpoint.
+- Updated prototype and LLM wiki documentation for progression, Town, Field, QuestManager, PlayerStats, and ProgressionModel.
+- Validation: full suite `341 tests, 341 passed, 0 failed`.
+
 ## [2026-05-13] refactor | Fix Field SOLID and TDD review findings
 
 - RED: added focused specs for `EnemyLibrary`, `EnemyState`, combat defense floors, InventoryWindow close signal, and SharedHUD input edge cases.

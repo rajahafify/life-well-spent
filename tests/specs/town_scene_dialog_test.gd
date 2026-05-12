@@ -124,6 +124,36 @@ func test_guildmaster_offers_swordsman_chain_after_forest_gate_objective() -> vo
 	assert_true(QuestSystem.is_side_quest_active("rebuilding_swordsman_guild"))
 
 
+func test_guildmaster_certification_completion_spends_life_to_60() -> void:
+	_close_start_dialog()
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
+	complete.pressed.emit()
+	assert_eq(60, root.player_stats.max_hp)
+	assert_eq(1, QuestSystem.side_quest_step("rebuilding_swordsman_guild"))
+	assert_eq("Life: 60/60", (root.get_node("UI/LifeLabel") as Label).text)
+
+
+func test_guildmaster_final_certification_unlocks_achievement() -> void:
+	_close_start_dialog()
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
+	complete.pressed.emit()
+	complete.pressed.emit()
+	complete.pressed.emit()
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	assert_true(QuestSystem.has_certification("swordsman_certification"))
+	assert_in("swordsman_guild", root.player_stats.unlocked_facilities)
+	assert_true(root.player_stats.game_over_requested)
+	assert_true(body.text.contains("SWORDSMAN GUILD UNLOCKED"))
+
+
 func test_far_guildmaster_interaction_moves_player_without_opening_dialog() -> void:
 	_close_start_dialog()
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
