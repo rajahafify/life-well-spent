@@ -1,5 +1,23 @@
 # Wiki Log
 
+## [2026-05-12] fix | Move Field Town portal to north road
+
+- Moved `TownGateway` to the north road entry at `Vector2(768, 64)`.
+- Moved `SpawnPoints/FromTownGateway`, `SpawnPoints/Default`, and initial Player position to `Vector2(768, 160)` so Field load does not auto-trigger the Town portal.
+- Removed legacy primitive Field terrain/prop visuals now covered by imported `FieldMap`.
+- Updated Field specs for north portal placement, safe spawn distance, and removed primitive art nodes.
+- Validation: `249 tests, 249 passed, 0 failed`; Godot MCP main-scene play reports no errors.
+
+## [2026-05-12] feature | Import Tiny Town Field map
+
+- Generated `scenes/maps/field_map.tscn` and `scenes/maps/field_collision.tscn` from `D:\godot\kenney_tiny-town\field.tmj`.
+- Instanced `FieldMap` and `FieldCollision` into `scenes/field.tscn`.
+- Moved `ForestGateway`, `ForestBlocker`, and `ForestGuard` to the southeast road end.
+- Generalized `tools/import_tiny_town_tmj.py` so it can update non-Town scenes and arbitrary generated map/collision scene paths.
+- Added Field scene specs for generated map/collision and southeast forest-gate placement.
+- Updated Field and Tiny Town import wiki pages.
+- Validation: `248 tests, 248 passed, 0 failed`; Godot MCP main-scene play starts, with existing GDScript warnings reported by `get_godot_errors`.
+
 ## [2026-05-12] fix | Move Town spawn away from portal trigger
 
 - Kept `FieldGateway` at the south road exit.
@@ -508,3 +526,24 @@
 - Added `assets/assets-gallery.tscn` and `assets/asset_gallery.gd` as one root Control for all looping enemy sprite previews.
 - Updated asset catalog, enemy asset tools wiki, wiki index, and enemy sprite metadata docs.
 - Validation: `223 tests, 223 passed, 0 failed`.
+
+## [2026-05-12] fix | Enforce Field collision for enemies
+
+- RED: updated `tests/specs/field_scene_test.gd` to require enemy movement through `FieldCollision` and removal of the old visible ForestBlocker bar.
+- Added Field controller collision checks for enemy movement and spawn placement against generated collision shapes.
+- Removed `ForestBlocker` from `scenes/field.tscn`; the Forest Guard remains at the southeast road end and blockers come from `FieldCollision`.
+- Updated Field scene wiki docs.
+- Validation: `250 tests, 250 passed, 0 failed`; Godot MCP main-scene play reports no errors.
+
+## [2026-05-12] refine | Import expanded Field map
+
+- Imported the edited `D:\godot\kenney_tiny-town\field.tmj` into `scenes/maps/field_map.tscn` and `scenes/maps/field_collision.tscn`.
+- Updated Tiny Town import collision generation so only layers beginning with `C-` produce blockers.
+- Updated Field scene specs for the expanded `96x68` map, larger enemy spawn zone, and southeast Forest Guard/Gateway placement.
+- Validation: Field scene specs `22 tests, 22 passed, 0 failed`. Full suite has an unrelated existing `EnemySpriteMetadataTest` asset-frame failure.
+
+## [2026-05-12] fix | Reposition Field portals on expanded map
+
+- Moved the Town gateway, default spawn, and player start to the current north road center at `Vector2(1552, 64)` / `Vector2(1552, 160)`.
+- Centered the Forest gateway and Forest Guard on the southeast road at `Vector2(2768, 2112)` / `Vector2(2768, 2000)`.
+- Validation: Field scene specs `22 tests, 22 passed, 0 failed`.

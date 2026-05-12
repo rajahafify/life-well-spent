@@ -11,6 +11,7 @@ const ENEMY_DEFINITION_SCRIPT := preload("res://scripts/models/enemy_definition.
 const ENEMY_STATE_SCRIPT := preload("res://scripts/models/enemy_state.gd")
 const ENEMY_BEHAVIOR_SCRIPT := preload("res://scripts/models/enemy_behavior_system.gd")
 const COMBAT_SCRIPT := preload("res://scripts/models/combat_system.gd")
+const ENEMY_COLLISION_RADIUS := 28.0
 
 @onready var _dialog_view: TownDialogView = $UI/DialogPanel
 @onready var _objective_prompt: Label = $UI/ObjectivePrompt
@@ -186,7 +187,9 @@ func _tick_enemies(delta: float) -> void:
 		var state = enemy_states[instance_id]
 		var definition = enemy_definitions[state.enemy_id]
 		state.position = (enemy_views[instance_id] as Node2D).global_position
+		var previous_position: Vector2 = state.position
 		var result: Dictionary = _behavior.tick(state, definition, {"player_position": _player.global_position}, delta)
+		_move_enemy_with_collision(state, state.position, previous_position)
 		if bool(result.get("enemy_attack", false)):
 			var combat_result: Dictionary = _combat.enemy_attack_player(state.to_combat_dict(), _player_combat_dict())
 			_apply_player_combat_dict(combat_result["player_state"])
@@ -207,6 +210,50 @@ func _attack_point_for_enemy(enemy_position: Vector2) -> Vector2:
 	var from_enemy := _player.global_position - enemy_position
 	var direction := from_enemy.normalized() if from_enemy != Vector2.ZERO else Vector2.LEFT
 	return enemy_position + direction * 44.0
+
+
+func _move_enemy_with_collision(state, next_position: Vector2, fallback_position: Vector2 = Vector2.INF) -> void:
+	var current_position: Vector2 = state.position if fallback_position == Vector2.INF else fallback_position
+	if is_enemy_position_blocked(next_position):
+		state.position = current_position
+		if state.behavior_state == "wander":
+			state.behavior_state = "idle"
+			state.target_position = current_position
+	else:
+		state.position = next_position
+	_update_enemy_view(state)
+
+
+func is_enemy_position_blocked(position: Vector2) -> bool:
+	var collision_root := get_node_or_null("FieldCollision")
+	if collision_root == null:
+		return false
+	return _position_blocked_by_node(collision_root, position)
+
+
+func _position_blocked_by_node(node: Node, position: Vector2) -> bool:
+	if node is CollisionShape2D and _position_blocked_by_shape(node as CollisionShape2D, position):
+		return true
+	for child in node.get_children():
+		if _position_blocked_by_node(child, position):
+			return true
+	return false
+
+
+func _position_blocked_by_shape(shape_node: CollisionShape2D, position: Vector2) -> bool:
+	if shape_node.disabled or shape_node.shape == null:
+		return false
+	var shape := shape_node.shape
+	if shape is RectangleShape2D:
+		var rect_shape := shape as RectangleShape2D
+		var scaled_size := rect_shape.size * shape_node.global_scale.abs()
+		var rect := Rect2(shape_node.global_position - scaled_size * 0.5, scaled_size).grow(ENEMY_COLLISION_RADIUS)
+		return rect.has_point(position)
+	if shape is CircleShape2D:
+		var circle_shape := shape as CircleShape2D
+		var radius_scale: float = max(absf(shape_node.global_scale.x), absf(shape_node.global_scale.y))
+		return shape_node.global_position.distance_to(position) <= circle_shape.radius * radius_scale + ENEMY_COLLISION_RADIUS
+	return false
 
 
 func _player_combat_dict() -> Dictionary:
@@ -264,6 +311,8 @@ func enemy_spawn_rect() -> Rect2:
 
 
 func _is_spawn_position_clear(candidate: Vector2, occupied: Array[Vector2]) -> bool:
+	if is_enemy_position_blocked(candidate):
+		return false
 	if candidate.distance_to(_player.global_position) < 260.0:
 		return false
 	if candidate.distance_to(_town_gateway.global_position) < 260.0:

@@ -57,14 +57,87 @@ func test_field_has_player_camera_gateways_and_objective() -> void:
 	if player and town_gateway and spawn:
 		assert_eq(spawn.global_position, player.global_position)
 		assert_true(spawn.global_position.distance_to(town_gateway.global_position) <= 180.0, "Field spawn should sit close to Town portal")
+		assert_true(spawn.global_position.distance_to(town_gateway.global_position) > 64.0, "Field spawn should not auto-trigger Town portal")
 	assert_not_null(root.get_node_or_null("ForestGateway"), "Field should have Forest Gateway")
-	assert_not_null(root.get_node_or_null("ForestBlocker"), "Field should have Forest Blocker")
 	assert_not_null(root.get_node_or_null("SpawnZones/Grassland"), "Field should have explicit enemy spawn zone")
 	var objective := root.get_node_or_null("UI/ObjectivePrompt") as Label
 	assert_not_null(objective, "Field should have objective prompt")
 	if objective:
 		assert_eq(FIELD_OBJECTIVE, objective.text)
 		assert_true(objective.visible)
+
+
+func test_field_instances_tiny_town_field_map() -> void:
+	if root == null:
+		return
+	var map := root.get_node_or_null("FieldMap") as Node2D
+	var collision := root.get_node_or_null("FieldCollision") as Node2D
+	assert_not_null(map, "Field should instance generated field map")
+	assert_not_null(collision, "Field should instance generated field collision")
+	if map:
+		assert_eq("res://scenes/maps/field_map.tscn", map.scene_file_path)
+		assert_eq(Vector2.ZERO, map.position)
+		assert_eq(Vector2(1, 1), map.scale)
+	if collision:
+		assert_eq("res://scenes/maps/field_collision.tscn", collision.scene_file_path)
+		assert_eq(Vector2.ZERO, collision.position)
+		assert_eq(Vector2(1, 1), collision.scale)
+		assert_true(collision.get_child_count() > 0, "Field collision should include blockers")
+
+
+func test_town_gateway_sits_at_north_road_entry() -> void:
+	if root == null:
+		return
+	var gateway := root.get_node_or_null("TownGateway") as Node2D
+	var spawn := root.get_node_or_null("SpawnPoints/FromTownGateway") as Marker2D
+	var player := root.get_node_or_null("Player") as Node2D
+	assert_not_null(gateway, "Field should have Town gateway")
+	assert_not_null(spawn, "Field should have Town gateway spawn")
+	if gateway and spawn and player:
+		assert_eq(Vector2(1552, 64), gateway.position)
+		assert_eq(Vector2(1552, 160), spawn.position)
+		assert_eq(spawn.global_position, player.global_position)
+		assert_true(spawn.global_position.distance_to(gateway.global_position) > 64.0, "Player should start clear of the portal trigger")
+
+
+func test_forest_guard_and_gate_are_at_southeast_road_end() -> void:
+	if root == null:
+		return
+	var gate := root.get_node_or_null("ForestGateway") as Node2D
+	var guard := root.get_node_or_null("ForestGuard") as Node2D
+	assert_not_null(gate, "Field should have ForestGateway")
+	assert_not_null(guard, "Field should have ForestGuard")
+	assert_true(root.get_node_or_null("ForestBlocker") == null, "FieldCollision should own blockers instead of a visible ForestBlocker bar")
+	if gate and guard:
+		assert_eq(Vector2(2768, 2112), gate.position)
+		assert_eq(Vector2(2768, 2000), guard.position)
+
+
+func test_enemy_movement_rejects_field_collision_blockers() -> void:
+	if root == null:
+		return
+	var collision_root := root.get_node_or_null("FieldCollision") as Node2D
+	assert_not_null(collision_root, "Field should have generated collision")
+	assert_true(root.has_method("_move_enemy_with_collision"), "Field should route enemy movement through collision")
+	if collision_root == null or not root.has_method("_move_enemy_with_collision"):
+		return
+	var blocker := StaticBody2D.new()
+	blocker.name = "SpecEnemyBlocker"
+	var shape_node := CollisionShape2D.new()
+	var shape := RectangleShape2D.new()
+	shape.size = Vector2(96, 96)
+	shape_node.shape = shape
+	blocker.add_child(shape_node)
+	collision_root.add_child(blocker)
+	blocker.global_position = Vector2(600, 500)
+	var state = root.enemy_states["field_slime_001"]
+	var view := root.enemy_views["field_slime_001"] as Node2D
+	state.position = Vector2(500, 500)
+	view.global_position = state.position
+	root._move_enemy_with_collision(state, Vector2(600, 500))
+	assert_eq(Vector2(500, 500), state.position)
+	assert_eq(Vector2(500, 500), view.global_position)
+	blocker.free()
 
 
 func test_field_has_slime_and_simple_life_combat_text() -> void:
@@ -80,7 +153,7 @@ func test_field_has_slime_and_simple_life_combat_text() -> void:
 	assert_eq("bat", bat.enemy_id)
 	assert_eq("rat", rat.enemy_id)
 	var spawn_rect: Rect2 = root.enemy_spawn_rect()
-	assert_eq(Rect2(Vector2(380, 300), Vector2(1260, 620)), spawn_rect)
+	assert_eq(Rect2(Vector2(380, 300), Vector2(2480, 1640)), spawn_rect)
 	for enemy in root.get_node("Enemies").get_children():
 		assert_true(spawn_rect.has_point(enemy.global_position))
 		assert_true(enemy.global_position.distance_to(root.get_node("TownGateway").global_position) >= 260.0)
@@ -156,15 +229,15 @@ func test_aggro_slime_chases_player_when_player_moves_away() -> void:
 		return
 	var player: Node2D = root.get_node("Player") as Node2D
 	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
-	player.global_position = Vector2(500, 500)
-	slime.global_position = Vector2(530, 500)
+	player.global_position = Vector2(760, 500)
+	slime.global_position = Vector2(790, 500)
 	root.enemy_states["field_slime_001"].position = slime.global_position
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.5)
-	player.global_position = Vector2(760, 500)
+	player.global_position = Vector2(1040, 500)
 	root._physics_process(0.5)
 	assert_eq("chase", root.enemy_states["field_slime_001"].behavior_state)
-	assert_true(slime.global_position.x > 530.0)
+	assert_true(slime.global_position.x > 790.0)
 
 
 func test_slime_dies_plays_death_before_removal() -> void:
@@ -200,21 +273,20 @@ func test_field_has_forest_guard_dialog_copy() -> void:
 		assert_eq(FOREST_GUARD_DIALOG, guard.dialog_text)
 
 
-func test_world_primitives_ignore_mouse_so_ground_clicks_move() -> void:
+func test_legacy_field_art_primitives_are_removed_after_import() -> void:
 	if root == null:
 		return
 	for node_path in [
 		"Ground",
-		"Paths/MainPath",
-		"Paths/ForestPath",
+		"Paths",
 		"ForestEdge",
-		"ForestBlocker/Visual",
-		"TownGateway/Visual",
-		"Props/Rock",
-		"Props/Bush",
+		"Props",
 	]:
-		var control := root.get_node(node_path) as Control
-		assert_eq(Control.MOUSE_FILTER_IGNORE, control.mouse_filter, "%s should not consume ground clicks" % node_path)
+		assert_true(root.get_node_or_null(node_path) == null, "%s should be replaced by imported FieldMap art" % node_path)
+	var portal_visual := root.get_node_or_null("TownGateway/Visual") as Control
+	assert_not_null(portal_visual, "Town gateway should keep its gameplay portal visual")
+	if portal_visual:
+		assert_eq(Control.MOUSE_FILTER_IGNORE, portal_visual.mouse_filter)
 
 
 func test_field_routes_player_movement_and_camera_follow() -> void:

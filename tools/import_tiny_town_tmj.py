@@ -21,7 +21,7 @@ COLLISION_SCENE_REL = Path("scenes/maps/town_collision.tscn")
 TILESET_REL = Path("assets/tiny_town/tilemap_packed_2x.png")
 TOWN_SCENE_REL = Path("scenes/town_scene.tscn")
 LAYER_NAMES = ["Ground", "Paths", "Fences", "Houses", "Castle", "Trees", "Bushes", "Props"]
-SOLID_LAYER_NAMES = ["Fences", "Houses", "Castle", "Trees", "Bushes", "Props"]
+COLLIDABLE_LAYER_PREFIX = "c-"
 
 
 def res_path(path: Path) -> str:
@@ -54,9 +54,9 @@ def tile_region(gid: int, columns: int, tile_width: int, tile_height: int) -> tu
 def generate_map_scene(tmj: dict, output_path: Path) -> None:
 	tile_width = int(tmj["tilewidth"])
 	tile_height = int(tmj["tileheight"])
-	tilesets = tmj.get("tilesets", [])
+	tilesets = [tileset for tileset in tmj.get("tilesets", []) if int(tileset.get("firstgid", 0)) == 1 and "columns" in tileset]
 	if len(tilesets) != 1:
-		raise ValueError("Expected one Tiny Town tileset")
+		raise ValueError("Expected one primary Tiny Town tileset with firstgid 1")
 	columns = int(tilesets[0]["columns"])
 	first_gid = int(tilesets[0].get("firstgid", 1))
 	if first_gid != 1:
@@ -72,7 +72,7 @@ def generate_map_scene(tmj: dict, output_path: Path) -> None:
 
 	for layer in tmj.get("layers", []):
 		name = layer.get("name", "")
-		if layer.get("type") != "tilelayer" or name not in LAYER_NAMES:
+		if layer.get("type") != "tilelayer" or not is_renderable_layer_name(name):
 			continue
 		width = int(layer["width"])
 		data = layer["data"]
@@ -104,13 +104,22 @@ def generate_map_scene(tmj: dict, output_path: Path) -> None:
 def solid_tile_mask(tmj: dict) -> set[tuple[int, int]]:
 	solid: set[tuple[int, int]] = set()
 	for layer in tmj.get("layers", []):
-		if layer.get("type") != "tilelayer" or layer.get("name", "") not in SOLID_LAYER_NAMES:
+		if layer.get("type") != "tilelayer" or not is_collidable_layer_name(str(layer.get("name", ""))):
 			continue
 		width = int(layer["width"])
 		for index, gid in enumerate(layer["data"]):
 			if int(gid) > 0:
 				solid.add((index % width, index // width))
 	return solid
+
+
+def is_collidable_layer_name(layer_name: str) -> bool:
+	normalized = layer_name.strip().lower()
+	return normalized.startswith(COLLIDABLE_LAYER_PREFIX)
+
+
+def is_renderable_layer_name(layer_name: str) -> bool:
+	return layer_name in LAYER_NAMES or is_collidable_layer_name(layer_name)
 
 
 def merge_tiles_to_rects(solid: set[tuple[int, int]], width: int, height: int) -> list[tuple[int, int, int, int]]:
@@ -190,11 +199,21 @@ def next_ext_resource_id(scene_text: str, suffix: str) -> str:
 	return f"{index}_{suffix}"
 
 
-def update_town_scene(project_root: Path, position: str, scale: str) -> None:
-	town_scene_path = project_root / TOWN_SCENE_REL
-	scene_text = town_scene_path.read_text(encoding="utf-8")
-	map_res = res_path(MAP_SCENE_REL)
-	collision_res = res_path(COLLISION_SCENE_REL)
+def update_scene(
+	project_root: Path,
+	target_scene_rel: Path,
+	map_scene_rel: Path,
+	collision_scene_rel: Path,
+	map_node_name: str,
+	collision_node_name: str,
+	insert_before: str,
+	position: str,
+	scale: str,
+) -> None:
+	target_scene_path = project_root / target_scene_rel
+	scene_text = target_scene_path.read_text(encoding="utf-8")
+	map_res = res_path(map_scene_rel)
+	collision_res = res_path(collision_scene_rel)
 
 	def add_ext_resource(text: str, resource_path: str, suffix: str) -> tuple[str, str]:
 		if resource_path in text:
@@ -216,26 +235,45 @@ def update_town_scene(project_root: Path, position: str, scale: str) -> None:
 	scene_text, map_ext_id = add_ext_resource(scene_text, map_res, "town_map")
 	scene_text, collision_ext_id = add_ext_resource(scene_text, collision_res, "town_collision")
 
-	insert_at = scene_text.find("[node name=\"SpawnPoints\" type=\"Node2D\" parent=\".\"]")
+	if insert_before.startswith("[node "):
+		insert_at = scene_text.find(insert_before)
+	else:
+		insert_at = scene_text.find(f"[node name=\"{insert_before}\"")
+		if insert_at == -1:
+			insert_at = scene_text.find(insert_before)
 	if insert_at == -1:
-		raise ValueError("Could not find SpawnPoints insertion point in town_scene.tscn")
+		raise ValueError(f"Could not find insertion point in {target_scene_rel}: {insert_before}")
 
 	node_blocks: list[str] = []
-	if "[node name=\"TownMap\"" not in scene_text:
+	if f"[node name=\"{map_node_name}\"" not in scene_text:
 		node_blocks.append(
-			f"[node name=\"TownMap\" parent=\".\" instance=ExtResource(\"{map_ext_id}\")]\n"
+			f"[node name=\"{map_node_name}\" parent=\".\" instance=ExtResource(\"{map_ext_id}\")]\n"
 			f"position = Vector2({position})\n"
 			f"scale = Vector2({scale})\n"
 		)
-	if "[node name=\"TownCollision\"" not in scene_text:
+	if f"[node name=\"{collision_node_name}\"" not in scene_text:
 		node_blocks.append(
-			f"[node name=\"TownCollision\" parent=\".\" instance=ExtResource(\"{collision_ext_id}\")]\n"
+			f"[node name=\"{collision_node_name}\" parent=\".\" instance=ExtResource(\"{collision_ext_id}\")]\n"
 			f"position = Vector2({position})\n"
 			f"scale = Vector2({scale})\n"
 		)
 	if node_blocks:
 		scene_text = scene_text[:insert_at] + "\n" + "\n".join(node_blocks) + "\n" + scene_text[insert_at:]
-	town_scene_path.write_text(scene_text, encoding="utf-8")
+	target_scene_path.write_text(scene_text, encoding="utf-8")
+
+
+def update_town_scene(project_root: Path, position: str, scale: str) -> None:
+	update_scene(
+		project_root,
+		TOWN_SCENE_REL,
+		MAP_SCENE_REL,
+		COLLISION_SCENE_REL,
+		"TownMap",
+		"TownCollision",
+		"[node name=\"SpawnPoints\" type=\"Node2D\" parent=\".\"]",
+		position,
+		scale,
+	)
 
 
 def parse_args() -> argparse.Namespace:
@@ -244,6 +282,12 @@ def parse_args() -> argparse.Namespace:
 	parser.add_argument("--tileset", type=Path, default=DEFAULT_TILESET)
 	parser.add_argument("--project-root", type=Path, default=DEFAULT_PROJECT)
 	parser.add_argument("--update-town-scene", action="store_true")
+	parser.add_argument("--update-scene", type=Path)
+	parser.add_argument("--map-scene", type=Path, default=MAP_SCENE_REL)
+	parser.add_argument("--collision-scene", type=Path, default=COLLISION_SCENE_REL)
+	parser.add_argument("--map-node-name", default="TownMap")
+	parser.add_argument("--collision-node-name", default="TownCollision")
+	parser.add_argument("--insert-before", default="[node name=\"SpawnPoints\" type=\"Node2D\" parent=\".\"]")
 	parser.add_argument("--position", default="64, -180")
 	parser.add_argument("--scale", default="2, 2")
 	return parser.parse_args()
@@ -254,15 +298,29 @@ def main() -> None:
 	project_root = args.project_root.resolve()
 	tmj = load_tmj(args.tmj)
 	copy_tileset(args.tileset, project_root)
-	generate_map_scene(tmj, project_root / MAP_SCENE_REL)
-	generate_collision_scene(tmj, project_root / COLLISION_SCENE_REL)
+	generate_map_scene(tmj, project_root / args.map_scene)
+	generate_collision_scene(tmj, project_root / args.collision_scene)
 	if args.update_town_scene:
 		update_town_scene(project_root, args.position, args.scale)
-	print(f"Generated {project_root / MAP_SCENE_REL}")
-	print(f"Generated {project_root / COLLISION_SCENE_REL}")
+	if args.update_scene:
+		update_scene(
+			project_root,
+			args.update_scene,
+			args.map_scene,
+			args.collision_scene,
+			args.map_node_name,
+			args.collision_node_name,
+			args.insert_before,
+			args.position,
+			args.scale,
+		)
+	print(f"Generated {project_root / args.map_scene}")
+	print(f"Generated {project_root / args.collision_scene}")
 	print(f"Copied {project_root / TILESET_REL}")
 	if args.update_town_scene:
 		print(f"Updated {project_root / TOWN_SCENE_REL}")
+	if args.update_scene:
+		print(f"Updated {project_root / args.update_scene}")
 
 
 if __name__ == "__main__":

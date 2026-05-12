@@ -1,10 +1,12 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/controllers/field.gd" id="1_field"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://scenes/npc.tscn" id="3_npc"]
 [ext_resource type="Script" path="res://scripts/views/town_dialog_view.gd" id="4_dialog"]
 [ext_resource type="Texture2D" path="res://assets/npcs/forest_guard.png" id="5_guard"]
+[ext_resource type="PackedScene" path="res://scenes/maps/field_map.tscn" id="1_town_map"]
+[ext_resource type="PackedScene" path="res://scenes/maps/field_collision.tscn" id="1_town_collision"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog"]
 content_margin_left = 28.0
@@ -23,45 +25,16 @@ radius = 64.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_forest_gate"]
 size = Vector2(180, 90)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_blocker"]
-size = Vector2(520, 70)
-
 [node name="Field" type="Node2D"]
 script = ExtResource("1_field")
 
-[node name="Ground" type="ColorRect" parent="."]
-mouse_filter = 2
-offset_left = -128.0
-offset_top = -128.0
-offset_right = 2048.0
-offset_bottom = 1208.0
-color = Color(0.36, 0.72, 0.24, 1)
+[node name="FieldMap" parent="." instance=ExtResource("1_town_map")]
+position = Vector2(0, 0)
+scale = Vector2(1, 1)
 
-[node name="Paths" type="Node2D" parent="."]
-
-[node name="MainPath" type="ColorRect" parent="Paths"]
-mouse_filter = 2
-offset_left = 200.0
-offset_top = 785.0
-offset_right = 1040.0
-offset_bottom = 865.0
-color = Color(0.45, 0.28, 0.12, 1)
-
-[node name="ForestPath" type="ColorRect" parent="Paths"]
-mouse_filter = 2
-offset_left = 1000.0
-offset_top = 260.0
-offset_right = 1530.0
-offset_bottom = 355.0
-color = Color(0.45, 0.28, 0.12, 1)
-
-[node name="ForestEdge" type="ColorRect" parent="."]
-mouse_filter = 2
-offset_left = -128.0
-offset_top = -128.0
-offset_right = 2048.0
-offset_bottom = 205.0
-color = Color(0.05, 0.22, 0.08, 1)
+[node name="FieldCollision" parent="." instance=ExtResource("1_town_collision")]
+position = Vector2(0, 0)
+scale = Vector2(1, 1)
 
 [node name="SpawnZones" type="Node2D" parent="."]
 
@@ -70,50 +43,24 @@ visible = false
 mouse_filter = 2
 offset_left = 380.0
 offset_top = 300.0
-offset_right = 1640.0
-offset_bottom = 920.0
+offset_right = 2860.0
+offset_bottom = 1940.0
 color = Color(1, 1, 0, 0.08)
-
-[node name="Props" type="Node2D" parent="."]
-
-[node name="Rock" type="ColorRect" parent="Props"]
-mouse_filter = 2
-offset_left = 690.0
-offset_top = 500.0
-offset_right = 760.0
-offset_bottom = 555.0
-color = Color(0.42, 0.43, 0.40, 1)
-
-[node name="Bush" type="ColorRect" parent="Props"]
-mouse_filter = 2
-offset_left = 1210.0
-offset_top = 575.0
-offset_right = 1305.0
-offset_bottom = 650.0
-color = Color(0.10, 0.42, 0.14, 1)
-
-[node name="GrassPatch" type="ColorRect" parent="Props"]
-mouse_filter = 2
-offset_left = 420.0
-offset_top = 430.0
-offset_right = 520.0
-offset_bottom = 475.0
-color = Color(0.24, 0.60, 0.18, 1)
 
 [node name="SpawnPoints" type="Node2D" parent="."]
 
 [node name="FromTownGateway" type="Marker2D" parent="SpawnPoints"]
-position = Vector2(330, 790)
+position = Vector2(1552, 160)
 
 [node name="Default" type="Marker2D" parent="SpawnPoints"]
-position = Vector2(330, 790)
+position = Vector2(1552, 160)
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
-position = Vector2(330, 790)
+position = Vector2(1552, 160)
 scale = Vector2(2, 2)
 
 [node name="TownGateway" type="Area2D" parent="."]
-position = Vector2(215, 830)
+position = Vector2(1552, 64)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TownGateway"]
 shape = SubResource("CircleShape2D_gateway")
@@ -135,27 +82,13 @@ text = "Town"
 horizontal_alignment = 1
 
 [node name="ForestGateway" type="Area2D" parent="."]
-position = Vector2(1500, 305)
+position = Vector2(2768, 2112)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ForestGateway"]
 shape = SubResource("RectangleShape2D_forest_gate")
 
-[node name="ForestBlocker" type="StaticBody2D" parent="."]
-position = Vector2(1500, 245)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ForestBlocker"]
-shape = SubResource("RectangleShape2D_blocker")
-
-[node name="Visual" type="ColorRect" parent="ForestBlocker"]
-mouse_filter = 2
-offset_left = -260.0
-offset_top = -35.0
-offset_right = 260.0
-offset_bottom = 35.0
-color = Color(0.18, 0.10, 0.08, 1)
-
 [node name="ForestGuard" parent="." instance=ExtResource("3_npc")]
-position = Vector2(1500, 385)
+position = Vector2(2768, 2000)
 scale = Vector2(2, 2)
 display_name = "Forest Guard"
 talk_radius = 140.0

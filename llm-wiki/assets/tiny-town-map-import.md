@@ -9,12 +9,13 @@ tags: [assets, maps, tooling, town]
 
 ## Overview
 
-`tools/import_tiny_town_tmj.py` converts the external layered Tiny Town Tiled map into native Godot visual and collision scenes. Gameplay nodes, gateways, spawn points, NPCs, camera, and UI stay owned by `scenes/town_scene.tscn`.
+`tools/import_tiny_town_tmj.py` converts external layered Tiny Town Tiled maps into native Godot visual and collision scenes. Gameplay nodes, gateways, spawn points, NPCs, camera, and UI stay owned by the target scene.
 
 ## Source
 
 ```text
 D:\godot\kenney_tiny-town\town_layout_build_32.tmj
+D:\godot\kenney_tiny-town\field.tmj
 D:\godot\kenney_tiny-town\Tilemap\tilemap_packed_2x.png
 ```
 
@@ -30,11 +31,13 @@ Ground, Paths, Fences, Houses, Castle, Trees, Bushes, Props
 assets/tiny_town/tilemap_packed_2x.png
 scenes/maps/town_map.tscn
 scenes/maps/town_collision.tscn
+scenes/maps/field_map.tscn
+scenes/maps/field_collision.tscn
 ```
 
-`town_map.tscn` contains one `Node2D` per source layer and generated `Sprite2D` tile nodes using texture regions from the copied tileset.
+`*_map.tscn` contains one `Node2D` per source layer and generated `Sprite2D` tile nodes using texture regions from the copied tileset.
 
-`town_collision.tscn` contains generated `StaticBody2D` blockers. The importer builds a solid tile mask from:
+`*_collision.tscn` contains generated `StaticBody2D` blockers. The importer builds a solid tile mask from:
 
 ```text
 Fences, Houses, Castle, Trees, Bushes, Props
@@ -57,6 +60,12 @@ scale = Vector2(2, 2)
 
 `TownCollision` uses the same position and scale so its blockers line up with `TownMap`.
 
+Field import:
+
+```powershell
+python tools\import_tiny_town_tmj.py --tmj D:\godot\kenney_tiny-town\field.tmj --map-scene scenes\maps\field_map.tscn --collision-scene scenes\maps\field_collision.tscn --update-scene scenes\field.tscn --map-node-name FieldMap --collision-node-name FieldCollision --insert-before SpawnZones --position "0, 0" --scale "1, 1"
+```
+
 ## Design Decisions
 
 - Keep Tiled as the editable source for the layered Tiny Town map.
@@ -68,11 +77,15 @@ scale = Vector2(2, 2)
 
 - `tests/specs/town_prototype_test.gd` asserts that Town instances `res://scenes/maps/town_map.tscn` as `TownMap` with the expected position and scale.
 - `tests/specs/town_prototype_test.gd` asserts that Town instances `res://scenes/maps/town_collision.tscn` as `TownCollision` and that it contains `StaticBody2D` blockers with `CollisionShape2D`.
+- `tests/specs/field_scene_test.gd` asserts that Field instances `res://scenes/maps/field_map.tscn` as `FieldMap` and `res://scenes/maps/field_collision.tscn` as `FieldCollision`.
 
 ## Related
 
 - `scenes/town_scene.tscn`
+- `scenes/field.tscn`
 - `scenes/maps/town_map.tscn`
 - `scenes/maps/town_collision.tscn`
+- `scenes/maps/field_map.tscn`
+- `scenes/maps/field_collision.tscn`
 - `tools/import_tiny_town_tmj.py`
 - `llm-wiki/scenes/town-hub.md`
