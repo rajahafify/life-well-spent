@@ -1,5 +1,45 @@
 # Wiki Log
 
+## [2026-05-12] fix | Complete Forest Guard dialog before quest progress
+
+- RED: updated Field specs so Forest Guard dialog opening does not progress QuestSystem; closing the dialog does.
+- Field now stores a pending Forest Guard checkpoint while the warning dialog is open and applies it from `close_dialog()`.
+- QuestWindowView no longer renders checkpoint text; it shows only quest title and objective.
+- Validation: Field scene specs `26 tests, 26 passed`; QuestWindowView specs `3 tests, 3 passed`; QuestManager specs `18 tests, 18 passed`.
+
+## [2026-05-12] fix | Update quest when talking to Forest Guard
+
+- RED: extended Field scene spec to cover Forest Guard click/talk path updating QuestSystem and QuestWindow.
+- Field now marks the `forest_guard` checkpoint and advances the main quest whenever Forest Guard dialog opens, not only when the Forest Gateway body is entered.
+- Validation: Field scene specs `25 tests, 25 passed`; QuestManager specs `18 tests, 18 passed`; QuestWindowView specs `3 tests, 3 passed`.
+
+## [2026-05-12] feat | Add Forest Guard quest checkpoint
+
+- RED: added QuestManager, Field, and QuestWindow specs for a `forest_guard` main quest checkpoint.
+- QuestManager now tracks main quest checkpoints, serializes them, and exposes checkpoint text.
+- QuestSystem proxies checkpoint APIs for scenes.
+- Field marks the Forest Guard checkpoint before advancing the main objective and refreshing the Quest Window.
+- QuestWindowView can display an optional checkpoint line.
+- Validation: QuestManager specs `18 tests, 18 passed`; Field scene specs `25 tests, 25 passed`; QuestWindowView specs `3 tests, 3 passed`.
+
+## [2026-05-12] feat | Add top-right Quest Window
+
+- RED: added QuestWindowView, Field, and Town dialog specs for a dedicated top-right quest objective panel.
+- Added `scripts/views/quest_window_view.gd` as a dumb reusable UI view.
+- Added `UI/QuestWindow` to Town and Field and wired controllers to display the current QuestSystem main objective.
+- Field refreshes the Quest Window after Forest Gateway progression changes the objective to `Get Swordsman Certification`.
+- Updated Field, Town, UI, and Quest Window wiki docs.
+- Validation: QuestWindowView specs `2 tests, 2 passed`; Field scene specs `25 tests, 25 passed`; Town dialog specs `19 tests, 19 passed`.
+
+## [2026-05-12] feat | Add QuestSystem main and side quest progression
+
+- RED: added QuestManager, Field, and Town dialog specs for main quest objective progression, Swordsman Guild side chain activation, certification state, and Guildmaster response.
+- Added `QuestSystem` autoload wrapping pure `QuestManager` progression state.
+- Field Forest Gateway now advances `Explore the World` to `Get Swordsman Certification` and activates `Rebuilding Swordsman Guild`.
+- Town Guildmaster now reacts to that objective with certification guidance.
+- Updated quest, Field, Town, Forest Gate, Run State, and prototype design docs.
+- Validation: QuestManager specs `17 tests, 17 passed`; Field scene specs `25 tests, 25 passed`; Town dialog specs `18 tests, 18 passed`.
+
 ## [2026-05-12] fix | Move Field Town portal to north road
 
 - Moved `TownGateway` to the north road entry at `Vector2(768, 64)`.

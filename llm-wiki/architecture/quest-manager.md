@@ -1,9 +1,10 @@
 ---
 title: QuestManager
 type: concept
-updated: 2026-05-11
+updated: 2026-05-12
 sources:
   - scripts/models/quest_manager.gd
+  - scripts/managers/quest_system.gd
   - tests/specs/quest_manager_test.gd
   - AGENTS.md
 tags: [architecture, game-design]
@@ -12,69 +13,67 @@ tags: [architecture, game-design]
 # QuestManager
 
 ## Overview
-Quest catalog and lifecycle management. Quest acceptance is free; completion cost is applied by `PlayerStats.complete_quest()`. Quests can optionally link to a real-life `life_task_id`.
 
-## Design
-- `active_quests` is an **array** — player can have multiple active quests simultaneously
-- `take_quest(current_hp)` accepts first catalog quest when available; `current_hp` is kept for API compatibility but does not gate acceptance.
-- `complete_quest()` and `abandon_quest()` remove the **first** active quest (FIFO)
-- No HP cost on accept; 40 Max HP cost happens on completion via `PlayerStats`.
-- `reset_for_life()` clears active quests and counter for rebirth
-- `add_life_task_quest()` links quest completion to `LifeTracker` task IDs
-- `to_dict()` / `apply_dict()` support SaveManager persistence
+`QuestManager` is pure quest state and rules. Legacy catalog quests still support free acceptance, active quest tracking, linked life-task quests, and save serialization.
 
-## Public API
+The model now also owns the prototype's core progression: main quest `Explore the World`, current objective, main quest checkpoints, `Rebuilding Swordsman Guild` side quest chain, and earned certifications. `QuestSystem` is the game-wide autoload boundary used by scenes.
+
+## API
 
 ```gdscript
 class_name QuestManager
 extends Object
 
-var quest_catalog: Array[Dictionary] = []
-var active_quests: Array[Dictionary] = []
-var quests_taken: int = 0
-var last_rejection = null
-const QUEST_HP_COST: int = 40
+var quest_catalog: Array[Dictionary]
+var active_quests: Array[Dictionary]
+var quests_taken: int
+var last_rejection
+var main_quests: Dictionary
+var side_quest_chains: Dictionary
+var certifications: Dictionary
 
 func add_quest(name: String, cost: int, description: String) -> void
 func add_life_task_quest(name: String, cost: int, description: String, life_task_id: String) -> void
-func take_quest(current_hp: int) -> bool      # false only when no quest is available
-func complete_quest() -> bool                 # removes first active quest; caller applies HP cost
+func take_quest(current_hp: int) -> bool
+func complete_quest() -> bool
 func complete_quest_for_life_task(life_task_id: String) -> bool
-func abandon_quest() -> bool                  # removes first active quest
-func reset_for_life() -> void                 # clears active quests + counter
+func abandon_quest() -> bool
+func reset_for_life() -> void
+
+func setup_core_quests() -> void
+func current_main_objective_id(main_id: String = "explore_the_world") -> String
+func current_main_objective_text(main_id: String = "explore_the_world") -> String
+func advance_main_quest_objective(main_id: String, objective_id: String) -> bool
+func mark_main_checkpoint(main_id: String, checkpoint_id: String) -> bool
+func has_main_checkpoint(main_id: String, checkpoint_id: String) -> bool
+func current_main_checkpoint_text(main_id: String = "explore_the_world") -> String
+func is_side_quest_active(chain_id: String) -> bool
+func complete_side_quest_chain(chain_id: String) -> bool
+func has_certification(certification_id: String) -> bool
+
 func to_dict() -> Dictionary
 func apply_dict(data: Dictionary) -> void
 ```
 
 ## Design Decisions
 
-### Why array for active_quests?
-Previously `active_quest` was a single quest — taking a second quest would lose the first. Array preserves all active quests. Player can take multiple quests, complete/abandon them in FIFO order.
-
-### Why completion cost, not acceptance cost?
-Manual QA clarified intended loop: accepting a quest costs nothing; completing the quest spends 40 Max HP. This lets players browse/accept work freely and pays life only when reward/progress resolves.
-
-### Why FIFO completion?
-`complete_quest()` removes the first (oldest) active quest. `abandon_quest()` does the same. This matches the expectation that you complete quests in the order you started them.
+- `QuestManager` stays model-only: no Node references, no scene calls, no UI decisions.
+- `QuestSystem` exists because Field and Town both need the same quest state across scene changes.
+- The main quest starts as `Explore the World` with objective `Find the Forest path.`
+- Reaching the Field Forest Gate marks the `forest_guard` checkpoint, advances the objective to `Get Swordsman Certification.`, and activates the `Rebuilding Swordsman Guild` side quest chain.
+- Completing `Rebuilding Swordsman Guild` grants `swordsman_certification`.
+- Acceptance remains free; Max Life spending belongs to quest completion/progression callers.
 
 ## Test Coverage
-13 specs in `tests/specs/quest_manager_test.gd`, plus linked quest coverage in `tests/specs/progression_model_test.gd`:
-- Catalog starts empty
-- Add quest populates catalog
-- Catalog supports 50 quests
-- Take quest adds to active_quests
-- Take quest returns false when no catalog
-- Take quest works with many quests (no hard limit)
-- Complete quest removes one active
-- Two active quests, complete removes first
-- Complete quest with no active returns false
-- Reset clears quest state
-- Take quest succeeds even when HP is below quest cost
-- Take quest succeeds when enough HP
-- Successful take clears last_rejection
+
+- `tests/specs/quest_manager_test.gd` covers catalog quests, active quest lifecycle, free acceptance, reset, core main quest setup, Forest Guard checkpoint state, Forest Gate objective advancement, side chain activation, certification grant, and save round-trip.
+- `tests/specs/field_scene_test.gd` covers Field using `QuestSystem` and advancing the main objective when the player enters the Forest Gateway.
+- `tests/specs/town_scene_dialog_test.gd` covers the Guildmaster reacting to the `Get Swordsman Certification` objective.
 
 ## Related
-- `PlayerStats` — HP deduction after successful quest completion
-- `LifeTracker` — real-life task completion source
-- `ProgressionModel` — coordinates linked task quest completion
-- `spec-driven-dev` — TDD enforcement rules
+
+- `PlayerStats`
+- `LifeTracker`
+- `ProgressionModel`
+- `Field Scene`
+- `Town Scene`

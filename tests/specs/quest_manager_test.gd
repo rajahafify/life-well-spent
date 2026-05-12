@@ -129,3 +129,47 @@ func test_successful_take_clears_last_rejection() -> void:
 	qm.add_quest("Goblin Scout", 40, "Clear goblin scouts")
 	qm.take_quest(1)
 	assert_null(qm.last_rejection, "rejection should be cleared on successful accept")
+
+
+func test_setup_core_quests_starts_explore_world_main_objective() -> void:
+	qm.setup_core_quests()
+	assert_eq("find_forest_path", qm.current_main_objective_id())
+	assert_eq("Find the Forest path.", qm.current_main_objective_text())
+
+
+func test_forest_gate_objective_starts_swordsman_guild_side_chain() -> void:
+	qm.setup_core_quests()
+	assert_true(qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification"))
+	assert_eq("get_swordsman_certification", qm.current_main_objective_id())
+	assert_eq("Get Swordsman Certification.", qm.current_main_objective_text())
+	assert_true(qm.is_side_quest_active("rebuilding_swordsman_guild"))
+
+
+func test_main_quest_tracks_forest_guard_checkpoint() -> void:
+	qm.setup_core_quests()
+	assert_false(qm.has_main_checkpoint("explore_the_world", "forest_guard"))
+	assert_true(qm.mark_main_checkpoint("explore_the_world", "forest_guard"))
+	assert_true(qm.has_main_checkpoint("explore_the_world", "forest_guard"))
+	assert_eq("Forest Guard reached.", qm.current_main_checkpoint_text())
+
+
+func test_completing_swordsman_guild_chain_grants_certification() -> void:
+	qm.setup_core_quests()
+	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	assert_true(qm.complete_side_quest_chain("rebuilding_swordsman_guild"))
+	assert_true(qm.has_certification("swordsman_certification"))
+	assert_false(qm.is_side_quest_active("rebuilding_swordsman_guild"))
+
+
+func test_core_quest_state_round_trips_through_save_data() -> void:
+	qm.setup_core_quests()
+	qm.mark_main_checkpoint("explore_the_world", "forest_guard")
+	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	qm.complete_side_quest_chain("rebuilding_swordsman_guild")
+	var restored := QuestManager.new()
+	restored.apply_dict(qm.to_dict())
+	assert_eq("get_swordsman_certification", restored.current_main_objective_id())
+	assert_true(restored.has_main_checkpoint("explore_the_world", "forest_guard"))
+	assert_true(restored.has_certification("swordsman_certification"))
+	assert_false(restored.is_side_quest_active("rebuilding_swordsman_guild"))
+	restored.free()

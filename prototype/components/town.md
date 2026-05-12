@@ -206,17 +206,17 @@ Old roads have a way of calling again.
 
 ## Town State Read/Write
 
-First Town slice reads:
+Current Town reads:
 
-- current scene/run start state only.
+- current scene/run start state.
+- `QuestSystem.current_main_objective_id()`.
 
-First Town slice writes:
+Current Town writes:
 
 - requested transition to Field.
 
 Future Town reads:
 
-- `forest_gate_seen`
 - `swordsman_chain_step`
 - `life`
 - `swordsman_guild_unlocked`
@@ -262,12 +262,12 @@ If HUD is deferred, Town must still show start prompt and NPC dialog.
 - NPCs are dialog-only in first slice.
 - Player can leave Town via Field Gateway.
 - Shop and Blacksmith services are not available yet.
-- Swordsman Guild quest mechanics are not active in first Town slice.
+- Guildmaster reacts when QuestSystem says the main objective is `Get Swordsman Certification`.
 
 Future rules:
 
-- Swordsman Guild quest is locked until Forest Guard encounter.
-- Guildmaster offers chain only when `forest_gate_seen = true`.
+- Swordsman Guild quest completion is locked until the `Rebuilding Swordsman Guild` side quest chain is active.
+- Guildmaster offers the chain after Field advances `Explore the World` to `Get Swordsman Certification`.
 - Each guild quest step costs 40 Life / remaining Life.
 - Step 3 triggers Swordsman Guild unlock and Game Over.
 
@@ -288,8 +288,8 @@ First Town slice:
 
 Future conditions:
 
-- If `forest_gate_seen = false`: Guildmaster does not offer trial.
-- If `forest_gate_seen = true` and `swordsman_chain_step = 0`: Guildmaster offers step 1.
+- If main objective is `Find the Forest path`: Guildmaster shows worldbuilding dialog.
+- If main objective is `Get Swordsman Certification` and `swordsman_chain_step = 0`: Guildmaster points player at `Rebuilding Swordsman Guild`.
 - If `swordsman_chain_step = 1`: Guildmaster offers step 2.
 - If `swordsman_chain_step = 2`: Guildmaster offers step 3.
 - If `swordsman_chain_step = 3`: Swordsman Guild is unlocked, Game Over requested.
@@ -309,7 +309,7 @@ Player cannot:
 - heal Life
 - use Shop inventory in first slice
 - use Blacksmith services in first slice
-- start Swordsman Guild quest in first slice
+- complete Swordsman Guild quest steps in this slice
 
 ## Primitive / SVG Art Direction
 
@@ -343,8 +343,8 @@ Color language:
 
 ## First Slice Non-Goals
 
-- No Swordsman Guild quest mechanics.
-- No Forest Guard return state.
+- No Swordsman Guild quest completion mechanics.
+- No standalone Forest Guard return flag; QuestSystem main objective owns that progression.
 - No shop inventory.
 - No blacksmith services.
 - No save-slot UI.

@@ -9,9 +9,10 @@ Single source of truth for prototype run progression.
 - `life: int = 100`
 - `max_life: int = 100`
 - `xp: int = 0`
-- `forest_gate_seen: bool = false`
-- `swordsman_quest_unlocked: bool = false`
+- `main_quest_objective: String = "find_forest_path"`
+- `side_quest_chains: Dictionary`
 - `swordsman_chain_step: int = 0`
+- `swordsman_certification: bool = false`
 - `aging_state: int = 0`
 - `swordsman_guild_unlocked: bool = false`
 - `game_over_requested: bool = false`
@@ -19,9 +20,10 @@ Single source of truth for prototype run progression.
 ## Verbs
 
 - Start Run
-- Mark Forest Gate Seen
-- Unlock Guild Quest
+- Advance Main Quest Objective
+- Activate Side Quest Chain
 - Complete Guild Step
+- Grant Certification
 - Spend Max Life
 - Take Life Damage
 - Heal Life
@@ -32,7 +34,7 @@ Single source of truth for prototype run progression.
 ## Rules
 
 - New run starts with `life = 100` and `max_life = 100`.
-- Forest Guard encounter sets `forest_gate_seen = true` and unlocks guild quest.
+- Forest Gate encounter advances `Explore the World` to `Get Swordsman Certification` and activates `Rebuilding Swordsman Guild`.
 - Guild step completion spends Max Life and clamps current Life to Max Life.
 - Combat damage reduces current Life.
 - Healing restores current Life up to Max Life only; it never restores Max Life.

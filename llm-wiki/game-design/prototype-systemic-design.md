@@ -49,7 +49,7 @@ Prototype truth: Forest access requires Swordsman Guild certification, and certi
 - **XP** — score/accomplishment measure; does not gate Swordsman Guild.
 - **Inventory slots** — 1 weapon, 1 armor, 1 consumable stack.
 - **Unlocks** — Swordsman Guild legacy/progression state.
-- **Quest State** — Forest Guard seen, guild quest unlocked, chain step 0–3.
+- **Quest State** — `Explore the World` main objective, `Rebuilding Swordsman Guild` side chain, certification state, chain step 0–3.
 
 ## Systems
 
@@ -57,7 +57,7 @@ Prototype truth: Forest access requires Swordsman Guild certification, and certi
 - **Life / Aging** — maps Life/chain progress to born/older/old/dead presentation.
 - **Town** — safe first scene; Swordsman Guild NPC; exit to Field.
 - **Field** — beginner combat field; Slime/Bat/Rat; Forest Gate.
-- **Forest Gate** — Guard blocks Forest and unlocks guild quest.
+- **Forest Gate** — Guard blocks Forest and advances the main quest to `Get Swordsman Certification`.
 - **Swordsman Guild Quest** — 3 ordered quest steps; each completion costs Life; final unlock ends run.
 - **Combat** — Field combat damages current Life and grants XP.
 - **Inventory** — Wooden Sword, Cloth Armor, Apple x3.

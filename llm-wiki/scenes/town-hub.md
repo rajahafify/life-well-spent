@@ -9,7 +9,7 @@ tags: [scenes, town, prototype]
 
 ## Overview
 
-`scenes/town_scene.tscn` is the first-slice **Town** scene for the prototype. It replaces the previous MVP town-hub task/quest UI with a systemic prototype slice: hopeful post-Demon-King worldbuilding, three old institutions, simple NPC dialog, and a direct glowing gateway to Field.
+`scenes/town_scene.tscn` is the first-slice **Town** scene for the prototype. It replaces the previous MVP town-hub task/quest UI with a systemic prototype slice: hopeful post-Demon-King worldbuilding, three old institutions, a top-right Quest Window, QuestSystem-aware Guildmaster dialog, and a direct glowing gateway to Field.
 
 First-slice goal:
 
@@ -61,7 +61,7 @@ Town (Node2D, Town)
 
 ### Guildmaster
 
-Reveals old institutions / rebuilding hope.
+Before the player reaches the Forest Gate, the Guildmaster reveals old institutions / rebuilding hope.
 
 ```text
 The Swordsman Guild still stands.
@@ -73,6 +73,16 @@ But a guild is not stone or banners.
 It lives when someone chooses the path.
 
 Perhaps one day, someone will help me raise it again.
+```
+
+After Field advances the main quest objective to `Get Swordsman Certification.`, the Guildmaster points the player at the `Rebuilding Swordsman Guild` side quest chain:
+
+```text
+You found the Forest gate, and now you need Swordsman Certification.
+
+Then you understand why the old rules exist.
+
+Help rebuild the Swordsman Guild first.
 ```
 
 ### Shopkeeper
@@ -114,6 +124,8 @@ Old roads have a way of calling again.
 - blocks click-to-move while dialog is open
 - handles RO-style NPC approach after sprite click: far NPC click moves Player to the NPC talk point, near/in-range sprite click opens dialog
 - shows paged NPC dialog via `TownDialogView.show_dialog()`
+- reads `QuestSystem.current_main_objective_id()` so Guildmaster dialog can react to the Forest Gate objective
+- updates `QuestWindowView` with the current main quest objective
 - starts Player at named spawn point `SpawnPoints/FromFieldGateway`, up the south road and outside the FieldGateway trigger
 - records Field transition request through `request_field()`
 - records the direct Field transition when the Player enters `FieldGateway`, then defers the actual scene change outside the physics callback
@@ -121,7 +133,7 @@ Old roads have a way of calling again.
 - passes NPC sprite texture to `TownDialogView` for face portrait display above the dialog box
 - hides NPC dialog when `TownDialogView.close_requested` emits
 
-No quest, shop, forge, or life-spend logic is active in this slice.
+Shop, forge, and life-spend quest completion logic are not active in this slice. Town can now read QuestSystem state and present the Guildmaster certification prompt after the Forest Gate is reached.
 
 ## Art Direction
 
@@ -142,7 +154,7 @@ Tiny Town visual art is imported as `TownMap`, an instanced generated scene from
 - `tests/specs/town_prototype_test.gd` also covers the generated Tiny Town `TownMap` and `TownCollision` instance paths, position, scale, and collision blocker shape.
 - `tests/specs/town_prototype_test.gd` covers the Tiny Town-facing NPC placements: Shopkeeper at `Vector2(512, 1140)`, Guildmaster at `Vector2(960, 450)`, and Smith at `Vector2(1472, 820)`.
 - `tests/specs/town_prototype_test.gd` covers the south-road Field gateway at `Vector2(960, 1320)` and its safe spawn at `Vector2(960, 980)`, far enough to avoid auto-transition.
-- `tests/specs/town_scene_dialog_test.gd` covers readable 1080p dialog text, NPC face portrait crop above the box, paged NPC dialog, RO-style sprite-click NPC approach, pending dialog open in talk range after click, camera follow, desynced NPC idle timing, hidden overhead NPC names, first-slice quest buttons hidden, click-to-move routing/blocking, dialog close behavior, and direct Field gateway request.
+- `tests/specs/town_scene_dialog_test.gd` covers readable 1080p dialog text, top-right Quest Window, NPC face portrait crop above the box, paged NPC dialog, RO-style sprite-click NPC approach, pending dialog open in talk range after click, camera follow, desynced NPC idle timing, hidden overhead NPC names, first-slice quest buttons hidden, QuestSystem Guildmaster certification prompt, click-to-move routing/blocking, dialog close behavior, and direct Field gateway request.
 - `tests/specs/npc_controller_test.gd` and `tests/specs/scene_smoke_test.gd` cover removal of proximity-based NPC dialog triggers.
 - `tests/specs/scene_smoke_test.gd` covers Town dialog smoke behavior.
 
@@ -173,3 +185,4 @@ Passed on 2026-05-11:
 - `scripts/views/town_dialog_view.gd`
 - `scripts/controllers/npc_controller.gd`
 - `scenes/npc.tscn`
+- `llm-wiki/architecture/quest-system.md`

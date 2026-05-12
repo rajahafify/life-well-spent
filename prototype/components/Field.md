@@ -212,8 +212,8 @@ Earn certification from the Swordsman Guild.
 
 Future effect:
 
-- Set `forest_gate_seen = true`.
-- Unlock Swordsman Guild quest in Town.
+- Advance `Explore the World` to `Get Swordsman Certification`.
+- Activate the `Rebuilding Swordsman Guild` side quest chain in Town.
 
 ## Objects
 
@@ -255,13 +255,16 @@ Removed / replaced:
 
 Current Field reads:
 
-- current scene/runtime state only.
+- current scene/runtime state.
+- `QuestSystem` main quest objective.
 
 Current Field writes:
 
 - requested transition to Town.
 - current Life damage.
 - XP rewards.
+- `QuestSystem` main quest objective and side quest chain activation when the Forest Gateway is reached.
+- `QuestSystem` `forest_guard` checkpoint when the Forest Gateway is reached.
 
 Future Field reads:
 
@@ -274,7 +277,6 @@ Future Field reads:
 Future Field writes:
 
 - enemy defeated events
-- Forest gate seen flag
 - item drops
 
 ## Verbs
@@ -303,6 +305,7 @@ Future verbs:
 Current Field shows:
 
 - objective text
+- top-right Quest Window
 - Life / Max Life
 - Slime HP text
 - XP is awarded internally on enemy death
@@ -328,7 +331,6 @@ Future Field may show:
 
 Future rules:
 
-- Forest Guard sets `forest_gate_seen = true`.
 - Forest remains inaccessible until future slice.
 - Respawn/drop rules keep Field populated and rewarding.
 
@@ -341,7 +343,8 @@ Current Field slice:
 - Camera follows Player with RO-style upward offset.
 - On ground click while dialog is open: block movement.
 - On far Forest Guard click: Player walks toward Guard talk point, dialog remains closed.
-- On pending Forest Guard reaching talk range: Player stops, faces Guard, Guard faces Player, paged dialog opens.
+- On pending Forest Guard reaching talk range: Player stops, faces Guard, Guard faces Player, and paged dialog opens.
+- On Forest Guard dialog close: QuestSystem records the Forest Guard checkpoint and updates the objective.
 - On Town Gateway body entered by Player: record `res://scenes/town_scene.tscn` and transition directly.
 - On enemy click: Player targets enemy, moves into range, and auto-attacks.
 - On first player hit: enemy aggros.
@@ -349,11 +352,10 @@ Current Field slice:
 - On enemy attack interval: enemy damages current Life.
 - On enemy HP `<= 0`: enemy dies, is removed after death animation timing, and grants XP once.
 - On enemy movement into collision: movement is rejected.
-- On Forest Gateway body entered by Player: scene transition remains blocked and Guard warning opens.
+- On Forest Gateway body entered by Player: scene transition remains blocked, QuestSystem marks `forest_guard`, advances `Explore the World` to `Get Swordsman Certification`, `Rebuilding Swordsman Guild` becomes active, and Guard warning opens.
 
 Future conditions:
 
-- If player approaches Forest Gate and `swordsman_guild_unlocked = false`: Guard blocks path and sets `forest_gate_seen`.
 - If player approaches Forest Gate after future unlock: behavior TBD.
 
 ## Permissions
@@ -395,8 +397,7 @@ Color language:
 - No enemy drops.
 - No inventory use in Field.
 - No playable Forest.
-- No Swordsman Guild quest chain.
-- No permanent `forest_gate_seen` state change yet.
+- No Swordsman Guild quest completion UI.
 - No drop/inventory rewards yet.
 
 ## Deliverables
@@ -461,6 +462,7 @@ Player can:
 - [x] Camera exists and follows Player.
 - [x] Town Portal exists.
 - [x] Objective prompt displays on scene start.
+- [x] Top-right Quest Window displays current main quest objective.
 - [x] Generated `FieldMap` is instanced.
 - [x] Generated `FieldCollision` is instanced.
 - [x] `C-` map layers render and generate collision through the importer.
@@ -483,7 +485,8 @@ Player can:
 - [x] Pending Guard dialog opens when Player reaches talk range.
 - [x] Player entering Town Gateway records Town target path directly.
 - [x] World primitive art nodes are removed/replaced by imported map art.
-- [ ] `forest_gate_seen` is set by the Forest Guard / Forest Gateway flow.
-- [ ] Swordsman Guild quest unlocks from `forest_gate_seen`.
+- [x] Forest Gateway advances QuestSystem to `Get Swordsman Certification`.
+- [x] Forest Gateway records the `forest_guard` checkpoint.
+- [x] `Rebuilding Swordsman Guild` activates from the Forest Gateway flow.
 - [ ] Enemy drops exist.
 - [ ] Inventory/consume behavior exists in Field.

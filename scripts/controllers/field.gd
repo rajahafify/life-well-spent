@@ -20,6 +20,7 @@ const ENEMY_SPAWN_POLL_INTERVAL := 1.0
 
 @onready var _dialog_view: TownDialogView = $UI/DialogPanel
 @onready var _objective_prompt: Label = $UI/ObjectivePrompt
+@onready var _quest_window: PanelContainer = $UI/QuestWindow
 @onready var _town_gateway: Area2D = $TownGateway
 @onready var _forest_gateway: Area2D = $ForestGateway
 @onready var _player: CharacterBody2D = $Player
@@ -48,12 +49,16 @@ var _life_label: Label
 var _slime_hp_label: Label
 var _player_damage_label: Label
 var _player_damage_timer: float = 0.0
+var _pending_forest_guard_checkpoint: bool = false
 
 
 func _ready() -> void:
 	if _is_test_run():
 		EnemySpawnManager.reset()
+		QuestSystem.reset()
+	QuestSystem.setup_core_quests()
 	_objective_prompt.text = "Objective: Find the Forest path."
+	_update_quest_window()
 	_dialog_view.hide_dialog()
 	_connect_dialog()
 	_connect_gateways()
@@ -491,12 +496,17 @@ func _open_dialog(npc: NpcController) -> void:
 		movement.stop_moving()
 		movement.face_target(npc.global_position)
 	npc.face_toward_player(_player.global_position)
+	if npc.role == "forest_guard":
+		_pending_forest_guard_checkpoint = true
 	_dialog_view.show_dialog(npc.display_name, npc.dialog_text, false, false, _npc_portrait_texture(npc))
 
 
 func close_dialog() -> void:
+	if _pending_forest_guard_checkpoint:
+		_reach_forest_guard_checkpoint()
 	_dialog_view.hide_dialog()
 	_pending_npc = null
+	_pending_forest_guard_checkpoint = false
 
 
 func _on_town_gateway_body_entered(body: Node) -> void:
@@ -528,6 +538,17 @@ func _update_camera() -> void:
 func _npc_portrait_texture(npc: NpcController) -> Texture2D:
 	var sprite := npc.get_node_or_null("Sprite") as Sprite2D
 	return sprite.texture if sprite else null
+
+
+func _update_quest_window() -> void:
+	if _quest_window and _quest_window.has_method("show_main_objective"):
+		_quest_window.show_main_objective("Explore the World", QuestSystem.current_main_objective_text(), QuestSystem.current_main_checkpoint_text())
+
+
+func _reach_forest_guard_checkpoint() -> void:
+	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_update_quest_window()
 
 
 func _player_movement() -> CharacterMovement:

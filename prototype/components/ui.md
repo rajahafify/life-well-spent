@@ -31,6 +31,12 @@ Rules:
 
 ## Quest Status Panel
 
+Current implementation:
+
+- Dedicated `QuestWindow` appears at the top right in Town and Field.
+- Shows main quest title and current objective from `QuestSystem`; checkpoint text is not shown.
+- Updates after Field Forest Gateway advances `Explore the World` to `Get Swordsman Certification`.
+
 Shows:
 - current objective
 - Swordsman Guild chain step

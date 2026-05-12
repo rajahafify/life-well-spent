@@ -8,6 +8,8 @@ var root: Node
 
 
 func setup() -> void:
+	if QuestSystem:
+		QuestSystem.reset()
 	var scene: PackedScene = load("res://scenes/town_scene.tscn")
 	root = scene.instantiate()
 	root._ready()
@@ -31,6 +33,18 @@ func test_near_guildmaster_interaction_opens_first_dialog_page() -> void:
 	assert_eq("Guildmaster", title.text)
 	assert_eq("The Swordsman Guild still stands.", body.text)
 	assert_true(next.visible)
+
+
+func test_town_has_top_right_quest_window() -> void:
+	var quest_window := root.get_node_or_null("UI/QuestWindow") as PanelContainer
+	var quest_label := root.get_node_or_null("UI/QuestWindow/VBox/ObjectiveLabel") as Label
+	assert_not_null(quest_window)
+	assert_not_null(quest_label)
+	if quest_window and quest_label:
+		assert_true(quest_window.visible)
+		assert_eq(1.0, quest_window.anchor_right)
+		assert_eq(-28.0, quest_window.offset_right)
+		assert_eq("Explore the World\nFind the Forest path.", quest_label.text)
 
 
 func test_dialog_text_is_large_enough_for_1080p() -> void:
@@ -69,6 +83,17 @@ func test_guildmaster_dialog_advances_pages() -> void:
 	dialog.next_page()
 	assert_true(body.text.contains("Perhaps one day"))
 	assert_false(next.visible)
+
+
+func test_guildmaster_offers_swordsman_chain_after_forest_gate_objective() -> void:
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	assert_true(body.text.contains("Forest gate"))
+	assert_true(body.text.contains("Swordsman Certification"))
+	assert_true(QuestSystem.is_side_quest_active("rebuilding_swordsman_guild"))
 
 
 func test_far_guildmaster_interaction_moves_player_without_opening_dialog() -> void:

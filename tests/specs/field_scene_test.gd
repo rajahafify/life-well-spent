@@ -65,6 +65,15 @@ func test_field_has_player_camera_gateways_and_objective() -> void:
 	if objective:
 		assert_eq(FIELD_OBJECTIVE, objective.text)
 		assert_true(objective.visible)
+	var quest_window := root.get_node_or_null("UI/QuestWindow") as PanelContainer
+	var quest_label := root.get_node_or_null("UI/QuestWindow/VBox/ObjectiveLabel") as Label
+	assert_not_null(quest_window, "Field should have a dedicated Quest Window")
+	assert_not_null(quest_label, "Quest Window should show current objective")
+	if quest_window and quest_label:
+		assert_true(quest_window.visible)
+		assert_eq(1.0, quest_window.anchor_right)
+		assert_eq(-28.0, quest_window.offset_right)
+		assert_eq("Explore the World\nFind the Forest path.", quest_label.text)
 
 
 func test_field_instances_tiny_town_field_map() -> void:
@@ -181,6 +190,17 @@ func test_field_uses_game_wide_enemy_spawn_manager() -> void:
 	assert_true(source.contains("EnemySpawnManager"), "Field should use the game-wide enemy spawn manager")
 	assert_true(source.contains("mark_defeated"), "Field should mark defeated enemy slots globally")
 	assert_true(source.contains("_tick_enemy_spawns"), "Field should poll respawns while the scene remains loaded")
+
+
+func test_field_uses_quest_system_for_forest_gate_progress() -> void:
+	var file := FileAccess.open(FIELD_SCRIPT, FileAccess.READ)
+	assert_not_null(file, "Field controller script should exist")
+	if file == null:
+		return
+	var source := file.get_as_text()
+	file.close()
+	assert_true(source.contains("QuestSystem"), "Field should use the game-wide quest system")
+	assert_true(source.contains("get_swordsman_certification"), "Forest gate should advance the main quest objective")
 
 
 func test_field_respawns_enemy_after_global_timer_while_loaded() -> void:
@@ -366,6 +386,26 @@ func test_pending_guard_dialog_opens_when_player_reaches_talk_range() -> void:
 	var title: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
 	assert_true(dialog.visible)
 	assert_eq("Forest Guard", title.text)
+	assert_false(QuestSystem.has_main_checkpoint("explore_the_world", "forest_guard"))
+	assert_eq("find_forest_path", QuestSystem.current_main_objective_id())
+	var quest_label := root.get_node("UI/QuestWindow/VBox/ObjectiveLabel") as Label
+	assert_eq("Explore the World\nFind the Forest path.", quest_label.text)
+
+
+func test_guard_dialog_completion_updates_quest_window() -> void:
+	if root == null:
+		return
+	var guard = root.get_node("ForestGuard")
+	root.get_node("Player").global_position = guard.global_position + Vector2(40, 0)
+	guard.interacted.emit(guard)
+	var dialog = root.get_node("UI/DialogPanel")
+	dialog.next_page()
+	dialog.next_page()
+	dialog.close_requested.emit()
+	assert_true(QuestSystem.has_main_checkpoint("explore_the_world", "forest_guard"))
+	assert_eq("get_swordsman_certification", QuestSystem.current_main_objective_id())
+	var quest_label := root.get_node("UI/QuestWindow/VBox/ObjectiveLabel") as Label
+	assert_eq("Explore the World\nGet Swordsman Certification.", quest_label.text)
 
 
 func test_dialog_blocks_player_movement_and_pages() -> void:
@@ -411,5 +451,7 @@ func test_forest_gateway_stays_blocked_and_opens_guard_dialog() -> void:
 	var player: Node = root.get_node("Player")
 	root._on_forest_gateway_body_entered(player)
 	assert_eq("", root.requested_scene_path)
+	assert_false(QuestSystem.has_main_checkpoint("explore_the_world", "forest_guard"))
+	assert_eq("find_forest_path", QuestSystem.current_main_objective_id())
 	var dialog = root.get_node("UI/DialogPanel")
 	assert_true(dialog.visible)

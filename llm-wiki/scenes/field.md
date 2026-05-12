@@ -9,7 +9,7 @@ tags: [scenes, field, prototype]
 
 ## Overview
 
-`scenes/field.tscn` is the playable Field outside Town. Current slice has click movement, camera follow, generated Tiny Town field art/collision, Forest Guard blocking the southeast Forest path, a direct Town gateway centered on the north road entry, and the first Slime/Bat/Rat combat flow.
+`scenes/field.tscn` is the playable Field outside Town. Current slice has click movement, camera follow, generated Tiny Town field art/collision, Forest Guard blocking the southeast Forest path, a direct Town gateway centered on the north road entry, QuestSystem Forest Gate progression, and the first Slime/Bat/Rat combat flow.
 
 ## Scene Structure
 
@@ -40,6 +40,8 @@ Field (Node2D, Field)
 
 ## Generated Map
 
+The UI also includes a top-right `QuestWindow` using `QuestWindowView`. It displays the current main quest title and objective from `QuestSystem`.
+
 `FieldMap` and `FieldCollision` are generated from:
 
 ```text
@@ -63,9 +65,11 @@ Legacy primitive Field art nodes (`Ground`, `Paths`, `ForestEdge`, and `Props`) 
 - routes ground clicks to `CharacterMovement`
 - updates `Camera2D` with RO-style offset
 - uses `TownDialogView` for Forest Guard dialog
+- updates the top-right Quest Window with `QuestSystem.current_main_objective_text()`
 - handles far-click Guard approach before dialog
+- marks the `forest_guard` checkpoint only after the Forest Guard dialog is closed, whether reached by NPC click or Forest Gateway collision
 - direct Town gateway request to `res://scenes/town_scene.tscn`, with the scene-tree change deferred outside the physics callback
-- blocks Forest gateway at the southeast road end and opens Guard warning
+- blocks Forest gateway at the southeast road end, marks the `forest_guard` checkpoint, advances `Explore the World` to `Get Swordsman Certification.`, activates `Rebuilding Swordsman Guild`, and opens Guard warning
 - registers Field grassland enemy spawn slots with `EnemySpawnManager`
 - samples active enemy positions from `SpawnZones/Grassland`, rejecting points inside `FieldCollision`
 - spawns five Slimes, two Bats, and two Rats from `EnemyDefinition.for_id()`
@@ -81,7 +85,7 @@ Current Field combat scope is five Slimes, two Bats, and two Rats.
 - Slime id: `slime_spiked`
 - Bat id: `bat`
 - Rat id: `rat`
-- UI: simple text `Life: x/y` and `Slime: x/y`
+- UI: top-right Quest Window plus simple text `Life: x/y` and `Slime: x/y`
 - RO-style damage numbers appear above Player and enemies.
 - Player click targets an enemy and moves toward it without aggroing immediately.
 - Player auto-attacks with LPC `slash` animation while in range.
@@ -95,7 +99,7 @@ Current Field combat scope is five Slimes, two Bats, and two Rats.
 
 ## Test Coverage
 
-- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, generated `FieldMap` and `FieldCollision`, north TownGateway placement, removal of legacy primitive Field art and the old visible ForestBlocker bar, southeast Forest Guard/gateway placement, enemy collision rejection, spawn zone, Slime/Bat/Rat spawn/UI, click targeting without immediate aggro, player auto-attack, first-hit aggro, enemy Life damage, chase, death removal/XP, Guard dialog, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
+- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, generated `FieldMap` and `FieldCollision`, north TownGateway placement, top-right Quest Window, removal of legacy primitive Field art and the old visible ForestBlocker bar, southeast Forest Guard/gateway placement, enemy collision rejection, spawn zone, Slime/Bat/Rat spawn/UI, click targeting without immediate aggro, player auto-attack, first-hit aggro, enemy Life damage, chase, death removal/XP, Guard dialog, QuestSystem Forest Guard checkpoint and Forest Gate objective progression, Quest Window refresh, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
 - Gateway, NPC placement, biome, movement, enemy behavior, combat, and dialog systems remain covered by their model/scene specs.
 
 Current validation: `250 tests, 250 passed, 0 failed`; Godot MCP main-scene play reports no errors.
@@ -108,3 +112,4 @@ Current validation: `250 tests, 250 passed, 0 failed`; Godot MCP main-scene play
 - `llm-wiki/architecture/gateway-definition.md`
 - `llm-wiki/architecture/enemy-behavior-system.md`
 - `llm-wiki/architecture/enemy-spawn-system.md`
+- `llm-wiki/architecture/quest-system.md`

@@ -8,6 +8,7 @@ const CAMERA_OFFSET := Vector2(0, -150)
 
 @onready var _dialog_view: TownDialogView = $UI/DialogPanel
 @onready var _reborn_prompt: Label = $UI/RebornPrompt
+@onready var _quest_window: PanelContainer = $UI/QuestWindow
 @onready var _field_gateway: Area2D = $FieldGateway
 @onready var _player: CharacterBody2D = $Player
 
@@ -16,7 +17,9 @@ var _pending_npc: NpcController
 
 
 func _ready() -> void:
+	QuestSystem.setup_core_quests()
 	_reborn_prompt.text = "You have been reborn.\nWill you spend this life well?"
+	_update_quest_window()
 	_dialog_view.hide_dialog()
 	_connect_dialog()
 	_connect_portal()
@@ -69,7 +72,7 @@ func _open_dialog(npc: NpcController) -> void:
 		movement.stop_moving()
 		movement.face_target(npc.global_position)
 	npc.face_toward_player(_player.global_position)
-	_dialog_view.show_dialog(npc.display_name, npc.dialog_text, false, false, _npc_portrait_texture(npc))
+	_dialog_view.show_dialog(npc.display_name, _dialog_text_for(npc), false, false, _npc_portrait_texture(npc))
 
 
 func move_player_to(target: Vector2) -> bool:
@@ -111,6 +114,20 @@ func _update_camera() -> void:
 func _npc_portrait_texture(npc: NpcController) -> Texture2D:
 	var sprite := npc.get_node_or_null("Sprite") as Sprite2D
 	return sprite.texture if sprite else null
+
+
+func _update_quest_window() -> void:
+	if _quest_window and _quest_window.has_method("show_main_objective"):
+		_quest_window.show_main_objective("Explore the World", QuestSystem.current_main_objective_text(), QuestSystem.current_main_checkpoint_text())
+
+
+func _dialog_text_for(npc: NpcController) -> String:
+	if npc.role == "guildmaster" and QuestSystem.current_main_objective_id() == "get_swordsman_certification":
+		if QuestSystem.has_certification("swordsman_certification"):
+			return "You carry Swordsman Certification now.\n\nThe Forest gate will recognize you."
+		QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+		return "You found the Forest gate, and now you need Swordsman Certification.\n\nThen you understand why the old rules exist.\n\nHelp rebuild the Swordsman Guild first."
+	return npc.dialog_text
 
 
 func _player_movement() -> CharacterMovement:

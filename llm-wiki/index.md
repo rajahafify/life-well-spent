@@ -15,7 +15,9 @@
 | [architecture/enemy-spawn-system](architecture/enemy-spawn-system.md) | reference | 2026-05-12 | Game-wide persistent enemy spawn slots, biome max-active caps, and respawn timers across scene changes. |
 | [architecture/npc-placement](architecture/npc-placement.md) | reference | 2026-05-11 | Stable NPC map placement data, including Forest Guard gateway blocking. |
 | [architecture/biome-definition](architecture/biome-definition.md) | reference | 2026-05-12 | Field grassland palette, Slime/Bat/Rat enemy pool, props, and biome filters. |
-| [architecture/quest-manager](architecture/quest-manager.md) | concept | 2026-05-11 | Quest catalog, multi-quest tracking, free acceptance, completion HP cost. |
+| [architecture/quest-manager](architecture/quest-manager.md) | concept | 2026-05-12 | Quest catalog, main objective progression, side chain activation, certification state, and free acceptance. |
+| [architecture/quest-system](architecture/quest-system.md) | reference | 2026-05-12 | Game-wide quest autoload sharing main quest, side quest chain, and certification state across scenes. |
+| [architecture/quest-window-view](architecture/quest-window-view.md) | reference | 2026-05-12 | Reusable top-right quest objective UI view for Town and Field. |
 | [architecture/game-balance](architecture/game-balance.md) | reference | 2026-05-11 | Shared pure constants model for quest cost and animation timings. |
 | [assets/lpc-sprite-generator](assets/lpc-sprite-generator.md) | reference | 2026-05-09 | LPC sprite generator tool — prompt-driven character spritesheet pipeline. |
 | [assets/assets-viewer](assets/assets-viewer.md) | reference | 2026-05-12 | In-project gallery scene that recursively displays enemy, NPC, and player PNG assets as thumbnails. |
