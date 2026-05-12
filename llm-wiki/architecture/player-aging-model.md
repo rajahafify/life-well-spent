@@ -31,7 +31,7 @@ func texture_path_for_max_hp(max_hp: int) -> String
 ## Test Coverage
 
 - `tests/specs/player_aging_model_test.gd` covers stage thresholds and texture path mapping.
-- `tests/specs/player_aging_assets_test.gd` covers the visible hair/beard color story for the three generated player sprites.
+- `tests/specs/player_aging_assets_test.gd` covers the visible hair/beard color story and verifies the generated aging sheets do not include a sword layer.
 - `tests/specs/town_scene_dialog_test.gd` covers Town applying age stage 1 on start and updating to stages 2 and 3 after certification.
 - `tests/specs/field_scene_test.gd` covers Field applying the default age stage 1 player sprite.
 

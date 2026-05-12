@@ -25,6 +25,21 @@ func test_stage_three_front_beard_is_white() -> void:
 	assert_true(color.b > 0.9)
 
 
+func test_stage_one_slash_frame_does_not_include_sword_layer() -> void:
+	var color := _pixel("res://assets/player_age_1.png", Vector2i(14, 675))
+	assert_eq(0.0, color.a)
+
+
+func test_stage_two_slash_frame_does_not_include_sword_layer() -> void:
+	var color := _pixel("res://assets/player_age_2.png", Vector2i(14, 675))
+	assert_eq(0.0, color.a)
+
+
+func test_stage_three_slash_frame_does_not_include_sword_layer() -> void:
+	var color := _pixel("res://assets/player_age_3.png", Vector2i(14, 675))
+	assert_eq(0.0, color.a)
+
+
 func _pixel(path: String, position: Vector2i) -> Color:
 	var file := FileAccess.open(path, FileAccess.READ)
 	assert_not_null(file)
