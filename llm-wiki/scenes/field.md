@@ -102,7 +102,7 @@ Current Field combat scope is five Slimes, two Bats, and two Rats.
 - `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, generated `FieldMap` and `FieldCollision`, north TownGateway placement, top-right Quest Window, removal of legacy primitive Field art and the old visible ForestBlocker bar, southeast Forest Guard/gateway placement, enemy collision rejection, spawn zone, Slime/Bat/Rat spawn/UI, click targeting without immediate aggro, player auto-attack, first-hit aggro, enemy Life damage, chase, death removal/XP, Guard dialog, QuestSystem Forest Guard checkpoint and Forest Gate objective progression, Quest Window refresh, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
 - Gateway, NPC placement, biome, movement, enemy behavior, combat, and dialog systems remain covered by their model/scene specs.
 
-Current validation: `250 tests, 250 passed, 0 failed`; Godot MCP main-scene play reports no errors.
+Latest map reimport validation: Field scene specs `26 tests, 26 passed`; Godot MCP main-scene play reports no errors.
 
 ## Related
 

@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-12] map | Reimport edited Field TMJ
+
+- Re-rendered `D:\godot\kenney_tiny-town\field.tmj` with the Tiny Town layout skill renderer.
+- Reimported the edited Field TMJ into `scenes/maps/field_map.tscn` and `scenes/maps/field_collision.tscn`.
+- Refreshed `scenes/field.tscn` map/collision instances through `tools/import_tiny_town_tmj.py`.
+- Validation: Field scene specs `26 tests, 26 passed`; Godot MCP main-scene play reports no errors.
+
 ## [2026-05-12] fix | Complete Forest Guard dialog before quest progress
 
 - RED: updated Field specs so Forest Guard dialog opening does not progress QuestSystem; closing the dialog does.

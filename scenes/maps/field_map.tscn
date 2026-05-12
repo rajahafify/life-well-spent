@@ -51215,13 +51215,6 @@ region_enabled = true
 region_rect = Rect2(160, 64, 32, 32)
 position = Vector2(704, 1632)
 
-[node name="Props_Tile_65_52" type="Sprite2D" parent="Props"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 64, 32, 32)
-position = Vector2(2080, 1664)
-
 [node name="Props_Tile_39_53" type="Sprite2D" parent="Props"]
 texture = ExtResource("1_tiles")
 centered = false
@@ -51229,26 +51222,12 @@ region_enabled = true
 region_rect = Rect2(160, 64, 32, 32)
 position = Vector2(1248, 1696)
 
-[node name="Props_Tile_75_53" type="Sprite2D" parent="Props"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 64, 32, 32)
-position = Vector2(2400, 1696)
-
 [node name="Props_Tile_32_54" type="Sprite2D" parent="Props"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(160, 64, 32, 32)
 position = Vector2(1024, 1728)
-
-[node name="Props_Tile_63_54" type="Sprite2D" parent="Props"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 64, 32, 32)
-position = Vector2(2016, 1728)
 
 [node name="Props_Tile_22_57" type="Sprite2D" parent="Props"]
 texture = ExtResource("1_tiles")
@@ -52197,538 +52176,6 @@ region_enabled = true
 region_rect = Rect2(160, 0, 32, 32)
 position = Vector2(1408, 1888)
 
-[node name="Bushes_Tile_46_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1472, 1920)
-
-[node name="Bushes_Tile_47_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1504, 1920)
-
-[node name="Bushes_Tile_48_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1536, 1920)
-
-[node name="Bushes_Tile_49_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1568, 1920)
-
-[node name="Bushes_Tile_50_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1600, 1920)
-
-[node name="Bushes_Tile_51_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1632, 1920)
-
-[node name="Bushes_Tile_52_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1664, 1920)
-
-[node name="Bushes_Tile_53_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1696, 1920)
-
-[node name="Bushes_Tile_54_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1728, 1920)
-
-[node name="Bushes_Tile_55_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1760, 1920)
-
-[node name="Bushes_Tile_56_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1792, 1920)
-
-[node name="Bushes_Tile_57_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1824, 1920)
-
-[node name="Bushes_Tile_58_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1856, 1920)
-
-[node name="Bushes_Tile_59_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1888, 1920)
-
-[node name="Bushes_Tile_60_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1920, 1920)
-
-[node name="Bushes_Tile_61_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1952, 1920)
-
-[node name="Bushes_Tile_62_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1984, 1920)
-
-[node name="Bushes_Tile_63_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2016, 1920)
-
-[node name="Bushes_Tile_64_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2048, 1920)
-
-[node name="Bushes_Tile_65_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2080, 1920)
-
-[node name="Bushes_Tile_66_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2112, 1920)
-
-[node name="Bushes_Tile_67_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2144, 1920)
-
-[node name="Bushes_Tile_68_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2176, 1920)
-
-[node name="Bushes_Tile_69_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2208, 1920)
-
-[node name="Bushes_Tile_70_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2240, 1920)
-
-[node name="Bushes_Tile_71_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2272, 1920)
-
-[node name="Bushes_Tile_72_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2304, 1920)
-
-[node name="Bushes_Tile_73_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2336, 1920)
-
-[node name="Bushes_Tile_74_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2368, 1920)
-
-[node name="Bushes_Tile_75_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2400, 1920)
-
-[node name="Bushes_Tile_76_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2432, 1920)
-
-[node name="Bushes_Tile_77_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2464, 1920)
-
-[node name="Bushes_Tile_78_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2496, 1920)
-
-[node name="Bushes_Tile_79_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2528, 1920)
-
-[node name="Bushes_Tile_80_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2560, 1920)
-
-[node name="Bushes_Tile_81_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2592, 1920)
-
-[node name="Bushes_Tile_82_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2624, 1920)
-
-[node name="Bushes_Tile_83_60" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 0, 32, 32)
-position = Vector2(2656, 1920)
-
-[node name="Bushes_Tile_46_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1472, 1952)
-
-[node name="Bushes_Tile_47_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1504, 1952)
-
-[node name="Bushes_Tile_48_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1536, 1952)
-
-[node name="Bushes_Tile_49_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1568, 1952)
-
-[node name="Bushes_Tile_50_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1600, 1952)
-
-[node name="Bushes_Tile_51_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1632, 1952)
-
-[node name="Bushes_Tile_52_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1664, 1952)
-
-[node name="Bushes_Tile_53_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1696, 1952)
-
-[node name="Bushes_Tile_54_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1728, 1952)
-
-[node name="Bushes_Tile_55_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1760, 1952)
-
-[node name="Bushes_Tile_56_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 0, 32, 32)
-position = Vector2(1792, 1952)
-
-[node name="Bushes_Tile_57_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1824, 1952)
-
-[node name="Bushes_Tile_58_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1856, 1952)
-
-[node name="Bushes_Tile_59_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1888, 1952)
-
-[node name="Bushes_Tile_60_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1920, 1952)
-
-[node name="Bushes_Tile_61_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1952, 1952)
-
-[node name="Bushes_Tile_62_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(1984, 1952)
-
-[node name="Bushes_Tile_63_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2016, 1952)
-
-[node name="Bushes_Tile_64_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2048, 1952)
-
-[node name="Bushes_Tile_65_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2080, 1952)
-
-[node name="Bushes_Tile_66_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2112, 1952)
-
-[node name="Bushes_Tile_67_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 0, 32, 32)
-position = Vector2(2144, 1952)
-
-[node name="Bushes_Tile_68_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2176, 1952)
-
-[node name="Bushes_Tile_69_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2208, 1952)
-
-[node name="Bushes_Tile_70_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2240, 1952)
-
-[node name="Bushes_Tile_71_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2272, 1952)
-
-[node name="Bushes_Tile_72_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2304, 1952)
-
-[node name="Bushes_Tile_73_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2336, 1952)
-
-[node name="Bushes_Tile_74_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2368, 1952)
-
-[node name="Bushes_Tile_75_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2400, 1952)
-
-[node name="Bushes_Tile_76_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2432, 1952)
-
-[node name="Bushes_Tile_77_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2464, 1952)
-
-[node name="Bushes_Tile_78_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2496, 1952)
-
-[node name="Bushes_Tile_79_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2528, 1952)
-
-[node name="Bushes_Tile_80_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2560, 1952)
-
-[node name="Bushes_Tile_81_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2592, 1952)
-
-[node name="Bushes_Tile_82_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2624, 1952)
-
-[node name="Bushes_Tile_83_61" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2656, 1952)
-
 [node name="Bushes_Tile_46_62" type="Sprite2D" parent="Bushes"]
 texture = ExtResource("1_tiles")
 centered = false
@@ -52988,13 +52435,6 @@ region_enabled = true
 region_rect = Rect2(160, 32, 32, 32)
 position = Vector2(2624, 1984)
 
-[node name="Bushes_Tile_83_62" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 32, 32, 32)
-position = Vector2(2656, 1984)
-
 [node name="Bushes_Tile_46_63" type="Sprite2D" parent="Bushes"]
 texture = ExtResource("1_tiles")
 centered = false
@@ -53253,13 +52693,6 @@ centered = false
 region_enabled = true
 region_rect = Rect2(160, 32, 32, 32)
 position = Vector2(2624, 2016)
-
-[node name="Bushes_Tile_83_63" type="Sprite2D" parent="Bushes"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(160, 0, 32, 32)
-position = Vector2(2656, 2016)
 
 [node name="C-Trees" type="Node2D" parent="."]
 
@@ -63401,943 +62834,943 @@ position = Vector2(3040, 2144)
 
 [node name="C-Fence" type="Node2D" parent="."]
 
-[node name="C-Fence_Tile_46_35" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_44_36" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
-region_rect = Rect2(352, 96, 32, 32)
-position = Vector2(1472, 1120)
+region_rect = Rect2(256, 192, 32, 32)
+position = Vector2(1408, 1152)
 
-[node name="C-Fence_Tile_50_35" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 96, 32, 32)
-position = Vector2(1600, 1120)
-
-[node name="C-Fence_Tile_46_36" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1152)
-
-[node name="C-Fence_Tile_50_36" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1152)
-
-[node name="C-Fence_Tile_46_37" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1184)
-
-[node name="C-Fence_Tile_50_37" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1184)
-
-[node name="C-Fence_Tile_46_38" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1216)
-
-[node name="C-Fence_Tile_50_38" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1216)
-
-[node name="C-Fence_Tile_46_39" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1248)
-
-[node name="C-Fence_Tile_50_39" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1248)
-
-[node name="C-Fence_Tile_46_40" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1280)
-
-[node name="C-Fence_Tile_50_40" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1280)
-
-[node name="C-Fence_Tile_46_41" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1312)
-
-[node name="C-Fence_Tile_50_41" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1312)
-
-[node name="C-Fence_Tile_46_42" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1344)
-
-[node name="C-Fence_Tile_50_42" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1344)
-
-[node name="C-Fence_Tile_46_43" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1376)
-
-[node name="C-Fence_Tile_50_43" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1376)
-
-[node name="C-Fence_Tile_46_44" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1408)
-
-[node name="C-Fence_Tile_50_44" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1408)
-
-[node name="C-Fence_Tile_46_45" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1440)
-
-[node name="C-Fence_Tile_50_45" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1440)
-
-[node name="C-Fence_Tile_46_46" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1472)
-
-[node name="C-Fence_Tile_50_46" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1472)
-
-[node name="C-Fence_Tile_46_47" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1504)
-
-[node name="C-Fence_Tile_50_47" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1504)
-
-[node name="C-Fence_Tile_46_48" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1536)
-
-[node name="C-Fence_Tile_50_48" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1536)
-
-[node name="C-Fence_Tile_46_49" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1568)
-
-[node name="C-Fence_Tile_50_49" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1568)
-
-[node name="C-Fence_Tile_46_50" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1600)
-
-[node name="C-Fence_Tile_50_50" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1600)
-
-[node name="C-Fence_Tile_46_51" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1632)
-
-[node name="C-Fence_Tile_50_51" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1632)
-
-[node name="C-Fence_Tile_46_52" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1664)
-
-[node name="C-Fence_Tile_50_52" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1664)
-
-[node name="C-Fence_Tile_46_53" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1696)
-
-[node name="C-Fence_Tile_50_53" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1696)
-
-[node name="C-Fence_Tile_46_54" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1728)
-
-[node name="C-Fence_Tile_50_54" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1600, 1728)
-
-[node name="C-Fence_Tile_46_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1760)
-
-[node name="C-Fence_Tile_50_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(256, 160, 32, 32)
-position = Vector2(1600, 1760)
-
-[node name="C-Fence_Tile_51_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1632, 1760)
-
-[node name="C-Fence_Tile_52_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1664, 1760)
-
-[node name="C-Fence_Tile_53_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1696, 1760)
-
-[node name="C-Fence_Tile_54_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1728, 1760)
-
-[node name="C-Fence_Tile_55_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1760, 1760)
-
-[node name="C-Fence_Tile_56_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1792, 1760)
-
-[node name="C-Fence_Tile_57_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1824, 1760)
-
-[node name="C-Fence_Tile_58_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1856, 1760)
-
-[node name="C-Fence_Tile_59_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1888, 1760)
-
-[node name="C-Fence_Tile_60_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1920, 1760)
-
-[node name="C-Fence_Tile_61_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1952, 1760)
-
-[node name="C-Fence_Tile_62_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1984, 1760)
-
-[node name="C-Fence_Tile_63_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2016, 1760)
-
-[node name="C-Fence_Tile_64_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2048, 1760)
-
-[node name="C-Fence_Tile_65_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2080, 1760)
-
-[node name="C-Fence_Tile_66_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2112, 1760)
-
-[node name="C-Fence_Tile_67_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2144, 1760)
-
-[node name="C-Fence_Tile_68_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2176, 1760)
-
-[node name="C-Fence_Tile_69_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2208, 1760)
-
-[node name="C-Fence_Tile_70_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2240, 1760)
-
-[node name="C-Fence_Tile_71_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2272, 1760)
-
-[node name="C-Fence_Tile_72_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2304, 1760)
-
-[node name="C-Fence_Tile_73_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2336, 1760)
-
-[node name="C-Fence_Tile_74_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2368, 1760)
-
-[node name="C-Fence_Tile_75_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2400, 1760)
-
-[node name="C-Fence_Tile_76_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2432, 1760)
-
-[node name="C-Fence_Tile_77_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2464, 1760)
-
-[node name="C-Fence_Tile_78_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2496, 1760)
-
-[node name="C-Fence_Tile_79_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2528, 1760)
-
-[node name="C-Fence_Tile_80_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2560, 1760)
-
-[node name="C-Fence_Tile_81_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2592, 1760)
-
-[node name="C-Fence_Tile_82_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2624, 1760)
-
-[node name="C-Fence_Tile_83_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2656, 1760)
-
-[node name="C-Fence_Tile_84_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2688, 1760)
-
-[node name="C-Fence_Tile_85_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2720, 1760)
-
-[node name="C-Fence_Tile_86_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2752, 1760)
-
-[node name="C-Fence_Tile_87_55" type="Sprite2D" parent="C-Fence"]
-texture = ExtResource("1_tiles")
-centered = false
-region_enabled = true
-region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2784, 1760)
-
-[node name="C-Fence_Tile_88_55" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_45_36" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(320, 96, 32, 32)
-position = Vector2(2816, 1760)
+position = Vector2(1440, 1152)
 
-[node name="C-Fence_Tile_46_56" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_51_36" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(256, 96, 32, 32)
+position = Vector2(1632, 1152)
+
+[node name="C-Fence_Tile_52_36" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(320, 192, 32, 32)
+position = Vector2(1664, 1152)
+
+[node name="C-Fence_Tile_45_37" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1792)
+position = Vector2(1440, 1184)
 
-[node name="C-Fence_Tile_88_56" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_51_37" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(2816, 1792)
+position = Vector2(1632, 1184)
 
-[node name="C-Fence_Tile_46_57" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_45_38" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1824)
+position = Vector2(1440, 1216)
 
-[node name="C-Fence_Tile_88_57" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_51_38" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(2816, 1824)
+position = Vector2(1632, 1216)
 
-[node name="C-Fence_Tile_46_58" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_45_39" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(1472, 1856)
+position = Vector2(1440, 1248)
 
-[node name="C-Fence_Tile_88_58" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_51_39" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(2816, 1856)
+position = Vector2(1632, 1248)
 
-[node name="C-Fence_Tile_46_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_45_40" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1440, 1280)
+
+[node name="C-Fence_Tile_51_40" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1632, 1280)
+
+[node name="C-Fence_Tile_45_41" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1440, 1312)
+
+[node name="C-Fence_Tile_51_41" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1632, 1312)
+
+[node name="C-Fence_Tile_45_42" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1440, 1344)
+
+[node name="C-Fence_Tile_51_42" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1632, 1344)
+
+[node name="C-Fence_Tile_45_43" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1440, 1376)
+
+[node name="C-Fence_Tile_51_43" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1632, 1376)
+
+[node name="C-Fence_Tile_45_44" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1440, 1408)
+
+[node name="C-Fence_Tile_51_44" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1632, 1408)
+
+[node name="C-Fence_Tile_45_45" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1440, 1440)
+
+[node name="C-Fence_Tile_51_45" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1632, 1440)
+
+[node name="C-Fence_Tile_45_46" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1440, 1472)
+
+[node name="C-Fence_Tile_51_46" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1632, 1472)
+
+[node name="C-Fence_Tile_45_47" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1440, 1504)
+
+[node name="C-Fence_Tile_51_47" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1632, 1504)
+
+[node name="C-Fence_Tile_45_48" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1440, 1536)
+
+[node name="C-Fence_Tile_51_48" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1632, 1536)
+
+[node name="C-Fence_Tile_45_49" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1440, 1568)
+
+[node name="C-Fence_Tile_51_49" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1632, 1568)
+
+[node name="C-Fence_Tile_45_50" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1440, 1600)
+
+[node name="C-Fence_Tile_51_50" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1632, 1600)
+
+[node name="C-Fence_Tile_45_51" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1440, 1632)
+
+[node name="C-Fence_Tile_51_51" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1632, 1632)
+
+[node name="C-Fence_Tile_45_52" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1440, 1664)
+
+[node name="C-Fence_Tile_51_52" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1632, 1664)
+
+[node name="C-Fence_Tile_45_53" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1440, 1696)
+
+[node name="C-Fence_Tile_51_53" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1632, 1696)
+
+[node name="C-Fence_Tile_45_54" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1440, 1728)
+
+[node name="C-Fence_Tile_51_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(256, 160, 32, 32)
-position = Vector2(1472, 1888)
+position = Vector2(1632, 1728)
 
-[node name="C-Fence_Tile_47_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_52_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1504, 1888)
+position = Vector2(1664, 1728)
 
-[node name="C-Fence_Tile_48_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_53_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1536, 1888)
+position = Vector2(1696, 1728)
 
-[node name="C-Fence_Tile_49_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_54_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1568, 1888)
+position = Vector2(1728, 1728)
 
-[node name="C-Fence_Tile_50_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_55_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1600, 1888)
+position = Vector2(1760, 1728)
 
-[node name="C-Fence_Tile_51_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_56_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1632, 1888)
+position = Vector2(1792, 1728)
 
-[node name="C-Fence_Tile_52_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_57_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1664, 1888)
+position = Vector2(1824, 1728)
 
-[node name="C-Fence_Tile_53_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_58_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1696, 1888)
+position = Vector2(1856, 1728)
 
-[node name="C-Fence_Tile_54_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_59_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1728, 1888)
+position = Vector2(1888, 1728)
 
-[node name="C-Fence_Tile_55_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_60_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1760, 1888)
+position = Vector2(1920, 1728)
 
-[node name="C-Fence_Tile_56_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_61_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1792, 1888)
+position = Vector2(1952, 1728)
 
-[node name="C-Fence_Tile_57_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_62_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1824, 1888)
+position = Vector2(1984, 1728)
 
-[node name="C-Fence_Tile_58_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_63_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1856, 1888)
+position = Vector2(2016, 1728)
 
-[node name="C-Fence_Tile_59_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_64_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1888, 1888)
+position = Vector2(2048, 1728)
 
-[node name="C-Fence_Tile_60_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_65_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1920, 1888)
+position = Vector2(2080, 1728)
 
-[node name="C-Fence_Tile_61_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_66_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1952, 1888)
+position = Vector2(2112, 1728)
 
-[node name="C-Fence_Tile_62_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_67_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(1984, 1888)
+position = Vector2(2144, 1728)
 
-[node name="C-Fence_Tile_63_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_68_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2016, 1888)
+position = Vector2(2176, 1728)
 
-[node name="C-Fence_Tile_64_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_69_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2048, 1888)
+position = Vector2(2208, 1728)
 
-[node name="C-Fence_Tile_65_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_70_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2080, 1888)
+position = Vector2(2240, 1728)
 
-[node name="C-Fence_Tile_66_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_71_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2112, 1888)
+position = Vector2(2272, 1728)
 
-[node name="C-Fence_Tile_67_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_72_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2144, 1888)
+position = Vector2(2304, 1728)
 
-[node name="C-Fence_Tile_68_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_73_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2176, 1888)
+position = Vector2(2336, 1728)
 
-[node name="C-Fence_Tile_69_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_74_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2208, 1888)
+position = Vector2(2368, 1728)
 
-[node name="C-Fence_Tile_70_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_75_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2240, 1888)
+position = Vector2(2400, 1728)
 
-[node name="C-Fence_Tile_71_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_76_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2272, 1888)
+position = Vector2(2432, 1728)
 
-[node name="C-Fence_Tile_72_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_77_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2304, 1888)
+position = Vector2(2464, 1728)
 
-[node name="C-Fence_Tile_73_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_78_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2336, 1888)
+position = Vector2(2496, 1728)
 
-[node name="C-Fence_Tile_74_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_79_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2368, 1888)
+position = Vector2(2528, 1728)
 
-[node name="C-Fence_Tile_75_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_80_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2400, 1888)
+position = Vector2(2560, 1728)
 
-[node name="C-Fence_Tile_76_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_81_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2432, 1888)
+position = Vector2(2592, 1728)
 
-[node name="C-Fence_Tile_77_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_82_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2464, 1888)
+position = Vector2(2624, 1728)
 
-[node name="C-Fence_Tile_78_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_83_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2496, 1888)
+position = Vector2(2656, 1728)
 
-[node name="C-Fence_Tile_79_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_84_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2528, 1888)
+position = Vector2(2688, 1728)
 
-[node name="C-Fence_Tile_80_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_85_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2560, 1888)
+position = Vector2(2720, 1728)
 
-[node name="C-Fence_Tile_81_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_86_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2592, 1888)
+position = Vector2(2752, 1728)
 
-[node name="C-Fence_Tile_82_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_87_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2624, 1888)
+position = Vector2(2784, 1728)
 
-[node name="C-Fence_Tile_83_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_88_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(288, 192, 32, 32)
-position = Vector2(2656, 1888)
+position = Vector2(2816, 1728)
 
-[node name="C-Fence_Tile_84_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_89_54" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(320, 96, 32, 32)
-position = Vector2(2688, 1888)
+position = Vector2(2848, 1728)
 
-[node name="C-Fence_Tile_88_59" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_45_55" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(2816, 1888)
+position = Vector2(1440, 1760)
 
-[node name="C-Fence_Tile_84_60" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_89_55" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(2688, 1920)
+position = Vector2(2848, 1760)
 
-[node name="C-Fence_Tile_88_60" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_45_56" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(2816, 1920)
+position = Vector2(1440, 1792)
 
-[node name="C-Fence_Tile_84_61" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_89_56" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(2688, 1952)
+position = Vector2(2848, 1792)
 
-[node name="C-Fence_Tile_88_61" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_45_57" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(2816, 1952)
+position = Vector2(1440, 1824)
 
-[node name="C-Fence_Tile_84_62" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_89_57" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(2688, 1984)
+position = Vector2(2848, 1824)
 
-[node name="C-Fence_Tile_88_62" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_45_58" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(352, 128, 32, 32)
-position = Vector2(2816, 1984)
+position = Vector2(1440, 1856)
 
-[node name="C-Fence_Tile_84_63" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_89_58" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(2848, 1856)
+
+[node name="C-Fence_Tile_45_59" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(1440, 1888)
+
+[node name="C-Fence_Tile_89_59" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(2848, 1888)
+
+[node name="C-Fence_Tile_45_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(256, 160, 32, 32)
+position = Vector2(1440, 1920)
+
+[node name="C-Fence_Tile_46_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(1472, 1920)
+
+[node name="C-Fence_Tile_47_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(1504, 1920)
+
+[node name="C-Fence_Tile_48_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(1536, 1920)
+
+[node name="C-Fence_Tile_49_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(1568, 1920)
+
+[node name="C-Fence_Tile_50_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(1600, 1920)
+
+[node name="C-Fence_Tile_51_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(1632, 1920)
+
+[node name="C-Fence_Tile_52_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(1664, 1920)
+
+[node name="C-Fence_Tile_53_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(1696, 1920)
+
+[node name="C-Fence_Tile_54_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(1728, 1920)
+
+[node name="C-Fence_Tile_55_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(1760, 1920)
+
+[node name="C-Fence_Tile_56_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(1792, 1920)
+
+[node name="C-Fence_Tile_57_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(1824, 1920)
+
+[node name="C-Fence_Tile_58_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(1856, 1920)
+
+[node name="C-Fence_Tile_59_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(1888, 1920)
+
+[node name="C-Fence_Tile_60_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(1920, 1920)
+
+[node name="C-Fence_Tile_61_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(1952, 1920)
+
+[node name="C-Fence_Tile_62_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(1984, 1920)
+
+[node name="C-Fence_Tile_63_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2016, 1920)
+
+[node name="C-Fence_Tile_64_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2048, 1920)
+
+[node name="C-Fence_Tile_65_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2080, 1920)
+
+[node name="C-Fence_Tile_66_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2112, 1920)
+
+[node name="C-Fence_Tile_67_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2144, 1920)
+
+[node name="C-Fence_Tile_68_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2176, 1920)
+
+[node name="C-Fence_Tile_69_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2208, 1920)
+
+[node name="C-Fence_Tile_70_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2240, 1920)
+
+[node name="C-Fence_Tile_71_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2272, 1920)
+
+[node name="C-Fence_Tile_72_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2304, 1920)
+
+[node name="C-Fence_Tile_73_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2336, 1920)
+
+[node name="C-Fence_Tile_74_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2368, 1920)
+
+[node name="C-Fence_Tile_75_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2400, 1920)
+
+[node name="C-Fence_Tile_76_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2432, 1920)
+
+[node name="C-Fence_Tile_77_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2464, 1920)
+
+[node name="C-Fence_Tile_78_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2496, 1920)
+
+[node name="C-Fence_Tile_79_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2528, 1920)
+
+[node name="C-Fence_Tile_80_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2560, 1920)
+
+[node name="C-Fence_Tile_81_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2592, 1920)
+
+[node name="C-Fence_Tile_82_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(288, 192, 32, 32)
+position = Vector2(2624, 1920)
+
+[node name="C-Fence_Tile_83_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(320, 96, 32, 32)
+position = Vector2(2656, 1920)
+
+[node name="C-Fence_Tile_89_60" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(2848, 1920)
+
+[node name="C-Fence_Tile_83_61" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(2656, 1952)
+
+[node name="C-Fence_Tile_89_61" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(2848, 1952)
+
+[node name="C-Fence_Tile_83_62" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(2656, 1984)
+
+[node name="C-Fence_Tile_89_62" type="Sprite2D" parent="C-Fence"]
+texture = ExtResource("1_tiles")
+centered = false
+region_enabled = true
+region_rect = Rect2(352, 128, 32, 32)
+position = Vector2(2848, 1984)
+
+[node name="C-Fence_Tile_83_63" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(352, 160, 32, 32)
-position = Vector2(2688, 2016)
+position = Vector2(2656, 2016)
 
-[node name="C-Fence_Tile_88_63" type="Sprite2D" parent="C-Fence"]
+[node name="C-Fence_Tile_89_63" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
 centered = false
 region_enabled = true
 region_rect = Rect2(352, 160, 32, 32)
-position = Vector2(2816, 2016)
+position = Vector2(2848, 2016)
 
 [node name="C-Fence_Tile_85_67" type="Sprite2D" parent="C-Fence"]
 texture = ExtResource("1_tiles")
