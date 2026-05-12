@@ -164,6 +164,8 @@ func _connect_hud() -> void:
 
 func _physics_process(delta: float) -> void:
 	_update_camera()
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		follow_held_mouse(get_global_mouse_position())
 	if _pending_npc != null and _pending_npc.is_player_in_talk_range(_player.global_position):
 		var npc := _pending_npc
 		_pending_npc = null
@@ -242,6 +244,10 @@ func move_player_to(target: Vector2) -> bool:
 		return false
 	movement.move_to(target)
 	return true
+
+
+func follow_held_mouse(target: Vector2) -> bool:
+	return move_player_to(target)
 
 
 func engage_enemy(instance_id: String) -> void:

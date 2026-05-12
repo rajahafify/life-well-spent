@@ -47,6 +47,7 @@ func complete_swordsman_certification_step() -> bool:
 		return false
 	if quest_manager.side_quest_step(chain_id) >= 3:
 		quest_manager.complete_side_quest_chain(chain_id)
+		quest_manager.advance_main_quest_objective("explore_the_world", "enter_forest")
 		player_stats.unlock_facility("swordsman_guild")
 	return true
 

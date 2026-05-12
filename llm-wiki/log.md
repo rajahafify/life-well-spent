@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-05-13] fix | Polish progression QA issues
+
+- RED: added specs for held-mouse movement in Town/Field, one-time Town reborn intro, Forest endpoint objective after certification, and Town HUD/objective behavior after the final Guild step.
+- Town and Field now continue updating movement destination while the left mouse button is held and no dialog is open.
+- Town reborn intro is tracked through quest runtime state so returning to Town does not replay it every entry.
+- Swordsman certification step 3 now advances the main objective to `Enter the Forest.` after granting certification and unlocking `swordsman_guild`.
+- Validation: full suite `347 tests, 347 passed, 0 failed`.
+
 ## [2026-05-13] feature | Complete Swordsman Guild certification progression
 
 - RED: added model specs for side-chain steps, certification step completion, game-over request, and persistent `swordsman_guild` unlock after rebirth.

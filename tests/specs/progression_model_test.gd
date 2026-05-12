@@ -88,3 +88,13 @@ func test_swordsman_certification_step_three_unlocks_guild_and_requests_game_ove
 	assert_true(quests.has_certification("swordsman_certification"))
 	assert_in("swordsman_guild", player.unlocked_facilities)
 	assert_false(quests.is_side_quest_active("rebuilding_swordsman_guild"))
+
+
+func test_swordsman_certification_step_three_advances_main_objective() -> void:
+	quests.setup_core_quests()
+	quests.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	progression.complete_swordsman_certification_step()
+	progression.complete_swordsman_certification_step()
+	progression.complete_swordsman_certification_step()
+	assert_eq("enter_forest", quests.current_main_objective_id())
+	assert_eq("Enter the Forest.", quests.current_main_objective_text())

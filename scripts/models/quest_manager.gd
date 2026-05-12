@@ -7,6 +7,7 @@ extends Object
 const MAIN_EXPLORE_WORLD := "explore_the_world"
 const OBJ_FIND_FOREST_PATH := "find_forest_path"
 const OBJ_GET_SWORDSMAN_CERTIFICATION := "get_swordsman_certification"
+const OBJ_ENTER_FOREST := "enter_forest"
 const CHECKPOINT_FOREST_GUARD := "forest_guard"
 const SIDE_REBUILD_SWORDSMAN_GUILD := "rebuilding_swordsman_guild"
 const CERT_SWORDSMAN := "swordsman_certification"
@@ -18,6 +19,7 @@ var last_rejection = null
 var main_quests: Dictionary = {}
 var side_quest_chains: Dictionary = {}
 var certifications: Dictionary = {}
+var town_reborn_intro_seen: bool = false
 
 
 func add_quest(name: String, cost: int, description: String) -> void:
@@ -84,6 +86,7 @@ func setup_core_quests() -> void:
 			"objectives": {
 				OBJ_FIND_FOREST_PATH: "Find the Forest path.",
 				OBJ_GET_SWORDSMAN_CERTIFICATION: "Get Swordsman Certification.",
+				OBJ_ENTER_FOREST: "Enter the Forest.",
 			},
 			"checkpoints": {
 				CHECKPOINT_FOREST_GUARD: {
@@ -205,6 +208,17 @@ func complete_side_quest_chain(chain_id: String) -> bool:
 	return true
 
 
+func has_seen_town_reborn_intro() -> bool:
+	return town_reborn_intro_seen
+
+
+func mark_town_reborn_intro_seen() -> bool:
+	if town_reborn_intro_seen:
+		return false
+	town_reborn_intro_seen = true
+	return true
+
+
 func has_certification(certification_id: String) -> bool:
 	return bool(certifications.get(certification_id, false))
 
@@ -218,6 +232,7 @@ func to_dict() -> Dictionary:
 		"main_quests": main_quests.duplicate(true),
 		"side_quest_chains": side_quest_chains.duplicate(true),
 		"certifications": certifications.duplicate(true),
+		"town_reborn_intro_seen": town_reborn_intro_seen,
 	}
 
 
@@ -229,6 +244,7 @@ func apply_dict(data: Dictionary) -> void:
 	main_quests = Dictionary(data.get("main_quests", {})).duplicate(true)
 	side_quest_chains = Dictionary(data.get("side_quest_chains", {})).duplicate(true)
 	certifications = Dictionary(data.get("certifications", {})).duplicate(true)
+	town_reborn_intro_seen = bool(data.get("town_reborn_intro_seen", false))
 
 
 func _duplicate_array(value) -> Array[Dictionary]:

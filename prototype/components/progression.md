@@ -153,7 +153,7 @@ Prototype behavior:
 - Aging state resets to starting sprite
 - Inventory resets to starter loadout
 - `swordsman_guild` remains in `PlayerStats.unlocked_facilities`
-- Main objective advances away from certification
+- Main objective advances to `Enter the Forest.`
 - Forest Gateway no longer uses the original certification block and shows `The Forest path opens. To be continued.`
 
 ## Functional Zones
@@ -295,7 +295,7 @@ Next slice conditions:
 - If chain step is `1`: show certification step 2 offer.
 - If player accepts step 2: spend Max Life from `60` to `20`, clamp current Life, update HUD, and set chain step `2`.
 - If chain step is `2`: show final certification offer.
-- If player accepts step 3: spend remaining Max Life, unlock Swordsman Guild, request game over, and show unlock message.
+- If player accepts step 3: spend remaining Max Life, unlock Swordsman Guild, advance the main objective to `Enter the Forest.`, request game over, and show unlock message.
 - If player rebirths after unlock: reset run Life state but preserve Swordsman Guild unlock in `PlayerStats.unlocked_facilities`.
 - If player reaches Forest Gateway after unlock: show the `To be continued` prototype endpoint instead of the original certification block.
 
@@ -431,9 +431,10 @@ Player can:
 7. Complete certification step 1 and see Max Life become `60`.
 8. Complete certification step 2 and see Max Life become `20`.
 9. Complete certification step 3 and see Swordsman Guild unlock.
-10. Rebirth with Life / Max Life reset to `100 / 100`.
-11. Keep Swordsman Guild unlocked after rebirth.
-12. Return to Field and see Forest Gateway no longer use the original certification block.
+10. See the objective change to `Enter the Forest.`
+11. Rebirth with Life / Max Life reset to `100 / 100`.
+12. Keep Swordsman Guild unlocked after rebirth.
+13. Return to Field and see Forest Gateway no longer use the original certification block.
 
 ## First Slice Flow
 
@@ -468,6 +469,7 @@ Player can:
 - [x] Certification step 2 sets `swordsman_chain_step` to `2`.
 - [x] Certification step 3 spends remaining Max Life to `0`.
 - [x] Certification step 3 unlocks Swordsman Guild.
+- [x] Certification step 3 advances the main objective to `Enter the Forest.`
 - [x] Certification step 3 requests game over.
 - [x] Rebirth resets current Life to `100`.
 - [x] Rebirth resets Max Life to `100`.

@@ -40,7 +40,7 @@ func _ready() -> void:
 	_connect_hud()
 	_update_quest_window()
 	_connect_dialog()
-	_show_reborn_dialog()
+	_show_reborn_dialog_once()
 	_connect_portal()
 	_connect_worldbuilding_npcs()
 	_update_camera()
@@ -61,8 +61,11 @@ func _connect_dialog() -> void:
 		_dialog_view.complete_quest_requested.connect(_on_complete_quest_requested)
 
 
-func _show_reborn_dialog() -> void:
-	_dialog_view.show_dialog("Reborn", REBORN_DIALOG, false, false)
+func _show_reborn_dialog_once() -> void:
+	if QuestSystem.mark_town_reborn_intro_seen():
+		_dialog_view.show_dialog("Reborn", REBORN_DIALOG, false, false)
+		return
+	_dialog_view.hide_dialog()
 
 
 func _connect_portal() -> void:
@@ -79,6 +82,8 @@ func _connect_worldbuilding_npcs() -> void:
 
 func _physics_process(_delta: float) -> void:
 	_update_camera()
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		follow_held_mouse(get_global_mouse_position())
 	if _pending_npc != null and _pending_npc.is_player_in_talk_range(_player.global_position):
 		var npc := _pending_npc
 		_pending_npc = null
@@ -115,6 +120,10 @@ func move_player_to(target: Vector2) -> bool:
 		return false
 	movement.move_to(target)
 	return true
+
+
+func follow_held_mouse(target: Vector2) -> bool:
+	return move_player_to(target)
 
 
 func request_field() -> void:

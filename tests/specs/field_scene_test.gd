@@ -553,6 +553,16 @@ func test_field_routes_player_movement_and_camera_follow() -> void:
 	assert_eq(player.global_position + Vector2(0, -150), camera.global_position)
 
 
+func test_field_follow_held_mouse_updates_player_destination() -> void:
+	if root == null:
+		return
+	var movement = root.get_node("Player/Sprite")
+	movement._ready()
+	var target := Vector2(900, 560)
+	assert_true(root.follow_held_mouse(target))
+	assert_eq(target, movement.destination)
+
+
 func test_far_forest_guard_click_moves_player_before_dialog() -> void:
 	if root == null:
 		return

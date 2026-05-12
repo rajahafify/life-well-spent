@@ -31,6 +31,7 @@ var last_rejection
 var main_quests: Dictionary
 var side_quest_chains: Dictionary
 var certifications: Dictionary
+var town_reborn_intro_seen: bool
 
 func add_quest(name: String, cost: int, description: String) -> void
 func add_life_task_quest(name: String, cost: int, description: String, life_task_id: String) -> void
@@ -51,6 +52,8 @@ func is_side_quest_active(chain_id: String) -> bool
 func side_quest_step(chain_id: String) -> int
 func advance_side_quest_step(chain_id: String) -> bool
 func complete_side_quest_chain(chain_id: String) -> bool
+func has_seen_town_reborn_intro() -> bool
+func mark_town_reborn_intro_seen() -> bool
 func has_certification(certification_id: String) -> bool
 
 func to_dict() -> Dictionary
@@ -65,11 +68,13 @@ func apply_dict(data: Dictionary) -> void
 - Reaching the Field Forest Gate marks the `forest_guard` checkpoint, advances the objective to `Get Swordsman Certification.`, and activates the `Rebuilding Swordsman Guild` side quest chain.
 - The `Rebuilding Swordsman Guild` side chain tracks ordered step state from 0 to 3.
 - Completing `Rebuilding Swordsman Guild` grants `swordsman_certification`.
+- After certification, the main objective can advance to `Enter the Forest.` for the prototype endpoint.
+- Town reborn intro display is tracked once per runtime through quest state so returning to Town does not replay the intro.
 - Acceptance remains free; Max Life spending belongs to quest completion/progression callers.
 
 ## Test Coverage
 
-- `tests/specs/quest_manager_test.gd` covers catalog quests, active quest lifecycle, free acceptance, reset, core main quest setup, Forest Guard checkpoint state, Forest Gate objective advancement, side chain activation, side-chain step advancement/bounds, certification grant, and save round-trip.
+- `tests/specs/quest_manager_test.gd` covers catalog quests, active quest lifecycle, free acceptance, reset, core main quest setup, Forest Guard checkpoint state, Forest Gate objective advancement, side chain activation, side-chain step advancement/bounds, certification grant, Town reborn intro once-state, Forest endpoint objective, and save round-trip.
 - `tests/specs/field_scene_test.gd` covers Field using `QuestSystem` and advancing the main objective when the player enters the Forest Gateway.
 - `tests/specs/town_scene_dialog_test.gd` covers the Guildmaster reacting to the `Get Swordsman Certification` objective.
 

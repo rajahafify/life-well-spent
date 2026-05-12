@@ -60,6 +60,14 @@ func complete_side_quest_chain(chain_id: String) -> bool:
 	return quests.complete_side_quest_chain(chain_id)
 
 
+func has_seen_town_reborn_intro() -> bool:
+	return quests.has_seen_town_reborn_intro()
+
+
+func mark_town_reborn_intro_seen() -> bool:
+	return quests.mark_town_reborn_intro_seen()
+
+
 func has_certification(certification_id: String) -> bool:
 	return quests.has_certification(certification_id)
 

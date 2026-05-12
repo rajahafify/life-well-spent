@@ -277,8 +277,10 @@ Future rules:
 
 First Town slice:
 
-- On scene start: show reborn copy in a dialog box.
+- On first scene start for the current runtime: show reborn copy in a dialog box.
+- On later Town entries: do not replay the reborn copy.
 - On ground click while dialog is closed: route Player movement to `CharacterMovement`.
+- While left mouse is held and dialog is closed: keep updating Player movement destination to the mouse position.
 - Camera follows Player with RO-style upward offset.
 - On ground click while dialog is open: block movement.
 - On far NPC click: Player walks toward NPC talk point, dialog remains closed.

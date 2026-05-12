@@ -145,6 +145,21 @@ func test_forest_gate_objective_starts_swordsman_guild_side_chain() -> void:
 	assert_true(qm.is_side_quest_active("rebuilding_swordsman_guild"))
 
 
+func test_swordsman_certification_can_advance_main_objective_to_forest_endpoint() -> void:
+	qm.setup_core_quests()
+	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	assert_true(qm.advance_main_quest_objective("explore_the_world", "enter_forest"))
+	assert_eq("enter_forest", qm.current_main_objective_id())
+	assert_eq("Enter the Forest.", qm.current_main_objective_text())
+
+
+func test_town_reborn_intro_is_marked_once() -> void:
+	assert_false(qm.has_seen_town_reborn_intro())
+	assert_true(qm.mark_town_reborn_intro_seen())
+	assert_true(qm.has_seen_town_reborn_intro())
+	assert_false(qm.mark_town_reborn_intro_seen())
+
+
 func test_main_quest_tracks_forest_guard_checkpoint() -> void:
 	qm.setup_core_quests()
 	assert_false(qm.has_main_checkpoint("explore_the_world", "forest_guard"))

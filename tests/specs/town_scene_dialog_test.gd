@@ -52,6 +52,20 @@ func test_town_opens_reborn_copy_as_start_dialog() -> void:
 	assert_null(root.get_node_or_null("UI/RebornPrompt"))
 
 
+func test_town_does_not_repeat_reborn_copy_after_first_visit() -> void:
+	root.free()
+	root = null
+	var first_scene: PackedScene = load("res://scenes/town_scene.tscn")
+	var first_root = first_scene.instantiate()
+	first_root._ready()
+	first_root.free()
+	var second_scene: PackedScene = load("res://scenes/town_scene.tscn")
+	root = second_scene.instantiate()
+	root._ready()
+	var dialog: TownDialogView = root.get_node("UI/DialogPanel") as TownDialogView
+	assert_false(dialog.visible)
+
+
 func test_town_has_top_right_quest_window() -> void:
 	var hud := root.get_node_or_null("UI")
 	assert_true(hud != null and hud.has_method("set_life") and hud.has_method("show_quest"), "Town should use the shared gameplay HUD")
@@ -152,6 +166,16 @@ func test_guildmaster_final_certification_unlocks_achievement() -> void:
 	assert_in("swordsman_guild", root.player_stats.unlocked_facilities)
 	assert_true(root.player_stats.game_over_requested)
 	assert_true(body.text.contains("SWORDSMAN GUILD UNLOCKED"))
+	assert_eq("enter_forest", QuestSystem.current_main_objective_id())
+
+
+func test_town_follow_held_mouse_updates_player_destination() -> void:
+	_close_start_dialog()
+	var movement: CharacterMovement = root.get_node("Player/Sprite") as CharacterMovement
+	movement._ready()
+	var target := Vector2(820, 640)
+	assert_true(root.follow_held_mouse(target))
+	assert_eq(target, movement.destination)
 
 
 func test_far_guildmaster_interaction_moves_player_without_opening_dialog() -> void:
