@@ -21,16 +21,12 @@ signal interacted(npc)
 var npc_state: NpcState
 
 var _character_movement: CharacterMovement
-var _proximity: Area2D
 var _name_label: Label
 
 func _ready():
 	_apply_definition()
 	_ensure_state()
 	_character_movement = get_node_or_null(character_movement_path) as CharacterMovement
-	_proximity = get_node_or_null("Proximity") as Area2D
-	if _proximity and not _proximity.body_entered.is_connected(_on_proximity_body_entered):
-		_proximity.body_entered.connect(_on_proximity_body_entered)
 	_name_label = get_node_or_null(name_label_path) as Label
 	if _name_label:
 		_name_label.text = display_name
@@ -41,10 +37,6 @@ func _input(event):
 		if _character_movement and _character_movement.get_rect().has_point(_character_movement.to_local(get_global_mouse_position())):
 			get_viewport().set_input_as_handled()
 			interact_with_player(_resolve_player_position())
-
-func _on_proximity_body_entered(body):
-	if body.name == "Player":
-		interact_with_player(body.global_position)
 
 func interact_with_player(player_global_pos: Vector2) -> void:
 	face_toward_player(player_global_pos)

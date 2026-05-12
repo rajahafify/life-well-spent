@@ -7,9 +7,6 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_7n8xq"]
 radius = 20.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_4wlns"]
-radius = 60.0
-
 [node name="Npc" type="CharacterBody2D" unique_id=1463974126]
 script = ExtResource("1_rv78h")
 
@@ -34,8 +31,3 @@ text = "NPC"
 
 [node name="Collision" type="CollisionShape2D" parent="." unique_id=1030186696]
 shape = SubResource("CircleShape2D_7n8xq")
-
-[node name="Proximity" type="Area2D" parent="." unique_id=1492828223]
-
-[node name="AreaCollision" type="CollisionShape2D" parent="Proximity" unique_id=898671463]
-shape = SubResource("CircleShape2D_4wlns")

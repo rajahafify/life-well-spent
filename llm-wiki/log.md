@@ -1,5 +1,45 @@
 # Wiki Log
 
+## [2026-05-12] fix | Move Town spawn away from portal trigger
+
+- Kept `FieldGateway` at the south road exit.
+- Moved `SpawnPoints/FromFieldGateway`, `SpawnPoints/Default`, and initial Player position to `Vector2(960, 980)` so Town load does not auto-trigger the portal.
+- Updated Town specs to require the spawn be clear of the portal trigger.
+- Validation: `246 tests, 246 passed, 0 failed`; Godot MCP main-scene play reports no errors.
+
+## [2026-05-12] polish | Move Town portal to south road
+
+- Moved `FieldGateway` to the south road exit at `Vector2(960, 1320)`.
+- Moved Town Field-return spawn and default Player start to `Vector2(960, 1240)` near the south road.
+- Moved Shopkeeper to the bottom Tiny Town house at `Vector2(512, 1140)`.
+- Added Town specs for the south-road gateway/spawn and bottom-house Shopkeeper placement.
+- Validation: `246 tests, 246 passed, 0 failed`; Godot MCP main-scene play reports no errors.
+
+## [2026-05-12] change | Remove proximity-based NPC dialog
+
+- Removed the `Proximity` Area2D from `scenes/npc.tscn`.
+- Removed `NpcController` proximity `body_entered` hookup so NPC dialog only starts from clicking the NPC sprite.
+- Added specs covering the absence of proximity dialog triggers.
+- Updated NPC system and Town scene wiki pages.
+- Validation: `245 tests, 245 passed, 0 failed`; Godot MCP main-scene play reports no errors.
+
+## [2026-05-12] polish | Move Town NPCs in front of Tiny Town buildings
+
+- Moved Shopkeeper, Guildmaster, and Smith from the old primitive-building coordinates to positions in front of the imported Tiny Town house/castle facades.
+- Added a Town spec for the Tiny Town-facing NPC coordinates.
+- Updated Town scene wiki with the new placement intent.
+- Validation: `244 tests, 244 passed, 0 failed`; Godot MCP main-scene play reports no errors.
+
+## [2026-05-12] tooling | Automate Tiny Town map import
+
+- Added `tools/import_tiny_town_tmj.py` to convert the external layered TMJ into `scenes/maps/town_map.tscn`.
+- Extended the importer to generate `scenes/maps/town_collision.tscn` from solid Tiny Town layers using merged `StaticBody2D` rectangle blockers.
+- Copied `tilemap_packed_2x.png` into `assets/tiny_town/` and imported it for Godot.
+- Instanced generated `TownMap` and `TownCollision` into `scenes/town_scene.tscn` while preserving Player, NPCs, gateways, spawn points, camera, and UI ownership.
+- Added Town specs for the generated map and collision instances.
+- Updated Tiny Town import and Town scene wiki pages plus index.
+- Validation: `243 tests, 243 passed, 0 failed`; Godot MCP main-scene play reports no errors.
+
 ## [2026-05-12] feature | Add Bat/Rat and spawn zones
 
 - Added Bat and Rat enemy definitions and spawned them alongside Slimes in Field.

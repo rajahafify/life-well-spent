@@ -61,6 +61,20 @@ func test_interact_signal_emits_npc_instance() -> void:
 	npc.free()
 
 
+func test_npc_scene_does_not_emit_interaction_from_proximity() -> void:
+	var scene: PackedScene = load("res://scenes/npc.tscn")
+	assert_not_null(scene, "npc scene should load")
+	if scene == null:
+		return
+	var npc: NpcController = scene.instantiate() as NpcController
+	npc._ready()
+	var emitted: Array = []
+	npc.interacted.connect(func(actor): emitted.append(actor))
+	assert_null(npc.get_node_or_null("Proximity"), "NPC scene should not include proximity dialog trigger")
+	assert_eq(0, emitted.size())
+	npc.free()
+
+
 func test_npc_exposes_dialog_metadata_defaults() -> void:
 	var npc := NpcController.new()
 	assert_eq("NPC", npc.display_name)

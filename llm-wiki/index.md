@@ -19,6 +19,7 @@
 | [assets/lpc-sprite-generator](assets/lpc-sprite-generator.md) | reference | 2026-05-09 | LPC sprite generator tool — prompt-driven character spritesheet pipeline. |
 | [assets/assets-viewer](assets/assets-viewer.md) | reference | 2026-05-12 | In-project gallery scene that recursively displays enemy, NPC, and player PNG assets as thumbnails. |
 | [assets/slime-asset-view](assets/slime-asset-view.md) | reference | 2026-05-12 | Enemy and character asset tools: focused AssetView preview plus looping AssetGallery SpriteFrames/LPC previews. |
+| [assets/tiny-town-map-import](assets/tiny-town-map-import.md) | reference | 2026-05-12 | TMJ-to-Godot visual map importer for the Tiny Town TownMap scene. |
 | [scenes/main-menu](scenes/main-menu.md) | reference | 2026-05-11 | Main menu scene — title, New Game button, Quit button. Transitions to town hub. |
 | [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-12 | Prototype Town scene — named gateway spawn, reborn prompt, three old institutions, NPC dialog, and deferred direct Field gateway. |
 | [scenes/field](scenes/field.md) | reference | 2026-05-12 | Playable Field slice — spawn zones, Slime/Bat/Rat combat, RO damage numbers, slash animation, Forest Guard gate. |

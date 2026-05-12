@@ -53,6 +53,37 @@ func test_town_has_three_buildings() -> void:
 	root.free()
 
 
+func test_town_instances_tiny_town_map() -> void:
+	var root := _instantiate_town()
+	if root == null:
+		return
+	var map := root.get_node_or_null("TownMap") as Node2D
+	assert_not_null(map, "Town should instance the generated Tiny Town map")
+	if map:
+		assert_eq("res://scenes/maps/town_map.tscn", map.scene_file_path)
+		assert_eq(Vector2(64, -180), map.position)
+		assert_eq(Vector2(2, 2), map.scale)
+	root.free()
+
+
+func test_town_instances_generated_collision() -> void:
+	var root := _instantiate_town()
+	if root == null:
+		return
+	var collision := root.get_node_or_null("TownCollision") as Node2D
+	assert_not_null(collision, "Town should instance generated Tiny Town collision")
+	if collision:
+		assert_eq("res://scenes/maps/town_collision.tscn", collision.scene_file_path)
+		assert_eq(Vector2(64, -180), collision.position)
+		assert_eq(Vector2(2, 2), collision.scale)
+		assert_true(collision.get_child_count() > 0, "generated collision should include blocker bodies")
+		var blocker := collision.get_child(0) as StaticBody2D
+		assert_not_null(blocker, "generated collision children should be StaticBody2D blockers")
+		if blocker:
+			assert_not_null(blocker.get_node_or_null("CollisionShape2D"), "blockers should have CollisionShape2D")
+	root.free()
+
+
 func test_town_has_three_worldbuilding_npcs() -> void:
 	var root := _instantiate_town()
 	if root == null:
@@ -60,6 +91,23 @@ func test_town_has_three_worldbuilding_npcs() -> void:
 	assert_not_null(root.get_node_or_null("Shopkeeper"), "Town should have Shopkeeper NPC")
 	assert_not_null(root.get_node_or_null("Guildmaster"), "Town should have Guildmaster NPC")
 	assert_not_null(root.get_node_or_null("Smith"), "Town should have Smith NPC")
+	root.free()
+
+
+func test_worldbuilding_npcs_stand_in_front_of_tiny_town_buildings() -> void:
+	var root := _instantiate_town()
+	if root == null:
+		return
+	var shopkeeper := root.get_node_or_null("Shopkeeper") as Node2D
+	var guildmaster := root.get_node_or_null("Guildmaster") as Node2D
+	var smith := root.get_node_or_null("Smith") as Node2D
+	assert_not_null(shopkeeper, "Shopkeeper should exist")
+	assert_not_null(guildmaster, "Guildmaster should exist")
+	assert_not_null(smith, "Smith should exist")
+	if shopkeeper and guildmaster and smith:
+		assert_eq(Vector2(512, 1140), shopkeeper.position)
+		assert_eq(Vector2(960, 450), guildmaster.position)
+		assert_eq(Vector2(1472, 820), smith.position)
 	root.free()
 
 
@@ -94,7 +142,24 @@ func test_town_has_player_and_camera() -> void:
 	assert_not_null(spawn, "Town should have named spawn point for Field gateway arrivals")
 	if player and field_gateway and spawn:
 		assert_eq(spawn.global_position, player.global_position)
-		assert_true(spawn.global_position.distance_to(field_gateway.global_position) <= 220.0, "Town spawn should sit close to Field gateway")
+		assert_true(spawn.global_position.distance_to(field_gateway.global_position) > 260.0, "Town spawn should not auto-trigger Field gateway")
+	root.free()
+
+
+func test_field_gateway_sits_at_south_road_exit() -> void:
+	var root := _instantiate_town()
+	if root == null:
+		return
+	var field_gateway := root.get_node_or_null("FieldGateway") as Node2D
+	var spawn := root.get_node_or_null("SpawnPoints/FromFieldGateway") as Marker2D
+	var player := root.get_node_or_null("Player") as Node2D
+	assert_not_null(field_gateway, "Town should have Field gateway")
+	assert_not_null(spawn, "Town should have Field gateway spawn")
+	if field_gateway and spawn and player:
+		assert_eq(Vector2(960, 1320), field_gateway.position)
+		assert_eq(Vector2(960, 980), spawn.position)
+		assert_eq(spawn.global_position, player.global_position)
+		assert_true(spawn.global_position.distance_to(field_gateway.global_position) > 260.0, "Player should start clear of the portal trigger")
 	root.free()
 
 

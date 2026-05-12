@@ -8,7 +8,7 @@ tags: [architecture, game-design]
 # NPC System
 
 ## Overview
-Static NPCs for town hub (quest givers, vendors). Reusable CharacterBody2D scene with Sprite2D idle animation, overhead name label, solid collision, and talk-range Area2D. Uses CharacterMovement view (`is_static=true` for NPCs). Interaction is RO-style: far click queues approach movement to a talk point; dialog opens only in talk range; dialog is modal and locks player movement until closed.
+Static NPCs for town hub (quest givers, vendors). Reusable CharacterBody2D scene with Sprite2D idle animation, overhead name label, and solid collision. Uses CharacterMovement view (`is_static=true` for NPCs). Interaction is sprite-click only: far click queues approach movement to a talk point; dialog opens only after the clicked NPC is in talk range; dialog is modal and locks player movement until closed.
 
 ## API
 **Model (`scripts/models/npc_state.gd`):**
@@ -84,26 +84,25 @@ QuestGiver dialog accepts quests for free and charges 40 Max HP on completion vi
 CharacterBody2D Npc
 ├ Sprite2D Sprite (CharacterMovement, player.png)
 ├ Label NameLabel (overhead display name)
-├ CollisionShape2D Collision (Circle20 solid)
-└ Area2D Proximity
-  └ CollisionShape2D AreaCollision (Circle60)
+└ CollisionShape2D Collision (Circle20 solid)
 
 ## Design Decisions
 - Static only (no patrol); NPC Sprite has `is_static=true` and empty marker path.
-- Solid collision radius is 20px; talk/proximity Area2D radius is 60px so interaction can trigger before collision blocks movement.
+- Solid collision radius is 20px.
+- NPC dialog is not proximity-triggered; only clicking the NPC sprite emits `interacted(npc)`.
 - Far-click approach point is `solid_radius + talk_stop_buffer`, clamped inside talk radius.
 - Dialog is modal: opening calls `stop_moving()` and disables player movement; closing re-enables it.
 - Reuse CharacterMovement for player/NPC facing and animation.
 - MVC: model pure, view dumb, controller signals.
 - Dialog presentation extracted to `TownDialogView`; `TownSceneController` owns quest decisions and receives button signals.
-- Collision solid + Area detect.
+- Collision is solid only; sprite click owns interaction.
 - Emits interaction signal with NPC instance; town controller owns quest flow and delegates dialog UI rendering to `TownDialogView`.
 - Horizontal dir prefer (abs(x)>=y).
 
 ## Test Coverage
 - `npc_state_test.gd` (14): initial, face_player dirs/edge, quest assign/clear-to-null, interacting.
-- `npc_controller_test.gd` (8): explicit player target faces right/up, syncs state/view, emits actor, exposes dialog metadata defaults, talk range true/false, talk point, visible overhead name label.
-- `scene_smoke_test.gd`: player scene separated from NPC controller; NPC Sprite static and markerless; collision/talk radii; town UI wiring.
+- `npc_controller_test.gd`: explicit player target faces right/up, syncs state/view, emits actor only from explicit interaction, exposes dialog metadata defaults, talk range true/false, talk point, visible overhead name label.
+- `scene_smoke_test.gd`: player scene separated from NPC controller; NPC Sprite static and markerless; solid collision without proximity dialog trigger; town UI wiring.
 - `town_scene_dialog_test.gd` (15): dialog panel, TownDialogView scene wiring/API, NPC metadata, vendor no quest button, accept-free/complete-cost quest UI, close behavior, far-click pending approach, automatic open in range, near-click immediate open, modal movement lock, mutual facing.
 - Full suite: 128 tests pass.
 

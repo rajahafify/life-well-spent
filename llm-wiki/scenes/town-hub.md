@@ -38,14 +38,16 @@ Town (Node2D, Town)
 │   ├── Shop (ColorRect)
 │   ├── SwordsmanGuild (ColorRect)
 │   └── Blacksmith (ColorRect)
+├── TownMap (instance: scenes/maps/town_map.tscn)
+├── TownCollision (instance: scenes/maps/town_collision.tscn)
 ├── SpawnPoints
 │   ├── FromFieldGateway (Marker2D)
 │   └── Default (Marker2D)
 ├── Player (instance: player.tscn, starts at FromFieldGateway)
-├── Shopkeeper (NpcController, `assets/npcs/shopkeeper.png`)
-├── Guildmaster (NpcController, `assets/npcs/guildmaster.png`)
-├── Smith (NpcController, `assets/npcs/smith.png`)
-├── FieldGateway (Area2D)
+├── Shopkeeper (NpcController, `assets/npcs/shopkeeper.png`, in front of bottom Tiny Town house)
+├── Guildmaster (NpcController, `assets/npcs/guildmaster.png`, in front of castle/guild)
+├── Smith (NpcController, `assets/npcs/smith.png`, in front of right Tiny Town house)
+├── FieldGateway (Area2D, south road exit)
 │   ├── CollisionShape2D
 │   ├── Visual (ColorRect)
 │   └── Label — "Field"
@@ -110,9 +112,9 @@ Old roads have a way of calling again.
 - routes ground clicks to `CharacterMovement` while dialog is closed
 - follows player with a camera offset for RO-style play
 - blocks click-to-move while dialog is open
-- handles RO-style NPC approach: far click moves to NPC talk point, near/in-range opens dialog
+- handles RO-style NPC approach after sprite click: far NPC click moves Player to the NPC talk point, near/in-range sprite click opens dialog
 - shows paged NPC dialog via `TownDialogView.show_dialog()`
-- starts Player at named spawn point `SpawnPoints/FromFieldGateway`, near FieldGateway
+- starts Player at named spawn point `SpawnPoints/FromFieldGateway`, up the south road and outside the FieldGateway trigger
 - records Field transition request through `request_field()`
 - records the direct Field transition when the Player enters `FieldGateway`, then defers the actual scene change outside the physics callback
 - hides NPC overhead names; names appear in dialog only
@@ -125,6 +127,8 @@ No quest, shop, forge, or life-spend logic is active in this slice.
 
 Prototype Town uses primitives/SVG world art with generated LPC sprites for Player and NPCs. Project viewport is 1920×1080 for prototype readability. World primitive `Control` nodes set `mouse_filter = ignore` so ground clicks reach Town movement.
 
+Tiny Town visual art is imported as `TownMap`, an instanced generated scene from `tools/import_tiny_town_tmj.py`. The same importer generates `TownCollision` from solid Tiny Town layers as merged native `StaticBody2D` blockers. Tiled remains the editable source, while Town keeps ownership of Player, NPCs, gateways, spawn points, camera, and UI.
+
 - warm tan ground
 - brown path strips
 - rectangle buildings
@@ -135,10 +139,14 @@ Prototype Town uses primitives/SVG world art with generated LPC sprites for Play
 ## Tests
 
 - `tests/specs/town_prototype_test.gd` covers root/class naming, buildings, NPCs, custom NPC sprite textures, NPC scale matching player, dialog copy, reborn prompt, Field gateway label, 1080p viewport, and primitive mouse filter settings.
-- `tests/specs/town_scene_dialog_test.gd` covers readable 1080p dialog text, NPC face portrait crop above the box, paged NPC dialog, RO-style far-click NPC approach, pending dialog open in talk range, camera follow, desynced NPC idle timing, hidden overhead NPC names, first-slice quest buttons hidden, click-to-move routing/blocking, dialog close behavior, and direct Field gateway request.
+- `tests/specs/town_prototype_test.gd` also covers the generated Tiny Town `TownMap` and `TownCollision` instance paths, position, scale, and collision blocker shape.
+- `tests/specs/town_prototype_test.gd` covers the Tiny Town-facing NPC placements: Shopkeeper at `Vector2(512, 1140)`, Guildmaster at `Vector2(960, 450)`, and Smith at `Vector2(1472, 820)`.
+- `tests/specs/town_prototype_test.gd` covers the south-road Field gateway at `Vector2(960, 1320)` and its safe spawn at `Vector2(960, 980)`, far enough to avoid auto-transition.
+- `tests/specs/town_scene_dialog_test.gd` covers readable 1080p dialog text, NPC face portrait crop above the box, paged NPC dialog, RO-style sprite-click NPC approach, pending dialog open in talk range after click, camera follow, desynced NPC idle timing, hidden overhead NPC names, first-slice quest buttons hidden, click-to-move routing/blocking, dialog close behavior, and direct Field gateway request.
+- `tests/specs/npc_controller_test.gd` and `tests/specs/scene_smoke_test.gd` cover removal of proximity-based NPC dialog triggers.
 - `tests/specs/scene_smoke_test.gd` covers Town dialog smoke behavior.
 
-Current validation after gateway defer fix: `204 tests, 204 passed, 0 failed`; MCP main-scene play reports no errors.
+Current validation after south portal placement: `246 tests, 246 passed, 0 failed`; MCP main-scene play reports no errors.
 
 Systems introduced by Town are cataloged in `prototype/game-systems.md` using systemic design terms: verbs, components, resources, rules, and conditions.
 
@@ -148,8 +156,8 @@ Passed on 2026-05-11:
 
 - Town opens with reborn prompt.
 - Ground click-to-move works after world primitives set `mouse_filter = ignore`.
-- Far NPC click moves Player toward NPC before dialog opens.
-- Dialog opens in talk range.
+- Far NPC sprite click moves Player toward NPC before dialog opens.
+- Dialog opens in talk range after an NPC sprite click.
 - Dialog pages advance with Next.
 - Close hides dialog.
 - Dialog blocks movement.

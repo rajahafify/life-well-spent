@@ -43,16 +43,15 @@ func test_npc_scene_sprite_is_static_without_marker() -> void:
 	root.free()
 
 
-func test_npc_scene_collision_and_talk_range_radii() -> void:
+func test_npc_scene_has_solid_collision_without_proximity_dialog_trigger() -> void:
 	var scene: PackedScene = load("res://scenes/npc.tscn")
 	assert_not_null(scene, "npc scene should load")
 	if scene == null:
 		return
 	var root: Node = scene.instantiate()
 	var collision: CollisionShape2D = root.get_node("Collision") as CollisionShape2D
-	var area_collision: CollisionShape2D = root.get_node("Proximity/AreaCollision") as CollisionShape2D
 	assert_eq(20.0, collision.shape.radius, "solid NPC collision should be body-sized")
-	assert_eq(60.0, area_collision.shape.radius, "talk range should be wider than solid collision")
+	assert_null(root.get_node_or_null("Proximity"), "NPC dialog should not trigger from proximity")
 	root.free()
 
 

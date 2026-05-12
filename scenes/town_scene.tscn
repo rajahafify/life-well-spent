@@ -7,6 +7,8 @@
 [ext_resource type="Texture2D" path="res://assets/npcs/guildmaster.png" id="5_guildmaster"]
 [ext_resource type="Texture2D" path="res://assets/npcs/shopkeeper.png" id="6_shopkeeper"]
 [ext_resource type="Texture2D" path="res://assets/npcs/smith.png" id="7_smith"]
+[ext_resource type="PackedScene" path="res://scenes/maps/town_map.tscn" id="1_town_map"]
+[ext_resource type="PackedScene" path="res://scenes/maps/town_collision.tscn" id="1_town_collision"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog"]
 content_margin_left = 28.0
@@ -105,20 +107,30 @@ offset_right = 220.0
 offset_bottom = 90.0
 text = "BLACKSMITH"
 
+
+[node name="TownMap" parent="." instance=ExtResource("1_town_map")]
+position = Vector2(64, -180)
+scale = Vector2(2, 2)
+
+
+[node name="TownCollision" parent="." instance=ExtResource("1_town_collision")]
+position = Vector2(64, -180)
+scale = Vector2(2, 2)
+
 [node name="SpawnPoints" type="Node2D" parent="."]
 
 [node name="FromFieldGateway" type="Marker2D" parent="SpawnPoints"]
-position = Vector2(1560, 760)
+position = Vector2(960, 980)
 
 [node name="Default" type="Marker2D" parent="SpawnPoints"]
-position = Vector2(1560, 760)
+position = Vector2(960, 980)
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
-position = Vector2(1560, 760)
+position = Vector2(960, 980)
 scale = Vector2(2, 2)
 
 [node name="Shopkeeper" parent="." instance=ExtResource("3_npc")]
-position = Vector2(360, 330)
+position = Vector2(512, 1140)
 scale = Vector2(2, 2)
 display_name = "Shopkeeper"
 talk_radius = 140.0
@@ -132,7 +144,7 @@ texture = ExtResource("6_shopkeeper")
 idle_cycle_interval = 0.92
 
 [node name="Guildmaster" parent="." instance=ExtResource("3_npc")]
-position = Vector2(960, 355)
+position = Vector2(960, 450)
 scale = Vector2(2, 2)
 display_name = "Guildmaster"
 talk_radius = 140.0
@@ -146,7 +158,7 @@ texture = ExtResource("5_guildmaster")
 idle_cycle_interval = 1.1
 
 [node name="Smith" parent="." instance=ExtResource("3_npc")]
-position = Vector2(1560, 330)
+position = Vector2(1472, 820)
 scale = Vector2(2, 2)
 display_name = "Smith"
 talk_radius = 140.0
@@ -160,7 +172,7 @@ texture = ExtResource("7_smith")
 idle_cycle_interval = 0.78
 
 [node name="FieldGateway" type="Area2D" parent="."]
-position = Vector2(1700, 820)
+position = Vector2(960, 1320)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="FieldGateway"]
 shape = SubResource("CircleShape2D_portal")
