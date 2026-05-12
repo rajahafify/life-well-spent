@@ -41,9 +41,10 @@ Current Field tuning scales enemy HP and Player outgoing attack by 10x for comba
 - Field Player attack is currently 40.
 - Field enemy HP is currently Slime 140, Bat 80, Rat 60.
 - Field enemy attack values remain Slime 1, Bat 2, Rat 2.
+- Enemy sprites render larger in Field and use wider attack/click spacing so they do not stand underneath the player sprite.
 - Weapon adds attack.
 - Armor reduces incoming Life damage.
-- Apple heals current Life up to Max Life if consumables are enabled later.
+- Apple heals current Life up to Max Life from shortcut slot 1.
 
 ## Prototype Enemies
 

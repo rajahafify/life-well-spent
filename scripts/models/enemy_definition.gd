@@ -34,15 +34,15 @@ func to_enemy_state_dict(hp_override: int = -1) -> Dictionary:
 
 
 static func slime_spiked():
-	return _build("slime_spiked", "Spiked Slime", 140, 1, 10, 5, [{"item_id": "slime_gel", "quantity": 1}], 45.0, 65.0, 120.0, 48.0, 1.4, 0.8)
+	return _build("slime_spiked", "Spiked Slime", 140, 1, 10, 5, _with_apple_chance({"item_id": "slime_gel", "quantity": 1}), 45.0, 65.0, 120.0, 96.0, 1.4, 0.8)
 
 
 static func bat():
-	return _build("bat", "Bat", 80, 2, 0, 4, [{"item_id": "bat_wing", "quantity": 1}], 70.0, 95.0, 170.0, 54.0, 1.1, 0.7)
+	return _build("bat", "Bat", 80, 2, 0, 4, _with_apple_chance({"item_id": "bat_wing", "quantity": 1}), 70.0, 95.0, 170.0, 104.0, 1.1, 0.7)
 
 
 static func rat():
-	return _build("rat", "Rat", 60, 2, 0, 3, [{"item_id": "rat_tail", "quantity": 1}], 75.0, 105.0, 140.0, 44.0, 1.0, 0.6)
+	return _build("rat", "Rat", 60, 2, 0, 3, _with_apple_chance({"item_id": "rat_tail", "quantity": 1}), 75.0, 105.0, 140.0, 96.0, 1.0, 0.6)
 
 
 static func for_id(enemy_id_value: String):
@@ -53,6 +53,13 @@ static func for_id(enemy_id_value: String):
 			return rat()
 		_:
 			return slime_spiked()
+
+
+static func _with_apple_chance(guaranteed_drop: Dictionary) -> Array[Dictionary]:
+	return [
+		guaranteed_drop,
+		{"item_id": "apple", "quantity": 1, "chance_numerator": 1, "chance_denominator": 5},
+	]
 
 
 static func _build(enemy_id_value: String, display_name_value: String, hp: int, attack_value: int, defense_value: int, xp: int, drops: Array[Dictionary], move: float, chase: float, wander: float, range: float, interval: float, death: float):

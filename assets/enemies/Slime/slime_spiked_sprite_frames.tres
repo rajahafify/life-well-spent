@@ -1,11 +1,11 @@
-[gd_resource type="SpriteFrames" format=3 uid="uid://ps02ac3nhnyu"]
+[gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" uid="uid://b2ibbylnd2oep" path="res://assets/enemies/Slime/Slime_Spiked_Ability.png" id="1_0hvtx"]
-[ext_resource type="Texture2D" uid="uid://ceblyc2hgelc6" path="res://assets/enemies/Slime/Slime_Spiked_Death.png" id="2_huwau"]
-[ext_resource type="Texture2D" uid="uid://cyhjvq1y5lro4" path="res://assets/enemies/Slime/Slime_Spiked_Hit.png" id="3_3apvk"]
-[ext_resource type="Texture2D" uid="uid://cbad6oj1cuioo" path="res://assets/enemies/Slime/Slime_Spiked_Idle.png" id="4_impr8"]
-[ext_resource type="Texture2D" uid="uid://xwtmk4evrfec" path="res://assets/enemies/Slime/Slime_Spiked_Jump.png" id="5_5o24o"]
-[ext_resource type="Texture2D" uid="uid://c4tiu7wlvdrmh" path="res://assets/enemies/Slime/Slime_Spiked_Run.png" id="6_puhcn"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Slime/Slime_Spiked_Ability.png" id="1_0hvtx"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Slime/Slime_Spiked_Death.png" id="2_huwau"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Slime/Slime_Spiked_Hit.png" id="3_3apvk"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Slime/Slime_Spiked_Idle.png" id="4_impr8"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Slime/Slime_Spiked_Jump.png" id="5_5o24o"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Slime/Slime_Spiked_Run.png" id="6_puhcn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ek78o"]
 atlas = ExtResource("1_0hvtx")
@@ -50,6 +50,10 @@ region = Rect2(64, 64, 64, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_u4o5y"]
 atlas = ExtResource("2_huwau")
 region = Rect2(128, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hh2rp"]
+atlas = ExtResource("2_huwau")
+region = Rect2(192, 64, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_l0l4n"]
 atlas = ExtResource("3_3apvk")
@@ -171,6 +175,9 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_u4o5y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hh2rp")
 }],
 "loop": false,
 "name": &"death",

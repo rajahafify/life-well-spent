@@ -1,7 +1,7 @@
 ---
 title: InventorySystem
 type: reference
-updated: 2026-05-12
+updated: 2026-05-13
 sources:
   - scripts/managers/inventory_system.gd
   - tests/specs/inventory_system_test.gd
@@ -12,7 +12,7 @@ tags: [architecture, inventory, autoload]
 
 ## Overview
 
-`InventorySystem` is the game-wide inventory autoload. It wraps the pure `InventoryModel` so enemy drops and shared HUD windows read/write one inventory across scene changes.
+`InventorySystem` is the game-wide inventory autoload. It wraps the pure `InventoryModel` so enemy drops, equipment slots, consumable slot state, and shared HUD windows read/write one inventory across scene changes.
 
 ## API
 
@@ -31,10 +31,11 @@ func apply_dict(data: Dictionary) -> void
 - `InventoryModel` stays pure and testable.
 - `InventorySystem` is the runtime boundary registered in `project.godot`.
 - Field grants enemy drops through `InventorySystem`; Town and Field pass `InventorySystem.model()` to the shared HUD.
+- `reset()` restores starter equipment slots and clears stack counts.
 
 ## Test Coverage
 
-- `tests/specs/inventory_system_test.gd` covers global stack counts and model access for the shared HUD window.
+- `tests/specs/inventory_system_test.gd` covers global stack counts, model access for the shared HUD window, and reset restoring starter slots.
 - `tests/specs/field_scene_test.gd` covers Field granting Slime drops into the global inventory.
 
 ## Related

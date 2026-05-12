@@ -1,9 +1,9 @@
-[gd_resource type="SpriteFrames" format=3 uid="uid://da8ku4cofmlq2"]
+[gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" uid="uid://bobioq4gimxpc" path="res://assets/enemies/Skull/Bones_SingleSkull_Death.png" id="1_qtct0"]
-[ext_resource type="Texture2D" uid="uid://dqcrxx4vbxmix" path="res://assets/enemies/Skull/Bones_SingleSkull_Fly.png" id="2_fuekh"]
-[ext_resource type="Texture2D" uid="uid://dgy2uv7afl518" path="res://assets/enemies/Skull/Bones_SingleSkull_Hit.png" id="3_cns5h"]
-[ext_resource type="Texture2D" uid="uid://cntsdtuu0hpn2" path="res://assets/enemies/Skull/Bones_SingleSkull_Idle.png" id="4_cjy5u"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Skull/Bones_SingleSkull_Death.png" id="1_qtct0"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Skull/Bones_SingleSkull_Fly.png" id="2_fuekh"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Skull/Bones_SingleSkull_Hit.png" id="3_cns5h"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Skull/Bones_SingleSkull_Idle.png" id="4_cjy5u"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wf1qo"]
 atlas = ExtResource("1_qtct0")
@@ -48,6 +48,10 @@ region = Rect2(64, 128, 64, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_x2dfa"]
 atlas = ExtResource("1_qtct0")
 region = Rect2(128, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4k140"]
+atlas = ExtResource("1_qtct0")
+region = Rect2(192, 128, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_61kfr"]
 atlas = ExtResource("2_fuekh")
@@ -180,6 +184,9 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_x2dfa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4k140")
 }],
 "loop": false,
 "name": &"death",

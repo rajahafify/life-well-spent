@@ -9,6 +9,8 @@ const CATALOG_SCRIPT := preload("res://scripts/models/enemy_sprite_catalog.gd")
 const BUILDER_SCRIPT := preload("res://scripts/views/enemy_sprite_frames_builder.gd")
 const HIT_FEEDBACK_SCRIPT := preload("res://scripts/views/hit_feedback_component.gd")
 const DAMAGE_TEXT_SCRIPT := preload("res://scripts/views/damage_text_component.gd")
+const WORLD_SPRITE_SCALE := Vector2(4, 4)
+const CLICK_COLLISION_RADIUS := 76.0
 
 @export var enemy_id: String = "slime_spiked"
 @export var instance_id: String = ""
@@ -48,7 +50,7 @@ func ensure_ready() -> void:
 			add_child(_shape)
 	if _shape.shape == null:
 		var circle := CircleShape2D.new()
-		circle.radius = 42.0
+		circle.radius = CLICK_COLLISION_RADIUS
 		_shape.shape = circle
 	if _damage_text == null:
 		_damage_text = get_node_or_null("DamageTextComponent")
@@ -140,7 +142,7 @@ func _load_sprite_frames() -> void:
 	_sprite.sprite_frames = builder.build(sprite_set)
 	builder.free()
 	_sprite.centered = true
-	_sprite.scale = Vector2(2, 2)
+	_sprite.scale = WORLD_SPRITE_SCALE
 	_loaded_enemy_id = enemy_id
 	if _sprite.sprite_frames != null and _sprite.sprite_frames.has_animation("idle"):
 		_sprite.play("idle")
@@ -154,8 +156,8 @@ func _remove_legacy_hp_label() -> void:
 
 
 func _configure_hp_bar() -> void:
-	_hp_bar.position = Vector2(-36, 52)
-	_hp_bar.size = Vector2(72, 5)
+	_hp_bar.position = Vector2(-56, 90)
+	_hp_bar.size = Vector2(112, 5)
 	_hp_bar.scale = Vector2(1.0, 0.18)
 	_hp_bar.min_value = 0.0
 	_hp_bar.max_value = maxf(1.0, _hp_bar.max_value)

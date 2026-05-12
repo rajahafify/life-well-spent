@@ -24,6 +24,13 @@ func test_inventory_starts_empty() -> void:
 	if inventory == null:
 		return
 	assert_eq(0, inventory.quantity("slime_gel"))
+	assert_eq("wooden_sword", inventory.weapon_slot)
+	assert_eq("cloth_armor", inventory.armor_slot)
+	assert_eq("apple", inventory.consumable_slot)
+	assert_eq("Weapon: wooden_sword\nArmor: cloth_armor\nConsumable: apple", inventory.slot_summary_text())
+	assert_eq("apple", inventory.shortcut_item(1))
+	assert_eq("", inventory.shortcut_item(2))
+	assert_eq("", inventory.shortcut_item(9))
 
 
 func test_add_item_stacks_quantities() -> void:
@@ -46,10 +53,19 @@ func test_to_dict_round_trips_item_counts() -> void:
 	if inventory == null:
 		return
 	inventory.add_item("slime_gel", 2)
+	inventory.equip_weapon("training_sword")
+	inventory.equip_armor("leather_armor")
+	inventory.set_consumable("apple")
+	inventory.assign_shortcut(2, "slime_gel")
 	var script := load("res://scripts/models/inventory_model.gd") as GDScript
 	var restored = script.new()
 	restored.apply_dict(inventory.to_dict())
 	assert_eq(2, restored.quantity("slime_gel"))
+	assert_eq("training_sword", restored.weapon_slot)
+	assert_eq("leather_armor", restored.armor_slot)
+	assert_eq("apple", restored.consumable_slot)
+	assert_eq("apple", restored.shortcut_item(1))
+	assert_eq("slime_gel", restored.shortcut_item(2))
 	restored.free()
 
 
@@ -59,3 +75,37 @@ func test_summary_text_lists_item_counts() -> void:
 	assert_eq("Inventory: empty", inventory.summary_text())
 	inventory.add_item("slime_gel", 2)
 	assert_eq("Inventory: slime_gel x2", inventory.summary_text())
+
+
+func test_equipment_slots_reject_blank_ids() -> void:
+	if inventory == null:
+		return
+	assert_false(inventory.equip_weapon(""))
+	assert_false(inventory.equip_armor(""))
+	assert_false(inventory.set_consumable(""))
+	assert_eq("wooden_sword", inventory.weapon_slot)
+	assert_eq("cloth_armor", inventory.armor_slot)
+	assert_eq("apple", inventory.consumable_slot)
+
+
+func test_consume_item_reduces_stack_only_when_available() -> void:
+	if inventory == null:
+		return
+	assert_false(inventory.consume_item("apple"))
+	inventory.add_item("apple", 2)
+	assert_true(inventory.consume_item("apple"))
+	assert_eq(1, inventory.quantity("apple"))
+	assert_true(inventory.consume_item("apple"))
+	assert_eq(0, inventory.quantity("apple"))
+	assert_false(inventory.consume_item("apple"))
+
+
+func test_shortcut_slots_map_one_through_nine() -> void:
+	if inventory == null:
+		return
+	assert_true(inventory.assign_shortcut(9, "rat_tail"))
+	assert_eq("rat_tail", inventory.shortcut_item(9))
+	assert_false(inventory.assign_shortcut(0, "slime_gel"))
+	assert_false(inventory.assign_shortcut(10, "slime_gel"))
+	assert_eq("", inventory.shortcut_item(0))
+	assert_eq("", inventory.shortcut_item(10))

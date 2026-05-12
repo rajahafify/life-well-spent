@@ -1,5 +1,49 @@
 # Wiki Log
 
+## [2026-05-13] fix | Regenerate enemy SpriteFrames resources
+
+- Fixed the full-suite blocker in `EnemySpriteMetadataTest.test_builder_creates_sprite_frames_from_metadata`.
+- Regenerated enemy `*_sprite_frames.tres` resources from metadata with `tools/generate_enemy_sprite_frames.gd` so the saved Slime death animation frame count matches the source strip.
+- Validation: full suite `295 tests, 295 passed, 0 failed`.
+
+## [2026-05-13] polish | Enlarge Field enemy footprint
+
+- RED: updated Field and enemy behavior specs for larger enemy sprite scale, larger click collision, wider attack range, and wider player approach stop distance.
+- Increased `EnemyView` world sprite scale to 4x and click collision radius to 76.
+- Increased Field enemy blocker growth radius and player approach distance so enemies avoid tighter overlap with map blockers and the player sprite.
+- Widened Field enemy attack ranges for the larger footprint: Slime 96, Bat 104, Rat 96.
+- Validation: full suite now passes after regenerating enemy SpriteFrames resources.
+
+## [2026-05-13] feature | Use Apple from shortcut bar
+
+- RED: added Field scene coverage for shortcut `1` consuming an Apple, healing current Life, updating the HUD, and showing feedback.
+- Added `InventoryModel.consume_item()` plus the `InventorySystem` wrapper.
+- Wired `SharedHUDView.shortcut_pressed` into Field so Apple heals up to 20 current Life and consumes one stack item.
+- Made shortcut bar slots more pronounced with white backgrounds and dark borders.
+- Validation: full suite now passes after regenerating enemy SpriteFrames resources.
+
+## [2026-05-13] feature | Add inventory shortcut bar
+
+- RED: updated InventoryModel and SharedHUDView specs for 9 shortcut slots mapped to number keys `1` through `9`.
+- Added `shortcut_slots` to `InventoryModel`, with slot 1 defaulting to `apple`, plus assignment, lookup, reset, and serialization.
+- Added `ShortcutBar` to the shared HUD; pressing number keys emits `shortcut_pressed(slot_number, item_id)`.
+- Validation: InventoryModel specs `7 tests, 7 passed`; SharedHUDView specs `4 tests, 4 passed`; Field scene specs `27 tests, 27 passed`.
+
+## [2026-05-13] feature | Add inventory equipment slots
+
+- RED: updated InventoryModel and InventoryWindowView specs for dedicated Weapon, Armor, and Consumable slots.
+- Added starter slots to `InventoryModel`: `wooden_sword`, `cloth_armor`, and `apple`.
+- Added slot setters, slot serialization, slot summary text, and reset behavior that restores starter slots.
+- InventoryWindowView now renders the three slots above stackable item counts.
+- Validation: InventoryModel specs `6 tests, 6 passed`; InventorySystem specs `3 tests, 3 passed`; InventoryWindowView specs `3 tests, 3 passed`.
+
+## [2026-05-13] feature | Add Apple chance drops to Field enemies
+
+- RED: updated EnemyBehaviorSystem specs so Slime, Bat, and Rat each include an `apple` drop with `chance_numerator = 1` and `chance_denominator = 5`.
+- Updated Field drop granting to roll chance-based drops while keeping existing material drops guaranteed.
+- Added deterministic Field scene coverage for the 1-in-5 drop roll helper.
+- Validation: EnemyBehaviorSystem specs `9 tests, 9 passed`; Field scene specs `27 tests, 27 passed`.
+
 ## [2026-05-13] polish | Use enemy HP bars
 
 - RED: updated Field scene specs to require per-enemy `HpBar` progress bars and removal of text-based enemy HP labels.

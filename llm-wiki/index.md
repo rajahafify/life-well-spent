@@ -18,10 +18,10 @@
 | [architecture/quest-manager](architecture/quest-manager.md) | concept | 2026-05-12 | Quest catalog, main objective progression, side chain activation, certification state, and free acceptance. |
 | [architecture/quest-system](architecture/quest-system.md) | reference | 2026-05-12 | Game-wide quest autoload sharing main quest, side quest chain, and certification state across scenes. |
 | [architecture/quest-window-view](architecture/quest-window-view.md) | reference | 2026-05-12 | Reusable top-right quest objective UI view for Town and Field. |
-| [architecture/inventory-model](architecture/inventory-model.md) | reference | 2026-05-12 | Pure stackable item count model used by Field enemy drops. |
-| [architecture/inventory-system](architecture/inventory-system.md) | reference | 2026-05-12 | Game-wide inventory autoload for drops and shared HUD inventory display. |
-| [architecture/inventory-window-view](architecture/inventory-window-view.md) | reference | 2026-05-12 | Reusable inventory overlay scene opened from SharedHUDView with the Inventory button or I key. |
-| [architecture/shared-hud-view](architecture/shared-hud-view.md) | reference | 2026-05-12 | Reusable gameplay HUD for player Life, Inventory button/window, and Quest Tracker. |
+| [architecture/inventory-model](architecture/inventory-model.md) | reference | 2026-05-13 | Pure inventory model for stack counts, Weapon/Armor/Consumable slots, and 1-9 shortcut slots. |
+| [architecture/inventory-system](architecture/inventory-system.md) | reference | 2026-05-13 | Game-wide inventory autoload for drops, starter slots, reset, and shared HUD inventory display. |
+| [architecture/inventory-window-view](architecture/inventory-window-view.md) | reference | 2026-05-13 | Reusable inventory overlay scene showing Weapon, Armor, Consumable, and item stacks. |
+| [architecture/shared-hud-view](architecture/shared-hud-view.md) | reference | 2026-05-13 | Reusable gameplay HUD for player Life, Inventory, Quest Tracker, and 1-9 shortcut bar. |
 | [architecture/feedback-components](architecture/feedback-components.md) | reference | 2026-05-13 | Reusable combat feedback components for hit flash, floating damage text, loot toast, camera shake, and SFX requests. |
 | [architecture/game-balance](architecture/game-balance.md) | reference | 2026-05-11 | Shared pure constants model for quest cost and animation timings. |
 | [assets/lpc-sprite-generator](assets/lpc-sprite-generator.md) | reference | 2026-05-09 | LPC sprite generator tool — prompt-driven character spritesheet pipeline. |

@@ -175,9 +175,13 @@ func test_field_has_slime_and_shared_life_hud() -> void:
 	var life_label := root.get_node_or_null("UI/LifeLabel") as Label
 	var player_damage_label := root.get_node_or_null("Player/DamageLabel") as Label
 	var slime_hp_bar := slime.get_node_or_null("HpBar") as ProgressBar
+	var slime_sprite := slime.get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
+	var slime_collision := slime.get_node_or_null("CollisionShape2D") as CollisionShape2D
 	assert_not_null(slime.get_node_or_null("HitFeedbackComponent"), "Enemy should own reusable hit feedback component")
 	assert_not_null(slime.get_node_or_null("DamageTextComponent"), "Enemy should own reusable damage text component")
 	assert_not_null(slime_hp_bar, "Enemy HP should be shown as a bar")
+	assert_not_null(slime_sprite, "Enemy should have a visible sprite")
+	assert_not_null(slime_collision, "Enemy should have click/spacing collision")
 	assert_null(slime.get_node_or_null("HpLabel"), "Enemy HP should not be shown as text")
 	assert_not_null(life_label, "Shared HUD should show player Life text")
 	assert_null(root.get_node_or_null("UI/SlimeHpLabel"), "Field should not use the temporary enemy HP text HUD")
@@ -190,10 +194,14 @@ func test_field_has_slime_and_shared_life_hud() -> void:
 		assert_eq(140.0, slime_hp_bar.max_value)
 		assert_eq(140.0, slime_hp_bar.value)
 		assert_false(slime_hp_bar.show_percentage)
-		assert_eq(Vector2(-36, 52), slime_hp_bar.position)
-		assert_eq(72.0, slime_hp_bar.size.x)
+		assert_eq(Vector2(-56, 90), slime_hp_bar.position)
+		assert_eq(112.0, slime_hp_bar.size.x)
 		assert_true(slime_hp_bar.scale.y <= 0.2, "enemy HP bar should render thin")
 		assert_false(slime_hp_bar.visible, "enemy HP bar should stay hidden until the enemy is attacked")
+	if slime_sprite:
+		assert_eq(Vector2(4, 4), slime_sprite.scale)
+	if slime_collision and slime_collision.shape is CircleShape2D:
+		assert_true((slime_collision.shape as CircleShape2D).radius >= 76.0, "enemy collision should be larger than the enlarged sprite footprint")
 
 
 func test_field_uses_game_wide_enemy_spawn_manager() -> void:
@@ -236,6 +244,33 @@ func test_inventory_button_and_i_key_toggle_inventory_window() -> void:
 	assert_true(window.visible)
 
 
+func test_shortcut_one_uses_apple_to_heal_life_and_consume_item() -> void:
+	if root == null:
+		return
+	root.inventory.add_item("apple", 2)
+	root.player_life = 65
+	root.player_max_life = 100
+	var hud := root.get_node("UI")
+	hud.shortcut_pressed.emit(1, "apple")
+	assert_eq(85, root.player_life)
+	assert_eq(1, root.inventory.quantity("apple"))
+	assert_eq("Life: 85/100", (root.get_node("UI/LifeLabel") as Label).text)
+	var loot_toast := root.get_node("UI/LootToast") as Label
+	assert_true(loot_toast.visible)
+	assert_eq("Used apple +20 Life", loot_toast.text)
+
+
+func test_shortcut_one_without_apple_shows_feedback() -> void:
+	if root == null:
+		return
+	root.player_life = 65
+	root.get_node("UI").shortcut_pressed.emit(1, "apple")
+	var loot_toast := root.get_node("UI/LootToast") as Label
+	assert_true(loot_toast.visible)
+	assert_eq("No apple", loot_toast.text)
+	assert_eq(65, root.player_life)
+
+
 func test_field_respawns_enemy_after_global_timer_while_loaded() -> void:
 	if root == null:
 		return
@@ -247,6 +282,7 @@ func test_field_respawns_enemy_after_global_timer_while_loaded() -> void:
 	slime.global_position = Vector2(530, 500)
 	root.enemy_states["field_slime_001"].position = slime.global_position
 	root.enemy_states["field_slime_001"].hp = 1
+	root.forced_drop_roll = 5
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.1)
 	root._physics_process(0.8)
@@ -272,7 +308,8 @@ func test_clicking_slime_engages_and_moves_player_toward_slime() -> void:
 	assert_eq("field_slime_001", root.player_target_enemy_instance_id)
 	assert_false(root.enemy_states["field_slime_001"].is_aggro, "targeted Slime should wait until first hit before aggro")
 	assert_true(movement.moving)
-	assert_eq(Vector2(656, 700), movement.destination)
+	assert_eq(Vector2(604, 700), movement.destination)
+	assert_true(movement.destination.distance_to(slime.global_position) >= 96.0, "player should stop outside the enlarged enemy footprint")
 
 
 func test_auto_attack_damages_slime_shows_hit_text_and_slime_damages_life() -> void:
@@ -344,6 +381,7 @@ func test_slime_dies_plays_death_before_removal() -> void:
 	slime.global_position = Vector2(530, 500)
 	root.enemy_states["field_slime_001"].position = slime.global_position
 	root.enemy_states["field_slime_001"].hp = 1
+	root.forced_drop_roll = 5
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.1)
 	assert_true(root.enemy_states.has("field_slime_001"))
@@ -353,6 +391,10 @@ func test_slime_dies_plays_death_before_removal() -> void:
 	assert_eq("death", sprite.animation)
 	assert_eq(5, root.player_xp)
 	assert_eq(1, root.inventory.quantity("slime_gel"))
+	assert_true(root.has_method("_drop_succeeds"), "Field should roll chance-based drops")
+	assert_true(root._drop_succeeds({"chance_numerator": 1, "chance_denominator": 5}, 1))
+	assert_false(root._drop_succeeds({"chance_numerator": 1, "chance_denominator": 5}, 2))
+	assert_true(root._drop_succeeds({"item_id": "slime_gel"}, 5), "Drops without chance fields should stay guaranteed")
 	var loot_toast := root.get_node("UI/LootToast") as Label
 	assert_true(loot_toast.visible)
 	assert_eq("+ slime_gel x1", loot_toast.text)

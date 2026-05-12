@@ -1,9 +1,9 @@
-[gd_resource type="SpriteFrames" format=3 uid="uid://njthbvb3o3lh"]
+[gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" uid="uid://ctfix8hw4am51" path="res://assets/enemies/Bat/Bat_Attack.png" id="1_1wyj0"]
-[ext_resource type="Texture2D" uid="uid://ccb7f348mannr" path="res://assets/enemies/Bat/Bat_Death.png" id="2_3ev36"]
-[ext_resource type="Texture2D" uid="uid://16le6piwblxs" path="res://assets/enemies/Bat/Bat_Hit.png" id="3_lisk7"]
-[ext_resource type="Texture2D" uid="uid://d3c5cp8x6ss84" path="res://assets/enemies/Bat/Bat_Fly.png" id="4_xf5a7"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Bat/Bat_Attack.png" id="1_1wyj0"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Bat/Bat_Death.png" id="2_3ev36"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Bat/Bat_Hit.png" id="3_lisk7"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Bat/Bat_Fly.png" id="4_xf5a7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_415k6"]
 atlas = ExtResource("1_1wyj0")
@@ -32,6 +32,10 @@ region = Rect2(64, 64, 64, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_teafi"]
 atlas = ExtResource("1_1wyj0")
 region = Rect2(128, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2murg"]
+atlas = ExtResource("1_1wyj0")
+region = Rect2(192, 64, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xfwl1"]
 atlas = ExtResource("2_3ev36")
@@ -101,6 +105,18 @@ region = Rect2(192, 0, 64, 64)
 atlas = ExtResource("3_lisk7")
 region = Rect2(0, 64, 64, 64)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_vgirh"]
+atlas = ExtResource("3_lisk7")
+region = Rect2(64, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h2m6n"]
+atlas = ExtResource("3_lisk7")
+region = Rect2(128, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pv1ek"]
+atlas = ExtResource("3_lisk7")
+region = Rect2(192, 64, 64, 64)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_ctas2"]
 atlas = ExtResource("4_xf5a7")
 region = Rect2(0, 0, 64, 64)
@@ -156,6 +172,9 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_teafi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2murg")
 }],
 "loop": false,
 "name": &"attack",
@@ -217,6 +236,15 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_ij8cf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vgirh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h2m6n")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pv1ek")
 }],
 "loop": false,
 "name": &"hit",

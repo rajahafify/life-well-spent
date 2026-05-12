@@ -17,8 +17,8 @@ Field is implemented on branch `prototype/field`.
 - Map source: `D:\godot\kenney_tiny-town\field.tmj`
 - Imported visual scene: `scenes/maps/field_map.tscn`
 - Imported collision scene: `scenes/maps/field_collision.tscn`
-- Latest local Field validation: `27 tests, 27 passed`
-- Latest committed Field work: combat feedback, 10x Field combat readability tuning, and enemy HP bar polish
+- Latest full-suite validation: `295 tests, 295 passed`
+- Latest local Field work: shared inventory slots/shortcut bar, Apple chance drops and use, larger enemy footprint/spacing, regenerated enemy SpriteFrames, combat feedback, 10x Field combat readability tuning, and enemy HP bar polish
 
 The current map is an imported Tiny Town Tiled map, not primitive art. It is `96x68` tiles at `32x32` pixels.
 
@@ -154,10 +154,14 @@ Current combat behavior:
 - Defeated enemy slots stay gone across portal changes and become available after the global 60 second respawn timer.
 - Respawned slots pick a fresh valid random position in `SpawnZones/Grassland`.
 - Field polls the spawn manager while loaded, so eligible enemies respawn after the timer without requiring another portal transition.
+- Slime, Bat, and Rat each keep their guaranteed material drop and have a 1-in-5 chance to also drop `apple`.
+- Enemy sprites render larger in Field, with larger click collision and wider player/enemy spacing so enemies do not stand underneath the player sprite.
+- Shortcut slot `1` starts mapped to `apple`; pressing `1` in Field uses one Apple if available and current Life is below Max Life.
 
 Still future:
 
-- Consumable inventory behavior in Field.
+- Equipment combat effects in Field.
+- More complete item/shortcut UI states.
 
 ## Field Enemies
 
@@ -226,6 +230,8 @@ Implemented:
 - Camera
 - Objective prompt
 - Life HUD and enemy HP bars
+- Inventory button/window
+- Shortcut bar
 - Dialog Panel
 - Imported `FieldMap`
 - Imported `FieldCollision`
@@ -260,6 +266,7 @@ Current Field reads:
 
 - current scene/runtime state.
 - `QuestSystem` main quest objective.
+- `InventorySystem` global item counts and shortcut slots.
 
 Current Field writes:
 
@@ -268,19 +275,19 @@ Current Field writes:
 - XP rewards.
 - `QuestSystem` main quest objective and side quest chain activation when the Forest Gateway is reached.
 - `QuestSystem` `forest_guard` checkpoint when the Forest Gateway is reached.
+- `InventorySystem` item counts when enemy drops are granted or Apple is consumed.
 
 Future Field reads:
 
 - `swordsman_guild_unlocked`
 - `life`
 - `max_life`
-- `inventory`
 - `xp`
 
 Future Field writes:
 
 - enemy defeated events
-- item drops
+- equipment combat effects
 
 ## Verbs
 
@@ -297,11 +304,13 @@ Implemented:
 - Take Damage
 - Defeat
 - Gain XP
+- Loot
+- Consume
+- Use Shortcut
 
 Future verbs:
 
-- Consume
-- Loot
+- Equip
 
 ## Resources Shown
 
@@ -311,13 +320,15 @@ Current Field shows:
 - top-right Quest Window
 - Life / Max Life
 - enemy HP bars
+- Inventory button/window
+- Shortcut slots `1` through `9`
 - XP is awarded internally on enemy death
 
 Future Field may show:
 
-- equipped weapon
-- consumable count
-- item drops
+- equipped weapon effect
+- armor mitigation
+- consumable count on the shortcut bar
 - broader enemy targeting/status UI
 
 ## Rules
@@ -331,11 +342,16 @@ Future Field may show:
 - Enemy movement must respect `FieldCollision`.
 - Enemy spawn placement must avoid Player, Town portal, Forest Guard, nearby enemies, and imported collision blockers.
 - Tiled layers beginning with `C-` are renderable and collidable.
+- Field enemy visual scale, click collision, attack range, and player approach spacing are tuned together to avoid sprite overlap.
+- Apple heals 20 current Life up to Max Life.
+- Apple cannot restore Max Life.
+- Apple cannot be used when count is 0.
+- Apple cannot be consumed when current Life is already full.
 
 Future rules:
 
 - Forest remains inaccessible until future slice.
-- Respawn/drop rules keep Field populated and rewarding.
+- Equipment rules should make weapon and armor slots affect combat.
 
 ## Conditions
 
@@ -354,7 +370,10 @@ Current Field slice:
 - On aggro: enemy chases Player until attack range.
 - On enemy attack interval: enemy damages current Life.
 - On enemy HP `<= 0`: enemy dies, is removed after death animation timing, and grants XP once.
-- On enemy reward grant: deterministic item drops are added to `InventoryModel`.
+- On enemy reward grant: guaranteed material drops and rolled chance drops are added to `InventoryModel`.
+- On shortcut `1` with Apple available and Life below Max Life: consume one Apple, heal up to 20 current Life, refresh Life HUD, and show a loot toast.
+- On shortcut `1` with no Apple: show `No apple`.
+- On shortcut `1` at full Life: show `Life is full` and do not consume Apple.
 - On enemy movement into collision: movement is rejected.
 - On Forest Gateway body entered by Player: scene transition remains blocked, QuestSystem marks `forest_guard`, advances `Explore the World` to `Get Swordsman Certification`, `Rebuilding Swordsman Guild` becomes active, and Guard warning opens.
 
@@ -386,6 +405,7 @@ Field now uses Kenney Tiny Town tile art imported from Tiled.
 - Slime uses cataloged enemy sprite asset `slime_spiked`.
 - Bat uses cataloged enemy sprite asset `bat`.
 - Rat uses cataloged enemy sprite asset `rat`.
+- Enemy sprites are enlarged for gameplay readability, with HP bars repositioned below the larger footprint.
 - Forest Guard uses `assets/npcs/forest_guard.png`.
 - HUD/dialog uses the same Town dialog styling.
 
@@ -398,11 +418,11 @@ Color language:
 
 ## Current Non-Goals
 
-- Enemy drops are model-backed and shown as simple inventory text.
-- No consumable use in Field yet.
+- Enemy drops are model-backed and shown through the inventory window / loot toast, not world pickup sprites.
 - No playable Forest.
 - No Swordsman Guild quest completion UI.
 - No drop pickup animation yet.
+- No weapon/armor combat effect yet.
 
 ## Deliverables
 
@@ -414,7 +434,7 @@ Color language:
 
 ### Spec
 
-`tests/specs/field_scene_test.gd` covers root naming, controller class naming, player/camera, generated map/collision, portal placement, enemy combat, Forest Guard, dialog copy, and objective prompt.
+`tests/specs/field_scene_test.gd` covers root naming, controller class naming, player/camera, generated map/collision, portal placement, shared HUD, Apple shortcut use, enlarged enemy footprint/spacing, enemy combat, Forest Guard, dialog copy, and objective prompt.
 
 ### Scene
 
@@ -439,9 +459,11 @@ Player can:
 5. Click an enemy to start approach + auto-attack.
 6. See enemy chase and attack back against Life.
 7. Kill an enemy and see it removed after death timing.
-8. See Forest edge and blocked Forest path.
-9. Talk to Forest Guard.
-10. Use portal to request Town transition.
+8. Earn drops into global inventory, with Apple as a chance drop.
+9. Press `1` to use Apple when available and damaged.
+10. See Forest edge and blocked Forest path.
+11. Talk to Forest Guard.
+12. Use portal to request Town transition.
 
 ## First Slice Flow
 
@@ -451,11 +473,13 @@ Player can:
 4. See enemies, Forest edge, Forest Guard, and Town Portal.
 5. Click enemy; Player approaches and auto-attacks in range.
 6. Enemy aggros after first hit, chases if Player moves, attacks current Life, then dies/removes at HP `<= 0`.
-7. Click Forest Guard from far away; Player approaches before dialog opens.
-8. Talk to Forest Guard for paged certification warning dialog.
-9. Use `Next` to advance dialog pages; use `Close` to exit dialog.
-10. Walk into Town Gateway.
-11. Gateway transitions directly to Town.
+7. Enemy death grants guaranteed material drop plus possible Apple chance drop.
+8. Press `1` to consume Apple if hurt.
+9. Click Forest Guard from far away; Player approaches before dialog opens.
+10. Talk to Forest Guard for paged certification warning dialog.
+11. Use `Next` to advance dialog pages; use `Close` to exit dialog.
+12. Walk into Town Gateway.
+13. Gateway transitions directly to Town.
 
 ## Tests
 
@@ -472,7 +496,12 @@ Player can:
 - [x] `C-` map layers render and generate collision through the importer.
 - [x] Enemy container exists with Slime, Bat, and Rat enemies.
 - [x] Simple Life HUD and enemy HP bars exist.
+- [x] Shared Inventory button/window exists.
+- [x] Shortcut bar exists.
+- [x] Shortcut `1` uses Apple when available and damaged.
 - [x] Clicking enemy engages Player target and movement.
+- [x] Player approach spacing keeps Player outside the enlarged enemy footprint.
+- [x] Enemy sprite scale/click collision are enlarged for readability.
 - [x] Player auto-attack damages enemy.
 - [x] Enemy attacks current Life.
 - [x] Aggro enemy chases Player when Player moves away.
@@ -494,4 +523,5 @@ Player can:
 - [x] Forest Gateway records the `forest_guard` checkpoint.
 - [x] `Rebuilding Swordsman Guild` activates from the Forest Gateway flow.
 - [x] Enemy drops exist.
-- [ ] Inventory/consume behavior exists in Field.
+- [x] Inventory/consume behavior exists in Field.
+- [ ] Weapon/armor equipment effects exist in Field.

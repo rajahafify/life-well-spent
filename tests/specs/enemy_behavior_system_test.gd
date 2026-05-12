@@ -46,9 +46,12 @@ func test_slime_definition_is_tweakable_and_uses_life_combat_values() -> void:
 	assert_eq(1, slime.attack)
 	assert_eq(10, slime.defense)
 	assert_eq(5, slime.xp_reward)
-	assert_eq([{"item_id": "slime_gel", "quantity": 1}], slime.drop_table)
+	assert_eq([
+		{"item_id": "slime_gel", "quantity": 1},
+		{"item_id": "apple", "quantity": 1, "chance_numerator": 1, "chance_denominator": 5},
+	], slime.drop_table)
 	assert_eq(0.0, slime.aggro_radius)
-	assert_eq(48.0, slime.attack_range)
+	assert_eq(96.0, slime.attack_range)
 	assert_eq(1.4, slime.attack_interval)
 	assert_eq(0.8, slime.death_duration)
 	assert_eq(0.4, slime.idle_min_time)
@@ -67,13 +70,19 @@ func test_bat_and_rat_definitions_are_available_for_field() -> void:
 	assert_eq(80, bat.max_hp)
 	assert_eq(2, bat.attack)
 	assert_eq(4, bat.xp_reward)
-	assert_eq([{"item_id": "bat_wing", "quantity": 1}], bat.drop_table)
+	assert_eq([
+		{"item_id": "bat_wing", "quantity": 1},
+		{"item_id": "apple", "quantity": 1, "chance_numerator": 1, "chance_denominator": 5},
+	], bat.drop_table)
 	assert_eq("rat", rat.enemy_id)
 	assert_eq("Rat", rat.display_name)
 	assert_eq(60, rat.max_hp)
 	assert_eq(2, rat.attack)
 	assert_eq(3, rat.xp_reward)
-	assert_eq([{"item_id": "rat_tail", "quantity": 1}], rat.drop_table)
+	assert_eq([
+		{"item_id": "rat_tail", "quantity": 1},
+		{"item_id": "apple", "quantity": 1, "chance_numerator": 1, "chance_denominator": 5},
+	], rat.drop_table)
 
 
 func test_enemy_state_starts_idle_with_full_hp() -> void:

@@ -13,7 +13,8 @@ const ENEMY_BEHAVIOR_SCRIPT := preload("res://scripts/models/enemy_behavior_syst
 const COMBAT_SCRIPT := preload("res://scripts/models/combat_system.gd")
 const INVENTORY_SCRIPT := preload("res://scripts/models/inventory_model.gd")
 const DAMAGE_TEXT_SCRIPT := preload("res://scripts/views/damage_text_component.gd")
-const ENEMY_COLLISION_RADIUS := 28.0
+const ENEMY_COLLISION_RADIUS := 56.0
+const ENEMY_APPROACH_DISTANCE := 96.0
 const FIELD_MAP_ID := "field"
 const FIELD_BIOME_ID := "grassland"
 const FIELD_MAX_ACTIVE_ENEMIES := 9
@@ -22,6 +23,7 @@ const ENEMY_SPAWN_POLL_INTERVAL := 1.0
 const CAMERA_SHAKE_DURATION := 0.16
 const CAMERA_SHAKE_STRENGTH := 8.0
 const LOOT_TOAST_DURATION := 1.4
+const APPLE_HEAL_AMOUNT := 20
 
 @onready var _dialog_view: TownDialogView = $UI/DialogPanel
 @onready var _hud: CanvasLayer = $UI
@@ -43,9 +45,11 @@ var inventory = null
 var enemy_states: Dictionary = {}
 var enemy_views: Dictionary = {}
 var enemy_definitions: Dictionary = {}
+var forced_drop_roll: int = -1
 var _enemy_spawn_slots: Dictionary = {}
 var _enemy_spawn_poll_timer: float = 0.0
 var _spawn_rng := RandomNumberGenerator.new()
+var _drop_rng := RandomNumberGenerator.new()
 
 var _pending_npc: NpcController
 var _behavior = ENEMY_BEHAVIOR_SCRIPT.new()
@@ -84,6 +88,7 @@ func _ready() -> void:
 	_connect_forest_guard()
 	_ensure_combat_ui()
 	_camera_shake_rng.randomize()
+	_drop_rng.randomize()
 	_spawn_initial_slime()
 	_update_combat_ui()
 	_update_camera()
@@ -144,6 +149,8 @@ func _connect_hud() -> void:
 		_hud.ensure_ready()
 		_hud.set_inventory_model(_inventory_model_for_hud())
 		_hud.set_life(player_life, player_max_life)
+		if _hud.has_signal("shortcut_pressed") and not _hud.shortcut_pressed.is_connected(_on_shortcut_pressed):
+			_hud.shortcut_pressed.connect(_on_shortcut_pressed)
 
 
 func _physics_process(delta: float) -> void:
@@ -280,7 +287,7 @@ func _tick_enemies(delta: float) -> void:
 func _attack_point_for_enemy(enemy_position: Vector2) -> Vector2:
 	var from_enemy := _player.global_position - enemy_position
 	var direction := from_enemy.normalized() if from_enemy != Vector2.ZERO else Vector2.LEFT
-	return enemy_position + direction * 44.0
+	return enemy_position + direction * ENEMY_APPROACH_DISTANCE
 
 
 func _move_enemy_with_collision(state, next_position: Vector2, fallback_position: Vector2 = Vector2.INF) -> void:
@@ -546,11 +553,51 @@ func _update_combat_ui() -> void:
 
 func _grant_enemy_drops(state) -> void:
 	for drop in state.drop_table:
+		if not _drop_succeeds(drop):
+			continue
 		var item_id := str(drop.get("item_id", ""))
 		var quantity := int(drop.get("quantity", 1))
 		if inventory.add_item(item_id, quantity):
 			_show_loot_toast("+ %s x%d" % [item_id, quantity])
 			_play_feedback_sfx("loot_drop")
+
+
+func _on_shortcut_pressed(_slot_number: int, item_id: String) -> void:
+	if item_id == "apple":
+		_use_apple()
+
+
+func _use_apple() -> bool:
+	if inventory == null or not inventory.has_method("quantity") or inventory.quantity("apple") <= 0:
+		_show_loot_toast("No apple")
+		return false
+	if player_life >= player_max_life:
+		_show_loot_toast("Life is full")
+		return false
+	if not inventory.has_method("consume_item") or not inventory.consume_item("apple", 1):
+		_show_loot_toast("No apple")
+		return false
+	var before := player_life
+	player_life = mini(player_max_life, player_life + APPLE_HEAL_AMOUNT)
+	_update_combat_ui()
+	if _hud and _hud.has_method("set_inventory_model"):
+		_hud.set_inventory_model(_inventory_model_for_hud())
+	_show_loot_toast("Used apple +%d Life" % [player_life - before])
+	return true
+
+
+func _drop_succeeds(drop: Dictionary, roll: int = -1) -> bool:
+	var denominator := int(drop.get("chance_denominator", 1))
+	var numerator := int(drop.get("chance_numerator", denominator))
+	if denominator <= 1:
+		return true
+	numerator = clampi(numerator, 0, denominator)
+	if numerator <= 0:
+		return false
+	var resolved_roll := roll if roll > 0 else forced_drop_roll
+	if resolved_roll <= 0:
+		resolved_roll = _drop_rng.randi_range(1, denominator)
+	return resolved_roll <= numerator
 
 
 func _on_npc_interacted(npc: NpcController) -> void:

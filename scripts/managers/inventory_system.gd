@@ -13,7 +13,7 @@ func _exit_tree() -> void:
 
 
 func reset() -> void:
-	_inventory.item_counts.clear()
+	_inventory.reset()
 
 
 func model():
@@ -26,6 +26,10 @@ func add_item(item_id: String, amount: int = 1) -> bool:
 
 func quantity(item_id: String) -> int:
 	return _inventory.quantity(item_id)
+
+
+func consume_item(item_id: String, amount: int = 1) -> bool:
+	return _inventory.consume_item(item_id, amount)
 
 
 func summary_text() -> String:

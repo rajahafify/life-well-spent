@@ -44,6 +44,10 @@ func test_show_inventory_renders_empty_state() -> void:
 		return
 	window.show_inventory(inventory)
 	assert_true(window.visible)
+	var slots := window.get_node("VBox/SlotList") as VBoxContainer
+	assert_eq("Weapon: wooden_sword", (slots.get_child(0) as Label).text)
+	assert_eq("Armor: cloth_armor", (slots.get_child(1) as Label).text)
+	assert_eq("Consumable: apple", (slots.get_child(2) as Label).text)
 	var list := window.get_node("VBox/ItemList") as VBoxContainer
 	assert_eq(1, list.get_child_count())
 	assert_eq("No items", (list.get_child(0) as Label).text)

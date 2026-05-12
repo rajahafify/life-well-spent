@@ -35,6 +35,7 @@ func test_shared_hud_has_life_inventory_button_quest_tracker_and_window() -> voi
 		return
 	assert_not_null(hud.get_node_or_null("LifeLabel") as Label)
 	assert_not_null(hud.get_node_or_null("InventoryButton") as Button)
+	assert_not_null(hud.get_node_or_null("ShortcutBar") as HBoxContainer)
 	assert_not_null(hud.get_node_or_null("QuestWindow") as PanelContainer)
 	assert_not_null(hud.get_node_or_null("InventoryWindow") as PanelContainer)
 	assert_eq("Inventory", (hud.get_node("InventoryButton") as Button).text)
@@ -67,3 +68,21 @@ func test_inventory_button_and_i_key_toggle_inventory_window() -> void:
 	event.keycode = KEY_I
 	hud._unhandled_input(event)
 	assert_true(window.visible)
+
+
+func test_shortcut_bar_renders_nine_slots_and_number_keys_emit_slot() -> void:
+	if hud == null or inventory == null:
+		return
+	hud.set_inventory_model(inventory)
+	var bar := hud.get_node("ShortcutBar") as HBoxContainer
+	assert_eq(9, bar.get_child_count())
+	assert_eq("1\napple", (bar.get_child(0) as Label).text)
+	assert_eq("2\n-", (bar.get_child(1) as Label).text)
+	assert_true((bar.get_child(0) as Label).has_theme_stylebox_override("normal"), "Shortcut slots should have a visible border and background")
+	var pressed: Array = []
+	hud.shortcut_pressed.connect(func(slot_number: int, item_id: String): pressed.append([slot_number, item_id]))
+	var event := InputEventKey.new()
+	event.pressed = true
+	event.keycode = KEY_1
+	hud._unhandled_input(event)
+	assert_eq([[1, "apple"]], pressed)

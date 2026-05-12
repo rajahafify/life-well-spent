@@ -1,13 +1,13 @@
-[gd_resource type="SpriteFrames" format=3 uid="uid://5y52l5ssa1i3"]
+[gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" uid="uid://bgxyxa6lrayy" path="res://assets/enemies/Golem/Armored/Golem_Armor_Ability.png" id="1_b55it"]
-[ext_resource type="Texture2D" uid="uid://c8s55x4argttc" path="res://assets/enemies/Golem/Armored/Golem_Armor_AttackA.png" id="2_f0t4j"]
-[ext_resource type="Texture2D" uid="uid://xof0grio0klg" path="res://assets/enemies/Golem/Armored/Golem_Armor_AttackB.png" id="3_x3mar"]
-[ext_resource type="Texture2D" uid="uid://clj56w45hctlk" path="res://assets/enemies/Golem/Armored/Golem_Armor_AttackC.png" id="4_15tem"]
-[ext_resource type="Texture2D" uid="uid://b8k3esg4kml0d" path="res://assets/enemies/Golem/Armored/Golem_Armor_ArmorBreak.png" id="5_lee3u"]
-[ext_resource type="Texture2D" uid="uid://c483nyufpqth8" path="res://assets/enemies/Golem/Armored/Golem_Armor_Hit.png" id="6_cp82y"]
-[ext_resource type="Texture2D" uid="uid://b5jtfjw4c05cf" path="res://assets/enemies/Golem/Armored/Golem_Armor_Idle.png" id="7_yyrr6"]
-[ext_resource type="Texture2D" uid="uid://bmsodv4nmvj30" path="res://assets/enemies/Golem/Armored/Golem_Armor_Run.png" id="8_0556u"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Golem/Armored/Golem_Armor_Ability.png" id="1_b55it"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Golem/Armored/Golem_Armor_AttackA.png" id="2_f0t4j"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Golem/Armored/Golem_Armor_AttackB.png" id="3_x3mar"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Golem/Armored/Golem_Armor_AttackC.png" id="4_15tem"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Golem/Armored/Golem_Armor_ArmorBreak.png" id="5_lee3u"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Golem/Armored/Golem_Armor_Hit.png" id="6_cp82y"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Golem/Armored/Golem_Armor_Idle.png" id="7_yyrr6"]
+[ext_resource type="Texture2D" path="res://assets/enemies/Golem/Armored/Golem_Armor_Run.png" id="8_0556u"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_n1fu4"]
 atlas = ExtResource("1_b55it")
@@ -53,6 +53,10 @@ region = Rect2(64, 128, 64, 64)
 atlas = ExtResource("1_b55it")
 region = Rect2(128, 128, 64, 64)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_fj45u"]
+atlas = ExtResource("1_b55it")
+region = Rect2(192, 128, 64, 64)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_s4p5k"]
 atlas = ExtResource("2_f0t4j")
 region = Rect2(0, 0, 64, 64)
@@ -96,6 +100,10 @@ region = Rect2(64, 128, 64, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_fqnjy"]
 atlas = ExtResource("2_f0t4j")
 region = Rect2(128, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8kjrh"]
+atlas = ExtResource("2_f0t4j")
+region = Rect2(192, 128, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wcnra"]
 atlas = ExtResource("3_x3mar")
@@ -169,6 +177,14 @@ region = Rect2(0, 128, 64, 64)
 atlas = ExtResource("4_15tem")
 region = Rect2(64, 128, 64, 64)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_s66c0"]
+atlas = ExtResource("4_15tem")
+region = Rect2(128, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fqas4"]
+atlas = ExtResource("4_15tem")
+region = Rect2(192, 128, 64, 64)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_jw2hi"]
 atlas = ExtResource("5_lee3u")
 region = Rect2(0, 0, 64, 64)
@@ -193,6 +209,14 @@ region = Rect2(0, 64, 64, 64)
 atlas = ExtResource("5_lee3u")
 region = Rect2(64, 64, 64, 64)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_40nje"]
+atlas = ExtResource("5_lee3u")
+region = Rect2(128, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d6kr6"]
+atlas = ExtResource("5_lee3u")
+region = Rect2(192, 64, 64, 64)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_ck524"]
 atlas = ExtResource("6_cp82y")
 region = Rect2(0, 0, 64, 64)
@@ -212,6 +236,18 @@ region = Rect2(192, 0, 64, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_tj3yq"]
 atlas = ExtResource("6_cp82y")
 region = Rect2(0, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_acwkv"]
+atlas = ExtResource("6_cp82y")
+region = Rect2(64, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c1hyw"]
+atlas = ExtResource("6_cp82y")
+region = Rect2(128, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k12pa"]
+atlas = ExtResource("6_cp82y")
+region = Rect2(192, 64, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_m0qf4"]
 atlas = ExtResource("7_yyrr6")
@@ -280,6 +316,9 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_0ix06")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fj45u")
 }],
 "loop": false,
 "name": &"ability",
@@ -318,6 +357,9 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_fqnjy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8kjrh")
 }],
 "loop": false,
 "name": &"attack_a",
@@ -382,6 +424,12 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_djxuf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s66c0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fqas4")
 }],
 "loop": false,
 "name": &"attack_c",
@@ -405,6 +453,12 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_ad3n5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_40nje")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d6kr6")
 }],
 "loop": false,
 "name": &"death",
@@ -425,6 +479,15 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_tj3yq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_acwkv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c1hyw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k12pa")
 }],
 "loop": false,
 "name": &"hit",
