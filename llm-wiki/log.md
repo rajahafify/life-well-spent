@@ -547,3 +547,23 @@
 - Moved the Town gateway, default spawn, and player start to the current north road center at `Vector2(1552, 64)` / `Vector2(1552, 160)`.
 - Centered the Forest gateway and Forest Guard on the southeast road at `Vector2(2768, 2112)` / `Vector2(2768, 2000)`.
 - Validation: Field scene specs `22 tests, 22 passed, 0 failed`.
+
+## [2026-05-12] docs | Refresh Field prototype tracker
+
+- Updated `prototype/components/Field.md` to reflect the current imported Tiny Town Field implementation, expanded `96x68` map, `C-` render/collision layer rule, Slime/Bat/Rat runtime enemies, portal coordinates, and remaining open work.
+- Documentation-only change; no runtime validation required.
+
+## [2026-05-12] feat | Add game-wide enemy spawn system
+
+- RED: added `tests/specs/enemy_spawn_system_test.gd` for biome max-active caps, defeated-slot timers, serialization, and autoload registration.
+- Added pure `EnemySpawnSystem` and game-wide `EnemySpawnManager` autoload with 60 second respawn delay support and runtime persistence.
+- Updated Field to register grassland enemy slots through `EnemySpawnManager`, spawn active slots only, and mark defeated slots globally.
+- Updated Field docs and enemy spawn wiki docs.
+- Validation: `EnemySpawnSystem` specs `5 tests, 5 passed`; Field scene specs `23 tests, 23 passed`.
+
+## [2026-05-12] fix | Poll Field enemy respawns while loaded
+
+- RED: added Field scene coverage for a defeated enemy respawning after the global 60 second timer while the player remains in Field.
+- Added `_tick_enemy_spawns()` to poll `EnemySpawnManager` once per second and fill eligible missing slots up to the biome cap.
+- Updated Field and enemy spawn docs.
+- Validation: Field scene specs `24 tests, 24 passed`; EnemySpawnSystem specs `5 tests, 5 passed`.

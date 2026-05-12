@@ -12,6 +12,7 @@
 | [architecture/combat-system](architecture/combat-system.md) | reference | 2026-05-12 | Pure Field combat rules for enemy HP, current Life damage, Max Life pressure, defeat, and XP hooks. |
 | [architecture/enemy-sprite-metadata](architecture/enemy-sprite-metadata.md) | reference | 2026-05-12 | RO-ish sprite/action metadata pipeline for enemy animation strips; V1 covers Spiked Slime. |
 | [architecture/enemy-behavior-system](architecture/enemy-behavior-system.md) | reference | 2026-05-12 | Runtime enemy definitions/states, Slime/Bat/Rat stats, random spawn zones, and idle/wander/chase/attack/die behavior. |
+| [architecture/enemy-spawn-system](architecture/enemy-spawn-system.md) | reference | 2026-05-12 | Game-wide persistent enemy spawn slots, biome max-active caps, and respawn timers across scene changes. |
 | [architecture/npc-placement](architecture/npc-placement.md) | reference | 2026-05-11 | Stable NPC map placement data, including Forest Guard gateway blocking. |
 | [architecture/biome-definition](architecture/biome-definition.md) | reference | 2026-05-12 | Field grassland palette, Slime/Bat/Rat enemy pool, props, and biome filters. |
 | [architecture/quest-manager](architecture/quest-manager.md) | concept | 2026-05-11 | Quest catalog, multi-quest tracking, free acceptance, completion HP cost. |

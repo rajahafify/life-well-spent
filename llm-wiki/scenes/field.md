@@ -66,7 +66,8 @@ Legacy primitive Field art nodes (`Ground`, `Paths`, `ForestEdge`, and `Props`) 
 - handles far-click Guard approach before dialog
 - direct Town gateway request to `res://scenes/town_scene.tscn`, with the scene-tree change deferred outside the physics callback
 - blocks Forest gateway at the southeast road end and opens Guard warning
-- samples initial enemy positions from `SpawnZones/Grassland`, rejecting points inside `FieldCollision`
+- registers Field grassland enemy spawn slots with `EnemySpawnManager`
+- samples active enemy positions from `SpawnZones/Grassland`, rejecting points inside `FieldCollision`
 - spawns five Slimes, two Bats, and two Rats from `EnemyDefinition.for_id()`
 - routes enemy click to player approach + auto-attack
 - ticks enemy behavior: idle/wander/chase/attack/die, then rejects enemy movement that would enter `FieldCollision`
@@ -87,8 +88,10 @@ Current Field combat scope is five Slimes, two Bats, and two Rats.
 - First player hit aggros the enemy.
 - Aggro enemy chases if player moves away.
 - Enemy attacks current Life on its attack interval.
-- Enemy death plays `death`, waits `death_duration`, removes the node, and awards XP.
+- Enemy death plays `death`, waits `death_duration`, removes the node, awards XP, and marks the persistent spawn slot defeated.
 - Initial spawn positions are random inside `SpawnZones/Grassland`, avoiding Player, Town portal, Forest Guard, imported collision blockers, and nearby enemy overlap.
+- Defeated enemy slots do not respawn on portal changes; they become available after the global 60 second respawn timer.
+- Field polls the spawn manager once per second while loaded and respawns eligible missing slots without requiring a portal change.
 
 ## Test Coverage
 
@@ -104,3 +107,4 @@ Current validation: `250 tests, 250 passed, 0 failed`; Godot MCP main-scene play
 - `llm-wiki/assets/tiny-town-map-import.md`
 - `llm-wiki/architecture/gateway-definition.md`
 - `llm-wiki/architecture/enemy-behavior-system.md`
+- `llm-wiki/architecture/enemy-spawn-system.md`

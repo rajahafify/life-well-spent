@@ -4,11 +4,27 @@
 
 Field is the first area outside Town. It is not a dungeon yet; it is the old beginner field where new adventurers once learned courage. The Demon King is gone, but the grasslands still have small dangers, quiet roads, and the first blocked path toward the Forest.
 
-Player enters Field from Town through a glowing portal. First Field slice should teach movement outside safety, show harmless-to-mild enemies, reveal the Forest path, and introduce the Forest Guard as a narrative gate.
+Player enters Field from Town through a glowing portal. The current Field slice teaches movement outside safety, shows mild enemies, reveals the Forest path, and introduces the Forest Guard as a narrative gate.
+
+## Current Status
+
+Field is implemented on branch `prototype/field`.
+
+- Scene: `scenes/field.tscn`
+- Controller: `scripts/controllers/field.gd`
+- Root: `Field`
+- Controller class: `class_name Field`
+- Map source: `D:\godot\kenney_tiny-town\field.tmj`
+- Imported visual scene: `scenes/maps/field_map.tscn`
+- Imported collision scene: `scenes/maps/field_collision.tscn`
+- Latest Field validation: `22 tests, 22 passed`
+- Latest committed Field work: `8a5925c Import expanded field map`
+
+The current map is an imported Tiny Town Tiled map, not primitive art. It is `96x68` tiles at `32x32` pixels.
 
 ## Start Prompt
 
-Field may open with a small objective banner:
+Field opens with:
 
 ```text
 Objective: Find the Forest path.
@@ -22,7 +38,7 @@ Gentle adventure.
 - Beginner danger.
 - Old roads partly reclaimed by nature.
 - Field feels safe enough to explore, but not fully harmless.
-- Forest edge hints at larger unknown world.
+- Forest edge hints at a larger unknown world.
 
 Key feeling:
 
@@ -40,85 +56,109 @@ Small dangers still teach first lessons.
 - Block Forest with Guard.
 - Send player back to Town with Swordsman Guild certification requirement.
 
-## EnemySystem Slice
+## Map And Collision
 
-Field currently implements the first enemy/combat slice with one visible Slime.
+Field uses a layered Tiled map imported into native Godot scenes.
 
-Current implementation:
+Current Tiled layers include:
 
-- One Slime spawned under `Enemies/Slime` from catalog id `slime_spiked`.
-- Simple text UI: `Life: x/y` and `Slime: x/y`.
-- Clicking Slime engages it and moves Player toward it.
-- Player auto-attacks while in range.
-- Aggro Slime chases Player if Player moves away.
-- Slime attacks current Life on its attack interval.
-- Slime HP <= 0 removes Slime and grants XP once.
+- `Ground`
+- `Paths`
+- `Props`
+- `Bushes`
+- `C-Trees`
+- `C-Fence`
 
-Future purpose:
+Import rules:
 
-- Add Bat/Rat placements.
-- Add item drops.
-- Trigger `forest_gate_seen` for Town Swordsman Guild quest unlock.
+- Visual map generation renders normal visual layers.
+- Layers whose names start with `C-` are both renderable and collidable.
+- Collision generation merges solid `C-` tiles into larger `StaticBody2D` blocker rectangles.
+- The previous visible `ForestBlocker` node was removed; imported `FieldCollision` owns map blockers.
 
-## Naming Decision
-
-- Terminology is **Field**, not Starter Area.
-- Scene file should be `scenes/field.tscn`.
-- Root node should be `Field`.
-- Controller script should be `scripts/controllers/field.gd`.
-- Controller class should be `class_name Field`.
-- Town portal text/target changed from `Starter Area` to `Field`.
-- No `FieldModel` yet. Field-specific pure rules live in combat, enemy, gateway, respawn, NPC placement, and biome models.
+Current generated collision includes blockers from `C-Trees` and `C-Fence`.
 
 ## Layout
 
+The current Field is an expanded single map.
+
 ```text
-┌──────────────────────────────────────────────┐
-│                         Forest Edge          │
-│               dark trees / blocked path      │
-│                         [Forest Guard]       │
-│                              ▲               │
-│                              │               │
-│        [Bat]            Forest Path          │
-│                                              │
-│                  Grass / field               │
-│                                              │
-│   [Slime]                         [Rat]      │
-│                                              │
-│                                              │
-│           [Player Spawn]                     │
-│                                              │
-│ [Town Portal]                                │
-└──────────────────────────────────────────────┘
+          [Town Gateway]
+               |
+               |
+        north-south road
+               |
+        open grassland field
+        enemies spread around
+               |
+               +----------------------.
+                                      |
+                                      v
+                         [Forest Guard]
+                         [Forest Gateway]
 ```
+
+Important coordinates in `scenes/field.tscn`:
+
+- Town gateway: `Vector2(1552, 64)`
+- Field spawn from Town: `Vector2(1552, 160)`
+- Forest gateway: `Vector2(2768, 2112)`
+- Forest Guard: `Vector2(2768, 2000)`
+- Enemy spawn zone: `Rect2(Vector2(380, 300), Vector2(2480, 1640))`
 
 ## Functional Zones
 
-### Bottom Left — Town Portal
+### North Road - Town Gateway
 
 Return portal back to Town. This is the safe exit.
 
 Entering the Town Gateway transitions directly back to Town.
 
-### Lower Center — Player Spawn
+### North Road Spawn
 
-Player appears here when entering from Town.
+Player appears just south of the Town gateway when entering Field from Town, far enough away to avoid immediately retriggering the portal.
 
-### Middle — Beginner Field
+### Open Field
 
 Open movement/combat playground with small enemies spread apart.
 
-### Top / Top Right — Forest Edge
-
-Darker tree line and blocked path. Forest is not playable in prototype.
-
-### Forest Gate — Guard Blocker
+### Southeast Road - Forest Gate
 
 Forest Guard stands near the blocked Forest path. He blocks progression and points player back to Swordsman Guild.
 
+## Enemy System Slice
+
+Field currently implements a real enemy/combat slice through `CombatSystem`, `EnemyDefinition`, `EnemyState`, and `EnemyBehaviorSystem`.
+
+Current runtime enemies:
+
+- Five Slimes from catalog id `slime_spiked`.
+- Two Bats from catalog id `bat`.
+- Two Rats from catalog id `rat`.
+
+Current combat behavior:
+
+- Simple text UI: `Life: x/y` and `Slime: x/y`.
+- Clicking an enemy engages it and moves Player toward attack range.
+- Player auto-attacks while in range.
+- First player hit aggros the enemy.
+- Aggro enemy chases Player if Player moves away.
+- Enemy attacks current Life on its attack interval.
+- Enemy HP `<= 0` plays death, removes the enemy after its death duration, and grants XP once.
+- Enemy movement and spawn placement reject imported `FieldCollision` blockers.
+- Field registers persistent spawn slots with `EnemySpawnManager`.
+- Defeated enemy slots stay gone across portal changes and become available after the global 60 second respawn timer.
+- Respawned slots pick a fresh valid random position in `SpawnZones/Grassland`.
+- Field polls the spawn manager while loaded, so eligible enemies respawn after the timer without requiring another portal transition.
+
+Still future:
+
+- Enemy item drops.
+- Field state events for defeated enemies.
+
 ## Field Enemies
 
-All enemies are prototype placeholders with real click-attack combat through `CombatSystem`.
+All Field enemies use real click-attack combat through `CombatSystem`.
 
 ### Slime
 
@@ -135,6 +175,7 @@ Role: mobile aerial starter enemy.
 - Small.
 - Quick-looking.
 - Teaches Field has threats beyond ground blobs.
+- Uses catalog id `bat`.
 
 ### Rat
 
@@ -142,15 +183,17 @@ Role: fast/medium starter enemy.
 
 - Low to ground.
 - Slightly more aggressive than Slime.
+- Uses catalog id `rat`.
 
 ## Forest Guard
 
 NPC: **Forest Guard**
 
-- Male or armored neutral placeholder.
 - Protective, not hostile.
 - Not an antagonist.
 - Blocks Forest because uncertified adventurers die there.
+- Uses clickable NPC interaction, not proximity dialog.
+- Far click makes Player approach before dialog opens.
 
 World aspect: old places still have danger; rebuilding requires responsibility.
 
@@ -174,42 +217,51 @@ Future effect:
 
 ## Objects
 
+Implemented:
+
 - Player
 - Camera
-- HUD or objective banner
+- Objective prompt
+- Life / enemy HP combat text
 - Dialog Panel
-- Slime placeholder
-- Bat placeholder
-- Rat placeholder
+- Imported `FieldMap`
+- Imported `FieldCollision`
+- Slime enemies
+- Bat enemies
+- Rat enemies
 - Forest Guard NPC
-- Forest Edge / dark tree wall
-- Forest Blocker
-- Town Portal
+- Forest Gateway
+- Town Gateway
+
+Removed / replaced:
+
 - Primitive grass field
 - Primitive dirt paths
-- Rocks / bushes / grass patches
+- Primitive props
+- Visible `ForestBlocker` node
 
 ## Devices
 
 - Town Gateway interaction zone.
 - Gateway body-enter transitions directly to Town.
-- Enemy click interaction runs one player attack and possible enemy counterattack.
-- Forest Gate interaction zone.
-- Forest Blocker collision.
+- Enemy click interaction engages target and starts approach/auto-attack.
+- Forest Gateway interaction zone.
+- Imported `FieldCollision` blockers.
 - Forest Guard interaction zone.
 - Dialog Next button advances paged dialog.
 - Dialog close button hides dialog.
 
 ## Field State Read/Write
 
-First Field slice reads:
+Current Field reads:
 
-- current scene/run state only.
+- current scene/runtime state only.
 
-First Field slice writes:
+Current Field writes:
 
 - requested transition to Town.
-- future `forest_gate_seen` when Guard blocks player.
+- current Life damage.
+- XP rewards.
 
 Future Field reads:
 
@@ -222,11 +274,12 @@ Future Field reads:
 Future Field writes:
 
 - enemy defeated events
-- XP rewards
-- current Life damage
 - Forest gate seen flag
+- item drops
 
 ## Verbs
+
+Implemented:
 
 - Move
 - Explore
@@ -234,7 +287,6 @@ Future Field writes:
 - Talk
 - Block
 - Return
-
 - Fight
 - Attack
 - Take Damage
@@ -244,21 +296,23 @@ Future Field writes:
 Future verbs:
 
 - Consume
+- Loot
 
 ## Resources Shown
 
-First Field slice shows:
+Current Field shows:
 
 - objective text
 - Life / Max Life
-- XP
+- Slime HP text
+- XP is awarded internally on enemy death
 
 Future Field may show:
 
 - equipped weapon
 - consumable count
-
-If HUD is deferred, Field must still show player movement, enemy placeholders, Forest Guard, and return portal.
+- item drops
+- broader enemy targeting/status UI
 
 ## Rules
 
@@ -268,16 +322,19 @@ If HUD is deferred, Field must still show player movement, enemy placeholders, F
 - Forest Guard dialog explains certification requirement.
 - Forest Guard is dialog-only in current slice.
 - Field uses the same RO-style movement, camera, NPC, dialog, and portal systems as Town.
+- Enemy movement must respect `FieldCollision`.
+- Enemy spawn placement must avoid Player, Town portal, Forest Guard, nearby enemies, and imported collision blockers.
+- Tiled layers beginning with `C-` are renderable and collidable.
 
 Future rules:
 
-- Expanded EnemySystem adds Bat/Rat, respawn, drops, and richer feedback.
 - Forest Guard sets `forest_gate_seen = true`.
 - Forest remains inaccessible until future slice.
+- Respawn/drop rules keep Field populated and rewarding.
 
 ## Conditions
 
-First Field slice:
+Current Field slice:
 
 - On scene start: show objective prompt.
 - On ground click while dialog is closed: route Player movement to `CharacterMovement`.
@@ -286,14 +343,17 @@ First Field slice:
 - On far Forest Guard click: Player walks toward Guard talk point, dialog remains closed.
 - On pending Forest Guard reaching talk range: Player stops, faces Guard, Guard faces Player, paged dialog opens.
 - On Town Gateway body entered by Player: record `res://scenes/town_scene.tscn` and transition directly.
-- On Slime click: Player targets Slime, moves into range, and auto-attacks.
-- On Slime aggro: Slime chases Player until attack range.
-- On Slime attack interval: Slime damages current Life.
-- On Slime HP <= 0: Slime dies, is removed, and grants XP once.
+- On enemy click: Player targets enemy, moves into range, and auto-attacks.
+- On first player hit: enemy aggros.
+- On aggro: enemy chases Player until attack range.
+- On enemy attack interval: enemy damages current Life.
+- On enemy HP `<= 0`: enemy dies, is removed after death animation timing, and grants XP once.
+- On enemy movement into collision: movement is rejected.
+- On Forest Gateway body entered by Player: scene transition remains blocked and Guard warning opens.
 
 Future conditions:
 
-- If player approaches Forest Gate and `swordsman_guild_unlocked = false`: Guard blocks path and explains certification requirement.
+- If player approaches Forest Gate and `swordsman_guild_unlocked = false`: Guard blocks path and sets `forest_gate_seen`.
 - If player approaches Forest Gate after future unlock: behavior TBD.
 
 ## Permissions
@@ -303,95 +363,89 @@ Player can:
 - move by clicking ground if no dialog/game over open
 - talk to Forest Guard
 - return to Town through glowing gateway
+- click enemies to fight
 
 Player cannot:
 
-- enter Forest in first slice
+- enter Forest in current prototype
 - unlock Swordsman Guild directly from Field
 
-## Primitive / SVG Art Direction
+## Art Direction
 
-Field uses primitive/SVG world art plus generated LPC character sprites.
+Field now uses Kenney Tiny Town tile art imported from Tiled.
 
-- Ground: bright green `ColorRect`/primitive plane.
-- Paths: brown strips from Town portal to Forest edge.
-- Grass patches: simple green circles/polygons.
-- Rocks: gray circles/polygons.
-- Bushes: darker green circles/polygons.
-- Forest Edge: dark green tree wall / dense shape cluster.
-- Forest Blocker: barricade rectangles or dark collision line.
-- Town Portal: warm/blue portal with `Town` label.
-- Slime uses cataloged enemy sprite asset `slime_spiked`; Bat/Rat are cataloged for future placement.
-- Forest Guard: generated LPC or reused guard placeholder sprite.
-- Interactable zones: faint yellow rings.
-- HUD/dialog: same Town dialog styling.
-- World primitive `Control` nodes use `mouse_filter = ignore` so ground clicks reach Field movement.
+- Ground/path/props/trees/fences come from `field.tmj`.
+- `C-Trees` and `C-Fence` are visible and collidable.
+- Town portal remains a gameplay portal visual with `mouse_filter = ignore`.
+- Slime uses cataloged enemy sprite asset `slime_spiked`.
+- Bat uses cataloged enemy sprite asset `bat`.
+- Rat uses cataloged enemy sprite asset `rat`.
+- Forest Guard uses `assets/npcs/forest_guard.png`.
+- HUD/dialog uses the same Town dialog styling.
 
 Color language:
 
-- Field = bright grass green / dirt brown.
-- Forest Edge = dark green / blue shadow.
-- Interactable = yellow.
-- Danger/blocked = red or dark gray.
-- Portal = blue/green glow.
+- Field = bright grass green / dirt road.
+- Forest edge = dense tree boundary.
+- Interactable = portal/area affordances.
 - XP = gold.
 
-## First Slice Non-Goals
+## Current Non-Goals
 
-- No Bat/Rat runtime placement yet.
 - No enemy drops.
-- No inventory use.
+- No inventory use in Field.
 - No playable Forest.
 - No Swordsman Guild quest chain.
-- No permanent state change until Guard flag is implemented.
+- No permanent `forest_gate_seen` state change yet.
+- No drop/inventory rewards yet.
 
 ## Deliverables
 
 ### Documentation
 
 - `prototype/components/Field.md` is the Field source of truth.
-- Field terminology replaces Starter Area in docs and UI.
-- Field first-slice scope and non-goals are documented here.
+- `llm-wiki/scenes/field.md` records implementation details.
+- `llm-wiki/assets/tiny-town-map-import.md` records Tiny Town import workflow.
 
 ### Spec
 
-RED specs cover root naming, controller class naming, player/camera, return gateway, enemy placeholders/combat, Forest Guard, Forest blocker, dialog copy, and objective prompt.
+`tests/specs/field_scene_test.gd` covers root naming, controller class naming, player/camera, generated map/collision, portal placement, enemy combat, Forest Guard, dialog copy, and objective prompt.
 
 ### Scene
 
-- Create `scenes/field.tscn`.
-- Root node should be named `Field`.
-- Scene should contain Player, Camera, UI, Field enemies, Forest Guard, Forest blocker, and Town Portal.
+- `scenes/field.tscn` exists.
+- Root node is named `Field`.
+- Scene contains Player, Camera, UI, generated Field map/collision, Field enemies, Forest Guard, Forest Gateway, and Town Gateway.
 
 ### Script
 
-- Create `scripts/controllers/field.gd`.
-- Script should expose `class_name Field`.
+- `scripts/controllers/field.gd` exists.
+- Script exposes `class_name Field`.
 - No `FieldModel` yet.
 
-### First-Slice Acceptance
+### Current Acceptance
 
 Player can:
 
 1. Spawn in Field.
 2. Read objective prompt.
 3. Move around Field.
-4. See Slime.
-5. Click Slime to start approach + auto-attack.
-6. See Slime chase and attack back against Life.
-7. Kill Slime and see it removed.
-8. See Forest Edge and blocked Forest path.
+4. See Slime, Bat, and Rat enemies.
+5. Click an enemy to start approach + auto-attack.
+6. See enemy chase and attack back against Life.
+7. Kill an enemy and see it removed after death timing.
+8. See Forest edge and blocked Forest path.
 9. Talk to Forest Guard.
 10. Use portal to request Town transition.
 
-## First Slice
+## First Slice Flow
 
 1. Enter Field from Town portal.
 2. Show objective prompt: `Objective: Find the Forest path.`
 3. Click ground to move around Field; camera follows Player.
-4. See Slime, Forest Edge, Forest Guard, and Town Portal in 1080p viewport.
-5. Click Slime; Player approaches and auto-attacks in range.
-6. Slime aggros, chases if Player moves, attacks current Life, then dies/removes at HP <= 0.
+4. See enemies, Forest edge, Forest Guard, and Town Portal.
+5. Click enemy; Player approaches and auto-attacks in range.
+6. Enemy aggros after first hit, chases if Player moves, attacks current Life, then dies/removes at HP `<= 0`.
 7. Click Forest Guard from far away; Player approaches before dialog opens.
 8. Talk to Forest Guard for paged certification warning dialog.
 9. Use `Next` to advance dialog pages; use `Close` to exit dialog.
@@ -400,27 +454,36 @@ Player can:
 
 ## Tests
 
-- [ ] Field scene loads.
-- [ ] Field scene root is named `Field`.
-- [ ] Field script class is `Field`.
-- [ ] Player spawns lower center.
-- [ ] Camera exists and follows Player.
-- [ ] Town Portal exists.
-- [ ] Objective prompt displays on scene start.
-- [ ] Enemy container exists with Slime.
-- [ ] Simple Life and Slime HP text exists.
-- [ ] Clicking Slime engages Player target and movement.
-- [ ] Player auto-attack damages Slime.
-- [ ] Slime attacks current Life.
-- [ ] Aggro Slime chases Player when Player moves away.
-- [ ] Slime HP <= 0 removes Slime and grants XP.
-- [ ] Forest Edge exists.
-- [ ] Forest Blocker exists.
-- [ ] Forest Guard NPC exists.
-- [ ] Forest Guard dialog matches first-slice warning text.
-- [ ] Forest Guard dialog is paged.
-- [ ] Far Forest Guard click moves Player toward Guard without opening dialog immediately.
-- [ ] Pending Guard dialog opens when Player reaches talk range.
-- [ ] Player entering Town Gateway records Town target path directly.
-- [ ] Field controller exposes no stale enemy attack API.
-- [ ] World primitives ignore mouse input so ground click-to-move works.
+- [x] Field scene loads.
+- [x] Field scene root is named `Field`.
+- [x] Field script class is `Field`.
+- [x] Player spawns near the Town gateway on the north road.
+- [x] Camera exists and follows Player.
+- [x] Town Portal exists.
+- [x] Objective prompt displays on scene start.
+- [x] Generated `FieldMap` is instanced.
+- [x] Generated `FieldCollision` is instanced.
+- [x] `C-` map layers render and generate collision through the importer.
+- [x] Enemy container exists with Slime, Bat, and Rat enemies.
+- [x] Simple Life and Slime HP text exists.
+- [x] Clicking enemy engages Player target and movement.
+- [x] Player auto-attack damages enemy.
+- [x] Enemy attacks current Life.
+- [x] Aggro enemy chases Player when Player moves away.
+- [x] Enemy HP `<= 0` removes enemy and grants XP.
+- [x] Enemy movement rejects `FieldCollision` blockers.
+- [x] Defeated enemies stay gone across portal changes until their global respawn timer expires.
+- [x] Eligible enemies respawn while Field remains loaded.
+- [x] Forest edge exists through imported `C-Trees`.
+- [x] Forest blocker behavior exists through imported `FieldCollision`.
+- [x] Forest Guard NPC exists.
+- [x] Forest Guard dialog matches first-slice warning text.
+- [x] Forest Guard dialog is paged.
+- [x] Far Forest Guard click moves Player toward Guard without opening dialog immediately.
+- [x] Pending Guard dialog opens when Player reaches talk range.
+- [x] Player entering Town Gateway records Town target path directly.
+- [x] World primitive art nodes are removed/replaced by imported map art.
+- [ ] `forest_gate_seen` is set by the Forest Guard / Forest Gateway flow.
+- [ ] Swordsman Guild quest unlocks from `forest_gate_seen`.
+- [ ] Enemy drops exist.
+- [ ] Inventory/consume behavior exists in Field.

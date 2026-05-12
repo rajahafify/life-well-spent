@@ -12,6 +12,11 @@ const ENEMY_STATE_SCRIPT := preload("res://scripts/models/enemy_state.gd")
 const ENEMY_BEHAVIOR_SCRIPT := preload("res://scripts/models/enemy_behavior_system.gd")
 const COMBAT_SCRIPT := preload("res://scripts/models/combat_system.gd")
 const ENEMY_COLLISION_RADIUS := 28.0
+const FIELD_MAP_ID := "field"
+const FIELD_BIOME_ID := "grassland"
+const FIELD_MAX_ACTIVE_ENEMIES := 9
+const FIELD_RESPAWN_DELAY := 60.0
+const ENEMY_SPAWN_POLL_INTERVAL := 1.0
 
 @onready var _dialog_view: TownDialogView = $UI/DialogPanel
 @onready var _objective_prompt: Label = $UI/ObjectivePrompt
@@ -32,6 +37,8 @@ var player_target_enemy_instance_id: String = ""
 var enemy_states: Dictionary = {}
 var enemy_views: Dictionary = {}
 var enemy_definitions: Dictionary = {}
+var _enemy_spawn_slots: Dictionary = {}
+var _enemy_spawn_poll_timer: float = 0.0
 var _spawn_rng := RandomNumberGenerator.new()
 
 var _pending_npc: NpcController
@@ -44,6 +51,8 @@ var _player_damage_timer: float = 0.0
 
 
 func _ready() -> void:
+	if _is_test_run():
+		EnemySpawnManager.reset()
 	_objective_prompt.text = "Objective: Find the Forest path."
 	_dialog_view.hide_dialog()
 	_connect_dialog()
@@ -53,6 +62,13 @@ func _ready() -> void:
 	_spawn_initial_slime()
 	_update_combat_ui()
 	_update_camera()
+
+
+func _is_test_run() -> bool:
+	for arg in OS.get_cmdline_args():
+		if str(arg).contains("tests/test_runner.tscn"):
+			return true
+	return false
 
 
 func _exit_tree() -> void:
@@ -102,6 +118,7 @@ func _physics_process(delta: float) -> void:
 		_open_dialog(npc)
 	_tick_player_damage_label(delta)
 	_tick_enemies(delta)
+	_tick_enemy_spawns(delta)
 	_tick_player_auto_attack(delta)
 	_update_combat_ui()
 
@@ -168,6 +185,7 @@ func _tick_player_auto_attack(delta: float) -> void:
 		if not state.reward_granted:
 			player_xp += int(result.get("xp_reward", 0))
 			state.reward_granted = true
+			EnemySpawnManager.mark_defeated(state.instance_id)
 		state.behavior_state = "die"
 		state.is_defeated = true
 		_update_enemy_view(state)
@@ -287,11 +305,42 @@ func _spawn_initial_slime() -> void:
 		{"enemy_id": "rat", "id": "field_rat_001", "name": "Rat"},
 		{"enemy_id": "rat", "id": "field_rat_002", "name": "Rat2"},
 	]
-	var occupied: Array[Vector2] = []
+	EnemySpawnManager.register_biome(FIELD_MAP_ID, FIELD_BIOME_ID, FIELD_MAX_ACTIVE_ENEMIES, FIELD_RESPAWN_DELAY)
+	_enemy_spawn_slots.clear()
 	for spawn in spawns:
+		EnemySpawnManager.register_spawn_slot(spawn["id"], FIELD_MAP_ID, FIELD_BIOME_ID, spawn["enemy_id"])
+		_enemy_spawn_slots[spawn["id"]] = spawn
+	_spawn_active_enemy_slots()
+
+
+func _tick_enemy_spawns(delta: float) -> void:
+	_enemy_spawn_poll_timer += delta
+	if _enemy_spawn_poll_timer < ENEMY_SPAWN_POLL_INTERVAL:
+		return
+	_enemy_spawn_poll_timer = 0.0
+	_spawn_active_enemy_slots()
+
+
+func _spawn_active_enemy_slots() -> void:
+	var occupied: Array[Vector2] = _current_enemy_positions()
+	for active_slot in EnemySpawnManager.active_spawn_slots(FIELD_MAP_ID, FIELD_BIOME_ID):
+		var slot_id := str(active_slot.get("slot_id", ""))
+		if enemy_states.has(slot_id):
+			continue
+		var spawn: Dictionary = _enemy_spawn_slots.get(slot_id, {})
+		if spawn.is_empty():
+			continue
 		var position := _random_enemy_spawn_position(occupied)
 		occupied.append(position)
 		spawn_enemy(spawn["enemy_id"], position, spawn["id"], spawn["name"])
+
+
+func _current_enemy_positions() -> Array[Vector2]:
+	var occupied: Array[Vector2] = []
+	for view in enemy_views.values():
+		if view is Node2D:
+			occupied.append((view as Node2D).global_position)
+	return occupied
 
 
 func _random_enemy_spawn_position(occupied: Array[Vector2]) -> Vector2:

@@ -171,6 +171,40 @@ func test_field_has_slime_and_simple_life_combat_text() -> void:
 		assert_eq("Slime: 14/14", slime_label.text)
 
 
+func test_field_uses_game_wide_enemy_spawn_manager() -> void:
+	var file := FileAccess.open(FIELD_SCRIPT, FileAccess.READ)
+	assert_not_null(file, "Field controller script should exist")
+	if file == null:
+		return
+	var source := file.get_as_text()
+	file.close()
+	assert_true(source.contains("EnemySpawnManager"), "Field should use the game-wide enemy spawn manager")
+	assert_true(source.contains("mark_defeated"), "Field should mark defeated enemy slots globally")
+	assert_true(source.contains("_tick_enemy_spawns"), "Field should poll respawns while the scene remains loaded")
+
+
+func test_field_respawns_enemy_after_global_timer_while_loaded() -> void:
+	if root == null:
+		return
+	var slime := root.get_node_or_null("Enemies/Slime")
+	assert_not_null(slime, "Field should start with Slime")
+	if slime == null:
+		return
+	root.get_node("Player").global_position = Vector2(500, 500)
+	slime.global_position = Vector2(530, 500)
+	root.enemy_states["field_slime_001"].position = slime.global_position
+	root.enemy_states["field_slime_001"].hp = 1
+	root.engage_enemy("field_slime_001")
+	root._physics_process(1.1)
+	root._physics_process(0.8)
+	assert_false(root.enemy_states.has("field_slime_001"))
+	assert_eq(8, root.get_node("Enemies").get_child_count())
+	EnemySpawnManager._process(60.0)
+	root._physics_process(1.0)
+	assert_true(root.enemy_states.has("field_slime_001"))
+	assert_eq(9, root.get_node("Enemies").get_child_count())
+
+
 func test_clicking_slime_engages_and_moves_player_toward_slime() -> void:
 	if root == null:
 		return
