@@ -1,17 +1,19 @@
 @tool
-## SlimeAssetView — focused single-sprite viewer for Spiked Slime animations.
-class_name SlimeAssetView
+## AssetView - focused single-enemy asset preview.
+class_name AssetView
 extends Control
 
 const CATALOG_SCRIPT := preload("res://scripts/models/enemy_sprite_catalog.gd")
 const BUILDER_SCRIPT := preload("res://scripts/views/enemy_sprite_frames_builder.gd")
+const VIEW_ROOT := "Center/Panel/Margin/VBox"
 
-@export var enemy_id: String = "slime_spiked"
-@export var preview_area_size: Vector2 = Vector2(360, 240)
-@export var preview_scale: Vector2 = Vector2(3, 3)
+@export var enemy_id: String = "slime_spiked":
+	set(value):
+		enemy_id = value
+		if is_inside_tree():
+			rebuild_view()
 
 var _sprite_set: Dictionary = {}
-var _sprite: AnimatedSprite2D
 
 
 func _ready() -> void:
@@ -26,78 +28,31 @@ func load_sprite_set() -> Dictionary:
 
 
 func rebuild_view() -> void:
-	_clear_children()
 	_sprite_set = load_sprite_set()
-
-	var scroll := ScrollContainer.new()
-	scroll.name = "Scroll"
-	scroll.anchor_right = 1.0
-	scroll.anchor_bottom = 1.0
-	add_child(scroll)
-
-	var margin := MarginContainer.new()
-	margin.name = "Margin"
-	margin.add_theme_constant_override("margin_left", 16)
-	margin.add_theme_constant_override("margin_top", 16)
-	margin.add_theme_constant_override("margin_right", 16)
-	margin.add_theme_constant_override("margin_bottom", 16)
-	scroll.add_child(margin)
-
-	var vbox := VBoxContainer.new()
-	vbox.name = "VBox"
-	vbox.add_theme_constant_override("separation", 12)
-	margin.add_child(vbox)
-
-	var title := Label.new()
-	title.name = "Title"
-	title.text = "%s Asset View" % str(_sprite_set.get("display_name", enemy_id)).to_upper()
-	title.add_theme_font_size_override("font_size", 34)
-	vbox.add_child(title)
-
-	var summary := Label.new()
-	summary.name = "Summary"
-	summary.text = "Single preview from metadata: %s" % enemy_id
-	summary.add_theme_font_size_override("font_size", 18)
-	vbox.add_child(summary)
-
-	var preview_area := Control.new()
-	preview_area.name = "PreviewArea"
-	preview_area.custom_minimum_size = preview_area_size
-	vbox.add_child(preview_area)
-
-	_sprite = AnimatedSprite2D.new()
-	_sprite.name = "AnimatedSprite2D"
-	_sprite.centered = true
-	_sprite.position = preview_area_size * 0.5
-	_sprite.scale = preview_scale
-	var builder = BUILDER_SCRIPT.new()
-	_sprite.sprite_frames = builder.build(_sprite_set)
-	builder.free()
-	preview_area.add_child(_sprite)
-
-	var buttons := HBoxContainer.new()
-	buttons.name = "AnimationButtons"
-	buttons.add_theme_constant_override("separation", 8)
-	vbox.add_child(buttons)
+	_sync_static_layout()
+	_populate_enemy_selector()
+	_build_sprite_frames()
+	_rebuild_animation_buttons()
 
 	var animations: Dictionary = _sprite_set.get("animations", {})
 	var animation_names := animations.keys()
 	animation_names.sort()
-	for animation_name in animation_names:
-		buttons.add_child(_build_animation_button(animation_name))
-
 	play_animation("idle" if animations.has("idle") else (animation_names[0] if animation_names.size() > 0 else ""))
 
 
+func select_enemy(selected_enemy_id: String) -> void:
+	enemy_id = selected_enemy_id
+	rebuild_view()
+
+
 func play_animation(animation_name: String) -> void:
-	if _sprite == null:
-		_sprite = get_node_or_null("Scroll/Margin/VBox/PreviewArea/AnimatedSprite2D") as AnimatedSprite2D
-	if _sprite == null or _sprite.sprite_frames == null or animation_name == "":
+	var sprite := _sprite_node()
+	if sprite == null or sprite.sprite_frames == null or animation_name == "":
 		return
-	if not _sprite.sprite_frames.has_animation(animation_name):
+	if not sprite.sprite_frames.has_animation(animation_name):
 		return
-	_sprite.animation = animation_name
-	_sprite.play(animation_name)
+	sprite.animation = animation_name
+	sprite.play(animation_name)
 
 
 func frame_count_for_animation(animation_name: String) -> int:
@@ -106,6 +61,64 @@ func frame_count_for_animation(animation_name: String) -> int:
 	var count: int = builder.frame_count_for_animation(sprite_set, animation_name)
 	builder.free()
 	return count
+
+
+func _sync_static_layout() -> void:
+	var title := get_node_or_null(VIEW_ROOT + "/Title") as Label
+	if title:
+		title.text = "%s Asset View" % str(_sprite_set.get("display_name", enemy_id)).to_upper()
+
+	var summary := get_node_or_null(VIEW_ROOT + "/Summary") as Label
+	if summary:
+		summary.text = "Single preview from metadata: %s" % enemy_id
+
+
+func _populate_enemy_selector() -> void:
+	var selector := _selector_node()
+	if selector == null:
+		return
+	if selector.item_selected.is_connected(_on_enemy_selected):
+		selector.item_selected.disconnect(_on_enemy_selected)
+	selector.clear()
+	var catalog = CATALOG_SCRIPT.new()
+	for id in catalog.enemy_ids():
+		var sprite_set: Dictionary = catalog.load_enemy(id)
+		selector.add_item(str(sprite_set.get("display_name", id)))
+		selector.set_item_metadata(selector.item_count - 1, id)
+		if id == enemy_id:
+			selector.select(selector.item_count - 1)
+	catalog.free()
+	selector.item_selected.connect(_on_enemy_selected)
+
+
+func _build_sprite_frames() -> void:
+	var sprite := _sprite_node()
+	if sprite == null:
+		return
+	var builder = BUILDER_SCRIPT.new()
+	sprite.sprite_frames = builder.build(_sprite_set)
+	builder.free()
+
+
+func _rebuild_animation_buttons() -> void:
+	var buttons := _buttons_node()
+	if buttons == null:
+		return
+	for child in buttons.get_children():
+		buttons.remove_child(child)
+		child.free()
+	var animations: Dictionary = _sprite_set.get("animations", {})
+	var animation_names := animations.keys()
+	animation_names.sort()
+	for animation_name in animation_names:
+		buttons.add_child(_build_animation_button(animation_name))
+
+
+func _on_enemy_selected(index: int) -> void:
+	var selector := _selector_node()
+	if selector == null:
+		return
+	select_enemy(str(selector.get_item_metadata(index)))
 
 
 func _build_animation_button(animation_name: String) -> Button:
@@ -117,8 +130,13 @@ func _build_animation_button(animation_name: String) -> Button:
 	return button
 
 
-func _clear_children() -> void:
-	_sprite = null
-	for child in get_children():
-		remove_child(child)
-		child.free()
+func _sprite_node() -> AnimatedSprite2D:
+	return get_node_or_null(VIEW_ROOT + "/PreviewArea/AnimatedSprite2D") as AnimatedSprite2D
+
+
+func _selector_node() -> OptionButton:
+	return get_node_or_null(VIEW_ROOT + "/EnemySelector") as OptionButton
+
+
+func _buttons_node() -> HBoxContainer:
+	return get_node_or_null(VIEW_ROOT + "/AnimationButtons") as HBoxContainer

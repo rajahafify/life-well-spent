@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "enemy_id": "pebble",
+  "display_name": "Pebble",
+  "sprite_frames_resource": "pebble_sprite_frames.tres",
+  "directions": "horizontal_2d",
+  "supports_flip": true,
+  "frame_size": [64, 64],
+  "preview_scale": [2.5, 2.5],
+  "world_scale": [2.0, 2.0],
+  "ground_anchor": [32, 56],
+  "animations": {
+    "idle": { "texture": "Pebble_Idle.png", "fps": 6.0, "loop": true },
+    "run": { "texture": "Pebble_Run.png", "fps": 10.0, "loop": true },
+    "hit": { "texture": "Pebble_Hit.png", "fps": 10.0, "loop": false },
+    "death": { "texture": "Pebble_Death.png", "fps": 10.0, "loop": false }
+  }
+}

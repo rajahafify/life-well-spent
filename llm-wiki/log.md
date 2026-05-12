@@ -349,3 +349,67 @@
 - Added `play_animation(animation_name)` and generated animation buttons for ability/death/hit/idle/jump/run.
 - Updated Slime asset view wiki docs.
 - Validation: `210 tests, 210 passed, 0 failed`.
+
+## [2026-05-12] feat | Import Rat enemy sprite metadata
+
+- RED: added `tests/specs/enemy_sprite_rat_test.gd` for Rat metadata schema, catalog loading, actions, texture path resolution, and validation.
+- Created `assets/enemies/Rat/rat.asset.json` with V1 sprite/action metadata.
+- Registered `rat` in `EnemySpriteCatalog`.
+- Updated asset catalog and enemy sprite metadata wiki docs.
+- Validation: `213 tests, 213 passed, 0 failed`.
+
+## [2026-05-12] feat | Add Rat to asset-view selector
+
+- RED: updated `tests/specs/slime_asset_viewer_test.gd` to require an `EnemySelector`, Rat metadata loading, Rat switching, and selected-enemy animation button rebuilding.
+- Added `EnemySpriteCatalog.enemy_ids()` and registered selector order.
+- Refactored `assets/asset_view.gd` to show an `OptionButton` for Spiked Slime/Rat and rebuild the single-sprite preview when selection changes.
+- Updated Slime asset viewer wiki docs.
+- Validation: `214 tests, 214 passed, 0 failed`.
+
+## [2026-05-12] fix | Center asset-view panel layout
+
+- RED: updated `tests/specs/slime_asset_viewer_test.gd` to require full-rect `Center/Panel/Margin/VBox` and fixed centered panel sizing.
+- Updated `assets/asset_view.gd` to use a root-level full-rect `CenterContainer` + `PanelContainer`, center the VBox content, and use larger panel margins.
+- Updated Slime asset view wiki docs.
+- Validation: `215 tests, 215 passed, 0 failed`.
+
+## [2026-05-12] feat | Add all enemy sprite metadata types
+
+- RED: added `tests/specs/enemy_sprite_catalog_all_test.gd` requiring catalog entries and validation for all imported enemy types.
+- Added V1 metadata for Bat, Crab, Armored Golem, Golem, Pebble, and Skull.
+- Registered all enemy IDs in `EnemySpriteCatalog.enemy_ids()` for asset-view selector use.
+- Updated asset catalog and enemy sprite metadata wiki docs.
+- Validation: `217 tests, 217 passed, 0 failed`.
+
+## [2026-05-12] refactor | Make asset-view nodes editor-visible
+
+- RED: updated `tests/specs/slime_asset_viewer_test.gd` to require saved scene nodes for `EnemySelector`, `PreviewArea/AnimatedSprite2D`, and `AnimationButtons` before runtime setup.
+- Rebuilt `assets/asset-view.tscn` with editor-visible `Center/Panel/Margin/VBox` hierarchy and preview sprite node.
+- Refactored `assets/asset_view.gd` to populate existing scene nodes instead of creating the whole UI dynamically.
+- Updated enemy asset view wiki docs.
+- Validation: `218 tests, 218 passed, 0 failed`.
+
+## [2026-05-12] refactor | Convert asset-view to editor-visible enemy gallery
+
+- RED: updated `tests/specs/slime_asset_viewer_test.gd` to require one saved `AnimatedSprite2D` per catalog enemy with direct `.tres` resource references.
+- Rebuilt `assets/asset-view.tscn` as a scrollable gallery with `SlimeSprite`, `RatSprite`, `BatSprite`, `CrabSprite`, `ArmoredGolemSprite`, `GolemSprite`, `PebbleSprite`, and `SkullSprite`.
+- Refactored `assets/asset_view.gd` so animation buttons target the selected gallery sprite instead of swapping one runtime preview node.
+- Updated asset catalog and enemy asset view wiki docs.
+- Validation: `220 tests, 220 passed, 0 failed`.
+
+## [2026-05-12] refine | Show one asset-view sprite at a time
+
+- RED: updated `tests/specs/slime_asset_viewer_test.gd` to require only the selected enemy preview to be visible while hidden enemy sprite nodes remain editor-selectable.
+- Updated `assets/asset_view.gd` to toggle preview container visibility from `enemy_id`.
+- Reduced `assets/asset-view.tscn` back to a compact single-preview panel while preserving all per-enemy `AnimatedSprite2D` nodes and `.tres` references.
+- Updated asset catalog and enemy asset view wiki docs.
+- Validation: `221 tests, 221 passed, 0 failed`.
+
+## [2026-05-12] refactor | Split AssetView and AssetGallery
+
+- RED: updated `tests/specs/slime_asset_viewer_test.gd` for `AssetView` root naming and focused single-preview behavior.
+- RED: added `tests/specs/asset_gallery_test.gd` requiring `assets-gallery.tscn` to expose all enemy sprites, direct `.tres` references, and looping idle playback.
+- Renamed `SlimeAssetView` script/root semantics to `AssetView`.
+- Added `assets/assets-gallery.tscn` and `assets/asset_gallery.gd` as one root Control for all looping enemy sprite previews.
+- Updated asset catalog, enemy asset tools wiki, wiki index, and enemy sprite metadata docs.
+- Validation: `223 tests, 223 passed, 0 failed`.

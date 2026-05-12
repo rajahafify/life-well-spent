@@ -4,7 +4,18 @@ extends Object
 
 const ENEMY_METADATA := {
 	"slime_spiked": "res://assets/enemies/Slime/slime_spiked.asset.json",
+	"rat": "res://assets/enemies/Rat/rat.asset.json",
+	"bat": "res://assets/enemies/Bat/bat.asset.json",
+	"crab": "res://assets/enemies/Crab/crab.asset.json",
+	"golem_armored": "res://assets/enemies/Golem/Armored/golem_armored.asset.json",
+	"golem": "res://assets/enemies/Golem/No Armor/golem.asset.json",
+	"pebble": "res://assets/enemies/Pebble/pebble.asset.json",
+	"skull": "res://assets/enemies/Skull/skull.asset.json",
 }
+
+
+func enemy_ids() -> Array:
+	return ["slime_spiked", "rat", "bat", "crab", "golem_armored", "golem", "pebble", "skull"]
 
 
 func load_enemy(enemy_id: String) -> Dictionary:
@@ -74,10 +85,13 @@ func _normalize_sprite_set(raw: Dictionary, base_dir: String) -> Dictionary:
 			"loop": bool(anim.get("loop", true)),
 			"offset": _vector2_from_array(anim.get("offset", [0, 0])),
 		}
+	var sprite_frames_file := str(raw.get("sprite_frames_resource", ""))
+	var sprite_frames_path := sprite_frames_file if sprite_frames_file.begins_with("res://") else base_dir.path_join(sprite_frames_file)
 	return {
 		"schema_version": int(raw.get("schema_version", 0)),
 		"enemy_id": str(raw.get("enemy_id", "")),
 		"display_name": str(raw.get("display_name", "")),
+		"sprite_frames_resource": sprite_frames_path,
 		"directions": str(raw.get("directions", "horizontal_2d")),
 		"supports_flip": bool(raw.get("supports_flip", true)),
 		"frame_size": Vector2i(int(frame_array[0]), int(frame_array[1])),

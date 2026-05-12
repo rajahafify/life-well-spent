@@ -82,9 +82,13 @@ New enemy assets use per-animation PNG strips plus preview GIFs. Most animation 
 
 - `assets/assets-viewer.tscn` opens a scrollable gallery of PNG enemy assets.
 - `assets/assets_viewer.gd` scans `res://assets/enemies` recursively.
-- `assets/asset-view.tscn` opens a focused animated **Spiked Slime** viewer.
-- `assets/asset_view.gd` loads `slime_spiked` metadata and builds AnimatedSprite2D previews from Slime animation strips.
-- `assets/enemies/Slime/slime_spiked.asset.json` is the first V1 sprite/action metadata file.
+- `assets/asset-view.tscn` opens a focused single-preview animated enemy viewer.
+- `assets/asset_view.gd` defines `AssetView`, loads selected enemy metadata, and swaps the single preview sprite from the selected enemy `*_sprite_frames.tres`.
+- `assets/assets-gallery.tscn` opens a looping editor-visible SpriteFrames gallery with one saved `AnimatedSprite2D` node per V1 metadata enemy.
+- `assets/asset_gallery.gd` defines `AssetGallery`, one root Control that initializes all gallery sprites and plays their idle loops.
+- V1 metadata enemy IDs: `slime_spiked`, `rat`, `bat`, `crab`, `golem_armored`, `golem`, `pebble`, `skull`.
+- Metadata files exist beside each imported enemy folder: `*.asset.json`.
+- Godot-native `SpriteFrames` resources exist beside each metadata file: `*_sprite_frames.tres`; open `assets-gallery.tscn` and select the matching sprite node, such as `BatSprite`, to tweak FPS/loop in Godot's SpriteFrames editor.
 - GIF previews are cataloged in this document but not shown in the gallery yet.
 
 ## Rebuild Tasks

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "enemy_id": "golem_armored",
+  "display_name": "Armored Golem",
+  "sprite_frames_resource": "golem_armored_sprite_frames.tres",
+  "directions": "horizontal_2d",
+  "supports_flip": true,
+  "frame_size": [64, 64],
+  "preview_scale": [2.5, 2.5],
+  "world_scale": [2.0, 2.0],
+  "ground_anchor": [32, 56],
+  "animations": {
+    "idle": { "texture": "Golem_Armor_Idle.png", "fps": 6.0, "loop": true },
+    "run": { "texture": "Golem_Armor_Run.png", "fps": 10.0, "loop": true },
+    "hit": { "texture": "Golem_Armor_Hit.png", "fps": 10.0, "loop": false },
+    "attack_a": { "texture": "Golem_Armor_AttackA.png", "fps": 12.0, "loop": false },
+    "attack_b": { "texture": "Golem_Armor_AttackB.png", "fps": 12.0, "loop": false },
+    "attack_c": { "texture": "Golem_Armor_AttackC.png", "fps": 12.0, "loop": false },
+    "ability": { "texture": "Golem_Armor_Ability.png", "fps": 10.0, "loop": false },
+    "death": { "texture": "Golem_Armor_ArmorBreak.png", "fps": 10.0, "loop": false }
+  }
+}

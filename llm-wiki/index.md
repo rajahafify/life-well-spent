@@ -17,7 +17,7 @@
 | [architecture/game-balance](architecture/game-balance.md) | reference | 2026-05-11 | Shared pure constants model for quest cost and animation timings. |
 | [assets/lpc-sprite-generator](assets/lpc-sprite-generator.md) | reference | 2026-05-09 | LPC sprite generator tool — prompt-driven character spritesheet pipeline. |
 | [assets/assets-viewer](assets/assets-viewer.md) | reference | 2026-05-11 | In-project gallery scene that recursively displays enemy PNG assets as thumbnails. |
-| [assets/slime-asset-view](assets/slime-asset-view.md) | reference | 2026-05-11 | Focused SLIME asset scene with AnimatedSprite2D previews from 64×64 animation strips. |
+| [assets/slime-asset-view](assets/slime-asset-view.md) | reference | 2026-05-12 | Enemy asset tools: focused AssetView single preview plus looping AssetGallery SpriteFrames editor scene. |
 | [scenes/main-menu](scenes/main-menu.md) | reference | 2026-05-11 | Main menu scene — title, New Game button, Quit button. Transitions to town hub. |
 | [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-12 | Prototype Town scene — reborn prompt, three old institutions, worldbuilding NPC dialog, and deferred direct Field gateway. |
 | [scenes/field](scenes/field.md) | reference | 2026-05-12 | Playable Field reset slice — movement, camera follow, deferred Town gateway, Forest Guard gate, no enemies while EnemySystem is rebuilt. |

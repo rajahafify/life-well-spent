@@ -1,0 +1,232 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://assets/asset_gallery.gd" id="1_asset_gallery"]
+[ext_resource type="SpriteFrames" path="res://assets/enemies/Slime/slime_spiked_sprite_frames.tres" id="2_slime"]
+[ext_resource type="SpriteFrames" path="res://assets/enemies/Rat/rat_sprite_frames.tres" id="3_rat"]
+[ext_resource type="SpriteFrames" path="res://assets/enemies/Bat/bat_sprite_frames.tres" id="4_bat"]
+[ext_resource type="SpriteFrames" path="res://assets/enemies/Crab/crab_sprite_frames.tres" id="5_crab"]
+[ext_resource type="SpriteFrames" path="res://assets/enemies/Golem/Armored/golem_armored_sprite_frames.tres" id="6_golem_armored"]
+[ext_resource type="SpriteFrames" path="res://assets/enemies/Golem/No Armor/golem_sprite_frames.tres" id="7_golem"]
+[ext_resource type="SpriteFrames" path="res://assets/enemies/Pebble/pebble_sprite_frames.tres" id="8_pebble"]
+[ext_resource type="SpriteFrames" path="res://assets/enemies/Skull/skull_sprite_frames.tres" id="9_skull"]
+
+[node name="AssetGallery" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_asset_gallery")
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(980, 720)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "Asset Gallery"
+
+[node name="Summary" type="Label" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Looping editor-visible SpriteFrames previews"
+
+[node name="GalleryScroll" type="ScrollContainer" parent="Center/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(920, 560)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="GalleryGrid" type="GridContainer" parent="Center/Panel/Margin/VBox/GalleryScroll"]
+layout_mode = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
+columns = 4
+
+[node name="SlimePreview" type="VBoxContainer" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid"]
+custom_minimum_size = Vector2(210, 240)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="SlimeLabel" type="Label" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/SlimePreview"]
+layout_mode = 2
+text = "Spiked Slime"
+horizontal_alignment = 1
+
+[node name="SlimeArea" type="Control" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/SlimePreview"]
+custom_minimum_size = Vector2(210, 190)
+layout_mode = 2
+
+[node name="SlimeSprite" type="AnimatedSprite2D" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/SlimePreview/SlimeArea"]
+position = Vector2(105, 100)
+scale = Vector2(2.5, 2.5)
+sprite_frames = ExtResource("2_slime")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="RatPreview" type="VBoxContainer" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid"]
+custom_minimum_size = Vector2(210, 240)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="RatLabel" type="Label" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/RatPreview"]
+layout_mode = 2
+text = "Rat"
+horizontal_alignment = 1
+
+[node name="RatArea" type="Control" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/RatPreview"]
+custom_minimum_size = Vector2(210, 190)
+layout_mode = 2
+
+[node name="RatSprite" type="AnimatedSprite2D" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/RatPreview/RatArea"]
+position = Vector2(105, 100)
+scale = Vector2(2.5, 2.5)
+sprite_frames = ExtResource("3_rat")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="BatPreview" type="VBoxContainer" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid"]
+custom_minimum_size = Vector2(210, 240)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="BatLabel" type="Label" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/BatPreview"]
+layout_mode = 2
+text = "Bat"
+horizontal_alignment = 1
+
+[node name="BatArea" type="Control" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/BatPreview"]
+custom_minimum_size = Vector2(210, 190)
+layout_mode = 2
+
+[node name="BatSprite" type="AnimatedSprite2D" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/BatPreview/BatArea"]
+position = Vector2(105, 100)
+scale = Vector2(2.5, 2.5)
+sprite_frames = ExtResource("4_bat")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="CrabPreview" type="VBoxContainer" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid"]
+custom_minimum_size = Vector2(210, 240)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="CrabLabel" type="Label" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/CrabPreview"]
+layout_mode = 2
+text = "Crab"
+horizontal_alignment = 1
+
+[node name="CrabArea" type="Control" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/CrabPreview"]
+custom_minimum_size = Vector2(210, 190)
+layout_mode = 2
+
+[node name="CrabSprite" type="AnimatedSprite2D" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/CrabPreview/CrabArea"]
+position = Vector2(105, 100)
+scale = Vector2(2.5, 2.5)
+sprite_frames = ExtResource("5_crab")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="ArmoredGolemPreview" type="VBoxContainer" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid"]
+custom_minimum_size = Vector2(210, 240)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ArmoredGolemLabel" type="Label" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/ArmoredGolemPreview"]
+layout_mode = 2
+text = "Armored Golem"
+horizontal_alignment = 1
+
+[node name="ArmoredGolemArea" type="Control" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/ArmoredGolemPreview"]
+custom_minimum_size = Vector2(210, 190)
+layout_mode = 2
+
+[node name="ArmoredGolemSprite" type="AnimatedSprite2D" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/ArmoredGolemPreview/ArmoredGolemArea"]
+position = Vector2(105, 100)
+scale = Vector2(2.5, 2.5)
+sprite_frames = ExtResource("6_golem_armored")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="GolemPreview" type="VBoxContainer" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid"]
+custom_minimum_size = Vector2(210, 240)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="GolemLabel" type="Label" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/GolemPreview"]
+layout_mode = 2
+text = "Golem"
+horizontal_alignment = 1
+
+[node name="GolemArea" type="Control" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/GolemPreview"]
+custom_minimum_size = Vector2(210, 190)
+layout_mode = 2
+
+[node name="GolemSprite" type="AnimatedSprite2D" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/GolemPreview/GolemArea"]
+position = Vector2(105, 100)
+scale = Vector2(2.5, 2.5)
+sprite_frames = ExtResource("7_golem")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="PebblePreview" type="VBoxContainer" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid"]
+custom_minimum_size = Vector2(210, 240)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="PebbleLabel" type="Label" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/PebblePreview"]
+layout_mode = 2
+text = "Pebble"
+horizontal_alignment = 1
+
+[node name="PebbleArea" type="Control" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/PebblePreview"]
+custom_minimum_size = Vector2(210, 190)
+layout_mode = 2
+
+[node name="PebbleSprite" type="AnimatedSprite2D" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/PebblePreview/PebbleArea"]
+position = Vector2(105, 100)
+scale = Vector2(2.5, 2.5)
+sprite_frames = ExtResource("8_pebble")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="SkullPreview" type="VBoxContainer" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid"]
+custom_minimum_size = Vector2(210, 240)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="SkullLabel" type="Label" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/SkullPreview"]
+layout_mode = 2
+text = "Skull"
+horizontal_alignment = 1
+
+[node name="SkullArea" type="Control" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/SkullPreview"]
+custom_minimum_size = Vector2(210, 190)
+layout_mode = 2
+
+[node name="SkullSprite" type="AnimatedSprite2D" parent="Center/Panel/Margin/VBox/GalleryScroll/GalleryGrid/SkullPreview/SkullArea"]
+position = Vector2(105, 100)
+scale = Vector2(2.5, 2.5)
+sprite_frames = ExtResource("9_skull")
+animation = &"idle"
+autoplay = "idle"

@@ -4,6 +4,11 @@ extends Object
 
 
 func build(sprite_set: Dictionary) -> SpriteFrames:
+	var resource_path := str(sprite_set.get("sprite_frames_resource", ""))
+	if resource_path != "" and ResourceLoader.exists(resource_path):
+		var existing := load(resource_path) as SpriteFrames
+		if existing != null:
+			return existing
 	var frames := SpriteFrames.new()
 	if frames.has_animation("default"):
 		frames.remove_animation("default")

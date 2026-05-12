@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "enemy_id": "slime_spiked",
-  "display_name": "Spiked Slime",
-  "sprite_frames_resource": "slime_spiked_sprite_frames.tres",
+  "enemy_id": "rat",
+  "display_name": "Rat",
+  "sprite_frames_resource": "rat_sprite_frames.tres",
   "directions": "horizontal_2d",
   "supports_flip": true,
   "frame_size": [64, 64],
@@ -11,32 +11,32 @@
   "ground_anchor": [32, 56],
   "animations": {
     "idle": {
-      "texture": "Slime_Spiked_Idle.png",
+      "texture": "Rat_Idle.png",
       "fps": 6.0,
       "loop": true
     },
     "run": {
-      "texture": "Slime_Spiked_Run.png",
+      "texture": "Rat_Run.png",
       "fps": 10.0,
       "loop": true
     },
     "hit": {
-      "texture": "Slime_Spiked_Hit.png",
+      "texture": "Rat_Hit.png",
       "fps": 10.0,
       "loop": false
     },
-    "jump": {
-      "texture": "Slime_Spiked_Jump.png",
-      "fps": 10.0,
+    "attack": {
+      "texture": "Rat_Attack.png",
+      "fps": 12.0,
       "loop": false
     },
     "death": {
-      "texture": "Slime_Spiked_Death.png",
+      "texture": "Rat_Death.png",
       "fps": 10.0,
       "loop": false
     },
     "ability": {
-      "texture": "Slime_Spiked_Ability.png",
+      "texture": "Rat_Ability.png",
       "fps": 10.0,
       "loop": false
     }
