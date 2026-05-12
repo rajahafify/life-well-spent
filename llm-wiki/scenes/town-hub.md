@@ -124,6 +124,7 @@ Old roads have a way of calling again.
 - connects worldbuilding NPC `interacted(npc)` signals
 - routes ground clicks to `CharacterMovement` while dialog is closed
 - continues updating the move destination while the left mouse button is held and no dialog is open
+- ignores world movement input while the pointer is over HUD controls
 - follows player with a camera offset for RO-style play
 - blocks click-to-move while dialog is open
 - handles RO-style NPC approach after sprite click: far NPC click moves Player to the NPC talk point, near/in-range sprite click opens dialog
@@ -160,7 +161,7 @@ Tiny Town visual art is imported as `TownMap`, an instanced generated scene from
 - `tests/specs/town_prototype_test.gd` also covers the generated Tiny Town `TownMap` and `TownCollision` instance paths, position, scale, and collision blocker shape.
 - `tests/specs/town_prototype_test.gd` covers the Tiny Town-facing NPC placements: Shopkeeper at `Vector2(512, 1140)`, Guildmaster at `Vector2(960, 450)`, and Smith at `Vector2(1472, 820)`.
 - `tests/specs/town_prototype_test.gd` covers the south-road Field gateway at `Vector2(960, 1320)` and its safe spawn at `Vector2(960, 980)`, far enough to avoid auto-transition.
-- `tests/specs/town_scene_dialog_test.gd` covers startup reborn dialog, no repeated reborn dialog on later Town entry, readable 1080p dialog text, bottom-right dialog buttons, shared HUD, top-right Quest Tracker, NPC face portrait crop above the box, paged NPC dialog, RO-style sprite-click NPC approach, pending dialog open in talk range after click, camera follow, held-mouse destination updates, desynced NPC idle timing, hidden overhead NPC names, first-slice quest buttons hidden, QuestSystem Guildmaster certification prompt, certification Life spend, final Swordsman Guild unlock, click-to-move routing/blocking, dialog close behavior, and direct Field gateway request.
+- `tests/specs/town_scene_dialog_test.gd` covers startup reborn dialog, no repeated reborn dialog on later Town entry, readable 1080p dialog text, bottom-right dialog buttons, shared HUD, HUD pointer blocking for movement, top-right Quest Tracker, NPC face portrait crop above the box, paged NPC dialog, RO-style sprite-click NPC approach, pending dialog open in talk range after click, camera follow, held-mouse destination updates, desynced NPC idle timing, hidden overhead NPC names, first-slice quest buttons hidden, QuestSystem Guildmaster certification prompt, certification Life spend, final Swordsman Guild unlock, click-to-move routing/blocking, dialog close behavior, and direct Field gateway request.
 - `tests/specs/npc_controller_test.gd` and `tests/specs/scene_smoke_test.gd` cover removal of proximity-based NPC dialog triggers.
 - `tests/specs/scene_smoke_test.gd` covers Town dialog smoke behavior.
 

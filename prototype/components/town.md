@@ -281,6 +281,7 @@ First Town slice:
 - On later Town entries: do not replay the reborn copy.
 - On ground click while dialog is closed: route Player movement to `CharacterMovement`.
 - While left mouse is held and dialog is closed: keep updating Player movement destination to the mouse position.
+- While the pointer is over HUD controls: do not route mouse input to Player movement.
 - Camera follows Player with RO-style upward offset.
 - On ground click while dialog is open: block movement.
 - On far NPC click: Player walks toward NPC talk point, dialog remains closed.

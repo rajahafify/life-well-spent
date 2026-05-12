@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-13] fix | Block HUD clicks from player movement
+
+- RED: added SharedHUD, Town, and Field specs for Inventory button pointer blocking world movement.
+- SharedHUD now exposes `blocks_world_mouse_at()` for visible HUD controls.
+- Town and Field now ignore initial and held mouse movement while the pointer is over HUD controls.
+- Validation: full suite `354 tests, 354 passed, 0 failed`.
+
 ## [2026-05-13] style | Stick dialog buttons bottom-right
 
 - RED: added Town and Field scene specs for bottom-right dialog button layout.

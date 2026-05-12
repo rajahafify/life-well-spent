@@ -4,7 +4,7 @@
 
 ## QA Status
 
-- Automated suite: `351 tests, 351 passed, 0 failed`
+- Automated suite: `354 tests, 354 passed, 0 failed`
 - Manual QA: pass for MVP flow
 - Godot warnings/errors: headless suite passes. Current known non-failing output includes existing `assets-gallery.tscn` invalid UID fallback warnings and resource cleanup warnings.
 
@@ -24,7 +24,7 @@ Life Well Spent now has a playable MVP foundation:
 10. Legacy demo scene/controller have been removed; `town_scene.tscn` is the playable MVP flow.
 11. Field is playable with shared HUD, Slime/Bat/Rat combat, drops, respawn polling, Forest Guard gate, and extracted camera/spawn/combat helper controllers.
 12. Swordsman Guild certification is playable from the Guildmaster after the Forest Guard checkpoint, spends Max Life in three quest-completion steps, unlocks `swordsman_guild`, advances the quest objective to `Enter the Forest.`, and changes the Forest Guard and Forest gate to an open Forest path endpoint without reverting the objective.
-13. Town/Field movement supports updating the destination while the left mouse button is held.
+13. Town/Field movement supports updating the destination while the left mouse button is held, except while the pointer is over HUD controls.
 
 ## Architecture
 

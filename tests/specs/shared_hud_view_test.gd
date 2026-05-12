@@ -70,6 +70,16 @@ func test_inventory_button_and_i_key_toggle_inventory_window() -> void:
 	assert_true(window.visible)
 
 
+func test_inventory_button_blocks_world_mouse_input() -> void:
+	if hud == null:
+		return
+	var button := hud.get_node("InventoryButton") as Button
+	var inside := button.position + (button.size * 0.5)
+	var outside := Vector2(button.position.x + button.size.x + 200.0, button.position.y + button.size.y + 200.0)
+	assert_true(hud.blocks_world_mouse_at(inside))
+	assert_false(hud.blocks_world_mouse_at(outside))
+
+
 func test_shortcut_bar_renders_nine_slots_and_number_keys_emit_slot() -> void:
 	if hud == null or inventory == null:
 		return

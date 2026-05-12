@@ -288,6 +288,7 @@ Each system should list:
 
 - If dialog closed and ground clicked: move to target.
 - If dialog open and ground clicked: ignore.
+- If pointer is over HUD controls: ignore world movement input.
 - Each physics tick: camera position = player position + offset.
 
 ---

@@ -273,6 +273,16 @@ func test_town_routes_player_movement_to_character_movement() -> void:
 	assert_true(movement.moving)
 
 
+func test_inventory_button_area_blocks_player_movement() -> void:
+	_close_start_dialog()
+	var button := root.get_node("UI/InventoryButton") as Button
+	var movement: CharacterMovement = root.get_node("Player/Sprite") as CharacterMovement
+	movement._ready()
+	var target := button.position + (button.size * 0.5)
+	assert_false(root.follow_held_mouse(target))
+	assert_false(movement.moving)
+
+
 func test_dialog_blocks_player_movement() -> void:
 	_close_start_dialog()
 	var movement: CharacterMovement = root.get_node("Player/Sprite") as CharacterMovement

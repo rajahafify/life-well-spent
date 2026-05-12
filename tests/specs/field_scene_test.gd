@@ -563,6 +563,17 @@ func test_field_follow_held_mouse_updates_player_destination() -> void:
 	assert_eq(target, movement.destination)
 
 
+func test_inventory_button_area_blocks_player_movement() -> void:
+	if root == null:
+		return
+	var button := root.get_node("UI/InventoryButton") as Button
+	var movement = root.get_node("Player/Sprite")
+	movement._ready()
+	var target := button.position + (button.size * 0.5)
+	assert_false(root.follow_held_mouse(target))
+	assert_false(movement.moving)
+
+
 func test_far_forest_guard_click_moves_player_before_dialog() -> void:
 	if root == null:
 		return

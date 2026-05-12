@@ -165,7 +165,7 @@ func _connect_hud() -> void:
 func _physics_process(delta: float) -> void:
 	_update_camera()
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-		follow_held_mouse(get_global_mouse_position())
+		follow_held_mouse(get_global_mouse_position(), get_viewport().get_mouse_position())
 	if _pending_npc != null and _pending_npc.is_player_in_talk_range(_player.global_position):
 		var npc := _pending_npc
 		_pending_npc = null
@@ -181,6 +181,8 @@ func _physics_process(delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if _hud_blocks_world_mouse(event.position):
+			return
 		stop_auto_attack()
 		move_player_to(get_global_mouse_position())
 
@@ -246,7 +248,10 @@ func move_player_to(target: Vector2) -> bool:
 	return true
 
 
-func follow_held_mouse(target: Vector2) -> bool:
+func follow_held_mouse(target: Vector2, screen_position: Vector2 = Vector2.INF) -> bool:
+	var pointer_position := target if screen_position == Vector2.INF else screen_position
+	if _hud_blocks_world_mouse(pointer_position):
+		return false
 	return move_player_to(target)
 
 
@@ -659,6 +664,10 @@ func _npc_portrait_texture(npc: NpcController) -> Texture2D:
 func _update_quest_window() -> void:
 	if _hud:
 		_hud.show_quest("Explore the World", QuestSystem.current_main_objective_text(), QuestSystem.current_main_checkpoint_text())
+
+
+func _hud_blocks_world_mouse(screen_position: Vector2) -> bool:
+	return _hud != null and _hud.has_method("blocks_world_mouse_at") and _hud.blocks_world_mouse_at(screen_position)
 
 
 func _reach_forest_guard_checkpoint() -> void:

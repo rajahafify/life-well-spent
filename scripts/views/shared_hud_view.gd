@@ -66,6 +66,14 @@ func close_inventory_window() -> void:
 		_inventory_window.visible = false
 
 
+func blocks_world_mouse_at(screen_position: Vector2) -> bool:
+	ensure_ready()
+	for control in [_inventory_button, _inventory_window, _quest_window, _shortcut_bar]:
+		if _visible_control_contains(control, screen_position):
+			return true
+	return false
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if not (event is InputEventKey) or not event.pressed or event.echo:
 		return
@@ -85,6 +93,10 @@ func _connect_inventory_controls() -> void:
 		_inventory_button.pressed.connect(toggle_inventory_window)
 	if _inventory_window and _inventory_window.has_signal("close_requested") and not _inventory_window.close_requested.is_connected(close_inventory_window):
 		_inventory_window.close_requested.connect(close_inventory_window)
+
+
+func _visible_control_contains(control: Control, screen_position: Vector2) -> bool:
+	return control != null and control.visible and control.get_global_rect().has_point(screen_position)
 
 
 func _is_inventory_key(event: InputEventKey) -> bool:
