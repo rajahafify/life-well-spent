@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-12] tune | Slime wander and first-hit aggro
+
+- Changed Slime wander from synchronized rightward movement to per-instance pseudo-random idle timing and wander targets.
+- Disabled default proximity aggro with `aggro_radius = 0.0`; Slime now aggros on first player hit, not on click/target.
+- Updated enemy behavior and Field scene wiki pages.
+- Validation: `239 tests, 239 passed, 0 failed`.
+
 ## [2026-05-12] polish | RO-style Field combat and character asset previews
 
 - Added LPC SpriteFrames builder and wired Player/Forest Guard into AssetView, AssetGallery, and AssetsViewer.

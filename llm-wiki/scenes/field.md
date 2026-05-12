@@ -54,8 +54,9 @@ Current Field combat scope is five Slimes.
 - Slime id: `slime_spiked`
 - UI: simple text `Life: x/y` and `Slime: x/y`
 - RO-style damage numbers appear above Player and Slime.
-- Player click engages Slime and moves toward it.
+- Player click targets Slime and moves toward it without aggroing immediately.
 - Player auto-attacks with LPC `slash` animation while in range.
+- First player hit aggros Slime.
 - Aggro Slime chases if player moves away.
 - Slime attacks current Life on its attack interval.
 - Slime death plays `death`, waits `death_duration`, removes the node, and awards XP.
@@ -64,10 +65,10 @@ Bat/Rat remain target enemies for the later EnemySystem expansion.
 
 ## Test Coverage
 
-- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, Slime spawn/UI, click engage, player auto-attack, Slime Life damage, Slime chase, Slime death removal/XP, Guard dialog, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
+- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, Slime spawn/UI, click targeting without immediate aggro, player auto-attack, first-hit aggro, Slime Life damage, Slime chase, Slime death removal/XP, Guard dialog, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
 - Gateway, NPC placement, biome, movement, enemy behavior, combat, and dialog systems remain covered by their model/scene specs.
 
-Current validation: `237 tests, 237 passed, 0 failed`.
+Current validation: `239 tests, 239 passed, 0 failed`.
 
 ## Related
 

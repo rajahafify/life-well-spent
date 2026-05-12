@@ -11,8 +11,10 @@ extends Resource
 @export var move_speed: float = 45.0
 @export var chase_speed: float = 65.0
 @export var wander_radius: float = 120.0
-@export var aggro_radius: float = 180.0
+@export var aggro_radius: float = 0.0
 @export var attack_range: float = 48.0
+@export var idle_min_time: float = 0.6
+@export var idle_max_time: float = 2.0
 @export var attack_interval: float = 1.4
 @export var death_duration: float = 0.25
 
@@ -41,8 +43,10 @@ static func slime_spiked():
 	enemy.move_speed = 45.0
 	enemy.chase_speed = 65.0
 	enemy.wander_radius = 120.0
-	enemy.aggro_radius = 180.0
+	enemy.aggro_radius = 0.0
 	enemy.attack_range = 48.0
+	enemy.idle_min_time = 0.6
+	enemy.idle_max_time = 2.0
 	enemy.attack_interval = 1.4
 	enemy.death_duration = 0.8
 	return enemy

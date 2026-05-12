@@ -90,6 +90,7 @@ func test_clicking_slime_engages_and_moves_player_toward_slime() -> void:
 	slime.global_position = Vector2(700, 700)
 	root.engage_enemy("field_slime_001")
 	assert_eq("field_slime_001", root.player_target_enemy_instance_id)
+	assert_false(root.enemy_states["field_slime_001"].is_aggro, "targeted Slime should wait until first hit before aggro")
 	assert_true(movement.moving)
 	assert_eq(Vector2(656, 700), movement.destination)
 
@@ -104,6 +105,8 @@ func test_auto_attack_damages_slime_shows_hit_text_and_slime_damages_life() -> v
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.5)
 	assert_true(root.enemy_states["field_slime_001"].hp < 14)
+	assert_true(root.enemy_states["field_slime_001"].is_aggro)
+	root._physics_process(1.5)
 	assert_true(root.player_life < 100)
 	var player_damage_label := root.get_node("Player/DamageLabel") as Label
 	assert_true(player_damage_label.visible)
@@ -135,6 +138,7 @@ func test_aggro_slime_chases_player_when_player_moves_away() -> void:
 	player.global_position = Vector2(500, 500)
 	slime.global_position = Vector2(530, 500)
 	root.engage_enemy("field_slime_001")
+	root._physics_process(1.5)
 	player.global_position = Vector2(760, 500)
 	root._physics_process(0.5)
 	assert_eq("chase", root.enemy_states["field_slime_001"].behavior_state)

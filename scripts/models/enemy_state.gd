@@ -18,6 +18,8 @@ var is_aggro: bool = false
 var is_defeated: bool = false
 var attack_timer: float = 0.0
 var idle_timer: float = 0.0
+var idle_duration: float = 1.0
+var wander_step: int = 0
 var death_timer: float = 0.0
 var reward_granted: bool = false
 
@@ -55,5 +57,12 @@ static func from_definition(instance_id_value: String, definition, spawn_pos: Ve
 	state.spawn_position = spawn_pos
 	state.position = spawn_pos
 	state.target_position = spawn_pos
+	state.idle_duration = _duration_for_instance(instance_id_value, definition)
 	state.behavior_state = "idle"
 	return state
+
+
+static func _duration_for_instance(instance_id_value: String, definition) -> float:
+	var span: float = max(0.0, definition.idle_max_time - definition.idle_min_time)
+	var seed: int = abs(hash(instance_id_value)) % 1000
+	return definition.idle_min_time + span * (float(seed) / 999.0)

@@ -130,9 +130,6 @@ func engage_enemy(instance_id: String) -> void:
 		return
 	player_target_enemy_instance_id = instance_id
 	var state = enemy_states[instance_id]
-	state.is_aggro = true
-	if state.behavior_state != "die":
-		state.behavior_state = "chase"
 	var view := enemy_views.get(instance_id, null) as Node2D
 	if view:
 		move_player_to(_attack_point_for_enemy(view.global_position))
@@ -162,6 +159,9 @@ func _tick_player_auto_attack(delta: float) -> void:
 	movement.play_attack("slash")
 	var result: Dictionary = _combat.player_attack_enemy(_player_combat_dict(), state.to_combat_dict())
 	state.apply_combat_dict(result["enemy_state"])
+	state.is_aggro = true
+	if state.behavior_state != "die":
+		state.behavior_state = "chase"
 	if bool(result.get("enemy_defeated", false)):
 		if not state.reward_granted:
 			player_xp += int(result.get("xp_reward", 0))
