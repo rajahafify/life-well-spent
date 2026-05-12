@@ -178,6 +178,17 @@ func test_field_gateway_body_entered_requests_field_directly() -> void:
 	assert_eq("res://scenes/field.tscn", root.requested_scene_path)
 
 
+func test_field_gateway_defers_scene_change_outside_physics_callback() -> void:
+	var file := FileAccess.open("res://scripts/controllers/town_scene_controller.gd", FileAccess.READ)
+	assert_not_null(file, "Town controller script should exist")
+	if file == null:
+		return
+	var source := file.get_as_text()
+	file.close()
+	assert_true(source.contains("call_deferred(\"_change_scene_to_file\", FIELD_PATH)"))
+	assert_true(source.contains("func _change_scene_to_file(scene_path: String) -> void:"))
+
+
 func test_field_gateway_uses_direct_transition_without_prompt() -> void:
 	assert_null(root.get_node_or_null("UI/PortalChoices"), "direct gateways should not show confirmation choices")
 	assert_null(root.get_node_or_null("UI/PortalPrompt"), "direct gateways should not show confirmation prompt")

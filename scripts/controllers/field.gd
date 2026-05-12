@@ -104,7 +104,11 @@ func _on_forest_gateway_body_entered(body: Node) -> void:
 func request_scene(scene_path: String) -> void:
 	requested_scene_path = scene_path
 	if is_inside_tree():
-		get_tree().change_scene_to_file(scene_path)
+		call_deferred("_change_scene_to_file", scene_path)
+
+
+func _change_scene_to_file(scene_path: String) -> void:
+	get_tree().change_scene_to_file(scene_path)
 
 
 func _update_camera() -> void:

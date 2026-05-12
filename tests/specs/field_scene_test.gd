@@ -172,6 +172,17 @@ func test_town_gateway_directly_requests_town_transition() -> void:
 	assert_eq(TOWN_PATH, root.requested_scene_path)
 
 
+func test_town_gateway_defers_scene_change_outside_physics_callback() -> void:
+	var file := FileAccess.open(FIELD_SCRIPT, FileAccess.READ)
+	assert_not_null(file, "Field controller script should exist")
+	if file == null:
+		return
+	var source := file.get_as_text()
+	file.close()
+	assert_true(source.contains("call_deferred(\"_change_scene_to_file\", scene_path)"))
+	assert_true(source.contains("func _change_scene_to_file(scene_path: String) -> void:"))
+
+
 func test_forest_gateway_stays_blocked_and_opens_guard_dialog() -> void:
 	if root == null:
 		return

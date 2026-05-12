@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-12] fix | Defer gateway scene changes outside physics callbacks
+
+- Updated Town and Field gateway controllers to call deferred scene-change helpers from `body_entered` transitions.
+- Added specs covering the deferred transition path for Town -> Field and Field -> Town gateways.
+- Updated `scenes/town-hub.md`, `scenes/field.md`, and `index.md` with the gateway transition behavior note.
+- Validation: `204 tests, 204 passed, 0 failed`; MCP main-scene play reports no errors.
+
 ## [2026-05-08] init | Wiki initialized
 
 - Created `SCHEMA.md` with proposed schema

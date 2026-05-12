@@ -18,8 +18,8 @@
 | [assets/assets-viewer](assets/assets-viewer.md) | reference | 2026-05-11 | In-project gallery scene that recursively displays enemy PNG assets as thumbnails. |
 | [assets/slime-asset-view](assets/slime-asset-view.md) | reference | 2026-05-11 | Focused SLIME asset scene with AnimatedSprite2D previews from 64×64 animation strips. |
 | [scenes/main-menu](scenes/main-menu.md) | reference | 2026-05-11 | Main menu scene — title, New Game button, Quit button. Transitions to town hub. |
-| [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-11 | Prototype Town scene — reborn prompt, three old institutions, worldbuilding NPC dialog, and direct Field gateway. |
-| [scenes/field](scenes/field.md) | reference | 2026-05-11 | Playable Field reset slice — movement, camera follow, Forest Guard gate, no enemies while EnemySystem is rebuilt. |
+| [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-12 | Prototype Town scene — reborn prompt, three old institutions, worldbuilding NPC dialog, and deferred direct Field gateway. |
+| [scenes/field](scenes/field.md) | reference | 2026-05-12 | Playable Field reset slice — movement, camera follow, deferred Town gateway, Forest Guard gate, no enemies while EnemySystem is rebuilt. |
 | [architecture/animation-controller](architecture/animation-controller.md) | reference | 2026-05-11 | LPC spritesheet animation state machine. Idle cycling + walking frame advance via `tick(delta)`. |
 | [architecture/player-movement](architecture/player-movement.md) | reference | 2026-05-11 | CharacterMovement Sprite2D view. Click-to-move/static facing, collision/dialog stop, modal move lock, AnimationController frames. |
 | [architecture/npc-system](architecture/npc-system.md) | reference | 2026-05-11 | NPC scene/controller/dialog wiring with TownDialogView, RO-style pending approach, talk range, name labels, modal quest UI. |

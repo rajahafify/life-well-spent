@@ -1,7 +1,7 @@
 ---
 title: Field Scene
 type: reference
-updated: 2026-05-11
+updated: 2026-05-12
 tags: [scenes, field, prototype]
 ---
 
@@ -35,7 +35,7 @@ Field (Node2D, Field)
 - updates `Camera2D` with RO-style offset
 - uses `TownDialogView` for Forest Guard dialog
 - handles far-click Guard approach before dialog
-- direct Town gateway request to `res://scenes/town_scene.tscn`
+- direct Town gateway request to `res://scenes/town_scene.tscn`, with the scene-tree change deferred outside the physics callback
 - blocks Forest gateway and opens Guard warning
 
 No enemy/combat APIs are active in the controller during EnemySystem reset.
@@ -54,8 +54,10 @@ Enemy art assets remain in `assets/enemies/` and future integration tasks live i
 
 ## Test Coverage
 
-- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, absence of enemies/combat HUD during reset, Guard dialog, movement/camera, dialog paging/movement lock, direct Town gateway, and blocked Forest gateway.
+- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, absence of enemies/combat HUD during reset, Guard dialog, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
 - Gateway, NPC placement, biome, movement, and dialog systems remain covered by their model/scene specs.
+
+Current validation after gateway defer fix: `204 tests, 204 passed, 0 failed`; MCP main-scene play reports no errors.
 
 ## Related
 

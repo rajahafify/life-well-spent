@@ -85,12 +85,16 @@ func move_player_to(target: Vector2) -> bool:
 func request_field() -> void:
 	requested_scene_path = FIELD_PATH
 	if is_inside_tree():
-		get_tree().change_scene_to_file(FIELD_PATH)
+		call_deferred("_change_scene_to_file", FIELD_PATH)
 
 
 func _on_field_gateway_body_entered(body: Node) -> void:
 	if body.name == "Player":
 		request_field()
+
+
+func _change_scene_to_file(scene_path: String) -> void:
+	get_tree().change_scene_to_file(scene_path)
 
 
 func close_dialog() -> void:

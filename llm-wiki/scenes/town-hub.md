@@ -1,7 +1,7 @@
 ---
 title: Town Scene
 type: reference
-updated: 2026-05-11
+updated: 2026-05-12
 tags: [scenes, town, prototype]
 ---
 
@@ -110,7 +110,7 @@ Old roads have a way of calling again.
 - handles RO-style NPC approach: far click moves to NPC talk point, near/in-range opens dialog
 - shows paged NPC dialog via `TownDialogView.show_dialog()`
 - records Field transition request through `request_field()`
-- changes scene directly when the Player enters `FieldGateway`
+- records the direct Field transition when the Player enters `FieldGateway`, then defers the actual scene change outside the physics callback
 - hides NPC overhead names; names appear in dialog only
 - passes NPC sprite texture to `TownDialogView` for face portrait display above the dialog box
 - hides NPC dialog when `TownDialogView.close_requested` emits
@@ -134,7 +134,7 @@ Prototype Town uses primitives/SVG world art with generated LPC sprites for Play
 - `tests/specs/town_scene_dialog_test.gd` covers readable 1080p dialog text, NPC face portrait crop above the box, paged NPC dialog, RO-style far-click NPC approach, pending dialog open in talk range, camera follow, desynced NPC idle timing, hidden overhead NPC names, first-slice quest buttons hidden, click-to-move routing/blocking, dialog close behavior, and direct Field gateway request.
 - `tests/specs/scene_smoke_test.gd` covers Town dialog smoke behavior.
 
-Current validation after Field MVP: `202 tests, 202 passed, 0 failed`.
+Current validation after gateway defer fix: `204 tests, 204 passed, 0 failed`; MCP main-scene play reports no errors.
 
 Systems introduced by Town are cataloged in `prototype/game-systems.md` using systemic design terms: verbs, components, resources, rules, and conditions.
 
@@ -150,7 +150,7 @@ Passed on 2026-05-11:
 - Close hides dialog.
 - Dialog blocks movement.
 - Camera follows Player with RO-style offset.
-- Field Gateway transitions directly to Field.
+- Field Gateway transitions directly to Field without physics-callback removal errors.
 - Godot MCP current-scene play reports no errors.
 
 ## Related
