@@ -60,6 +60,10 @@ func record_enemy_defeated(enemy_id: String) -> bool:
 	return quests.record_enemy_defeated(enemy_id)
 
 
+func record_item_gathered(item_id: String, quantity: int = 1) -> bool:
+	return quests.record_item_gathered(item_id, quantity)
+
+
 func is_current_side_quest_step_complete(chain_id: String) -> bool:
 	return quests.is_current_side_quest_step_complete(chain_id)
 

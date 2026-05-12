@@ -201,7 +201,25 @@ func record_enemy_defeated(enemy_id: String) -> bool:
 	var chain: Dictionary = side_quest_chains[SIDE_REBUILD_SWORDSMAN_GUILD]
 	var step := int(chain.get("step", 0))
 	var objective := _swordsman_objective_for_step(step)
-	if objective.is_empty() or str(objective.get("enemy_id", "")) != enemy_id:
+	if objective.is_empty() or str(objective.get("type", "enemy")) != "enemy" or str(objective.get("enemy_id", "")) != enemy_id:
+		return false
+	return _advance_swordsman_objective_progress(chain, step, 1)
+
+
+func record_item_gathered(item_id: String, quantity: int = 1) -> bool:
+	if quantity <= 0 or not is_side_quest_active(SIDE_REBUILD_SWORDSMAN_GUILD):
+		return false
+	var chain: Dictionary = side_quest_chains[SIDE_REBUILD_SWORDSMAN_GUILD]
+	var step := int(chain.get("step", 0))
+	var objective := _swordsman_objective_for_step(step)
+	if objective.is_empty() or str(objective.get("type", "enemy")) != "item" or str(objective.get("item_id", "")) != item_id:
+		return false
+	return _advance_swordsman_objective_progress(chain, step, quantity)
+
+
+func _advance_swordsman_objective_progress(chain: Dictionary, step: int, amount: int) -> bool:
+	var objective := _swordsman_objective_for_step(step)
+	if objective.is_empty():
 		return false
 	var required := int(objective.get("required", 1))
 	var progress: Dictionary = Dictionary(chain.get(PROGRESS_KEY, {})).duplicate(true)
@@ -209,7 +227,7 @@ func record_enemy_defeated(enemy_id: String) -> bool:
 	var current := int(progress.get(progress_key, 0))
 	if current >= required:
 		return false
-	progress[progress_key] = current + 1
+	progress[progress_key] = mini(current + amount, required)
 	chain[PROGRESS_KEY] = progress
 	side_quest_chains[SIDE_REBUILD_SWORDSMAN_GUILD] = chain
 	return true
@@ -322,18 +340,21 @@ func _swordsman_objective_for_step(step: int) -> Dictionary:
 	match step:
 		0:
 			return {
+				"type": "enemy",
 				"enemy_id": "slime_spiked",
 				"required": 10,
 				"text": "Defeat 10 Slimes for Guildmaster stance training.",
 			}
 		1:
 			return {
-				"enemy_id": "bat",
+				"type": "item",
+				"item_id": "bat_wing",
 				"required": 2,
-				"text": "Defeat 2 Bats for Guildmaster guard training.",
+				"text": "Gather 2 Bat Wings for Guildmaster guard training.",
 			}
 		2:
 			return {
+				"type": "enemy",
 				"enemy_id": "rat",
 				"required": 2,
 				"text": "Defeat 2 Rats for the Guildmaster's Life oath.",

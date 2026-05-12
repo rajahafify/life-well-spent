@@ -29,6 +29,11 @@ func _record_enemy_defeats(enemy_id: String, count: int) -> void:
 		qm.record_enemy_defeated(enemy_id)
 
 
+func _record_item_gathered(item_id: String, count: int) -> void:
+	for _i in range(count):
+		qm.record_item_gathered(item_id)
+
+
 # ─── Catalog ──────────────────────────────────────────────────────────
 
 func test_catalog_starts_empty() -> void:
@@ -225,14 +230,30 @@ func test_swordsman_guild_chain_step_one_objective_is_guildmaster_guard_training
 	_start_swordsman_chain()
 	_record_enemy_defeats("slime_spiked", 10)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
-	assert_eq("Defeat 2 Bats for Guildmaster guard training. (0/2)", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+	assert_eq("Gather 2 Bat Wings for Guildmaster guard training. (0/2)", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+
+
+func test_swordsman_guild_bat_wing_objective_tracks_item_progress() -> void:
+	_start_swordsman_chain()
+	_record_enemy_defeats("slime_spiked", 10)
+	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	assert_true(qm.record_item_gathered("bat_wing"))
+	assert_eq("Gather 2 Bat Wings for Guildmaster guard training. (1/2)", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+
+
+func test_swordsman_guild_bat_wing_objective_ignores_enemy_defeats() -> void:
+	_start_swordsman_chain()
+	_record_enemy_defeats("slime_spiked", 10)
+	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	assert_false(qm.record_enemy_defeated("bat"))
+	assert_eq("Gather 2 Bat Wings for Guildmaster guard training. (0/2)", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
 
 
 func test_swordsman_guild_chain_step_two_objective_is_guildmaster_life_oath() -> void:
 	_start_swordsman_chain()
 	_record_enemy_defeats("slime_spiked", 10)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
-	_record_enemy_defeats("bat", 2)
+	_record_item_gathered("bat_wing", 2)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
 	assert_eq("Defeat 2 Rats for the Guildmaster's Life oath. (0/2)", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
 
@@ -241,7 +262,7 @@ func test_swordsman_guild_chain_step_three_objective_is_guild_unlocked() -> void
 	_start_swordsman_chain()
 	_record_enemy_defeats("slime_spiked", 10)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
-	_record_enemy_defeats("bat", 2)
+	_record_item_gathered("bat_wing", 2)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
 	_record_enemy_defeats("rat", 2)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
@@ -259,7 +280,7 @@ func test_swordsman_guild_chain_step_cannot_exceed_max_step() -> void:
 	_start_swordsman_chain()
 	_record_enemy_defeats("slime_spiked", 10)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
-	_record_enemy_defeats("bat", 2)
+	_record_item_gathered("bat_wing", 2)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
 	_record_enemy_defeats("rat", 2)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
@@ -283,5 +304,5 @@ func test_core_quest_state_round_trips_through_save_data() -> void:
 	assert_true(restored.has_certification("swordsman_certification"))
 	assert_eq(1, restored.side_quest_step("rebuilding_swordsman_guild"))
 	assert_false(restored.is_side_quest_active("rebuilding_swordsman_guild"))
-	assert_eq("Defeat 2 Bats for Guildmaster guard training. (0/2)", restored.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+	assert_eq("Gather 2 Bat Wings for Guildmaster guard training. (0/2)", restored.current_side_quest_objective_text("rebuilding_swordsman_guild"))
 	restored.free()

@@ -32,6 +32,7 @@ func is_side_quest_active(chain_id: String) -> bool
 func side_quest_step(chain_id: String) -> int
 func current_side_quest_objective_text(chain_id: String) -> String
 func record_enemy_defeated(enemy_id: String) -> bool
+func record_item_gathered(item_id: String, quantity: int = 1) -> bool
 func is_current_side_quest_step_complete(chain_id: String) -> bool
 func advance_side_quest_step(chain_id: String) -> bool
 func complete_side_quest_chain(chain_id: String) -> bool
@@ -46,7 +47,7 @@ func apply_dict(data: Dictionary) -> void
 - Field marks the `forest_guard` checkpoint and advances `Explore the World` from `Find the Forest path.` to `Get Swordsman Certification.` when the player enters the Forest Gateway.
 - That objective activates `Rebuilding Swordsman Guild`, which is a side quest chain rather than a standalone `forest_gate_seen` flag.
 - Town reads the current objective so the Guildmaster can point the player toward rebuilding the Swordsman Guild.
-- Field reports enemy defeats through `record_enemy_defeated()`, allowing the shared quest state to track the 10-Slime, 2-Bat, and 2-Rat Guildmaster objectives across scene changes.
+- Field reports enemy defeats through `record_enemy_defeated()` and material drops through `record_item_gathered()`, allowing shared quest state to track the 10-Slime, 2-Bat-Wing, and 2-Rat Guildmaster objectives across scene changes.
 - Town gates the Guildmaster Complete button through `is_current_side_quest_step_complete()` so Max Life cannot be spent before the active objective is complete.
 
 ## Test Coverage

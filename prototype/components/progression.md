@@ -45,7 +45,7 @@ Current implemented pieces:
 - Field Forest Gateway records the `forest_guard` checkpoint.
 - Field advances the main objective to `Get Swordsman Certification`.
 - Field activates `Rebuilding Swordsman Guild`.
-- Field enemy defeats update the active Guildmaster kill objective.
+- Field enemy defeats and material drops update the active Guildmaster objective.
 - `PlayerStats` supports Life, Max Life, XP, death, rebirth, facilities, and serialization.
 - `ProgressionModel` links real-life task completion, XP, quest completion, and facility unlock hooks.
 - `PlayerAgingModel` maps Max Life pressure to normal hair, grey hair/beard, and white hair/beard sprite stages.
@@ -123,12 +123,12 @@ Effects:
 - Player sprite changes to aging stage 2, `assets/player_age_2.png`
 - Swordsman Guild remains locked
 
-### Step 4 - Guildmaster Quest 2: Bat Guard Trial
+### Step 4 - Guildmaster Quest 2: Bat Wing Guard Trial
 
-Player completes the second Guildmaster certification objective in Field:
+Player completes the second Guildmaster certification objective by gathering Field drops:
 
 ```text
-Defeat 2 Bats for Guildmaster guard training.
+Gather 2 Bat Wings for Guildmaster guard training.
 ```
 
 Effects:
@@ -276,7 +276,7 @@ Progression should not require showing:
 - Forest access is blocked until Swordsman Guild certification is complete.
 - Forest Guard is the only current trigger for the certification chain.
 - Certification steps must complete in order.
-- Each certification step has a kill objective that must be complete before the Guildmaster completion button appears.
+- Each certification step has an objective that must be complete before the Guildmaster completion button appears.
 - Certification cannot start before `Rebuilding Swordsman Guild` is active.
 - Certification spends Max Life, not current Life only.
 - Current Life clamps down to Max Life after each certification step.
@@ -308,8 +308,8 @@ Next slice conditions:
 - If Guildmaster is clicked before Forest Guard checkpoint: show worldbuilding dialog.
 - If Guildmaster is clicked after Forest Guard checkpoint and chain step is `0`: show the Slime stance objective.
 - If 10 Slimes are defeated while the chain is active: step 1 can be completed, spending Max Life from `100` to `60`, clamping current Life, updating HUD, and setting chain step `1`.
-- If chain step is `1`: show the Bat guard objective.
-- If 2 Bats are defeated while step 1 is active: step 2 can be completed, spending Max Life from `60` to `20`, clamping current Life, updating HUD, and setting chain step `2`.
+- If chain step is `1`: show the Bat Wing guard objective.
+- If 2 Bat Wings are gathered while step 1 is active: step 2 can be completed, spending Max Life from `60` to `20`, clamping current Life, updating HUD, and setting chain step `2`.
 - If chain step is `2`: show the Rat Life oath objective.
 - If 2 Rats are defeated while step 2 is active: step 3 can be completed, spending remaining Max Life, unlocking Swordsman Guild, advancing the main objective to `Enter the Forest.`, requesting game over, and showing the unlock message.
 - If player rebirths after unlock: reset run Life state but preserve Swordsman Guild unlock in `PlayerStats.unlocked_facilities`.
@@ -323,7 +323,7 @@ Player can:
 - discover the certification requirement in Field
 - return to Town to pursue certification
 - complete certification steps in order
-- complete Field kill objectives for each certification step
+- complete Field objectives for each certification step
 - spend Max Life to restore Swordsman Guild
 - rebirth after the final sacrifice
 
@@ -331,7 +331,7 @@ Player cannot:
 
 - certify before Forest Guard requests it
 - skip certification steps
-- complete a Guildmaster certification step before its kill objective is done
+- complete a Guildmaster certification step before its objective is done
 - restore Max Life with Apples
 - enter Forest before the Guild unlock changes the gate state
 - unlock Swordsman Guild through XP alone
@@ -449,7 +449,7 @@ Player can:
 5. Return to Town.
 6. Talk to Guildmaster and see certification-specific dialog.
 7. Defeat 10 Slimes, return to Guildmaster, complete stance training, and see Max Life become `60`.
-8. Defeat 2 Bats, return to Guildmaster, complete guard training, and see Max Life become `20`.
+8. Gather 2 Bat Wings, return to Guildmaster, complete guard training, and see Max Life become `20`.
 9. Defeat 2 Rats, return to Guildmaster, complete the Life oath, and see Swordsman Guild unlock.
 10. See the objective change to `Enter the Forest.`
 11. Rebirth with Life / Max Life reset to `100 / 100`.
@@ -467,7 +467,7 @@ Player can:
 7. Talk to Guildmaster.
 8. Defeat 10 Slimes, then choose completed stance training.
 9. Life / Max Life updates to `60 / 60`.
-10. Defeat 2 Bats, then choose completed guard training.
+10. Gather 2 Bat Wings, then choose completed guard training.
 11. Life / Max Life updates to `20 / 20`.
 12. Defeat 2 Rats, then choose the completed Life oath.
 13. Swordsman Guild unlocks and game over is requested.
@@ -481,9 +481,10 @@ Player can:
 - [x] Guildmaster shows worldbuilding dialog before the Forest Guard checkpoint.
 - [x] Guildmaster shows certification dialog after the Forest Guard checkpoint.
 - [x] Certification cannot complete before the side quest chain is active.
-- [x] Certification cannot complete before the current kill objective is complete.
+- [x] Certification cannot complete before the current objective is complete.
 - [x] Slime kills advance the first Swordsman Guild objective.
 - [x] Wrong enemy kills do not advance the current Swordsman Guild objective.
+- [x] Bat Wing drops advance the second Swordsman Guild objective.
 - [x] Certification step 1 spends Max Life from `100` to `60`.
 - [x] Certification step 1 clamps current Life to `60`.
 - [x] Certification step 1 sets `swordsman_chain_step` to `1`.

@@ -30,6 +30,11 @@ func _record_swordsman_objective(enemy_id: String, count: int) -> void:
 		QuestSystem.record_enemy_defeated(enemy_id)
 
 
+func _gather_swordsman_item(item_id: String, count: int) -> void:
+	for _i in range(count):
+		QuestSystem.record_item_gathered(item_id)
+
+
 func test_near_guildmaster_interaction_opens_first_dialog_page() -> void:
 	_close_start_dialog()
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
@@ -163,7 +168,7 @@ func test_guildmaster_step_one_advances_to_next_guildmaster_quest() -> void:
 	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
 	assert_true(complete.visible)
 	complete.pressed.emit()
-	assert_eq("Defeat 2 Bats for Guildmaster guard training. (0/2)", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+	assert_eq("Gather 2 Bat Wings for Guildmaster guard training. (0/2)", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
 
 
 func test_guildmaster_step_two_advances_to_life_oath_quest() -> void:
@@ -171,7 +176,7 @@ func test_guildmaster_step_two_advances_to_life_oath_quest() -> void:
 	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
 	_record_swordsman_objective("slime_spiked", 10)
 	QuestSystem.advance_side_quest_step("rebuilding_swordsman_guild")
-	_record_swordsman_objective("bat", 2)
+	_gather_swordsman_item("bat_wing", 2)
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
@@ -205,7 +210,7 @@ func test_guildmaster_final_certification_unlocks_achievement() -> void:
 	npc.interacted.emit(npc)
 	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
 	complete.pressed.emit()
-	_record_swordsman_objective("bat", 2)
+	_gather_swordsman_item("bat_wing", 2)
 	complete.pressed.emit()
 	_record_swordsman_objective("rat", 2)
 	complete.pressed.emit()

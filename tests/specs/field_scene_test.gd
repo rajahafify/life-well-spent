@@ -534,6 +534,27 @@ func test_slime_defeat_advances_swordsman_guild_kill_objective() -> void:
 	assert_true(quest_label.text.contains("Defeat 10 Slimes for Guildmaster stance training. (1/10)"))
 
 
+func test_bat_drop_advances_swordsman_guild_gather_objective() -> void:
+	if root == null:
+		return
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	for _i in range(10):
+		QuestSystem.record_enemy_defeated("slime_spiked")
+	QuestSystem.advance_side_quest_step("rebuilding_swordsman_guild")
+	var player: Node2D = root.get_node("Player") as Node2D
+	var bat: Node2D = root.get_node("Enemies/Bat") as Node2D
+	player.global_position = Vector2(500, 500)
+	bat.global_position = Vector2(530, 500)
+	root.enemy_state("field_bat_001").position = bat.global_position
+	root.enemy_state("field_bat_001").hp = 1
+	root.engage_enemy("field_bat_001")
+	root._physics_process(1.1)
+	assert_eq(1, root.inventory.quantity("bat_wing"))
+	assert_eq("Gather 2 Bat Wings for Guildmaster guard training. (1/2)", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+	var quest_label := root.get_node("UI/QuestWindow/VBox/ObjectiveLabel") as Label
+	assert_true(quest_label.text.contains("Gather 2 Bat Wings for Guildmaster guard training. (1/2)"))
+
+
 func test_field_has_forest_guard_dialog_copy() -> void:
 	if root == null:
 		return

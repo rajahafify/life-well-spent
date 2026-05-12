@@ -86,7 +86,7 @@ It is earned with life.
 Defeat 10 Slimes for Guildmaster stance training. (0/10)
 ```
 
-The Complete button only appears after the active kill objective is done. The sequence is 10 Slimes, 2 Bats, then 2 Rats. Each completion spends 40 Max Life until the third step spends the remaining Life. The final step grants `swordsman_certification`, unlocks `swordsman_guild`, and shows `SWORDSMAN GUILD UNLOCKED`.
+The Complete button only appears after the active objective is done. The sequence is 10 Slimes, 2 Bat Wings, then 2 Rats. Each completion spends 40 Max Life until the third step spends the remaining Life. The final step grants `swordsman_certification`, unlocks `swordsman_guild`, and shows `SWORDSMAN GUILD UNLOCKED`.
 
 ### Shopkeeper
 

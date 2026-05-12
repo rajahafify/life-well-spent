@@ -551,6 +551,7 @@ func grant_enemy_drops(state) -> void:
 		var item_id := str(drop.get("item_id", ""))
 		var quantity := int(drop.get("quantity", 1))
 		if inventory.add_item(item_id, quantity):
+			record_item_gathered(item_id, quantity)
 			_show_loot_toast("+ %s x%d" % [item_id, quantity])
 			_play_feedback_sfx("loot_drop")
 
@@ -681,6 +682,11 @@ func _current_quest_objective_text() -> String:
 
 func record_enemy_defeat(enemy_id: String) -> void:
 	if QuestSystem.record_enemy_defeated(enemy_id):
+		_update_quest_window()
+
+
+func record_item_gathered(item_id: String, quantity: int = 1) -> void:
+	if QuestSystem.record_item_gathered(item_id, quantity):
 		_update_quest_window()
 
 

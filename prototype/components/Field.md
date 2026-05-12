@@ -157,7 +157,7 @@ Current combat behavior:
 - Aggro enemy chases Player if Player moves away.
 - Enemy attacks current Life on its attack interval.
 - Enemy HP `<= 0` plays death, removes the enemy after its death duration, and grants XP once.
-- Enemy defeats also notify `QuestSystem`, so active Swordsman Guild kill objectives progress from real Field combat.
+- Enemy defeats and material drops also notify `QuestSystem`, so active Swordsman Guild objectives progress from real Field combat and loot.
 - Enemy movement and spawn placement reject imported `FieldCollision` blockers.
 - Field registers persistent spawn slots with `EnemySpawnManager`.
 - Defeated enemy slots stay gone across portal changes and become available after the global 60 second respawn timer.
@@ -283,7 +283,7 @@ Current Field writes:
 - current Life damage.
 - XP rewards.
 - `QuestSystem` main quest objective and side quest chain activation when the Forest Gateway is reached.
-- `QuestSystem` Swordsman Guild kill objective progress when active enemies are defeated.
+- `QuestSystem` Swordsman Guild objective progress when active enemies are defeated or matching items are gathered.
 - `QuestSystem` `forest_guard` checkpoint when the Forest Gateway is reached.
 - `InventorySystem` item counts when enemy drops are granted or Apple is consumed.
 
@@ -382,7 +382,7 @@ Current Field slice:
 - On aggro: enemy chases Player until attack range.
 - On enemy attack interval: enemy damages current Life.
 - On enemy HP `<= 0`: enemy dies, is removed after death animation timing, and grants XP once.
-- On enemy reward grant while Swordsman Guild certification is active: matching Slime/Bat/Rat defeats advance the current Guildmaster objective.
+- On enemy reward grant while Swordsman Guild certification is active: matching Slime/Rat defeats or Bat Wing drops advance the current Guildmaster objective.
 - On enemy reward grant: guaranteed material drops and rolled chance drops are added to `InventoryModel`.
 - On shortcut `1` with Apple available and Life below Max Life: consume one Apple, heal up to 20 current Life, refresh Life HUD, and show a loot toast.
 - On shortcut `1` with no Apple: show `No apple`.
@@ -523,7 +523,8 @@ Player can:
 - [x] Enemy attacks current Life.
 - [x] Aggro enemy chases Player when Player moves away.
 - [x] Enemy HP `<= 0` removes enemy and grants XP.
-- [x] Enemy HP `<= 0` can advance the active Swordsman Guild kill objective.
+- [x] Enemy HP `<= 0` can advance active Swordsman Guild defeat objectives.
+- [x] Enemy drops can advance active Swordsman Guild gather objectives.
 - [x] Enemy HP `<= 0` grants deterministic item drop.
 - [x] Enemy movement rejects `FieldCollision` blockers.
 - [x] Defeated enemies stay gone across portal changes until their global respawn timer expires.
