@@ -19,6 +19,16 @@ func teardown() -> void:
 	qm.free()
 
 
+func _start_swordsman_chain() -> void:
+	qm.setup_core_quests()
+	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+
+
+func _record_enemy_defeats(enemy_id: String, count: int) -> void:
+	for _i in range(count):
+		qm.record_enemy_defeated(enemy_id)
+
+
 # ─── Catalog ──────────────────────────────────────────────────────────
 
 func test_catalog_starts_empty() -> void:
@@ -183,47 +193,75 @@ func test_swordsman_guild_chain_starts_at_step_zero() -> void:
 
 
 func test_swordsman_guild_chain_step_zero_objective_is_guildmaster_stance_training() -> void:
-	qm.setup_core_quests()
-	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
-	assert_eq("Train with the Guildmaster: learn the old stance.", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+	_start_swordsman_chain()
+	assert_eq("Defeat 10 Slimes for Guildmaster stance training. (0/10)", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+
+
+func test_swordsman_guild_slime_objective_tracks_kill_progress() -> void:
+	_start_swordsman_chain()
+	assert_true(qm.record_enemy_defeated("slime_spiked"))
+	assert_eq("Defeat 10 Slimes for Guildmaster stance training. (1/10)", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+
+
+func test_swordsman_guild_slime_objective_ignores_wrong_enemy() -> void:
+	_start_swordsman_chain()
+	assert_false(qm.record_enemy_defeated("bat"))
+	assert_eq("Defeat 10 Slimes for Guildmaster stance training. (0/10)", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+
+
+func test_swordsman_guild_step_cannot_advance_before_objective_complete() -> void:
+	_start_swordsman_chain()
+	assert_false(qm.advance_side_quest_step("rebuilding_swordsman_guild"))
+	assert_eq(0, qm.side_quest_step("rebuilding_swordsman_guild"))
+
+
+func test_swordsman_guild_current_step_reports_complete_after_required_kills() -> void:
+	_start_swordsman_chain()
+	_record_enemy_defeats("slime_spiked", 10)
+	assert_true(qm.is_current_side_quest_step_complete("rebuilding_swordsman_guild"))
 
 
 func test_swordsman_guild_chain_step_one_objective_is_guildmaster_guard_training() -> void:
-	qm.setup_core_quests()
-	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_start_swordsman_chain()
+	_record_enemy_defeats("slime_spiked", 10)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
-	assert_eq("Train with the Guildmaster: practice guard and footwork.", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+	assert_eq("Defeat 2 Bats for Guildmaster guard training. (0/2)", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
 
 
 func test_swordsman_guild_chain_step_two_objective_is_guildmaster_life_oath() -> void:
-	qm.setup_core_quests()
-	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_start_swordsman_chain()
+	_record_enemy_defeats("slime_spiked", 10)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	_record_enemy_defeats("bat", 2)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
-	assert_eq("Swear the Guildmaster's Life oath.", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+	assert_eq("Defeat 2 Rats for the Guildmaster's Life oath. (0/2)", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
 
 
 func test_swordsman_guild_chain_step_three_objective_is_guild_unlocked() -> void:
-	qm.setup_core_quests()
-	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_start_swordsman_chain()
+	_record_enemy_defeats("slime_spiked", 10)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	_record_enemy_defeats("bat", 2)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	_record_enemy_defeats("rat", 2)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
 	assert_eq("Swordsman Guild unlocked.", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
 
 
 func test_swordsman_guild_chain_advances_to_next_step() -> void:
-	qm.setup_core_quests()
-	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_start_swordsman_chain()
+	_record_enemy_defeats("slime_spiked", 10)
 	assert_true(qm.advance_side_quest_step("rebuilding_swordsman_guild"))
 	assert_eq(1, qm.side_quest_step("rebuilding_swordsman_guild"))
 
 
 func test_swordsman_guild_chain_step_cannot_exceed_max_step() -> void:
-	qm.setup_core_quests()
-	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_start_swordsman_chain()
+	_record_enemy_defeats("slime_spiked", 10)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	_record_enemy_defeats("bat", 2)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	_record_enemy_defeats("rat", 2)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
 	assert_false(qm.advance_side_quest_step("rebuilding_swordsman_guild"))
 	assert_eq(3, qm.side_quest_step("rebuilding_swordsman_guild"))
@@ -233,6 +271,9 @@ func test_core_quest_state_round_trips_through_save_data() -> void:
 	qm.setup_core_quests()
 	qm.mark_main_checkpoint("explore_the_world", "forest_guard")
 	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_record_enemy_defeats("slime_spiked", 4)
+	assert_eq("Defeat 10 Slimes for Guildmaster stance training. (4/10)", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+	_record_enemy_defeats("slime_spiked", 6)
 	qm.advance_side_quest_step("rebuilding_swordsman_guild")
 	qm.complete_side_quest_chain("rebuilding_swordsman_guild")
 	var restored := QuestManager.new()
@@ -242,4 +283,5 @@ func test_core_quest_state_round_trips_through_save_data() -> void:
 	assert_true(restored.has_certification("swordsman_certification"))
 	assert_eq(1, restored.side_quest_step("rebuilding_swordsman_guild"))
 	assert_false(restored.is_side_quest_active("rebuilding_swordsman_guild"))
+	assert_eq("Defeat 2 Bats for Guildmaster guard training. (0/2)", restored.current_side_quest_objective_text("rebuilding_swordsman_guild"))
 	restored.free()

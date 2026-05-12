@@ -25,6 +25,11 @@ func _close_start_dialog() -> void:
 	root.close_dialog()
 
 
+func _record_swordsman_objective(enemy_id: String, count: int) -> void:
+	for _i in range(count):
+		QuestSystem.record_enemy_defeated(enemy_id)
+
+
 func test_near_guildmaster_interaction_opens_first_dialog_page() -> void:
 	_close_start_dialog()
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
@@ -140,37 +145,45 @@ func test_guildmaster_offers_swordsman_chain_after_forest_gate_objective() -> vo
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
 	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
-	assert_true(body.text.contains("Forest gate"))
+	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
+	assert_true(body.text.contains("Forest"))
 	assert_true(body.text.contains("Swordsman Certification"))
+	assert_eq("Defeat 10 Slimes for Guildmaster stance training. (0/10)", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+	assert_false(complete.visible)
 	assert_true(QuestSystem.is_side_quest_active("rebuilding_swordsman_guild"))
 
 
 func test_guildmaster_step_one_advances_to_next_guildmaster_quest() -> void:
 	_close_start_dialog()
 	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_record_swordsman_objective("slime_spiked", 10)
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
 	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
+	assert_true(complete.visible)
 	complete.pressed.emit()
-	assert_eq("Train with the Guildmaster: practice guard and footwork.", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+	assert_eq("Defeat 2 Bats for Guildmaster guard training. (0/2)", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
 
 
 func test_guildmaster_step_two_advances_to_life_oath_quest() -> void:
 	_close_start_dialog()
 	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_record_swordsman_objective("slime_spiked", 10)
 	QuestSystem.advance_side_quest_step("rebuilding_swordsman_guild")
+	_record_swordsman_objective("bat", 2)
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
 	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
 	complete.pressed.emit()
-	assert_eq("Swear the Guildmaster's Life oath.", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+	assert_eq("Defeat 2 Rats for the Guildmaster's Life oath. (0/2)", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
 
 
 func test_guildmaster_certification_completion_spends_life_to_60() -> void:
 	_close_start_dialog()
 	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_record_swordsman_objective("slime_spiked", 10)
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
@@ -186,12 +199,15 @@ func test_guildmaster_certification_completion_spends_life_to_60() -> void:
 func test_guildmaster_final_certification_unlocks_achievement() -> void:
 	_close_start_dialog()
 	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_record_swordsman_objective("slime_spiked", 10)
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
 	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
 	complete.pressed.emit()
+	_record_swordsman_objective("bat", 2)
 	complete.pressed.emit()
+	_record_swordsman_objective("rat", 2)
 	complete.pressed.emit()
 	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
 	assert_true(QuestSystem.has_certification("swordsman_certification"))

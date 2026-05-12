@@ -72,6 +72,7 @@ func _handle_enemy_defeated(owner, state, result: Dictionary) -> void:
 	if not state.reward_granted:
 		owner.player_xp += int(result.get("xp_reward", 0))
 		owner.grant_enemy_drops(state)
+		owner.record_enemy_defeat(state.enemy_id)
 		state.reward_granted = true
 		EnemySpawnManager.mark_defeated(state.instance_id)
 	state.behavior_state = "die"

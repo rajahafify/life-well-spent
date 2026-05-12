@@ -669,7 +669,19 @@ func _npc_portrait_texture(npc: NpcController) -> Texture2D:
 
 func _update_quest_window() -> void:
 	if _hud:
-		_hud.show_quest("Explore the World", QuestSystem.current_main_objective_text(), QuestSystem.current_main_checkpoint_text())
+		_hud.show_quest("Explore the World", _current_quest_objective_text(), QuestSystem.current_main_checkpoint_text())
+
+
+func _current_quest_objective_text() -> String:
+	var objective := QuestSystem.current_main_objective_text()
+	if QuestSystem.is_side_quest_active("rebuilding_swordsman_guild"):
+		objective += "\n" + QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild")
+	return objective
+
+
+func record_enemy_defeat(enemy_id: String) -> void:
+	if QuestSystem.record_enemy_defeated(enemy_id):
+		_update_quest_window()
 
 
 func _update_player_age_sprite() -> void:

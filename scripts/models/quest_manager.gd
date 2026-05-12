@@ -11,6 +11,7 @@ const OBJ_ENTER_FOREST := "enter_forest"
 const CHECKPOINT_FOREST_GUARD := "forest_guard"
 const SIDE_REBUILD_SWORDSMAN_GUILD := "rebuilding_swordsman_guild"
 const CERT_SWORDSMAN := "swordsman_certification"
+const PROGRESS_KEY := "objective_progress"
 
 var quest_catalog: Array[Dictionary] = []
 var active_quests: Array[Dictionary] = []
@@ -186,15 +187,43 @@ func current_side_quest_objective_text(chain_id: String) -> String:
 		return ""
 	var chain: Dictionary = side_quest_chains[chain_id]
 	var step := int(chain.get("step", 0))
-	match step:
-		0:
-			return "Train with the Guildmaster: learn the old stance."
-		1:
-			return "Train with the Guildmaster: practice guard and footwork."
-		2:
-			return "Swear the Guildmaster's Life oath."
-		_:
-			return "Swordsman Guild unlocked."
+	var objective := _swordsman_objective_for_step(step)
+	if objective.is_empty():
+		return "Swordsman Guild unlocked."
+	var progress := _swordsman_objective_progress(chain, step)
+	var required := int(objective.get("required", 1))
+	return "%s (%d/%d)" % [str(objective.get("text", "")), mini(progress, required), required]
+
+
+func record_enemy_defeated(enemy_id: String) -> bool:
+	if not is_side_quest_active(SIDE_REBUILD_SWORDSMAN_GUILD):
+		return false
+	var chain: Dictionary = side_quest_chains[SIDE_REBUILD_SWORDSMAN_GUILD]
+	var step := int(chain.get("step", 0))
+	var objective := _swordsman_objective_for_step(step)
+	if objective.is_empty() or str(objective.get("enemy_id", "")) != enemy_id:
+		return false
+	var required := int(objective.get("required", 1))
+	var progress: Dictionary = Dictionary(chain.get(PROGRESS_KEY, {})).duplicate(true)
+	var progress_key := str(step)
+	var current := int(progress.get(progress_key, 0))
+	if current >= required:
+		return false
+	progress[progress_key] = current + 1
+	chain[PROGRESS_KEY] = progress
+	side_quest_chains[SIDE_REBUILD_SWORDSMAN_GUILD] = chain
+	return true
+
+
+func is_current_side_quest_step_complete(chain_id: String) -> bool:
+	if not side_quest_chains.has(chain_id):
+		return false
+	var chain: Dictionary = side_quest_chains[chain_id]
+	var step := int(chain.get("step", 0))
+	var objective := _swordsman_objective_for_step(step)
+	if objective.is_empty():
+		return false
+	return _swordsman_objective_progress(chain, step) >= int(objective.get("required", 1))
 
 
 func advance_side_quest_step(chain_id: String) -> bool:
@@ -204,6 +233,8 @@ func advance_side_quest_step(chain_id: String) -> bool:
 	var step := int(chain.get("step", 0))
 	var max_step := int(chain.get("max_step", 1))
 	if step >= max_step:
+		return false
+	if chain_id == SIDE_REBUILD_SWORDSMAN_GUILD and not is_current_side_quest_step_complete(chain_id):
 		return false
 	chain["step"] = step + 1
 	side_quest_chains[chain_id] = chain
@@ -283,4 +314,33 @@ func _activate_swordsman_guild_chain() -> void:
 		"completed": false,
 		"step": 0,
 		"max_step": 3,
+		PROGRESS_KEY: {},
 	}
+
+
+func _swordsman_objective_for_step(step: int) -> Dictionary:
+	match step:
+		0:
+			return {
+				"enemy_id": "slime_spiked",
+				"required": 10,
+				"text": "Defeat 10 Slimes for Guildmaster stance training.",
+			}
+		1:
+			return {
+				"enemy_id": "bat",
+				"required": 2,
+				"text": "Defeat 2 Bats for Guildmaster guard training.",
+			}
+		2:
+			return {
+				"enemy_id": "rat",
+				"required": 2,
+				"text": "Defeat 2 Rats for the Guildmaster's Life oath.",
+			}
+	return {}
+
+
+func _swordsman_objective_progress(chain: Dictionary, step: int) -> int:
+	var progress: Dictionary = chain.get(PROGRESS_KEY, {})
+	return int(progress.get(str(step), 0))

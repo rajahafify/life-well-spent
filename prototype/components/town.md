@@ -265,7 +265,7 @@ Town must show the start/reborn copy through the dialog panel.
 - Player can leave Town via Field Gateway.
 - Shop and Blacksmith services are not available yet.
 - Guildmaster reacts when QuestSystem says the main objective is `Get Swordsman Certification`.
-- Guildmaster certification uses quest completion: each complete press spends Max Life and advances the next named Guildmaster step in the `Rebuilding Swordsman Guild` side-chain.
+- Guildmaster certification uses objective-backed quest completion: each step requires the active Field kill objective before the Complete button appears, then spends Max Life and advances the next Guildmaster step.
 - Guildmaster certification refreshes the player sprite after Max Life changes.
 
 Future rules:
@@ -296,9 +296,9 @@ First Town slice:
 Future conditions:
 
 - If main objective is `Find the Forest path`: Guildmaster shows worldbuilding dialog.
-- If main objective is `Get Swordsman Certification` and `swordsman_chain_step = 0`: Guildmaster offers old stance training.
-- If `swordsman_chain_step = 1`: Guildmaster offers guard and footwork training.
-- If `swordsman_chain_step = 2`: Guildmaster offers the Life oath.
+- If main objective is `Get Swordsman Certification` and `swordsman_chain_step = 0`: Guildmaster offers the 10-Slime stance trial.
+- If `swordsman_chain_step = 1`: Guildmaster offers the 2-Bat guard trial.
+- If `swordsman_chain_step = 2`: Guildmaster offers the 2-Rat Life oath trial.
 - If `swordsman_chain_step = 3`: Swordsman Guild is unlocked, Game Over requested.
 - If Max Life is `100`: Player uses `player_age_1.png`.
 - If Max Life is `60`: Player uses `player_age_2.png`.
@@ -320,6 +320,7 @@ Player cannot:
 - use Shop inventory in first slice
 - use Blacksmith services in first slice
 - complete Swordsman Guild quest steps before the Forest Guard checkpoint
+- complete Swordsman Guild quest steps before their kill objectives are done
 
 ## Primitive / SVG Art Direction
 

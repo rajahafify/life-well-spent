@@ -56,6 +56,14 @@ func current_side_quest_objective_text(chain_id: String) -> String:
 	return quests.current_side_quest_objective_text(chain_id)
 
 
+func record_enemy_defeated(enemy_id: String) -> bool:
+	return quests.record_enemy_defeated(enemy_id)
+
+
+func is_current_side_quest_step_complete(chain_id: String) -> bool:
+	return quests.is_current_side_quest_step_complete(chain_id)
+
+
 func advance_side_quest_step(chain_id: String) -> bool:
 	return quests.advance_side_quest_step(chain_id)
 

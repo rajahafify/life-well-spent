@@ -517,6 +517,23 @@ func test_slime_dies_plays_death_before_removal() -> void:
 	assert_null(root.get_node_or_null("Enemies/Slime"))
 
 
+func test_slime_defeat_advances_swordsman_guild_kill_objective() -> void:
+	if root == null:
+		return
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	var player: Node2D = root.get_node("Player") as Node2D
+	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
+	player.global_position = Vector2(500, 500)
+	slime.global_position = Vector2(530, 500)
+	root.enemy_state("field_slime_001").position = slime.global_position
+	root.enemy_state("field_slime_001").hp = 1
+	root.engage_enemy("field_slime_001")
+	root._physics_process(1.1)
+	assert_eq("Defeat 10 Slimes for Guildmaster stance training. (1/10)", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+	var quest_label := root.get_node("UI/QuestWindow/VBox/ObjectiveLabel") as Label
+	assert_true(quest_label.text.contains("Defeat 10 Slimes for Guildmaster stance training. (1/10)"))
+
+
 func test_field_has_forest_guard_dialog_copy() -> void:
 	if root == null:
 		return
@@ -627,7 +644,7 @@ func test_guard_dialog_completion_updates_quest_window() -> void:
 	assert_true(QuestSystem.has_main_checkpoint("explore_the_world", "forest_guard"))
 	assert_eq("get_swordsman_certification", QuestSystem.current_main_objective_id())
 	var quest_label := root.get_node("UI/QuestWindow/VBox/ObjectiveLabel") as Label
-	assert_eq("Explore the World\nGet Swordsman Certification.", quest_label.text)
+	assert_eq("Explore the World\nGet Swordsman Certification.\nDefeat 10 Slimes for Guildmaster stance training. (0/10)", quest_label.text)
 
 
 func test_dialog_blocks_player_movement_and_pages() -> void:

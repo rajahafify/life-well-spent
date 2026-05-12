@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-05-13] feature | Add objective-backed Guildmaster quest chain
+
+- RED: added QuestManager, ProgressionModel, Town, and Field specs for objective progress, wrong-enemy filtering, incomplete-objective rejection, completion-button gating, and Slime kill quest progress.
+- `QuestManager` now tracks per-step Swordsman Guild objective progress: 10 Slimes, 2 Bats, then 2 Rats.
+- Field enemy defeats report into `QuestSystem`; Town and Field quest windows show side-objective progress.
+- Guildmaster completion is hidden and model-rejected until the current kill objective is complete.
+- Validation: full suite `381 tests, 381 passed, 0 failed`.
+
 ## [2026-05-13] feature | Name Guildmaster certification quest steps
 
 - RED: added QuestManager and Town specs for three Guildmaster-owned Swordsman Guild quest objectives.

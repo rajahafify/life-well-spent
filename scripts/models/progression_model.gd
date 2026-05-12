@@ -42,9 +42,11 @@ func complete_swordsman_certification_step() -> bool:
 	var current_step: int = quest_manager.side_quest_step(chain_id)
 	if current_step < 0 or current_step >= 3:
 		return false
-	player_stats.complete_quest()
+	if not quest_manager.is_current_side_quest_step_complete(chain_id):
+		return false
 	if not quest_manager.advance_side_quest_step(chain_id):
 		return false
+	player_stats.complete_quest()
 	if quest_manager.side_quest_step(chain_id) >= 3:
 		quest_manager.complete_side_quest_chain(chain_id)
 		quest_manager.advance_main_quest_objective("explore_the_world", "enter_forest")
