@@ -66,9 +66,9 @@ Town portal should eventually point to `res://scenes/field.tscn` and use Field t
 
 Monster prototype visuals:
 
-- Chick: simple yellow SVG/primitive.
-- Rabbit: simple white SVG/primitive.
-- Slime: simple green SVG/primitive blob.
+- Slime: enemy catalog sprite `slime_spiked`.
+- Bat: enemy catalog sprite `bat`.
+- Rat: enemy catalog sprite `rat`.
 
 ## Field Systems To Build
 
@@ -102,9 +102,9 @@ Defines enemy identity and stats.
 
 Prototype enemies:
 
-- Chick
-- Rabbit
-- Slime
+- Slime (`slime_spiked`)
+- Bat (`bat`)
+- Rat (`rat`)
 
 ### Random Enemy Respawn System
 

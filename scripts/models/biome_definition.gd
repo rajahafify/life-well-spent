@@ -24,7 +24,7 @@ static func field_grassland():
 		"forest": Color(0.05, 0.22, 0.08, 1),
 		"portal": Color(0.1, 0.8, 0.9, 0.55),
 	}
-	biome.enemy_pool = ["chick", "rabbit", "slime"]
+	biome.enemy_pool = ["slime_spiked", "bat", "rat"]
 	biome.prop_pool = ["rocks", "bushes", "grass_patches"]
 	biome.music_id = "field_grassland"
 	biome.ambient_tags = ["bright", "beginner", "peaceful"]

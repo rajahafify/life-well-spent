@@ -3,7 +3,7 @@
 | Page | Type | Updated | Summary |
 |------|------|---------|---------|
 | [game-design/game-design](game-design/game-design.md) | synthesis | 2026-05-11 | Core loop, free quest acceptance, completion HP cost, facilities, and win condition. |
-| [game-design/prototype-systemic-design](game-design/prototype-systemic-design.md) | synthesis | 2026-05-11 | First playable prototype: Town, Starter Area, Forest Guard gate, Swordsman Guild life-spend chain, primitive/SVG art direction. |
+| [game-design/prototype-systemic-design](game-design/prototype-systemic-design.md) | synthesis | 2026-05-12 | First playable prototype: Town, Field, Slime/Bat/Rat combat target set, Forest Guard gate, Swordsman Guild life-spend chain. |
 | [architecture/architecture](architecture/architecture.md) | decision | 2026-05-08 | MVC + SOLID architecture pattern. |
 | [architecture/spec-driven-dev](architecture/spec-driven-dev.md) | decision | 2026-05-10 | Spec-driven development workflow + TDD enforcement. |
 | [architecture/test-runner](architecture/test-runner.md) | reference | 2026-05-11 | Minitest-style GDScript spec runner — loads specs, runs tests, reports results. |
@@ -12,7 +12,7 @@
 | [architecture/combat-system](architecture/combat-system.md) | reference | 2026-05-11 | Pure Field combat rules for enemy HP, Combat HP, defeat, and XP hooks. |
 | [architecture/enemy-sprite-metadata](architecture/enemy-sprite-metadata.md) | reference | 2026-05-12 | RO-ish sprite/action metadata pipeline for enemy animation strips; V1 covers Spiked Slime. |
 | [architecture/npc-placement](architecture/npc-placement.md) | reference | 2026-05-11 | Stable NPC map placement data, including Forest Guard gateway blocking. |
-| [architecture/biome-definition](architecture/biome-definition.md) | reference | 2026-05-11 | Field grassland palette, enemy pool, props, and biome filters. |
+| [architecture/biome-definition](architecture/biome-definition.md) | reference | 2026-05-12 | Field grassland palette, Slime/Bat/Rat enemy pool, props, and biome filters. |
 | [architecture/quest-manager](architecture/quest-manager.md) | concept | 2026-05-11 | Quest catalog, multi-quest tracking, free acceptance, completion HP cost. |
 | [architecture/game-balance](architecture/game-balance.md) | reference | 2026-05-11 | Shared pure constants model for quest cost and animation timings. |
 | [assets/lpc-sprite-generator](assets/lpc-sprite-generator.md) | reference | 2026-05-09 | LPC sprite generator tool — prompt-driven character spritesheet pipeline. |
@@ -20,7 +20,7 @@
 | [assets/slime-asset-view](assets/slime-asset-view.md) | reference | 2026-05-12 | Enemy asset tools: focused AssetView single preview plus looping AssetGallery SpriteFrames editor scene. |
 | [scenes/main-menu](scenes/main-menu.md) | reference | 2026-05-11 | Main menu scene — title, New Game button, Quit button. Transitions to town hub. |
 | [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-12 | Prototype Town scene — reborn prompt, three old institutions, worldbuilding NPC dialog, and deferred direct Field gateway. |
-| [scenes/field](scenes/field.md) | reference | 2026-05-12 | Playable Field reset slice — movement, camera follow, deferred Town gateway, Forest Guard gate, no enemies while EnemySystem is rebuilt. |
+| [scenes/field](scenes/field.md) | reference | 2026-05-12 | Playable Field reset slice — movement, camera follow, deferred Town gateway, Forest Guard gate, Slime/Bat/Rat target set for EnemySystem rebuild. |
 | [architecture/animation-controller](architecture/animation-controller.md) | reference | 2026-05-11 | LPC spritesheet animation state machine. Idle cycling + walking frame advance via `tick(delta)`. |
 | [architecture/player-movement](architecture/player-movement.md) | reference | 2026-05-11 | CharacterMovement Sprite2D view. Click-to-move/static facing, collision/dialog stop, modal move lock, AnimationController frames. |
 | [architecture/npc-system](architecture/npc-system.md) | reference | 2026-05-11 | NPC scene/controller/dialog wiring with TownDialogView, RO-style pending approach, talk range, name labels, modal quest UI. |

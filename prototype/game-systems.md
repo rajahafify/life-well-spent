@@ -423,8 +423,8 @@ Each system should list:
 - Enemies belong to a map/location.
 - Enemies can be passive/hostile later.
 - Defeated enemies grant rewards.
-- Prototype enemy set is Chick, Rabbit, Slime.
-- Prototype monster art uses SVG/primitive visuals.
+- Prototype enemy set is Slime, Bat, Rat.
+- Prototype monster art uses cataloged enemy sprite assets.
 
 ### Conditions
 

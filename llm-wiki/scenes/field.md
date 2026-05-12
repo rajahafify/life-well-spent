@@ -45,12 +45,12 @@ No enemy/combat APIs are active in the controller during EnemySystem reset.
 Removed from Field until rebuilt:
 
 - `Enemies` scene node
-- Chick/Rabbit/Slime placements
+- Slime/Bat/Rat placements
 - Combat HUD
 - Field enemy click combat methods
 - `EnemyDefinition`, `RandomEnemyRespawnSystem`, `EnemyArtDefinition`, and `EnemyView` implementation files/specs
 
-Enemy art assets remain in `assets/enemies/` and future integration tasks live in `assets/assets-catalog.md`.
+Enemy art assets remain in `assets/enemies/` and future integration tasks live in `assets/assets-catalog.md`. Current Field enemy target set is Slime (`slime_spiked`), Bat (`bat`), and Rat (`rat`).
 
 ## Test Coverage
 

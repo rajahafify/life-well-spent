@@ -1,7 +1,7 @@
 ---
 title: Biome Definition
 type: reference
-updated: 2026-05-11
+updated: 2026-05-12
 tags: [architecture, models, biome]
 ---
 
@@ -27,7 +27,7 @@ static func field_grassland()
 
 ## Design Decisions
 
-Field is `grassland`: bright grass, dirt paths, Chick/Rabbit/Slime enemy pool, rocks/bushes/grass props.
+Field is `grassland`: bright grass, dirt paths, Slime/Bat/Rat enemy pool (`slime_spiked`, `bat`, `rat`), rocks/bushes/grass props.
 
 ## Test Coverage
 

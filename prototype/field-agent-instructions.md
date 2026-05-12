@@ -52,7 +52,7 @@ Field should support:
 
 - RO-style click movement.
 - Camera follow.
-- Enemies: Chick, Rabbit, Slime.
+- Enemies: Slime, Bat, Rat.
 - Real combat model.
 - Forest Guard blocks Forest.
 - Return to Town gateway.
@@ -116,16 +116,16 @@ Build:
 
 Prototype enemies:
 
-- Chick
-- Rabbit
-- Slime
+- Slime (`slime_spiked`)
+- Bat (`bat`)
+- Rat (`rat`)
 
 Suggested initial stats (can tune later):
 
 ```text
-Chick:  hp 5,  attack 1, defense 0, xp 2
-Rabbit: hp 8,  attack 2, defense 0, xp 4
-Slime:  hp 14, attack 1, defense 1, xp 5
+Slime: hp 14, attack 1, defense 1, xp 5
+Bat:   hp 8,  attack 2, defense 0, xp 4
+Rat:   hp 6,  attack 2, defense 0, xp 3
 ```
 
 ### Combat System
@@ -233,7 +233,7 @@ Field biome:
 
 - `biome_type = grassland`
 - palette: bright green / dirt brown
-- enemy_pool: Chick, Rabbit, Slime
+- enemy_pool: Slime, Bat, Rat
 - props: rocks, bushes, grass patches
 
 ## Scene Deliverables
@@ -254,7 +254,7 @@ Field scene should contain:
 - Forest path
 - Forest blocker
 - Forest Guard NPC
-- Chick/Rabbit/Slime enemy placeholders
+- Slime/Bat/Rat enemy placeholders
 - UI/DialogPanel compatible with existing dialog view
 - objective prompt: `Objective: Find the Forest path.`
 
@@ -274,9 +274,9 @@ Field must reuse Town patterns:
 
 Monster placeholder art:
 
-- Chick: yellow simple shape/SVG.
-- Rabbit: white simple shape/SVG.
-- Slime: green blob SVG/primitive.
+- Slime: catalog sprite `slime_spiked`.
+- Bat: catalog sprite `bat`.
+- Rat: catalog sprite `rat`.
 
 No detailed tiles yet.
 
@@ -311,7 +311,7 @@ Field scene spec should cover:
 - Town Gateway exists.
 - Forest Gateway/Blocker exists.
 - Forest Guard exists.
-- Chick/Rabbit/Slime placeholders exist.
+- Slime/Bat/Rat placeholders exist.
 - objective prompt exists.
 - Forest Guard dialog text matches spec.
 - world primitives ignore mouse.
@@ -325,7 +325,7 @@ When done, manual QA should pass:
 3. Scene changes to Field.
 4. Player can click-move in Field.
 5. Camera follows player.
-6. Chick/Rabbit/Slime visible.
+6. Slime/Bat/Rat visible.
 7. Click Forest Guard from far: player approaches.
 8. Guard dialog opens only in talk range.
 9. Guard dialog pages work with Next/Close.

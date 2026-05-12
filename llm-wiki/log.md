@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-12] change | Update Field enemy target set
+
+- Changed Field grassland enemy pool from Chick/Rabbit/Slime to Slime/Bat/Rat (`slime_spiked`, `bat`, `rat`).
+- Updated prototype Field docs, combat docs, game systems docs, biome wiki, Field scene wiki, and wiki index.
+- Added RED biome spec first, then updated `BiomeDefinition.field_grassland()`.
+- Validation: `223 tests, 223 passed, 0 failed`.
+
 ## [2026-05-12] fix | Defer gateway scene changes outside physics callbacks
 
 - Updated Town and Field gateway controllers to call deferred scene-change helpers from `body_entered` transitions.

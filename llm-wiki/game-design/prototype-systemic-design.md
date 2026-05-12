@@ -1,7 +1,7 @@
 ---
 title: Prototype Systemic Design
 type: synthesis
-updated: 2026-05-11
+updated: 2026-05-12
 sources:
   - prototype-checklists.md
   - prototype/components/README.md
@@ -15,7 +15,7 @@ tags: [game-design, prototype, systemic-design]
 
 ## Overview
 
-First playable prototype goal: **spend your life to unlock the Swordsman Guild**. Player starts in **Town**, leaves for **Starter Area**, finds Forest blocked by Guard, returns to Town, completes a 3-step Swordsman Guild quest chain, spends all Life, unlocks Swordsman Guild, and reaches Game Over asking: **Was it a life well spent?**
+First playable prototype goal: **spend your life to unlock the Swordsman Guild**. Player starts in **Town**, leaves for **Field**, finds Forest blocked by Guard, returns to Town, completes a 3-step Swordsman Guild quest chain, spends all Life, unlocks Swordsman Guild, and reaches Game Over asking: **Was it a life well spent?**
 
 ## Stage 1: Ideation
 
@@ -29,10 +29,10 @@ Prototype truth: Forest access requires Swordsman Guild certification, and certi
 
 ### Activities
 
-- Move through Town and Starter Area.
+- Move through Town and Field.
 - Talk to NPCs.
-- Explore Starter Area.
-- Fight Chick/Rabbit/Slime.
+- Explore Field.
+- Fight Slime/Bat/Rat.
 - Approach Forest path.
 - Get blocked by Forest Guard.
 - Return to Town.
@@ -55,8 +55,8 @@ Prototype truth: Forest access requires Swordsman Guild certification, and certi
 
 - **Run State** — owns Life, XP, Forest Gate seen, Swordsman chain, aging, unlock, game-over request.
 - **Life / Aging** — maps Life/chain progress to born/older/old/dead presentation.
-- **Town** — safe first scene; Swordsman Guild NPC; exit to Starter Area.
-- **Starter Area** — beginner combat field; Chick/Rabbit/Slime; Forest Gate.
+- **Town** — safe first scene; Swordsman Guild NPC; exit to Field.
+- **Field** — beginner combat field; Slime/Bat/Rat; Forest Gate.
 - **Forest Gate** — Guard blocks Forest and unlocks guild quest.
 - **Swordsman Guild Quest** — 3 ordered quest steps; each completion costs Life; final unlock ends run.
 - **Combat** — field combat uses Combat HP only and grants XP.
@@ -86,7 +86,7 @@ Rules:
 Color language:
 
 - Town: warm tan/brown/orange = safe.
-- Starter Area: bright green/dirt brown = beginner field.
+- Field: bright green/dirt brown = beginner field.
 - Forest Gate: dark green/blue shadow = danger/not ready.
 - Danger: red.
 - Interactable: yellow.

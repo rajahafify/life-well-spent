@@ -7,9 +7,9 @@ Simple starter combat for field engagement. Separate from Life economy.
 ## Actors
 
 - Player
-- Chick
-- Rabbit
 - Slime
+- Bat
+- Rat
 
 ## Resources
 
@@ -39,10 +39,10 @@ Simple starter combat for field engagement. Separate from Life economy.
 
 ## Prototype Enemies
 
-- Chick: easiest/tutorial
-- Rabbit: fast/medium
-- Slime: tanky/simple
+- Slime: tanky/simple tutorial
+- Bat: quick aerial starter
+- Rat: fast/medium ground starter
 
 ## Open Decision
 
-- What happens when Combat HP reaches 0? Return to Town, respawn in Starter Area, or lose XP TBD.
+- What happens when Combat HP reaches 0? Return to Town, respawn in Field, or lose XP TBD.

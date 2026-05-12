@@ -46,7 +46,7 @@ Field currently contains **no enemies** while EnemySystem is rebuilt from scratc
 
 Removed from current Field:
 
-- Chick/Rabbit/Slime scene placements.
+- Slime/Bat/Rat scene placements.
 - Enemy click combat.
 - Combat HUD.
 - Enemy models/views introduced by the first MVP pass.
@@ -77,11 +77,11 @@ Future purpose, after MVP:
 │                         [Forest Guard]       │
 │                              ▲               │
 │                              │               │
-│        [Slime]          Forest Path          │
+│        [Bat]            Forest Path          │
 │                                              │
 │                  Grass / field               │
 │                                              │
-│   [Chick]                         [Rabbit]   │
+│   [Slime]                         [Rat]      │
 │                                              │
 │                                              │
 │           [Player Spawn]                     │
@@ -118,27 +118,28 @@ Forest Guard stands near the blocked Forest path. He blocks progression and poin
 
 All enemies are prototype placeholders with real click-attack combat through `CombatSystem`.
 
-### Chick
-
-Role: easiest/tutorial enemy.
-
-- Small.
-- Harmless-looking.
-- Teaches that Field has living creatures.
-
-### Rabbit
-
-Role: fast/medium starter enemy.
-
-- Quick-looking.
-- Slightly more alert than Chick.
-
 ### Slime
 
-Role: tanky/simple enemy.
+Role: tanky/simple tutorial enemy.
 
 - Slow.
 - Obvious fantasy starter monster.
+- Uses catalog id `slime_spiked`.
+
+### Bat
+
+Role: mobile aerial starter enemy.
+
+- Small.
+- Quick-looking.
+- Teaches Field has threats beyond ground blobs.
+
+### Rat
+
+Role: fast/medium starter enemy.
+
+- Low to ground.
+- Slightly more aggressive than Slime.
 
 ## Forest Guard
 
@@ -175,9 +176,9 @@ Future effect:
 - Camera
 - HUD or objective banner
 - Dialog Panel
-- Chick placeholder
-- Rabbit placeholder
 - Slime placeholder
+- Bat placeholder
+- Rat placeholder
 - Forest Guard NPC
 - Forest Edge / dark tree wall
 - Forest Blocker
@@ -371,7 +372,7 @@ Player can:
 1. Spawn in Field.
 2. Read objective prompt.
 3. Move around Field.
-4. See Chick, Rabbit, and Slime placeholders.
+4. See Slime, Bat, and Rat placeholders.
 5. See Forest Edge and blocked Forest path.
 6. Talk to Forest Guard.
 7. Use portal to request Town transition.
@@ -381,7 +382,7 @@ Player can:
 1. Enter Field from Town portal.
 2. Show objective prompt: `Objective: Find the Forest path.`
 3. Click ground to move around Field; camera follows Player.
-4. See Chick, Rabbit, Slime, Forest Edge, Forest Guard, and Town Portal in 1080p viewport.
+4. See Slime, Bat, Rat, Forest Edge, Forest Guard, and Town Portal in 1080p viewport.
 5. Click Forest Guard from far away; Player approaches before dialog opens.
 6. Talk to Forest Guard for paged certification warning dialog.
 7. Use `Next` to advance dialog pages; use `Close` to exit dialog.
