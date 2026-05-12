@@ -228,12 +228,14 @@ text = "NPC"
 
 [node name="BodyLabel" type="Label" parent="UI/DialogPanel/VBox"]
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_font_sizes/font_size = 30
 autowrap_mode = 3
 text = "Hello."
 
 [node name="Buttons" type="HBoxContainer" parent="UI/DialogPanel/VBox"]
 layout_mode = 2
+alignment = 2
 
 [node name="AcceptQuestButton" type="Button" parent="UI/DialogPanel/VBox/Buttons"]
 layout_mode = 2

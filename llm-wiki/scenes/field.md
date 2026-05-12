@@ -119,10 +119,10 @@ Current Field combat scope is five Slimes, two Bats, and two Rats.
 
 ## Test Coverage
 
-- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, generated `FieldMap` and `FieldCollision`, north TownGateway placement, shared HUD, Inventory button/window and `I` key toggle, Apple shortcut use, removal of legacy primitive Field art and the old visible ForestBlocker bar, southeast Forest Guard/gateway placement, enemy collision rejection, spawn zone, enlarged Slime/Bat/Rat sprite and collision footprint, player approach spacing, per-enemy HP bars, removal of text-based enemy HP labels, click targeting without immediate aggro, player auto-attack, first-hit aggro, enemy Life damage, hit shake/flash, loot toast, chase, death removal/XP/drop grant, Guard dialog, QuestSystem Forest Guard checkpoint and Forest Gate objective progression, certified Forest Guard/Gateway open-path endpoint, Quest Window refresh, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
+- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, generated `FieldMap` and `FieldCollision`, north TownGateway placement, shared HUD, Inventory button/window and `I` key toggle, Apple shortcut use, removal of legacy primitive Field art and the old visible ForestBlocker bar, southeast Forest Guard/gateway placement, enemy collision rejection, spawn zone, enlarged Slime/Bat/Rat sprite and collision footprint, player approach spacing, per-enemy HP bars, removal of text-based enemy HP labels, click targeting without immediate aggro, player auto-attack, first-hit aggro, enemy Life damage, hit shake/flash, loot toast, chase, death removal/XP/drop grant, Guard dialog, bottom-right dialog buttons, QuestSystem Forest Guard checkpoint and Forest Gate objective progression, certified Forest Guard/Gateway open-path endpoint, Quest Window refresh, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
 - Gateway, NPC placement, biome, movement, enemy behavior, combat, drop, and dialog systems remain covered by their model/scene specs.
 
-Latest Field validation: Field scene specs included in the full suite. Full suite currently reports `349 tests, 349 passed, 0 failed`.
+Latest Field validation: Field scene specs included in the full suite. Full suite currently reports `351 tests, 351 passed, 0 failed`.
 
 ## Related
 

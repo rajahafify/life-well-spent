@@ -4,7 +4,7 @@
 
 ## QA Status
 
-- Automated suite: `349 tests, 349 passed, 0 failed`
+- Automated suite: `351 tests, 351 passed, 0 failed`
 - Manual QA: pass for MVP flow
 - Godot warnings/errors: headless suite passes. Current known non-failing output includes existing `assets-gallery.tscn` invalid UID fallback warnings and resource cleanup warnings.
 

@@ -634,6 +634,15 @@ func test_dialog_blocks_player_movement_and_pages() -> void:
 	assert_true(close.visible)
 
 
+func test_dialog_buttons_stick_to_bottom_right() -> void:
+	if root == null:
+		return
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	var buttons: HBoxContainer = root.get_node("UI/DialogPanel/VBox/Buttons") as HBoxContainer
+	assert_true((body.size_flags_vertical & Control.SIZE_EXPAND) == Control.SIZE_EXPAND)
+	assert_eq(BoxContainer.ALIGNMENT_END, buttons.alignment)
+
+
 func test_town_gateway_directly_requests_town_transition() -> void:
 	if root == null:
 		return

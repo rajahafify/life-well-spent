@@ -1,5 +1,11 @@
 # Wiki Log
 
+## [2026-05-13] style | Stick dialog buttons bottom-right
+
+- RED: added Town and Field scene specs for bottom-right dialog button layout.
+- Dialog body labels now expand vertically and dialog button rows align to the right in both Town and Field scenes.
+- Validation: full suite `351 tests, 351 passed, 0 failed`.
+
 ## [2026-05-13] fix | Gate dialog close to final page
 
 - RED: added scene specs for paged dialog Close visibility and the certified Forest endpoint copy.

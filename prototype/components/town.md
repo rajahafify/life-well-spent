@@ -329,6 +329,7 @@ Town uses primitive/SVG world art plus generated LPC character sprites for Playe
 - Interactable NPC zones: faint yellow rings.
 - HUD/dialog: dark translucent or parchment-like rectangles.
 - Dialog text uses 1080p-readable sizes: name 28, body 30, buttons 24.
+- Dialog buttons stay at the bottom-right of the dialog panel.
 - NPC overhead name labels are hidden by default; names appear in dialog only.
 - Dialog shows NPC face portrait above the dialog box using an AtlasTexture face crop from the NPC LPC spritesheet.
 - Dialog pages split on blank lines and advance with `Next`.

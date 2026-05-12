@@ -229,6 +229,7 @@ Each system should list:
 - `Next` advances pages.
 - `Next` hides on final page.
 - `Close` appears only on the final page and hides dialog.
+- Dialog action buttons stay at the bottom-right of the dialog panel.
 - Dialog blocks player movement.
 - Text must be readable at 1080p.
 - Portrait appears above dialog box.

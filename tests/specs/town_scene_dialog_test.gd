@@ -95,6 +95,13 @@ func test_dialog_text_is_large_enough_for_1080p() -> void:
 	assert_true(int(next.get_theme_font_size("font_size")) >= 24)
 
 
+func test_dialog_buttons_stick_to_bottom_right() -> void:
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	var buttons: HBoxContainer = root.get_node("UI/DialogPanel/VBox/Buttons") as HBoxContainer
+	assert_true((body.size_flags_vertical & Control.SIZE_EXPAND) == Control.SIZE_EXPAND)
+	assert_eq(BoxContainer.ALIGNMENT_END, buttons.alignment)
+
+
 func test_dialog_shows_npc_portrait_from_sprite_sheet_above_box() -> void:
 	_close_start_dialog()
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController

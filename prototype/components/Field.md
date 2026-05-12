@@ -418,6 +418,7 @@ Field now uses Kenney Tiny Town tile art imported from Tiled.
 - Enemy sprites are enlarged for gameplay readability, with HP bars repositioned below the larger footprint.
 - Forest Guard uses `assets/npcs/forest_guard.png`.
 - HUD/dialog uses the same Town dialog styling.
+- Dialog buttons stay at the bottom-right of the dialog panel.
 
 Color language:
 
