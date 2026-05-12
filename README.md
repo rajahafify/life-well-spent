@@ -7,12 +7,12 @@ Personal life-tracking / productivity game built in Godot 4.6.2.
 - Main menu routes to town hub.
 - Town hub has click-to-move player, camera follow, NPC dialog, daily task panel, and settings panel.
 - Field is playable with Town/Forest gateways, shared HUD, Slime/Bat/Rat enemy spawns, enemy HP bars, hit feedback, drops, and respawn polling.
-- Swordsman Guild certification is playable after the Forest Guard checkpoint and ends at a `To be continued` Forest endpoint.
+- Swordsman Guild certification is playable after the Forest Guard checkpoint and ends at the open Forest path prototype endpoint.
 - Quests can link to real-life tasks.
 - Completing life tasks grants XP; linked quest completion spends HP.
 - SaveManager serializes player, quest, and life-tracking state.
 - GDAI MCP remains enabled for editor use and is skipped during headless tests.
-- Test baseline: `348 tests, 348 passed, 0 failed`.
+- Test baseline: `349 tests, 349 passed, 0 failed`.
 
 ## Run Tests
 

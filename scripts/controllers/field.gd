@@ -4,7 +4,7 @@ class_name Field
 extends Node2D
 
 const TOWN_PATH := "res://scenes/town_scene.tscn"
-const FOREST_TO_BE_CONTINUED := "The Forest path opens. To be continued."
+const FOREST_TO_BE_CONTINUED := "The path to forest is open."
 const CAMERA_OFFSET := Vector2(0, -150)
 const FOREST_GUARD_DIALOG := "Stop.\n\nThe Demon King is gone.\nBut old places do not become safe overnight.\n\nThe Forest remembers what we forgot.\nReturn to Town.\nEarn certification from the Swordsman Guild."
 const ENEMY_VIEW_SCENE := preload("res://scenes/enemy_view.tscn")

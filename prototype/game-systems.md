@@ -228,7 +228,7 @@ Each system should list:
 - Dialog text splits into pages on blank lines.
 - `Next` advances pages.
 - `Next` hides on final page.
-- `Close` hides dialog.
+- `Close` appears only on the final page and hides dialog.
 - Dialog blocks player movement.
 - Text must be readable at 1080p.
 - Portrait appears above dialog box.
@@ -239,9 +239,10 @@ Each system should list:
 
 - On dialog open: page index = 0.
 - If more pages exist: show Next.
-- If final page: hide Next.
+- If more pages exist: hide Close.
+- If final page: hide Next and show Close.
 - If choice selected: run effect.
-- If Close pressed: hide dialog and portrait.
+- If Close pressed on the final page: hide dialog and portrait.
 
 ---
 

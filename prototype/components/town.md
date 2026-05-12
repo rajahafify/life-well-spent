@@ -400,7 +400,7 @@ Player can:
 6. Talk to Guildmaster for paged rebuilding hope dialog.
 7. Talk to Shopkeeper for paged ordinary-life dialog.
 8. Talk to Smith for paged old-tools dialog.
-9. Use `Next` to advance dialog pages; use `Close` to exit dialog.
+9. Use `Next` to advance dialog pages; `Close` appears only on the last dialog page.
 10. Walk into glowing Field gateway.
 11. Gateway records Field target and transitions directly.
 

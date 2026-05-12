@@ -622,12 +622,16 @@ func test_dialog_blocks_player_movement_and_pages() -> void:
 	var dialog = root.get_node("UI/DialogPanel")
 	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
 	var next: Button = root.get_node("UI/DialogPanel/VBox/Buttons/NextButton") as Button
+	var close: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CloseButton") as Button
 	assert_eq("Stop.", body.text)
+	assert_false(close.visible)
 	dialog.next_page()
 	assert_true(body.text.contains("Demon King"))
+	assert_false(close.visible)
 	dialog.next_page()
 	assert_true(body.text.contains("Forest remembers"))
 	assert_false(next.visible)
+	assert_true(close.visible)
 
 
 func test_town_gateway_directly_requests_town_transition() -> void:
@@ -671,7 +675,7 @@ func test_forest_gateway_shows_to_be_continued_after_swordsman_certification() -
 	root._on_forest_gateway_body_entered(player)
 	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
 	assert_eq("", root.requested_scene_path)
-	assert_true(body.text.contains("To be continued"))
+	assert_true(body.text.contains("The path to forest is open."))
 	assert_eq("enter_forest", QuestSystem.current_main_objective_id())
 
 
@@ -684,5 +688,7 @@ func test_forest_guard_interaction_after_certification_does_not_revert_objective
 	var guard: NpcController = root.get_node("ForestGuard") as NpcController
 	root.get_node("Player").global_position = guard.global_position + Vector2(40, 0)
 	guard.interacted.emit(guard)
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	assert_true(body.text.contains("The path to forest is open."))
 	root.close_dialog()
 	assert_eq("enter_forest", QuestSystem.current_main_objective_id())

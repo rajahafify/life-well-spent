@@ -233,9 +233,26 @@ func test_first_slice_dialog_hides_quest_buttons() -> void:
 	npc.interacted.emit(npc)
 	var accept: Button = root.get_node("UI/DialogPanel/VBox/Buttons/AcceptQuestButton") as Button
 	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
+	var next: Button = root.get_node("UI/DialogPanel/VBox/Buttons/NextButton") as Button
 	var close: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CloseButton") as Button
 	assert_false(accept.visible)
 	assert_false(complete.visible)
+	assert_eq(not next.visible, close.visible)
+
+
+func test_paged_dialog_hides_close_until_last_page() -> void:
+	_close_start_dialog()
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var dialog: TownDialogView = root.get_node("UI/DialogPanel") as TownDialogView
+	var next: Button = root.get_node("UI/DialogPanel/VBox/Buttons/NextButton") as Button
+	var close: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CloseButton") as Button
+	assert_true(next.visible)
+	assert_false(close.visible)
+	while next.visible:
+		dialog.next_page()
+	assert_false(next.visible)
 	assert_true(close.visible)
 
 

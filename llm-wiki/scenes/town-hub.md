@@ -177,7 +177,7 @@ Passed on 2026-05-11:
 - Far NPC sprite click moves Player toward NPC before dialog opens.
 - Dialog opens in talk range after an NPC sprite click.
 - Dialog pages advance with Next.
-- Close hides dialog.
+- Close appears on the final page and hides dialog.
 - Dialog blocks movement.
 - Camera follows Player with RO-style offset.
 - Field Gateway transitions directly to Field without physics-callback removal errors.

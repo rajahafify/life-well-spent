@@ -388,7 +388,7 @@ Current Field slice:
 
 Certified endpoint:
 
-- If player approaches Forest Gate after Swordsman Certification: show `The Forest path opens. To be continued.`
+- If player approaches Forest Gate after Swordsman Certification: show `The path to forest is open.`
 - If player talks to Forest Guard after Swordsman Certification: show the same endpoint and keep the quest objective on `Enter the Forest.`
 
 ## Permissions
@@ -487,7 +487,7 @@ Player can:
 8. Press `1` to consume Apple if hurt.
 9. Click Forest Guard from far away; Player approaches before dialog opens.
 10. Talk to Forest Guard for paged certification warning dialog.
-11. Use `Next` to advance dialog pages; use `Close` to exit dialog.
+11. Use `Next` to advance dialog pages; `Close` appears only on the last dialog page.
 12. Walk into Town Gateway.
 13. Gateway transitions directly to Town.
 
@@ -534,6 +534,6 @@ Player can:
 - [x] `Rebuilding Swordsman Guild` activates from the Forest Gateway flow.
 - [x] Enemy drops exist.
 - [x] Inventory/consume behavior exists in Field.
-- [x] Certified Forest Gateway shows `To be continued` instead of the original Guard block.
-- [x] Certified Forest Guard interaction shows `To be continued` without reverting the quest objective.
+- [x] Certified Forest Gateway shows the open-path endpoint instead of the original Guard block.
+- [x] Certified Forest Guard interaction shows the open-path endpoint without reverting the quest objective.
 - [ ] Weapon/armor equipment effects exist in Field.

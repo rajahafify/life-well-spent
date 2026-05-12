@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-13] fix | Gate dialog close to final page
+
+- RED: added scene specs for paged dialog Close visibility and the certified Forest endpoint copy.
+- Dialog Close now appears only on the last page while Next handles intermediate pages.
+- Certified Forest endpoint copy now reads `The path to forest is open.`
+- Validation: full suite `349 tests, 349 passed, 0 failed`.
+
 ## [2026-05-13] fix | Keep certified Forest objective stable
 
 - RED: added a Field scene regression spec for talking to Forest Guard after Swordsman certification.
