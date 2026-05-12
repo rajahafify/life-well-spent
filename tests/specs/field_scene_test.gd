@@ -51,6 +51,13 @@ func test_field_has_player_and_camera() -> void:
 	assert_not_null(root.get_node_or_null("Camera2D"), "Field should have Camera2D")
 
 
+func test_field_player_uses_age_stage_one_sprite() -> void:
+	if root == null:
+		return
+	var sprite := root.get_node("Player/Sprite") as Sprite2D
+	assert_true(sprite.texture.resource_path.ends_with("player_age_1.png"))
+
+
 func test_field_has_town_gateway_spawn_point_near_portal() -> void:
 	if root == null:
 		return

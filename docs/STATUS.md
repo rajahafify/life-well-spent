@@ -4,7 +4,7 @@
 
 ## QA Status
 
-- Automated suite: `354 tests, 354 passed, 0 failed`
+- Automated suite: `363 tests, 363 passed, 0 failed`
 - Manual QA: pass for MVP flow
 - Godot warnings/errors: headless suite passes. Current known non-failing output includes existing `assets-gallery.tscn` invalid UID fallback warnings and resource cleanup warnings.
 
@@ -25,6 +25,7 @@ Life Well Spent now has a playable MVP foundation:
 11. Field is playable with shared HUD, Slime/Bat/Rat combat, drops, respawn polling, Forest Guard gate, and extracted camera/spawn/combat helper controllers.
 12. Swordsman Guild certification is playable from the Guildmaster after the Forest Guard checkpoint, spends Max Life in three quest-completion steps, unlocks `swordsman_guild`, advances the quest objective to `Enter the Forest.`, and changes the Forest Guard and Forest gate to an open Forest path endpoint without reverting the objective.
 13. Town/Field movement supports updating the destination while the left mouse button is held, except while the pointer is over HUD controls.
+14. Player aging visuals are driven by Max Life: Town and Field start with `player_age_1.png`, certification at `60` Max Life uses `player_age_2.png`, and final certification at `20` or lower uses `player_age_3.png`.
 
 ## Architecture
 
@@ -51,6 +52,7 @@ MVC + SOLID remains active convention:
 | Quest lifecycle | `scripts/models/quest_manager.gd` | Catalog, active quests, linked life-task quests, side-chain steps, certifications, serialization. |
 | Life tracking | `scripts/models/life_tracker.gd` | Tasks, habits, daily completion, streaks, XP. |
 | Progression | `scripts/models/progression_model.gd` | Task completion -> XP, linked quest completion, facility unlocks, Swordsman certification steps. |
+| Player aging | `scripts/models/player_aging_model.gd` | Pure Max Life to sprite age-stage mapping for Town/Field player visuals. |
 | NPC data resources | `scripts/models/npc_definition.gd`, `resources/npc_definitions/` | Quest giver, vendor, facility role definitions. |
 | Dialog view | `scripts/views/town_dialog_view.gd` | Dumb dialog panel with button signals. |
 | Save manager | `scripts/managers/save_manager.gd` | Build/apply save data and JSON file round trip. |

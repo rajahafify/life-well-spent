@@ -366,6 +366,7 @@ Future rules:
 Current Field slice:
 
 - On scene start: show objective prompt.
+- On scene start: Player sprite is selected from Max Life through `PlayerAgingModel`.
 - On ground click while dialog is closed: route Player movement to `CharacterMovement`.
 - While left mouse is held and dialog is closed: keep updating Player movement destination to the mouse position.
 - While the pointer is over HUD controls: do not route mouse input to Player movement.
@@ -418,6 +419,7 @@ Field now uses Kenney Tiny Town tile art imported from Tiled.
 - Rat uses cataloged enemy sprite asset `rat`.
 - Enemy sprites are enlarged for gameplay readability, with HP bars repositioned below the larger footprint.
 - Forest Guard uses `assets/npcs/forest_guard.png`.
+- Player uses `assets/player_age_1.png`, `assets/player_age_2.png`, or `assets/player_age_3.png` depending on Max Life.
 - HUD/dialog uses the same Town dialog styling.
 - Dialog buttons stay at the bottom-right of the dialog panel.
 
@@ -499,6 +501,7 @@ Player can:
 - [x] Field scene root is named `Field`.
 - [x] Field script class is `Field`.
 - [x] Player spawns near the Town gateway on the north road.
+- [x] Player uses the age stage 1 sprite at default Max Life.
 - [x] Camera exists and follows Player.
 - [x] Town Portal exists.
 - [x] Objective prompt displays on scene start.

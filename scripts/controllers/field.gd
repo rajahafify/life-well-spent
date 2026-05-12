@@ -14,6 +14,7 @@ const ENEMY_BEHAVIOR_SCRIPT := preload("res://scripts/models/enemy_behavior_syst
 const COMBAT_SCRIPT := preload("res://scripts/models/combat_system.gd")
 const INVENTORY_SCRIPT := preload("res://scripts/models/inventory_model.gd")
 const DROP_SYSTEM_SCRIPT := preload("res://scripts/models/drop_system.gd")
+const PLAYER_AGING_SCRIPT := preload("res://scripts/models/player_aging_model.gd")
 const DAMAGE_TEXT_SCRIPT := preload("res://scripts/views/damage_text_component.gd")
 const FIELD_CAMERA_CONTROLLER_SCRIPT := preload("res://scripts/controllers/field_camera_controller.gd")
 const FIELD_ENEMY_SPAWN_CONTROLLER_SCRIPT := preload("res://scripts/controllers/field_enemy_spawn_controller.gd")
@@ -53,6 +54,7 @@ var _drop_system = DROP_SYSTEM_SCRIPT.new()
 var _camera_controller = FIELD_CAMERA_CONTROLLER_SCRIPT.new()
 var _spawn_controller = FIELD_ENEMY_SPAWN_CONTROLLER_SCRIPT.new()
 var _combat_controller = FIELD_COMBAT_CONTROLLER_SCRIPT.new()
+var _player_aging = PLAYER_AGING_SCRIPT.new()
 var _local_inventory_model = null
 var _player_damage_label: Label
 var _player_damage_text
@@ -79,6 +81,7 @@ func _ready() -> void:
 	QuestSystem.setup_core_quests()
 	_connect_hud()
 	_update_quest_window()
+	_update_player_age_sprite()
 	_dialog_view.hide_dialog()
 	_connect_dialog()
 	_connect_gateways()
@@ -126,6 +129,9 @@ func _cleanup_combat_refs() -> void:
 	if _combat_controller:
 		_combat_controller.free()
 		_combat_controller = null
+	if _player_aging:
+		_player_aging.free()
+		_player_aging = null
 	if _local_inventory_model:
 		_local_inventory_model.free()
 		_local_inventory_model = null
@@ -664,6 +670,27 @@ func _npc_portrait_texture(npc: NpcController) -> Texture2D:
 func _update_quest_window() -> void:
 	if _hud:
 		_hud.show_quest("Explore the World", QuestSystem.current_main_objective_text(), QuestSystem.current_main_checkpoint_text())
+
+
+func _update_player_age_sprite() -> void:
+	if _player_aging == null:
+		return
+	var sprite := _player.get_node_or_null("Sprite") as Sprite2D
+	if sprite:
+		sprite.texture = _load_texture(_player_aging.texture_path_for_max_hp(player_max_life))
+
+
+func _load_texture(texture_path: String) -> Texture2D:
+	if ResourceLoader.exists(texture_path):
+		var imported := load(texture_path) as Texture2D
+		if imported:
+			return imported
+	var image := Image.new()
+	if image.load(texture_path) != OK:
+		return null
+	var texture := ImageTexture.create_from_image(image)
+	texture.resource_path = texture_path
+	return texture
 
 
 func _hud_blocks_world_mouse(screen_position: Vector2) -> bool:

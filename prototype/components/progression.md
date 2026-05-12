@@ -47,6 +47,7 @@ Current implemented pieces:
 - Field activates `Rebuilding Swordsman Guild`.
 - `PlayerStats` supports Life, Max Life, XP, death, rebirth, facilities, and serialization.
 - `ProgressionModel` links real-life task completion, XP, quest completion, and facility unlock hooks.
+- `PlayerAgingModel` maps Max Life pressure to three greyer player sprite stages.
 - Town Guildmaster can react to `QuestSystem.current_main_objective_id()`.
 - Shared HUD shows Life / Max Life through Town and Field.
 
@@ -114,7 +115,7 @@ Effects:
 - Max Life: `100 -> 60`
 - Current Life clamps to `60`
 - `swordsman_chain_step = 1`
-- Aging state becomes `1`
+- Player sprite changes to aging stage 2, `assets/player_age_2.png`
 - Swordsman Guild remains locked
 
 ### Step 4 - Certification Step 2
@@ -126,7 +127,7 @@ Effects:
 - Max Life: `60 -> 20`
 - Current Life clamps to `20`
 - `swordsman_chain_step = 2`
-- Aging state becomes `2`
+- Player sprite changes to aging stage 3, `assets/player_age_3.png`
 - Swordsman Guild remains locked
 
 ### Step 5 - Certification Step 3
@@ -205,7 +206,7 @@ Progression writes:
 - checkpoint completion
 - Max Life spending
 - current Life clamping
-- aging state
+- aging sprite state
 - Swordsman Guild unlock state
 - game over request
 - future persistent meta unlocks
@@ -227,7 +228,7 @@ Implemented in the certification slice:
 
 - Certify
 - Spend Max Life
-- Age
+- Age visually
 - Unlock Guild
 - Persist Unlock
 - Change Gate State
@@ -356,6 +357,7 @@ Swordsman Guild unlock visual language:
 Life-spend feedback:
 
 - Life / Max Life changes must be immediately visible.
+- Player appearance changes with Max Life loss: `100` uses `player_age_1.png`, `60` uses `player_age_2.png`, and `20` or lower uses `player_age_3.png`.
 - Certification should not look like damage from an enemy.
 - Use dialog copy and UI timing to frame it as a chosen sacrifice.
 

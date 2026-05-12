@@ -185,6 +185,7 @@ Old roads have a way of calling again.
 - Player
 - Camera
 - Shared HUD
+- Player aging sprites: `assets/player_age_1.png`, `assets/player_age_2.png`, `assets/player_age_3.png`
 - Start/reborn dialog
 - Dialog Panel
 - Shop building
@@ -265,6 +266,7 @@ Town must show the start/reborn copy through the dialog panel.
 - Shop and Blacksmith services are not available yet.
 - Guildmaster reacts when QuestSystem says the main objective is `Get Swordsman Certification`.
 - Guildmaster certification uses quest completion: each complete press spends Max Life and advances the `Rebuilding Swordsman Guild` side-chain step.
+- Guildmaster certification refreshes the player sprite after Max Life changes.
 
 Future rules:
 
@@ -298,6 +300,9 @@ Future conditions:
 - If `swordsman_chain_step = 1`: Guildmaster offers step 2.
 - If `swordsman_chain_step = 2`: Guildmaster offers step 3.
 - If `swordsman_chain_step = 3`: Swordsman Guild is unlocked, Game Over requested.
+- If Max Life is `100`: Player uses `player_age_1.png`.
+- If Max Life is `60`: Player uses `player_age_2.png`.
+- If Max Life is `20` or lower: Player uses `player_age_3.png`.
 
 ## Permissions
 
@@ -335,6 +340,7 @@ Town uses primitive/SVG world art plus generated LPC character sprites for Playe
 - Dialog shows NPC face portrait above the dialog box using an AtlasTexture face crop from the NPC LPC spritesheet.
 - Dialog pages split on blank lines and advance with `Next`.
 - Character idle uses calm walk-row standing frames instead of LPC spellcast/prayer rows.
+- Player visual aging uses greyer LPC sprites as Max Life is spent.
 - Town NPC idle cycles use different intervals for subtle desync.
 - World primitive `Control` nodes use `mouse_filter = ignore` so ground clicks reach Town movement.
 - Project viewport: 1920×1080.
@@ -437,3 +443,5 @@ Player can:
 - [ ] World primitives ignore mouse input so ground click-to-move works.
 - [ ] Guildmaster, Shopkeeper, and Smith use distinct generated LPC sprites.
 - [ ] Guildmaster, Shopkeeper, and Smith scale to `Vector2(2, 2)` to match player size.
+- [x] Player starts with age stage 1 sprite.
+- [x] Certification Max Life spend updates the player aging sprite.

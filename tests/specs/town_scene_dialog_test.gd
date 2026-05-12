@@ -156,6 +156,8 @@ func test_guildmaster_certification_completion_spends_life_to_60() -> void:
 	assert_eq(60, root.player_stats.max_hp)
 	assert_eq(1, QuestSystem.side_quest_step("rebuilding_swordsman_guild"))
 	assert_eq("Life: 60/60", (root.get_node("UI/LifeLabel") as Label).text)
+	var sprite := root.get_node("Player/Sprite") as Sprite2D
+	assert_true(sprite.texture.resource_path.ends_with("player_age_2.png"))
 
 
 func test_guildmaster_final_certification_unlocks_achievement() -> void:
@@ -174,6 +176,14 @@ func test_guildmaster_final_certification_unlocks_achievement() -> void:
 	assert_true(root.player_stats.game_over_requested)
 	assert_true(body.text.contains("SWORDSMAN GUILD UNLOCKED"))
 	assert_eq("enter_forest", QuestSystem.current_main_objective_id())
+	var sprite := root.get_node("Player/Sprite") as Sprite2D
+	assert_true(sprite.texture.resource_path.ends_with("player_age_3.png"))
+
+
+func test_town_player_starts_with_age_stage_one_sprite() -> void:
+	_close_start_dialog()
+	var sprite := root.get_node("Player/Sprite") as Sprite2D
+	assert_true(sprite.texture.resource_path.ends_with("player_age_1.png"))
 
 
 func test_town_follow_held_mouse_updates_player_destination() -> void:

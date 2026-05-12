@@ -8,6 +8,7 @@ const CAMERA_OFFSET := Vector2(0, -150)
 const INVENTORY_SCRIPT := preload("res://scripts/models/inventory_model.gd")
 const PLAYER_STATS_SCRIPT := preload("res://scripts/models/player_stats.gd")
 const PROGRESSION_SCRIPT := preload("res://scripts/models/progression_model.gd")
+const PLAYER_AGING_SCRIPT := preload("res://scripts/models/player_aging_model.gd")
 const REBORN_DIALOG := "You have been reborn.\nWill you spend this life well?"
 
 @onready var _dialog_view: TownDialogView = $UI/DialogPanel
@@ -20,6 +21,7 @@ var player_stats: PlayerStats = PLAYER_STATS_SCRIPT.new()
 var _pending_npc: NpcController
 var _local_inventory_model = null
 var _progression = null
+var _player_aging = PLAYER_AGING_SCRIPT.new()
 
 
 func _exit_tree() -> void:
@@ -29,6 +31,9 @@ func _exit_tree() -> void:
 	if _progression:
 		_progression.free()
 		_progression = null
+	if _player_aging:
+		_player_aging.free()
+		_player_aging = null
 	if player_stats:
 		player_stats.free()
 		player_stats = null
@@ -39,6 +44,7 @@ func _ready() -> void:
 	_progression = PROGRESSION_SCRIPT.new(player_stats, QuestSystem.quests, null)
 	_connect_hud()
 	_update_quest_window()
+	_update_player_age_sprite()
 	_connect_dialog()
 	_show_reborn_dialog_once()
 	_connect_portal()
@@ -187,6 +193,7 @@ func _on_complete_quest_requested() -> void:
 	if not _progression.complete_swordsman_certification_step():
 		return
 	_update_life_hud()
+	_update_player_age_sprite()
 	_update_quest_window()
 	if QuestSystem.has_certification("swordsman_certification"):
 		_dialog_view.set_body("SWORDSMAN GUILD UNLOCKED\n\nYou spent this life well.\n\nTo be continued.")
@@ -200,6 +207,27 @@ func _on_complete_quest_requested() -> void:
 func _update_life_hud() -> void:
 	if _hud:
 		_hud.set_life(player_stats.max_hp, player_stats.max_hp)
+
+
+func _update_player_age_sprite() -> void:
+	if _player_aging == null:
+		return
+	var sprite := _player.get_node_or_null("Sprite") as Sprite2D
+	if sprite:
+		sprite.texture = _load_texture(_player_aging.texture_path_for_max_hp(player_stats.max_hp))
+
+
+func _load_texture(texture_path: String) -> Texture2D:
+	if ResourceLoader.exists(texture_path):
+		var imported := load(texture_path) as Texture2D
+		if imported:
+			return imported
+	var image := Image.new()
+	if image.load(texture_path) != OK:
+		return null
+	var texture := ImageTexture.create_from_image(image)
+	texture.resource_path = texture_path
+	return texture
 
 
 func _hud_blocks_world_mouse(screen_position: Vector2) -> bool:

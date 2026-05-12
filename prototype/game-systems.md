@@ -577,3 +577,42 @@ Each system should list:
 - If object is world primitive Control: mouse filter ignore.
 - If NPC is in Town/Field: use unique generated sprite where available.
 - If UI is dialog: use padded dark panel.
+
+---
+
+## 12. Player Aging Visual System
+
+**Core idea:** Max Life sacrifice changes the player sprite so progression pressure is visible on the character, not only the HUD.
+
+### Verbs
+
+- Age
+- Show
+- Reset
+
+### Components
+
+- `PlayerAgingModel`
+- Player `Sprite2D`
+- Town controller sprite refresh
+- Field controller sprite refresh
+- Three greyer LPC player sprites
+
+### Resources
+
+- Max Life
+- `assets/player_age_1.png`
+- `assets/player_age_2.png`
+- `assets/player_age_3.png`
+
+### Rules
+
+- Max Life above `60` uses age stage 1.
+- Max Life `60` through `21` uses age stage 2.
+- Max Life `20` or lower uses age stage 3.
+- Aging sprites are presentation only; Life and quest rules stay in progression models.
+
+### Conditions
+
+- On Town or Field scene start: select the sprite from current Max Life.
+- After Guildmaster certification spends Max Life: refresh the Town player sprite.
