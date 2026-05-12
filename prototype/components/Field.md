@@ -163,7 +163,8 @@ Current combat behavior:
 - Defeated enemy slots stay gone across portal changes and become available after the global 60 second respawn timer.
 - Respawned slots pick a fresh valid random position in `SpawnZones/Grassland`.
 - Field polls the spawn manager while loaded, so eligible enemies respawn after the timer without requiring another portal transition.
-- Slime, Bat, and Rat each have a 1-in-5 chance to drop their material and a 1-in-5 chance to drop `apple`.
+- Slime, Bat, and Rat each have a 1-in-5 chance to drop their material.
+- Rare drops are 1-in-20: Slime -> `apple`, Bat -> `training_sword`, Rat -> `leather_armor`.
 - Enemy sprites render larger in Field, with larger click collision and wider player/enemy spacing so enemies do not stand underneath the player sprite.
 - Shortcut slot `1` starts mapped to `apple`; pressing `1` in Field uses one Apple if available and current Life is below Max Life.
 

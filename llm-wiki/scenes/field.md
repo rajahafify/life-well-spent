@@ -110,7 +110,7 @@ Current Field combat scope is five Slimes, two Bats, and two Rats.
 - Enemy death plays `death`, waits `death_duration`, removes the node, awards XP, and marks the persistent spawn slot defeated.
 - Enemy death also grants item drops from `EnemyDefinition.drop_table`, with chance rolls handled by `DropSystem`.
 - Current material drops are 20% chance: Slime -> `slime_gel`, Bat -> `bat_wing`, Rat -> `rat_tail`.
-- Current chance drop: all Field enemies have a 1-in-5 chance to also drop `apple`.
+- Current rare drops are 5% chance: Slime -> `apple`, Bat -> `training_sword`, Rat -> `leather_armor`.
 - Drop grants show a short `+ item xN` loot toast.
 - Pressing shortcut `1` uses Apple if the player has one and current Life is below Max Life. Apple heals up to 20 current Life, consumes one stack item, and cannot restore Max Life.
 - Inventory overlay: `scenes/ui/inventory_window.tscn`, opened by `SharedHUDView`.

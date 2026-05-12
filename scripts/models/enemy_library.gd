@@ -3,9 +3,13 @@ class_name EnemyLibrary
 extends Object
 
 const ENEMY_DEFINITION_SCRIPT := preload("res://scripts/models/enemy_definition.gd")
-const APPLE_DROP := {"item_id": "apple", "quantity": 1, "chance_numerator": 1, "chance_denominator": 5}
 const MATERIAL_CHANCE_NUMERATOR := 1
 const MATERIAL_CHANCE_DENOMINATOR := 5
+const RARE_CHANCE_NUMERATOR := 1
+const RARE_CHANCE_DENOMINATOR := 20
+const APPLE_DROP := {"item_id": "apple", "quantity": 1, "chance_numerator": RARE_CHANCE_NUMERATOR, "chance_denominator": RARE_CHANCE_DENOMINATOR}
+const BAT_WEAPON_DROP := {"item_id": "training_sword", "quantity": 1, "chance_numerator": RARE_CHANCE_NUMERATOR, "chance_denominator": RARE_CHANCE_DENOMINATOR}
+const RAT_ARMOR_DROP := {"item_id": "leather_armor", "quantity": 1, "chance_numerator": RARE_CHANCE_NUMERATOR, "chance_denominator": RARE_CHANCE_DENOMINATOR}
 
 const REGISTRY := {
 	"slime_spiked": {
@@ -38,7 +42,7 @@ const REGISTRY := {
 		"xp_reward": 4,
 		"drop_table": [
 			{"item_id": "bat_wing", "quantity": 1, "chance_numerator": MATERIAL_CHANCE_NUMERATOR, "chance_denominator": MATERIAL_CHANCE_DENOMINATOR},
-			APPLE_DROP,
+			BAT_WEAPON_DROP,
 		],
 		"move_speed": 70.0,
 		"chase_speed": 95.0,
@@ -59,7 +63,7 @@ const REGISTRY := {
 		"xp_reward": 3,
 		"drop_table": [
 			{"item_id": "rat_tail", "quantity": 1, "chance_numerator": MATERIAL_CHANCE_NUMERATOR, "chance_denominator": MATERIAL_CHANCE_DENOMINATOR},
-			APPLE_DROP,
+			RAT_ARMOR_DROP,
 		],
 		"move_speed": 75.0,
 		"chase_speed": 105.0,

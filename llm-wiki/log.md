@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-13] balance | Add rare enemy loot drops
+
+- RED: updated EnemyBehaviorSystem and Field specs so enemy loot tables expose the requested 5% rare drops.
+- Slime keeps `slime_gel` at 20% and now drops `apple` at 5%; Bat keeps `bat_wing` at 20% and can drop `training_sword` at 5%; Rat keeps `rat_tail` at 20% and can drop `leather_armor` at 5%.
+- Updated prototype and wiki docs for the material and rare drop split.
+- Validation: full suite `385 tests, 385 passed, 0 failed`.
+
 ## [2026-05-13] balance | Make material drops 20 percent
 
 - RED: updated EnemyBehaviorSystem and Field specs so Slime, Bat, and Rat material drops use `chance_numerator = 1`, `chance_denominator = 5`.

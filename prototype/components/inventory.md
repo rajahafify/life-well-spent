@@ -17,7 +17,9 @@ Current implementation:
 - Slime has a 20% chance to drop `slime_gel`.
 - Bat has a 20% chance to drop `bat_wing`.
 - Rat has a 20% chance to drop `rat_tail`.
-- Slime, Bat, and Rat each have a 1-in-5 chance to also drop `apple`.
+- Slime has a 5% chance to drop `apple`.
+- Bat has a 5% chance to drop `training_sword`.
+- Rat has a 5% chance to drop `leather_armor`.
 - The inventory window lists current slots above global item stacks.
 - The shared HUD shortcut bar renders pronounced white slots with dark borders.
 - Pressing shortcut `1` uses Apple in Field when available.

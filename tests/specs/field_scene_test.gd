@@ -366,7 +366,7 @@ func test_field_respawns_enemy_after_global_timer_while_loaded() -> void:
 	root.forced_drop_roll = 1
 	assert_eq([
 		{"item_id": "slime_gel", "quantity": 1, "chance_numerator": 1, "chance_denominator": 5},
-		{"item_id": "apple", "quantity": 1, "chance_numerator": 1, "chance_denominator": 5},
+		{"item_id": "apple", "quantity": 1, "chance_numerator": 1, "chance_denominator": 20},
 	], root.enemy_state("field_slime_001").drop_table)
 	assert_true(root._drop_succeeds(root.enemy_state("field_slime_001").drop_table[0]))
 	assert_false(root.enemy_state("field_slime_001").reward_granted)
