@@ -344,6 +344,14 @@ func test_shortcut_one_without_apple_shows_feedback() -> void:
 	assert_eq(65, root.player_life)
 
 
+func test_forced_drop_roll_grants_chance_material() -> void:
+	if root == null:
+		return
+	root.forced_drop_roll = 1
+	root.grant_enemy_drops(root.enemy_state("field_slime_001"))
+	assert_eq(1, root.inventory.quantity("slime_gel"))
+
+
 func test_field_respawns_enemy_after_global_timer_while_loaded() -> void:
 	if root == null:
 		return
@@ -355,7 +363,13 @@ func test_field_respawns_enemy_after_global_timer_while_loaded() -> void:
 	slime.global_position = Vector2(530, 500)
 	root.enemy_state("field_slime_001").position = slime.global_position
 	root.enemy_state("field_slime_001").hp = 1
-	root.forced_drop_roll = 5
+	root.forced_drop_roll = 1
+	assert_eq([
+		{"item_id": "slime_gel", "quantity": 1, "chance_numerator": 1, "chance_denominator": 5},
+		{"item_id": "apple", "quantity": 1, "chance_numerator": 1, "chance_denominator": 5},
+	], root.enemy_state("field_slime_001").drop_table)
+	assert_true(root._drop_succeeds(root.enemy_state("field_slime_001").drop_table[0]))
+	assert_false(root.enemy_state("field_slime_001").reward_granted)
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.1)
 	root._physics_process(0.8)
@@ -490,7 +504,6 @@ func test_slime_dies_plays_death_before_removal() -> void:
 	slime.global_position = Vector2(530, 500)
 	root.enemy_state("field_slime_001").position = slime.global_position
 	root.enemy_state("field_slime_001").hp = 1
-	root.forced_drop_roll = 5
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.1)
 	assert_true(root.has_enemy("field_slime_001"))
@@ -499,17 +512,12 @@ func test_slime_dies_plays_death_before_removal() -> void:
 	var sprite := slime.get_node("AnimatedSprite2D") as AnimatedSprite2D
 	assert_eq("death", sprite.animation)
 	assert_eq(5, root.player_xp)
-	assert_eq(1, root.inventory.quantity("slime_gel"))
 	assert_true(root.has_method("_drop_succeeds"), "Field should roll chance-based drops")
 	assert_true(root._drop_succeeds({"chance_numerator": 1, "chance_denominator": 5}, 1))
 	assert_false(root._drop_succeeds({"chance_numerator": 1, "chance_denominator": 5}, 2))
 	assert_true(root._drop_succeeds({"item_id": "slime_gel"}, 5), "Drops without chance fields should stay guaranteed")
+	assert_false(root._drop_succeeds({"item_id": "slime_gel", "chance_numerator": 1, "chance_denominator": 5}, 2), "Material drops should now use 20 percent chance")
 	var loot_toast := root.get_node("UI/LootToast") as Label
-	assert_true(loot_toast.visible)
-	assert_eq("+ slime_gel x1", loot_toast.text)
-	root.toggle_inventory_window()
-	var item_list := root.get_node("UI/InventoryWindow/VBox/ItemList") as VBoxContainer
-	assert_eq("slime_gel x1", (item_list.get_child(0) as Label).text)
 	root._physics_process(1.7)
 	assert_false(loot_toast.visible)
 	root._physics_process(0.8)
@@ -547,6 +555,7 @@ func test_bat_drop_advances_swordsman_guild_gather_objective() -> void:
 	bat.global_position = Vector2(530, 500)
 	root.enemy_state("field_bat_001").position = bat.global_position
 	root.enemy_state("field_bat_001").hp = 1
+	root.forced_drop_roll = 1
 	root.engage_enemy("field_bat_001")
 	root._physics_process(1.1)
 	assert_eq(1, root.inventory.quantity("bat_wing"))

@@ -52,7 +52,7 @@ func apply_dict(data: Dictionary) -> void
 
 - `tests/specs/inventory_model_test.gd` covers empty state, starter equipment slots, starter shortcut slot, stack adds, consume behavior, invalid add rejection, slot setter rejection, shortcut assignment bounds, save round-trip, slot summary text, public sorted `items_list()` rows, and item summary text.
 - `tests/specs/inventory_system_test.gd` covers global stack counts, starter slot access through the shared HUD model, and reset restoring starter slots.
-- `tests/specs/field_scene_test.gd` covers Field granting `slime_gel` when a Slime is defeated and consuming Apple through the shortcut bar.
+- `tests/specs/field_scene_test.gd` covers Field granting `slime_gel` on a forced successful Slime material-drop roll and consuming Apple through the shortcut bar.
 
 ## Related
 

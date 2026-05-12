@@ -163,7 +163,7 @@ Current combat behavior:
 - Defeated enemy slots stay gone across portal changes and become available after the global 60 second respawn timer.
 - Respawned slots pick a fresh valid random position in `SpawnZones/Grassland`.
 - Field polls the spawn manager while loaded, so eligible enemies respawn after the timer without requiring another portal transition.
-- Slime, Bat, and Rat each keep their guaranteed material drop and have a 1-in-5 chance to also drop `apple`.
+- Slime, Bat, and Rat each have a 1-in-5 chance to drop their material and a 1-in-5 chance to drop `apple`.
 - Enemy sprites render larger in Field, with larger click collision and wider player/enemy spacing so enemies do not stand underneath the player sprite.
 - Shortcut slot `1` starts mapped to `apple`; pressing `1` in Field uses one Apple if available and current Life is below Max Life.
 
@@ -383,7 +383,7 @@ Current Field slice:
 - On enemy attack interval: enemy damages current Life.
 - On enemy HP `<= 0`: enemy dies, is removed after death animation timing, and grants XP once.
 - On enemy reward grant while Swordsman Guild certification is active: matching Slime/Rat defeats or Bat Wing drops advance the current Guildmaster objective.
-- On enemy reward grant: guaranteed material drops and rolled chance drops are added to `InventoryModel`.
+- On enemy reward grant: rolled material and Apple chance drops are added to `InventoryModel`.
 - On shortcut `1` with Apple available and Life below Max Life: consume one Apple, heal up to 20 current Life, refresh Life HUD, and show a loot toast.
 - On shortcut `1` with no Apple: show `No apple`.
 - On shortcut `1` at full Life: show `Life is full` and do not consume Apple.
@@ -489,7 +489,7 @@ Player can:
 4. See enemies, Forest edge, Forest Guard, and Town Portal.
 5. Click enemy; Player approaches and auto-attacks in range.
 6. Enemy aggros after first hit, chases if Player moves, attacks current Life, then dies/removes at HP `<= 0`.
-7. Enemy death grants guaranteed material drop plus possible Apple chance drop.
+7. Enemy death can grant material and Apple chance drops.
 8. Press `1` to consume Apple if hurt.
 9. Click Forest Guard from far away; Player approaches before dialog opens.
 10. Talk to Forest Guard for paged certification warning dialog.

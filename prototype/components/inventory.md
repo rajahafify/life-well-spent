@@ -14,9 +14,9 @@ Current implementation:
 - Inventory state has three dedicated slots: `weapon_slot`, `armor_slot`, and `consumable_slot`.
 - Inventory state has 9 shortcut slots mapped to number keys `1` through `9`; slot 1 starts as `apple`.
 - Starter slots are `wooden_sword`, `cloth_armor`, and `apple`.
-- Slime drops `slime_gel`.
-- Bat drops `bat_wing`.
-- Rat drops `rat_tail`.
+- Slime has a 20% chance to drop `slime_gel`.
+- Bat has a 20% chance to drop `bat_wing`.
+- Rat has a 20% chance to drop `rat_tail`.
 - Slime, Bat, and Rat each have a 1-in-5 chance to also drop `apple`.
 - The inventory window lists current slots above global item stacks.
 - The shared HUD shortcut bar renders pronounced white slots with dark borders.

@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-13] balance | Make material drops 20 percent
+
+- RED: updated EnemyBehaviorSystem and Field specs so Slime, Bat, and Rat material drops use `chance_numerator = 1`, `chance_denominator = 5`.
+- Material drops now roll at 20% instead of dropping 100%; Apple remains a separate 20% chance drop.
+- Field quest gather specs force successful drop rolls where deterministic Bat Wing progress is needed.
+- Validation: full suite `385 tests, 385 passed, 0 failed`.
+
 ## [2026-05-13] design | Change Guildmaster step two to gathering
 
 - RED: added QuestManager and Field specs for Bat Wing gather objective progress and enemy-defeat filtering on gather objectives.

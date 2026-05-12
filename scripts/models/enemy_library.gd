@@ -4,6 +4,8 @@ extends Object
 
 const ENEMY_DEFINITION_SCRIPT := preload("res://scripts/models/enemy_definition.gd")
 const APPLE_DROP := {"item_id": "apple", "quantity": 1, "chance_numerator": 1, "chance_denominator": 5}
+const MATERIAL_CHANCE_NUMERATOR := 1
+const MATERIAL_CHANCE_DENOMINATOR := 5
 
 const REGISTRY := {
 	"slime_spiked": {
@@ -14,7 +16,7 @@ const REGISTRY := {
 		"defense": 10,
 		"xp_reward": 5,
 		"drop_table": [
-			{"item_id": "slime_gel", "quantity": 1},
+			{"item_id": "slime_gel", "quantity": 1, "chance_numerator": MATERIAL_CHANCE_NUMERATOR, "chance_denominator": MATERIAL_CHANCE_DENOMINATOR},
 			APPLE_DROP,
 		],
 		"move_speed": 45.0,
@@ -35,7 +37,7 @@ const REGISTRY := {
 		"defense": 0,
 		"xp_reward": 4,
 		"drop_table": [
-			{"item_id": "bat_wing", "quantity": 1},
+			{"item_id": "bat_wing", "quantity": 1, "chance_numerator": MATERIAL_CHANCE_NUMERATOR, "chance_denominator": MATERIAL_CHANCE_DENOMINATOR},
 			APPLE_DROP,
 		],
 		"move_speed": 70.0,
@@ -56,7 +58,7 @@ const REGISTRY := {
 		"defense": 0,
 		"xp_reward": 3,
 		"drop_table": [
-			{"item_id": "rat_tail", "quantity": 1},
+			{"item_id": "rat_tail", "quantity": 1, "chance_numerator": MATERIAL_CHANCE_NUMERATOR, "chance_denominator": MATERIAL_CHANCE_DENOMINATOR},
 			APPLE_DROP,
 		],
 		"move_speed": 75.0,

@@ -47,7 +47,7 @@ func test_slime_definition_is_tweakable_and_uses_life_combat_values() -> void:
 	assert_eq(10, slime.defense)
 	assert_eq(5, slime.xp_reward)
 	assert_eq([
-		{"item_id": "slime_gel", "quantity": 1},
+		{"item_id": "slime_gel", "quantity": 1, "chance_numerator": 1, "chance_denominator": 5},
 		{"item_id": "apple", "quantity": 1, "chance_numerator": 1, "chance_denominator": 5},
 	], slime.drop_table)
 	assert_eq(0.0, slime.aggro_radius)
@@ -71,7 +71,7 @@ func test_bat_and_rat_definitions_are_available_for_field() -> void:
 	assert_eq(2, bat.attack)
 	assert_eq(4, bat.xp_reward)
 	assert_eq([
-		{"item_id": "bat_wing", "quantity": 1},
+		{"item_id": "bat_wing", "quantity": 1, "chance_numerator": 1, "chance_denominator": 5},
 		{"item_id": "apple", "quantity": 1, "chance_numerator": 1, "chance_denominator": 5},
 	], bat.drop_table)
 	assert_eq("rat", rat.enemy_id)
@@ -80,7 +80,7 @@ func test_bat_and_rat_definitions_are_available_for_field() -> void:
 	assert_eq(2, rat.attack)
 	assert_eq(3, rat.xp_reward)
 	assert_eq([
-		{"item_id": "rat_tail", "quantity": 1},
+		{"item_id": "rat_tail", "quantity": 1, "chance_numerator": 1, "chance_denominator": 5},
 		{"item_id": "apple", "quantity": 1, "chance_numerator": 1, "chance_denominator": 5},
 	], rat.drop_table)
 
