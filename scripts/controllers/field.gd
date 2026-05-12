@@ -12,12 +12,16 @@ const ENEMY_STATE_SCRIPT := preload("res://scripts/models/enemy_state.gd")
 const ENEMY_BEHAVIOR_SCRIPT := preload("res://scripts/models/enemy_behavior_system.gd")
 const COMBAT_SCRIPT := preload("res://scripts/models/combat_system.gd")
 const INVENTORY_SCRIPT := preload("res://scripts/models/inventory_model.gd")
+const DAMAGE_TEXT_SCRIPT := preload("res://scripts/views/damage_text_component.gd")
 const ENEMY_COLLISION_RADIUS := 28.0
 const FIELD_MAP_ID := "field"
 const FIELD_BIOME_ID := "grassland"
 const FIELD_MAX_ACTIVE_ENEMIES := 9
 const FIELD_RESPAWN_DELAY := 60.0
 const ENEMY_SPAWN_POLL_INTERVAL := 1.0
+const CAMERA_SHAKE_DURATION := 0.16
+const CAMERA_SHAKE_STRENGTH := 8.0
+const LOOT_TOAST_DURATION := 1.4
 
 @onready var _dialog_view: TownDialogView = $UI/DialogPanel
 @onready var _hud: CanvasLayer = $UI
@@ -29,7 +33,7 @@ const ENEMY_SPAWN_POLL_INTERVAL := 1.0
 var requested_scene_path: String = ""
 var player_life: int = 100
 var player_max_life: int = 100
-var player_attack: int = 4
+var player_attack: int = 40
 var player_defense: int = 0
 var player_attack_interval: float = 1.0
 var player_attack_timer: float = 0.0
@@ -47,9 +51,13 @@ var _pending_npc: NpcController
 var _behavior = ENEMY_BEHAVIOR_SCRIPT.new()
 var _combat = COMBAT_SCRIPT.new()
 var _local_inventory_model = null
-var _slime_hp_label: Label
 var _player_damage_label: Label
+var _player_damage_text
 var _player_damage_timer: float = 0.0
+var _loot_toast_label: Label
+var _loot_toast_timer: float = 0.0
+var _camera_shake_timer: float = 0.0
+var _camera_shake_rng := RandomNumberGenerator.new()
 var _pending_forest_guard_checkpoint: bool = false
 
 
@@ -57,6 +65,9 @@ func _ready() -> void:
 	if _is_test_run():
 		EnemySpawnManager.reset()
 		QuestSystem.reset()
+		var test_feedback_system := _feedback_system()
+		if test_feedback_system:
+			test_feedback_system.reset()
 		var test_inventory_system := _inventory_system()
 		if test_inventory_system:
 			test_inventory_system.reset()
@@ -72,6 +83,7 @@ func _ready() -> void:
 	_connect_gateways()
 	_connect_forest_guard()
 	_ensure_combat_ui()
+	_camera_shake_rng.randomize()
 	_spawn_initial_slime()
 	_update_combat_ui()
 	_update_camera()
@@ -141,6 +153,8 @@ func _physics_process(delta: float) -> void:
 		_pending_npc = null
 		_open_dialog(npc)
 	_tick_player_damage_label(delta)
+	_tick_loot_toast(delta)
+	_tick_camera_shake(delta)
 	_tick_enemies(delta)
 	_tick_enemy_spawns(delta)
 	_tick_player_auto_attack(delta)
@@ -211,6 +225,8 @@ func _tick_player_auto_attack(delta: float) -> void:
 	player_attack_timer = 0.0
 	movement.play_attack("slash")
 	var result: Dictionary = _combat.player_attack_enemy(_player_combat_dict(), state.to_combat_dict())
+	_start_camera_shake()
+	_play_feedback_sfx("player_hit")
 	state.apply_combat_dict(result["enemy_state"])
 	state.is_aggro = true
 	if state.behavior_state != "die":
@@ -247,6 +263,8 @@ func _tick_enemies(delta: float) -> void:
 			var combat_result: Dictionary = _combat.enemy_attack_player(state.to_combat_dict(), _player_combat_dict())
 			_apply_player_combat_dict(combat_result["player_state"])
 			_show_player_damage(int(combat_result.get("damage", 1)))
+			_start_camera_shake()
+			_play_feedback_sfx("player_hurt")
 			var attack_view = enemy_views.get(instance_id, null)
 			if attack_view and attack_view.has_method("play_attack_feedback"):
 				attack_view.play_attack_feedback()
@@ -456,16 +474,6 @@ func _update_enemy_view(state) -> void:
 
 
 func _ensure_combat_ui() -> void:
-	_slime_hp_label = get_node_or_null("UI/SlimeHpLabel") as Label
-	if _slime_hp_label == null:
-		_slime_hp_label = Label.new()
-		_slime_hp_label.name = "SlimeHpLabel"
-		_slime_hp_label.offset_left = 28.0
-		_slime_hp_label.offset_top = 116.0
-		_slime_hp_label.offset_right = 360.0
-		_slime_hp_label.offset_bottom = 152.0
-		_slime_hp_label.add_theme_font_size_override("font_size", 26)
-		$UI.add_child(_slime_hp_label)
 	_player_damage_label = _player.get_node_or_null("DamageLabel") as Label
 	if _player_damage_label == null:
 		_player_damage_label = Label.new()
@@ -474,13 +482,38 @@ func _ensure_combat_ui() -> void:
 		_player_damage_label.add_theme_font_size_override("font_size", 24)
 		_player_damage_label.visible = false
 		_player.add_child(_player_damage_label)
+	_player_damage_text = _player.get_node_or_null("DamageTextComponent")
+	if _player_damage_text == null:
+		_player_damage_text = Node2D.new()
+		_player_damage_text.name = "DamageTextComponent"
+		_player_damage_text.set_script(DAMAGE_TEXT_SCRIPT)
+		_player.add_child(_player_damage_text)
+	_player_damage_text.label_name = "DamageLabel"
+	_player_damage_text.randomize_side = false
+	_player_damage_text.arc_side = -1.0
+	if _player_damage_text.has_method("ensure_ready"):
+		_player_damage_text.ensure_ready()
+	_loot_toast_label = get_node_or_null("UI/LootToast") as Label
+	if _loot_toast_label == null:
+		_loot_toast_label = Label.new()
+		_loot_toast_label.name = "LootToast"
+		_loot_toast_label.offset_left = 28.0
+		_loot_toast_label.offset_top = 166.0
+		_loot_toast_label.offset_right = 460.0
+		_loot_toast_label.offset_bottom = 206.0
+		_loot_toast_label.add_theme_font_size_override("font_size", 24)
+		_loot_toast_label.visible = false
+		$UI.add_child(_loot_toast_label)
 
 
 func _show_player_damage(damage: int) -> void:
-	if _player_damage_label:
+	if _player_damage_text and _player_damage_text.has_method("show_damage"):
+		_player_damage_text.show_damage(damage, Color(1.0, 0.2, 0.2, 1.0))
+	elif _player_damage_label:
 		_player_damage_label.text = str(damage)
+		_player_damage_label.add_theme_color_override("font_color", Color(1.0, 0.2, 0.2, 1.0))
 		_player_damage_label.visible = true
-		_player_damage_timer = 0.75
+	_player_damage_timer = 0.75
 
 
 func _tick_player_damage_label(delta: float) -> void:
@@ -491,20 +524,33 @@ func _tick_player_damage_label(delta: float) -> void:
 		_player_damage_label.visible = false
 
 
+func _show_loot_toast(text: String) -> void:
+	if _loot_toast_label:
+		_loot_toast_label.text = text
+		_loot_toast_label.visible = true
+		_loot_toast_timer = LOOT_TOAST_DURATION
+
+
+func _tick_loot_toast(delta: float) -> void:
+	if _loot_toast_timer <= 0.0:
+		return
+	_loot_toast_timer -= delta
+	if _loot_toast_timer <= 0.0 and _loot_toast_label:
+		_loot_toast_label.visible = false
+
+
 func _update_combat_ui() -> void:
 	if _hud:
 		_hud.set_life(player_life, player_max_life)
-	if _slime_hp_label:
-		if enemy_states.has("field_slime_001"):
-			var slime = enemy_states["field_slime_001"]
-			_slime_hp_label.text = "Slime: %d/%d" % [slime.hp, slime.max_hp]
-		else:
-			_slime_hp_label.text = "Slime: defeated"
 
 
 func _grant_enemy_drops(state) -> void:
 	for drop in state.drop_table:
-		inventory.add_item(str(drop.get("item_id", "")), int(drop.get("quantity", 1)))
+		var item_id := str(drop.get("item_id", ""))
+		var quantity := int(drop.get("quantity", 1))
+		if inventory.add_item(item_id, quantity):
+			_show_loot_toast("+ %s x%d" % [item_id, quantity])
+			_play_feedback_sfx("loot_drop")
 
 
 func _on_npc_interacted(npc: NpcController) -> void:
@@ -557,7 +603,27 @@ func _change_scene_to_file(scene_path: String) -> void:
 func _update_camera() -> void:
 	var camera := get_node_or_null("Camera2D") as Camera2D
 	if camera:
-		camera.global_position = _player.global_position + CAMERA_OFFSET
+		camera.global_position = _player.global_position + CAMERA_OFFSET + _camera_shake_offset()
+
+
+func _start_camera_shake() -> void:
+	_camera_shake_timer = CAMERA_SHAKE_DURATION
+
+
+func _tick_camera_shake(delta: float) -> void:
+	if _camera_shake_timer <= 0.0:
+		return
+	_camera_shake_timer = maxf(0.0, _camera_shake_timer - delta)
+
+
+func _camera_shake_offset() -> Vector2:
+	if _camera_shake_timer <= 0.0:
+		return Vector2.ZERO
+	var progress := _camera_shake_timer / CAMERA_SHAKE_DURATION
+	return Vector2(
+		_camera_shake_rng.randf_range(-CAMERA_SHAKE_STRENGTH, CAMERA_SHAKE_STRENGTH),
+		_camera_shake_rng.randf_range(-CAMERA_SHAKE_STRENGTH, CAMERA_SHAKE_STRENGTH)
+	) * progress
 
 
 func _npc_portrait_texture(npc: NpcController) -> Texture2D:
@@ -591,3 +657,15 @@ func _inventory_model_for_hud():
 	if system:
 		return system.model()
 	return inventory
+
+
+func _feedback_system() -> Node:
+	if not is_inside_tree():
+		return null
+	return get_node_or_null("/root/FeedbackSystem")
+
+
+func _play_feedback_sfx(sfx_name: String) -> void:
+	var system := _feedback_system()
+	if system and system.has_method("play_sfx"):
+		system.play_sfx(sfx_name)

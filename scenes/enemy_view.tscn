@@ -8,12 +8,14 @@ script = ExtResource("1_enemy_view")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(2, 2)
 
-[node name="HpLabel" type="Label" parent="."]
-offset_left = -48.0
-offset_top = -74.0
-offset_right = 120.0
-offset_bottom = -48.0
-theme_override_font_sizes/font_size = 18
-text = "Enemy: 1/1"
+[node name="HpBar" type="ProgressBar" parent="."]
+visible = false
+offset_left = -36.0
+offset_top = 52.0
+offset_right = 36.0
+offset_bottom = 57.0
+scale = Vector2(1, 0.18)
+mouse_filter = 2
+show_percentage = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

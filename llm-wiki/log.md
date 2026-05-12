@@ -1,5 +1,39 @@
 # Wiki Log
 
+## [2026-05-13] polish | Use enemy HP bars
+
+- RED: updated Field scene specs to require per-enemy `HpBar` progress bars and removal of text-based enemy HP labels.
+- Replaced `EnemyView` HP text with a local `ProgressBar` that tracks `state.hp / state.max_hp`.
+- Moved enemy HP bars below enemy sprites and scaled them thinner for a quieter combat read.
+- Enemy HP bars are hidden at full HP and become visible after that enemy takes damage.
+- Removed the temporary Field `UI/SlimeHpLabel`; enemy HP now follows each enemy view.
+- Validation: Field scene specs `27 tests, 27 passed`. Full suite remains blocked by the existing unrelated `EnemySpriteMetadataTest` frame-count mismatch.
+
+## [2026-05-13] polish | Enlarge combat damage text
+
+- RED: updated DamageTextComponent specs so new and existing damage labels must use a readable larger font.
+- Added a `font_size` export to `DamageTextComponent`, defaulting to 36, and enforce it when the component resolves its label.
+- Existing Field player damage labels now get resized by the component instead of staying at the earlier 24px label default.
+- Validation: DamageTextComponent specs `3 tests, 3 passed`.
+
+## [2026-05-13] tune | Scale Field enemy HP and player damage
+
+- RED: updated EnemyBehaviorSystem and Field scene specs for 10x enemy HP and 10x visible player damage.
+- Slime HP changed from 14 to 140, Bat from 8 to 80, and Rat from 6 to 60.
+- Field player attack changed from 4 to 40; Slime defense changed from 1 to 10 so visible Slime damage remains exact 10x from 3 to 30.
+- Player Life and enemy attack values are unchanged.
+- Validation: EnemyBehaviorSystem specs `9 tests, 9 passed`; FieldScene specs `27 tests, 27 passed`; CombatSystem specs `4 tests, 4 passed`.
+
+## [2026-05-13] feat | Add component-based combat juice
+
+- RED: extended Field specs for enemy feedback components, hit flash, camera shake, and loot toast; added FeedbackSystem spec for global SFX requests.
+- Added `HitFeedbackComponent` and `DamageTextComponent` as reusable enemy feedback children.
+- Damage numbers now use RO-style parabolic motion; enemy damage is white and player damage is red.
+- Added `FeedbackSystem` autoload as the global feedback/SFX request boundary.
+- Field now starts short camera shake on player/enemy hits and shows a temporary loot toast when drops are granted.
+- Updated Field and feedback architecture docs.
+- Validation: Field scene specs `27 tests, 27 passed`; FeedbackSystem specs `1 test, 1 passed`; EnemySpriteFramesResource specs `2 tests, 2 passed`.
+
 ## [2026-05-12] change | Show reborn copy as Town start dialog
 
 - RED: updated Town specs so the reborn copy must appear in `TownDialogView` on scene start and must not exist as a persistent HUD label.

@@ -17,8 +17,8 @@ Field is implemented on branch `prototype/field`.
 - Map source: `D:\godot\kenney_tiny-town\field.tmj`
 - Imported visual scene: `scenes/maps/field_map.tscn`
 - Imported collision scene: `scenes/maps/field_collision.tscn`
-- Latest Field validation: `22 tests, 22 passed`
-- Latest committed Field work: `8a5925c Import expanded field map`
+- Latest local Field validation: `27 tests, 27 passed`
+- Latest committed Field work: combat feedback, 10x Field combat readability tuning, and enemy HP bar polish
 
 The current map is an imported Tiny Town Tiled map, not primitive art. It is `96x68` tiles at `32x32` pixels.
 
@@ -138,7 +138,11 @@ Current runtime enemies:
 
 Current combat behavior:
 
-- Shared HUD UI: `Life: x/y`, Inventory button/window, and Quest Tracker. Field still shows temporary enemy HP text `Slime: x/y`.
+- Shared HUD UI: `Life: x/y`, Inventory button/window, and Quest Tracker. Enemy HP bars stay hidden at full HP and appear below enemy sprites after the enemy takes damage.
+- Combat feedback uses reusable components for enemy hit flash, larger RO-style parabolic floating damage text, global SFX requests, short camera shake, and loot toast. Enemy damage numbers are white; player damage numbers are red.
+- Field combat readability scales enemy HP and Player outgoing attack 10x.
+- Player Life stays at `100/100`, and enemy attack values against Player are unchanged.
+- Slime starts at 140 HP and takes 30 visible damage from Player attack 40 against defense 10; Bat starts at 80 HP; Rat starts at 60 HP.
 - Clicking an enemy engages it and moves Player toward attack range.
 - Player auto-attacks while in range.
 - First player hit aggros the enemy.
@@ -153,8 +157,7 @@ Current combat behavior:
 
 Still future:
 
-- Enemy item drops.
-- Field state events for defeated enemies.
+- Consumable inventory behavior in Field.
 
 ## Field Enemies
 
@@ -222,7 +225,7 @@ Implemented:
 - Player
 - Camera
 - Objective prompt
-- Life / enemy HP combat text
+- Life HUD and enemy HP bars
 - Dialog Panel
 - Imported `FieldMap`
 - Imported `FieldCollision`
@@ -307,7 +310,7 @@ Current Field shows:
 - objective text
 - top-right Quest Window
 - Life / Max Life
-- Slime HP text
+- enemy HP bars
 - XP is awarded internally on enemy death
 
 Future Field may show:
@@ -468,7 +471,7 @@ Player can:
 - [x] Generated `FieldCollision` is instanced.
 - [x] `C-` map layers render and generate collision through the importer.
 - [x] Enemy container exists with Slime, Bat, and Rat enemies.
-- [x] Simple Life and Slime HP text exists.
+- [x] Simple Life HUD and enemy HP bars exist.
 - [x] Clicking enemy engages Player target and movement.
 - [x] Player auto-attack damages enemy.
 - [x] Enemy attacks current Life.

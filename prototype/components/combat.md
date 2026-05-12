@@ -4,6 +4,8 @@
 
 Simple starter combat for Field engagement. Combat uses Life directly: enemies damage current Life, while quests/progression reduce Max Life. This makes every life-spend decision affect survival.
 
+Current Field tuning scales enemy HP and Player outgoing attack by 10x for combat readability. Player Life and enemy attack damage to Player are not scaled.
+
 ## Actors
 
 - Player
@@ -36,6 +38,9 @@ Simple starter combat for Field engagement. Combat uses Life directly: enemies d
 - Quests/progression spend Max Life, not temporary combat HP.
 - Current Life cannot exceed Max Life.
 - Enemy defeat grants XP.
+- Field Player attack is currently 40.
+- Field enemy HP is currently Slime 140, Bat 80, Rat 60.
+- Field enemy attack values remain Slime 1, Bat 2, Rat 2.
 - Weapon adds attack.
 - Armor reduces incoming Life damage.
 - Apple heals current Life up to Max Life if consumables are enabled later.

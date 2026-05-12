@@ -1,7 +1,7 @@
 ---
 title: Enemy Behavior System
 type: reference
-updated: 2026-05-12
+updated: 2026-05-13
 tags: [architecture, models, enemies, combat]
 ---
 
@@ -40,6 +40,8 @@ func tick(state, definition, context: Dictionary, delta: float) -> Dictionary
 - Aggro Slime chases player until attack range.
 - In attack range, Slime attacks on `attack_interval`.
 - HP <= 0 enters `die`; Field plays death animation, waits `death_duration`, removes the view, and grants XP plus item drops once.
+- Current Field balance scales enemy HP and player outgoing attack 10x for readability while leaving player Life and enemy attack values unchanged.
+- Slime defense is scaled to 10 so Field player attack 40 produces 30 visible damage, matching the previous 4 attack vs 1 defense damage at 10x.
 - Behavior model is testable without scene tree. Field controller applies resulting actions to combat/UI/views.
 
 ## Slime Defaults
@@ -47,9 +49,9 @@ func tick(state, definition, context: Dictionary, delta: float) -> Dictionary
 ```text
 enemy_id: slime_spiked
 display_name: Spiked Slime
-hp: 14
+hp: 140
 attack: 1
-defense: 1
+defense: 10
 xp: 5
 move_speed: 45
 chase_speed: 65
@@ -61,9 +63,21 @@ attack_interval: 1.4
 death_duration: 0.8
 ```
 
+## Other Field Enemy Defaults
+
+```text
+Bat hp: 80
+Bat attack: 2
+Bat defense: 0
+
+Rat hp: 60
+Rat attack: 2
+Rat defense: 0
+```
+
 ## Test Coverage
 
-- `tests/specs/enemy_behavior_system_test.gd` covers Slime/Bat/Rat definition defaults, idle state, per-instance wander variation, proximity aggro disabled by default, optional radius aggro, attack interval, chase after target leaves range, and death transition.
+- `tests/specs/enemy_behavior_system_test.gd` covers Slime/Bat/Rat definition defaults including 10x Field HP tuning, idle state, per-instance wander variation, proximity aggro disabled by default, optional radius aggro, attack interval, chase after target leaves range, and death transition.
 - `tests/specs/field_scene_test.gd` covers Field spawning Slimes/Bats/Rats inside `SpawnZones/Grassland`, click engage, player slash auto-attack, RO-style damage numbers, enemy Life damage, chase, death animation delay, removal, and XP reward.
 
 ## Related

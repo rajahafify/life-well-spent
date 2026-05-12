@@ -34,15 +34,15 @@ func to_enemy_state_dict(hp_override: int = -1) -> Dictionary:
 
 
 static func slime_spiked():
-	return _build("slime_spiked", "Spiked Slime", 14, 1, 1, 5, [{"item_id": "slime_gel", "quantity": 1}], 45.0, 65.0, 120.0, 48.0, 1.4, 0.8)
+	return _build("slime_spiked", "Spiked Slime", 140, 1, 10, 5, [{"item_id": "slime_gel", "quantity": 1}], 45.0, 65.0, 120.0, 48.0, 1.4, 0.8)
 
 
 static func bat():
-	return _build("bat", "Bat", 8, 2, 0, 4, [{"item_id": "bat_wing", "quantity": 1}], 70.0, 95.0, 170.0, 54.0, 1.1, 0.7)
+	return _build("bat", "Bat", 80, 2, 0, 4, [{"item_id": "bat_wing", "quantity": 1}], 70.0, 95.0, 170.0, 54.0, 1.1, 0.7)
 
 
 static func rat():
-	return _build("rat", "Rat", 6, 2, 0, 3, [{"item_id": "rat_tail", "quantity": 1}], 75.0, 105.0, 140.0, 44.0, 1.0, 0.6)
+	return _build("rat", "Rat", 60, 2, 0, 3, [{"item_id": "rat_tail", "quantity": 1}], 75.0, 105.0, 140.0, 44.0, 1.0, 0.6)
 
 
 static func for_id(enemy_id_value: String):

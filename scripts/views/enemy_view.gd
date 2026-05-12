@@ -3,19 +3,22 @@ class_name EnemyView
 extends Area2D
 
 signal clicked(instance_id: String)
+signal hit_feedback_requested(damage: int)
 
 const CATALOG_SCRIPT := preload("res://scripts/models/enemy_sprite_catalog.gd")
 const BUILDER_SCRIPT := preload("res://scripts/views/enemy_sprite_frames_builder.gd")
+const HIT_FEEDBACK_SCRIPT := preload("res://scripts/views/hit_feedback_component.gd")
+const DAMAGE_TEXT_SCRIPT := preload("res://scripts/views/damage_text_component.gd")
 
 @export var enemy_id: String = "slime_spiked"
 @export var instance_id: String = ""
 
 var _sprite: AnimatedSprite2D
-var _hp_label: Label
+var _hp_bar: ProgressBar
 var _shape: CollisionShape2D
-var _hit_label: Label
+var _damage_text
+var _hit_feedback
 var _loaded_enemy_id: String = ""
-var _hit_label_timer: float = 0.0
 
 
 func _ready() -> void:
@@ -29,14 +32,14 @@ func ensure_ready() -> void:
 			_sprite = AnimatedSprite2D.new()
 			_sprite.name = "AnimatedSprite2D"
 			add_child(_sprite)
-	if _hp_label == null:
-		_hp_label = get_node_or_null("HpLabel") as Label
-		if _hp_label == null:
-			_hp_label = Label.new()
-			_hp_label.name = "HpLabel"
-			_hp_label.position = Vector2(-48, -74)
-			_hp_label.add_theme_font_size_override("font_size", 18)
-			add_child(_hp_label)
+	_remove_legacy_hp_label()
+	if _hp_bar == null:
+		_hp_bar = get_node_or_null("HpBar") as ProgressBar
+		if _hp_bar == null:
+			_hp_bar = ProgressBar.new()
+			_hp_bar.name = "HpBar"
+			add_child(_hp_bar)
+		_configure_hp_bar()
 	if _shape == null:
 		_shape = get_node_or_null("CollisionShape2D") as CollisionShape2D
 		if _shape == null:
@@ -47,15 +50,24 @@ func ensure_ready() -> void:
 		var circle := CircleShape2D.new()
 		circle.radius = 42.0
 		_shape.shape = circle
-	if _hit_label == null:
-		_hit_label = get_node_or_null("HitLabel") as Label
-		if _hit_label == null:
-			_hit_label = Label.new()
-			_hit_label.name = "HitLabel"
-			_hit_label.position = Vector2(-12, -108)
-			_hit_label.add_theme_font_size_override("font_size", 24)
-			_hit_label.visible = false
-			add_child(_hit_label)
+	if _damage_text == null:
+		_damage_text = get_node_or_null("DamageTextComponent")
+		if _damage_text == null:
+			_damage_text = Node2D.new()
+			_damage_text.name = "DamageTextComponent"
+			_damage_text.set_script(DAMAGE_TEXT_SCRIPT)
+			add_child(_damage_text)
+		if _damage_text.has_method("ensure_ready"):
+			_damage_text.ensure_ready()
+	if _hit_feedback == null:
+		_hit_feedback = get_node_or_null("HitFeedbackComponent")
+		if _hit_feedback == null:
+			_hit_feedback = Node.new()
+			_hit_feedback.name = "HitFeedbackComponent"
+			_hit_feedback.set_script(HIT_FEEDBACK_SCRIPT)
+			add_child(_hit_feedback)
+		if _hit_feedback.has_method("ensure_ready"):
+			_hit_feedback.ensure_ready()
 	_load_sprite_frames()
 	if not input_event.is_connected(_on_input_event):
 		input_event.connect(_on_input_event)
@@ -70,7 +82,10 @@ func configure(instance_id_value: String, enemy_id_value: String) -> void:
 func update_from_state(state) -> void:
 	ensure_ready()
 	global_position = state.position
-	_hp_label.text = "%s: %d/%d" % [state.display_name, state.hp, state.max_hp]
+	_hp_bar.max_value = float(max(1, state.max_hp))
+	_hp_bar.value = float(clampi(state.hp, 0, state.max_hp))
+	_hp_bar.visible = state.hp < state.max_hp
+	_hp_bar.tooltip_text = "%s: %d/%d" % [state.display_name, state.hp, state.max_hp]
 	var animation_name := _animation_for_state(state.behavior_state)
 	if _sprite.sprite_frames != null and _sprite.sprite_frames.has_animation(animation_name):
 		if _sprite.animation != animation_name:
@@ -79,23 +94,14 @@ func update_from_state(state) -> void:
 		_shape.disabled = true
 
 
-func _process(delta: float) -> void:
-	if _hit_label_timer <= 0.0:
-		return
-	_hit_label_timer -= delta
-	if _hit_label_timer <= 0.0 and _hit_label:
-		_hit_label.visible = false
-
-
 func set_summary_text(text: String) -> void:
 	ensure_ready()
-	_hp_label.text = text
+	_hp_bar.tooltip_text = text
 
 
 func play_hit_feedback(damage: int = 1) -> void:
 	ensure_ready()
-	_play_animation_once("hit")
-	_show_hit_text(str(damage))
+	hit_feedback_requested.emit(damage)
 
 
 func play_attack_feedback() -> void:
@@ -110,13 +116,6 @@ func _play_animation_once(animation_name: String) -> bool:
 	_sprite.stop()
 	_sprite.play(animation_name)
 	return true
-
-
-func _show_hit_text(text: String) -> void:
-	if _hit_label:
-		_hit_label.text = text
-		_hit_label.visible = true
-		_hit_label_timer = 0.55
 
 
 func _animation_for_state(state_name: String) -> String:
@@ -145,6 +144,35 @@ func _load_sprite_frames() -> void:
 	_loaded_enemy_id = enemy_id
 	if _sprite.sprite_frames != null and _sprite.sprite_frames.has_animation("idle"):
 		_sprite.play("idle")
+
+
+func _remove_legacy_hp_label() -> void:
+	var legacy_label := get_node_or_null("HpLabel")
+	if legacy_label:
+		remove_child(legacy_label)
+		legacy_label.free()
+
+
+func _configure_hp_bar() -> void:
+	_hp_bar.position = Vector2(-36, 52)
+	_hp_bar.size = Vector2(72, 5)
+	_hp_bar.scale = Vector2(1.0, 0.18)
+	_hp_bar.min_value = 0.0
+	_hp_bar.max_value = maxf(1.0, _hp_bar.max_value)
+	_hp_bar.value = clampf(_hp_bar.value, _hp_bar.min_value, _hp_bar.max_value)
+	_hp_bar.visible = false
+	_hp_bar.show_percentage = false
+	_hp_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var background := StyleBoxFlat.new()
+	background.bg_color = Color(0.10, 0.05, 0.05, 0.88)
+	background.border_color = Color(0.02, 0.02, 0.02, 0.95)
+	background.set_border_width_all(1)
+	background.set_corner_radius_all(2)
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = Color(0.25, 0.86, 0.30, 1.0)
+	fill.set_corner_radius_all(2)
+	_hp_bar.add_theme_stylebox_override("background", background)
+	_hp_bar.add_theme_stylebox_override("fill", fill)
 
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:

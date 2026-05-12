@@ -173,16 +173,27 @@ func test_field_has_slime_and_shared_life_hud() -> void:
 	assert_eq("res://assets/enemies/Bat/bat_sprite_frames.tres", bat.get_node("AnimatedSprite2D").sprite_frames.resource_path)
 	assert_eq("res://assets/enemies/Rat/rat_sprite_frames.tres", rat.get_node("AnimatedSprite2D").sprite_frames.resource_path)
 	var life_label := root.get_node_or_null("UI/LifeLabel") as Label
-	var slime_label := root.get_node_or_null("UI/SlimeHpLabel") as Label
 	var player_damage_label := root.get_node_or_null("Player/DamageLabel") as Label
+	var slime_hp_bar := slime.get_node_or_null("HpBar") as ProgressBar
+	assert_not_null(slime.get_node_or_null("HitFeedbackComponent"), "Enemy should own reusable hit feedback component")
+	assert_not_null(slime.get_node_or_null("DamageTextComponent"), "Enemy should own reusable damage text component")
+	assert_not_null(slime_hp_bar, "Enemy HP should be shown as a bar")
+	assert_null(slime.get_node_or_null("HpLabel"), "Enemy HP should not be shown as text")
 	assert_not_null(life_label, "Shared HUD should show player Life text")
-	assert_not_null(slime_label, "Field should show simple Slime HP text")
+	assert_null(root.get_node_or_null("UI/SlimeHpLabel"), "Field should not use the temporary enemy HP text HUD")
 	assert_null(root.get_node_or_null("UI/InventoryLabel"), "Inventory text should live in the shared inventory window, not Field HUD")
 	assert_not_null(player_damage_label, "Field should show RO-style damage text above Player")
 	if life_label:
 		assert_eq("Life: 100/100", life_label.text)
-	if slime_label:
-		assert_eq("Slime: 14/14", slime_label.text)
+	if slime_hp_bar:
+		assert_eq(0.0, slime_hp_bar.min_value)
+		assert_eq(140.0, slime_hp_bar.max_value)
+		assert_eq(140.0, slime_hp_bar.value)
+		assert_false(slime_hp_bar.show_percentage)
+		assert_eq(Vector2(-36, 52), slime_hp_bar.position)
+		assert_eq(72.0, slime_hp_bar.size.x)
+		assert_true(slime_hp_bar.scale.y <= 0.2, "enemy HP bar should render thin")
+		assert_false(slime_hp_bar.visible, "enemy HP bar should stay hidden until the enemy is attacked")
 
 
 func test_field_uses_game_wide_enemy_spawn_manager() -> void:
@@ -274,16 +285,24 @@ func test_auto_attack_damages_slime_shows_hit_text_and_slime_damages_life() -> v
 	root.enemy_states["field_slime_001"].position = slime.global_position
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.5)
-	assert_true(root.enemy_states["field_slime_001"].hp < 14)
+	assert_true(root.enemy_states["field_slime_001"].hp < 140)
+	var slime_hp_bar := slime.get_node("HpBar") as ProgressBar
+	assert_eq(float(root.enemy_states["field_slime_001"].hp), slime_hp_bar.value)
+	assert_true(slime_hp_bar.visible, "enemy HP bar should appear after the enemy is attacked")
 	assert_true(root.enemy_states["field_slime_001"].is_aggro)
+	assert_true(root._camera_shake_timer > 0.0, "player hit should start a small camera shake")
 	root._physics_process(1.5)
 	assert_true(root.player_life < 100)
+	assert_true(root._camera_shake_timer > 0.0, "enemy hit should also start a small camera shake")
 	var player_damage_label := root.get_node("Player/DamageLabel") as Label
 	assert_true(player_damage_label.visible)
 	assert_eq("1", player_damage_label.text)
+	assert_eq(Color(1.0, 0.2, 0.2, 1.0), player_damage_label.get_theme_color("font_color"), "player damage should be red")
 	var hit_label := slime.get_node("HitLabel") as Label
 	assert_true(hit_label.visible)
-	assert_eq("3", hit_label.text)
+	assert_eq("30", hit_label.text)
+	assert_eq(Color.WHITE, hit_label.get_theme_color("font_color"), "enemy damage should be white")
+	assert_neq(Color(1, 1, 1, 1), slime.modulate, "enemy should briefly flash on hit")
 	var movement = root.get_node("Player/Sprite")
 	assert_eq("attacking", movement._anim.state)
 	assert_eq("slash", movement._anim.attack_style)
@@ -334,9 +353,14 @@ func test_slime_dies_plays_death_before_removal() -> void:
 	assert_eq("death", sprite.animation)
 	assert_eq(5, root.player_xp)
 	assert_eq(1, root.inventory.quantity("slime_gel"))
+	var loot_toast := root.get_node("UI/LootToast") as Label
+	assert_true(loot_toast.visible)
+	assert_eq("+ slime_gel x1", loot_toast.text)
 	root.toggle_inventory_window()
 	var item_list := root.get_node("UI/InventoryWindow/VBox/ItemList") as VBoxContainer
 	assert_eq("slime_gel x1", (item_list.get_child(0) as Label).text)
+	root._physics_process(1.7)
+	assert_false(loot_toast.visible)
 	root._physics_process(0.8)
 	assert_false(root.enemy_states.has("field_slime_001"))
 	assert_null(root.get_node_or_null("Enemies/Slime"))

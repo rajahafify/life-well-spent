@@ -1,7 +1,7 @@
 ---
 title: Combat System
 type: reference
-updated: 2026-05-12
+updated: 2026-05-13
 tags: [architecture, models, combat]
 ---
 
@@ -10,6 +10,8 @@ tags: [architecture, models, combat]
 ## Overview
 
 `CombatSystem` is pure Field combat logic. It changes enemy HP and player current Life. Life is the combat health resource; quests/progression reduce Max Life and therefore make later combat harder.
+
+The current Field controller feeds `CombatSystem` with prototype readability tuning: player attack is 40 and Field enemy HP is 10x larger. Player Life and enemy attack damage to Player remain unchanged.
 
 ## API
 
@@ -23,6 +25,8 @@ Results include damage, next state, defeat flags, and XP reward hook when enemy 
 ## Design Decisions
 
 Damage is `max(1, attack - defense)`. Defeated HP clamps to zero. Enemy attacks reduce current Life; quest/progression costs reduce Max Life outside combat. Healing may restore current Life only up to Max Life.
+
+The 10x Field tuning lives in enemy definitions and the Field controller, not inside the pure damage formula.
 
 ## Test Coverage
 
