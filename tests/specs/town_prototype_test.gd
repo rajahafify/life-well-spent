@@ -86,8 +86,15 @@ func test_town_has_player_and_camera() -> void:
 	var root := _instantiate_town()
 	if root == null:
 		return
-	assert_not_null(root.get_node_or_null("Player"), "Town should have Player")
+	var player := root.get_node_or_null("Player") as Node2D
+	var field_gateway := root.get_node_or_null("FieldGateway") as Node2D
+	assert_not_null(player, "Town should have Player")
 	assert_not_null(root.get_node_or_null("Camera2D"), "Town should have Camera2D")
+	var spawn := root.get_node_or_null("SpawnPoints/FromFieldGateway") as Marker2D
+	assert_not_null(spawn, "Town should have named spawn point for Field gateway arrivals")
+	if player and field_gateway and spawn:
+		assert_eq(spawn.global_position, player.global_position)
+		assert_true(spawn.global_position.distance_to(field_gateway.global_position) <= 220.0, "Town spawn should sit close to Field gateway")
 	root.free()
 
 

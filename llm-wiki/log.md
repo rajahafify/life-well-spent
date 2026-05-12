@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-05-12] refactor | Add named gateway spawn points
+
+- Added `SpawnPoints/FromFieldGateway` and `SpawnPoints/Default` to Town.
+- Added `SpawnPoints/FromTownGateway` and `SpawnPoints/Default` to Field.
+- Updated GatewayDefinition target spawn IDs to `from_town_gateway` and `from_field_gateway`.
+- Documented spawn-point pattern so maps can support multiple portals without hardcoded player positions.
+- Validation: `240 tests, 240 passed, 0 failed`.
+
 ## [2026-05-12] tune | Slime wander and first-hit aggro
 
 - Changed Slime wander from synchronized rightward movement to per-instance pseudo-random idle timing and wander targets.

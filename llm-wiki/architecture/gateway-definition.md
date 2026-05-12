@@ -1,7 +1,7 @@
 ---
 title: Gateway Definition
 type: reference
-updated: 2026-05-11
+updated: 2026-05-12
 tags: [architecture, models, prototype]
 ---
 
@@ -32,11 +32,17 @@ static func field_to_forest_locked()
 
 ## Design Decisions
 
-Open gateways transfer immediately. Locked gateways return no transfer target and expose blocker dialog data.
+Open gateways transfer immediately. Locked gateways return no transfer target and expose blocker dialog data. Prototype gateways use named target spawn IDs so maps can support multiple portals without hardcoded player positions.
+
+Current spawn IDs:
+
+- Town → Field: `from_town_gateway`
+- Field → Town: `from_field_gateway`
+- Field → Forest locked: `from_field_gateway` until Forest exists
 
 ## Test Coverage
 
-- `tests/specs/gateway_system_test.gd` covers open transfer targets, locked blocking, and unlock conditions.
+- `tests/specs/gateway_system_test.gd` covers open transfer targets, locked blocking, unlock conditions, and prototype target spawn IDs.
 
 ## Related
 

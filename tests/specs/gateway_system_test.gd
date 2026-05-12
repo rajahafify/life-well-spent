@@ -48,6 +48,15 @@ func test_locked_gateway_blocks_transfer_and_exposes_dialog() -> void:
 	assert_eq({}, gateway.transfer_target({}))
 
 
+func test_prototype_gateways_name_target_spawn_points() -> void:
+	var script := _gateway_script()
+	if script == null:
+		return
+	assert_eq("from_town_gateway", script.town_to_field().target_spawn_id)
+	assert_eq("from_field_gateway", script.field_to_town().target_spawn_id)
+	assert_eq("from_field_gateway", script.field_to_forest_locked().target_spawn_id)
+
+
 func test_unlock_conditions_open_locked_gateway_when_met() -> void:
 	var script := _gateway_script()
 	if script == null:

@@ -89,8 +89,16 @@ offset_right = 520.0
 offset_bottom = 475.0
 color = Color(0.24, 0.60, 0.18, 1)
 
+[node name="SpawnPoints" type="Node2D" parent="."]
+
+[node name="FromTownGateway" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(330, 790)
+
+[node name="Default" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(330, 790)
+
 [node name="Player" parent="." instance=ExtResource("2_player")]
-position = Vector2(620, 790)
+position = Vector2(330, 790)
 scale = Vector2(2, 2)
 
 [node name="TownGateway" type="Area2D" parent="."]

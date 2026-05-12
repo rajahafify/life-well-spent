@@ -47,9 +47,16 @@ func test_field_controller_class_name_is_field() -> void:
 func test_field_has_player_camera_gateways_and_objective() -> void:
 	if root == null:
 		return
-	assert_not_null(root.get_node_or_null("Player"), "Field should have Player")
+	var player := root.get_node_or_null("Player") as Node2D
+	var town_gateway := root.get_node_or_null("TownGateway") as Node2D
+	assert_not_null(player, "Field should have Player")
 	assert_not_null(root.get_node_or_null("Camera2D"), "Field should have Camera2D")
-	assert_not_null(root.get_node_or_null("TownGateway"), "Field should have Town Gateway")
+	assert_not_null(town_gateway, "Field should have Town Gateway")
+	var spawn := root.get_node_or_null("SpawnPoints/FromTownGateway") as Marker2D
+	assert_not_null(spawn, "Field should have named spawn point for Town gateway arrivals")
+	if player and town_gateway and spawn:
+		assert_eq(spawn.global_position, player.global_position)
+		assert_true(spawn.global_position.distance_to(town_gateway.global_position) <= 180.0, "Field spawn should sit close to Town portal")
 	assert_not_null(root.get_node_or_null("ForestGateway"), "Field should have Forest Gateway")
 	assert_not_null(root.get_node_or_null("ForestBlocker"), "Field should have Forest Blocker")
 	var objective := root.get_node_or_null("UI/ObjectivePrompt") as Label

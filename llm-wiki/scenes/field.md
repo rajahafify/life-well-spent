@@ -16,7 +16,10 @@ tags: [scenes, field, prototype]
 ```text
 Field (Node2D, Field)
 ├── Ground / Paths / ForestEdge / Props
-├── Player (player.tscn)
+├── SpawnPoints
+│   ├── FromTownGateway (Marker2D)
+│   └── Default (Marker2D)
+├── Player (player.tscn, starts at FromTownGateway)
 ├── TownGateway
 ├── ForestGateway
 ├── ForestBlocker
@@ -35,6 +38,7 @@ Field (Node2D, Field)
 
 `Field` is thin glue:
 
+- starts Player at named spawn point `SpawnPoints/FromTownGateway`, near TownGateway
 - routes ground clicks to `CharacterMovement`
 - updates `Camera2D` with RO-style offset
 - uses `TownDialogView` for Forest Guard dialog
@@ -68,7 +72,7 @@ Bat/Rat remain target enemies for the later EnemySystem expansion.
 - `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, Slime spawn/UI, click targeting without immediate aggro, player auto-attack, first-hit aggro, Slime Life damage, Slime chase, Slime death removal/XP, Guard dialog, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
 - Gateway, NPC placement, biome, movement, enemy behavior, combat, and dialog systems remain covered by their model/scene specs.
 
-Current validation: `239 tests, 239 passed, 0 failed`.
+Current validation: `240 tests, 240 passed, 0 failed`.
 
 ## Related
 

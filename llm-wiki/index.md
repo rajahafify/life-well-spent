@@ -7,7 +7,7 @@
 | [architecture/architecture](architecture/architecture.md) | decision | 2026-05-08 | MVC + SOLID architecture pattern. |
 | [architecture/spec-driven-dev](architecture/spec-driven-dev.md) | decision | 2026-05-10 | Spec-driven development workflow + TDD enforcement. |
 | [architecture/test-runner](architecture/test-runner.md) | reference | 2026-05-11 | Minitest-style GDScript spec runner — loads specs, runs tests, reports results. |
-| [architecture/gateway-definition](architecture/gateway-definition.md) | reference | 2026-05-11 | Pure gateway target and lock rules for direct map transitions. |
+| [architecture/gateway-definition](architecture/gateway-definition.md) | reference | 2026-05-12 | Pure gateway target, lock rules, and named spawn IDs for direct map transitions. |
 
 | [architecture/combat-system](architecture/combat-system.md) | reference | 2026-05-12 | Pure Field combat rules for enemy HP, current Life damage, Max Life pressure, defeat, and XP hooks. |
 | [architecture/enemy-sprite-metadata](architecture/enemy-sprite-metadata.md) | reference | 2026-05-12 | RO-ish sprite/action metadata pipeline for enemy animation strips; V1 covers Spiked Slime. |
@@ -20,8 +20,8 @@
 | [assets/assets-viewer](assets/assets-viewer.md) | reference | 2026-05-12 | In-project gallery scene that recursively displays enemy, NPC, and player PNG assets as thumbnails. |
 | [assets/slime-asset-view](assets/slime-asset-view.md) | reference | 2026-05-12 | Enemy and character asset tools: focused AssetView preview plus looping AssetGallery SpriteFrames/LPC previews. |
 | [scenes/main-menu](scenes/main-menu.md) | reference | 2026-05-11 | Main menu scene — title, New Game button, Quit button. Transitions to town hub. |
-| [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-12 | Prototype Town scene — reborn prompt, three old institutions, worldbuilding NPC dialog, and deferred direct Field gateway. |
-| [scenes/field](scenes/field.md) | reference | 2026-05-12 | Playable Field slice — movement, camera follow, Forest Guard gate, five-Slime combat, RO damage numbers, and slash animation. |
+| [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-12 | Prototype Town scene — named gateway spawn, reborn prompt, three old institutions, NPC dialog, and deferred direct Field gateway. |
+| [scenes/field](scenes/field.md) | reference | 2026-05-12 | Playable Field slice — named gateway spawn, movement, Forest Guard gate, five-Slime combat, RO damage numbers, slash animation. |
 | [architecture/animation-controller](architecture/animation-controller.md) | reference | 2026-05-12 | LPC spritesheet animation state machine. Idle, walking, slash/thrust attack frame advance via `tick(delta)`. |
 | [architecture/player-movement](architecture/player-movement.md) | reference | 2026-05-11 | CharacterMovement Sprite2D view. Click-to-move/static facing, collision/dialog stop, modal move lock, AnimationController frames. |
 | [architecture/npc-system](architecture/npc-system.md) | reference | 2026-05-11 | NPC scene/controller/dialog wiring with TownDialogView, RO-style pending approach, talk range, name labels, modal quest UI. |

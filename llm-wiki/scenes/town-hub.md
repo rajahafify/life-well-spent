@@ -38,7 +38,10 @@ Town (Node2D, Town)
 │   ├── Shop (ColorRect)
 │   ├── SwordsmanGuild (ColorRect)
 │   └── Blacksmith (ColorRect)
-├── Player (instance: player.tscn)
+├── SpawnPoints
+│   ├── FromFieldGateway (Marker2D)
+│   └── Default (Marker2D)
+├── Player (instance: player.tscn, starts at FromFieldGateway)
 ├── Shopkeeper (NpcController, `assets/npcs/shopkeeper.png`)
 ├── Guildmaster (NpcController, `assets/npcs/guildmaster.png`)
 ├── Smith (NpcController, `assets/npcs/smith.png`)
@@ -109,6 +112,7 @@ Old roads have a way of calling again.
 - blocks click-to-move while dialog is open
 - handles RO-style NPC approach: far click moves to NPC talk point, near/in-range opens dialog
 - shows paged NPC dialog via `TownDialogView.show_dialog()`
+- starts Player at named spawn point `SpawnPoints/FromFieldGateway`, near FieldGateway
 - records Field transition request through `request_field()`
 - records the direct Field transition when the Player enters `FieldGateway`, then defers the actual scene change outside the physics callback
 - hides NPC overhead names; names appear in dialog only

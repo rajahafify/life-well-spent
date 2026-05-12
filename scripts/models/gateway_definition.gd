@@ -40,7 +40,7 @@ static func town_to_field():
 	gateway.source_map = "town"
 	gateway.target_map = "field"
 	gateway.target_scene_path = "res://scenes/field.tscn"
-	gateway.target_spawn_id = "field_spawn"
+	gateway.target_spawn_id = "from_town_gateway"
 	return gateway
 
 
@@ -51,7 +51,7 @@ static func field_to_town():
 	gateway.source_map = "field"
 	gateway.target_map = "town"
 	gateway.target_scene_path = "res://scenes/town_scene.tscn"
-	gateway.target_spawn_id = "town_spawn"
+	gateway.target_spawn_id = "from_field_gateway"
 	return gateway
 
 
@@ -62,7 +62,7 @@ static func field_to_forest_locked():
 	gateway.source_map = "field"
 	gateway.target_map = "forest"
 	gateway.target_scene_path = "res://scenes/forest.tscn"
-	gateway.target_spawn_id = "forest_spawn"
+	gateway.target_spawn_id = "from_field_gateway"
 	gateway.is_locked = true
 	gateway.unlock_conditions = {"swordsman_certified": true}
 	gateway.blocked_dialog_id = "forest_guard_warning"
