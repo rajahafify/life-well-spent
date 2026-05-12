@@ -9,7 +9,7 @@ tags: [architecture, models, enemies, combat]
 
 ## Overview
 
-`EnemyBehaviorSystem` drives runtime enemy state transitions. First implementation supports one Field Slime: idle, wander, chase, attack, die. State lives in `EnemyState`; static tuning lives in `EnemyDefinition`.
+`EnemyBehaviorSystem` drives runtime enemy state transitions. Current Field implementation starts five Slime instances: idle, wander, chase, attack, die. State lives in `EnemyState`; static tuning lives in `EnemyDefinition`.
 
 ## API
 
@@ -34,7 +34,7 @@ func tick(state, definition, context: Dictionary, delta: float) -> Dictionary
 - Slime aggros when player enters radius or Field explicitly engages it.
 - Aggro Slime chases player until attack range.
 - In attack range, Slime attacks on `attack_interval`.
-- HP <= 0 enters `die`; Field removes the view and grants XP once.
+- HP <= 0 enters `die`; Field plays death animation, waits `death_duration`, removes the view, and grants XP once.
 - Behavior model is testable without scene tree. Field controller applies resulting actions to combat/UI/views.
 
 ## Slime Defaults
@@ -51,12 +51,13 @@ chase_speed: 65
 aggro_radius: 180
 attack_range: 48
 attack_interval: 1.4
+death_duration: 0.8
 ```
 
 ## Test Coverage
 
 - `tests/specs/enemy_behavior_system_test.gd` covers Slime definition defaults, idle state, aggro/chase, attack interval, chase after target leaves range, and death transition.
-- `tests/specs/field_scene_test.gd` covers Field spawning one Slime, click engage, player auto-attack, Slime Life damage, chase, death removal, and XP reward.
+- `tests/specs/field_scene_test.gd` covers Field spawning five Slimes, click engage, player slash auto-attack, RO-style damage numbers, Slime Life damage, chase, death animation delay, removal, and XP reward.
 
 ## Related
 

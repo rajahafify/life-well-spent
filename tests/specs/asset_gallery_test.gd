@@ -52,6 +52,20 @@ func test_asset_gallery_has_editor_visible_sprite_for_each_enemy() -> void:
 	root.free()
 
 
+func test_asset_gallery_adds_character_sprite_previews() -> void:
+	var root = _instantiate_gallery()
+	if root == null:
+		return
+	for character_id in ["player", "forest_guard"]:
+		var sprite := root.sprite_node_for_character(character_id) as AnimatedSprite2D
+		assert_not_null(sprite)
+		if sprite:
+			assert_eq("idle", sprite.animation)
+			assert_true(sprite.is_playing())
+			assert_true(sprite.sprite_frames.has_animation("slash"))
+	root.free()
+
+
 func test_asset_gallery_loops_and_plays_all_idle_previews() -> void:
 	var root = _instantiate_gallery()
 	if root == null:

@@ -4,6 +4,7 @@ class_name AssetsViewer
 extends Control
 
 const ASSET_ROOT := "res://assets/enemies"
+const ASSET_ROOTS := ["res://assets/enemies", "res://assets/npcs", "res://assets/player.png"]
 const SUPPORTED_EXTENSIONS := ["png"]
 
 @export var columns: int = 4
@@ -16,7 +17,8 @@ func _ready() -> void:
 
 func collect_asset_paths() -> Array:
 	var paths: Array = []
-	_collect_asset_paths(ASSET_ROOT, paths)
+	for root_path in ASSET_ROOTS:
+		_collect_asset_paths(root_path, paths)
 	paths.sort()
 	return paths
 
@@ -49,14 +51,14 @@ func rebuild_gallery() -> void:
 
 	var title := Label.new()
 	title.name = "Title"
-	title.text = "Enemy Asset Gallery"
+	title.text = "Asset Gallery"
 	title.add_theme_font_size_override("font_size", 32)
 	vbox.add_child(title)
 
 	var paths := collect_asset_paths()
 	var summary := Label.new()
 	summary.name = "Summary"
-	summary.text = "%d PNG assets under %s" % [paths.size(), ASSET_ROOT]
+	summary.text = "%d PNG assets under enemies, NPCs, and player" % paths.size()
 	summary.add_theme_font_size_override("font_size", 18)
 	vbox.add_child(summary)
 
@@ -99,6 +101,9 @@ func _build_card(asset_path: String, index: int) -> Control:
 
 
 func _collect_asset_paths(dir_path: String, paths: Array) -> void:
+	if ResourceLoader.exists(dir_path) and dir_path.get_extension().to_lower() in SUPPORTED_EXTENSIONS:
+		paths.append(dir_path)
+		return
 	var dir := DirAccess.open(dir_path)
 	if dir == null:
 		return

@@ -5,7 +5,22 @@ extends Control
 
 const CATALOG_SCRIPT := preload("res://scripts/models/enemy_sprite_catalog.gd")
 const BUILDER_SCRIPT := preload("res://scripts/views/enemy_sprite_frames_builder.gd")
+const LPC_BUILDER_SCRIPT := preload("res://scripts/views/lpc_sprite_frames_builder.gd")
 const VIEW_ROOT := "Center/Panel/Margin/VBox"
+const CHARACTER_SPRITES := {
+	"player": {
+		"enemy_id": "player",
+		"display_name": "Player",
+		"texture_path": "res://assets/player.png",
+		"animations": {"idle": {}, "walk": {}, "slash": {}, "thrust": {}, "shoot": {}, "spellcast": {}, "hurt": {}},
+	},
+	"forest_guard": {
+		"enemy_id": "forest_guard",
+		"display_name": "Forest Guard",
+		"texture_path": "res://assets/npcs/forest_guard.png",
+		"animations": {"idle": {}, "walk": {}, "slash": {}, "thrust": {}, "shoot": {}, "spellcast": {}, "hurt": {}},
+	},
+}
 
 @export var enemy_id: String = "slime_spiked":
 	set(value):
@@ -21,6 +36,8 @@ func _ready() -> void:
 
 
 func load_sprite_set() -> Dictionary:
+	if CHARACTER_SPRITES.has(enemy_id):
+		return (CHARACTER_SPRITES[enemy_id] as Dictionary).duplicate(true)
 	var catalog = CATALOG_SCRIPT.new()
 	var sprite_set: Dictionary = catalog.load_enemy(enemy_id)
 	catalog.free()
@@ -88,12 +105,23 @@ func _populate_enemy_selector() -> void:
 		if id == enemy_id:
 			selector.select(selector.item_count - 1)
 	catalog.free()
+	for id in ["player", "forest_guard"]:
+		var sprite_set: Dictionary = CHARACTER_SPRITES[id]
+		selector.add_item(str(sprite_set.get("display_name", id)))
+		selector.set_item_metadata(selector.item_count - 1, id)
+		if id == enemy_id:
+			selector.select(selector.item_count - 1)
 	selector.item_selected.connect(_on_enemy_selected)
 
 
 func _build_sprite_frames() -> void:
 	var sprite := _sprite_node()
 	if sprite == null:
+		return
+	if CHARACTER_SPRITES.has(enemy_id):
+		var lpc_builder = LPC_BUILDER_SCRIPT.new()
+		sprite.sprite_frames = lpc_builder.build(str(_sprite_set.get("texture_path", "")))
+		lpc_builder.free()
 		return
 	var builder = BUILDER_SCRIPT.new()
 	sprite.sprite_frames = builder.build(_sprite_set)

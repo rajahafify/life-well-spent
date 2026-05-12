@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-05-12] polish | RO-style Field combat and character asset previews
+
+- Added LPC SpriteFrames builder and wired Player/Forest Guard into AssetView, AssetGallery, and AssetsViewer.
+- Added player slash attack animation support through AnimationController and CharacterMovement.
+- Updated Field to start with five Slimes, stop canceling slash animation, show RO-style damage numbers above actors, and delay Slime removal until death animation plays.
+- Updated Field, animation, asset tooling, and enemy behavior wiki pages plus index.
+- Validation: `237 tests, 237 passed, 0 failed`.
+
 ## [2026-05-12] feature | Add first Slime combat flow
 
 - Added EnemyDefinition, EnemyState, EnemyBehaviorSystem, EnemyView, and reusable enemy scene for first Field Slime.

@@ -119,6 +119,25 @@ func test_asset_view_buttons_switch_single_sprite_animation() -> void:
 	root.free()
 
 
+func test_asset_view_can_switch_to_player_spritesheet_and_rebuild_lpc_actions() -> void:
+	var root = _instantiate_viewer()
+	if root == null:
+		return
+	root.select_enemy("player")
+	assert_eq("player", root.enemy_id)
+	var title := root.get_node(VIEW_ROOT + "/Title") as Label
+	assert_eq("PLAYER Asset View", title.text)
+	var sprite := root.get_node(VIEW_ROOT + "/PreviewArea/AnimatedSprite2D") as AnimatedSprite2D
+	assert_eq("idle", sprite.animation)
+	assert_true(sprite.sprite_frames.has_animation("slash"))
+	assert_true(sprite.sprite_frames.has_animation("thrust"))
+	assert_true(sprite.sprite_frames.has_animation("hurt"))
+	assert_eq(6, sprite.sprite_frames.get_frame_count("slash"))
+	assert_eq(8, sprite.sprite_frames.get_frame_count("thrust"))
+	assert_eq(6, sprite.sprite_frames.get_frame_count("hurt"))
+	root.free()
+
+
 func test_asset_view_can_switch_to_rat_and_rebuild_actions() -> void:
 	var root = _instantiate_viewer()
 	if root == null:

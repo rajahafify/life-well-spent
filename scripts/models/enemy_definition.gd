@@ -44,5 +44,5 @@ static func slime_spiked():
 	enemy.aggro_radius = 180.0
 	enemy.attack_range = 48.0
 	enemy.attack_interval = 1.4
-	enemy.death_duration = 0.25
+	enemy.death_duration = 0.8
 	return enemy

@@ -49,6 +49,7 @@ func test_slime_definition_is_tweakable_and_uses_life_combat_values() -> void:
 	assert_eq(180.0, slime.aggro_radius)
 	assert_eq(48.0, slime.attack_range)
 	assert_eq(1.4, slime.attack_interval)
+	assert_eq(0.8, slime.death_duration)
 
 
 func test_enemy_state_starts_idle_with_full_hp() -> void:

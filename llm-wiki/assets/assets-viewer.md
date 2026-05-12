@@ -1,15 +1,15 @@
 ---
 title: Assets Viewer
 type: reference
-updated: 2026-05-11
-tags: [assets, tools, enemies]
+updated: 2026-05-12
+tags: [assets, tools, enemies, characters]
 ---
 
 # Assets Viewer
 
 ## Overview
 
-`assets/assets-viewer.tscn` is an in-project gallery for enemy PNG assets. It scans `res://assets/enemies` recursively and builds a scrollable thumbnail grid at runtime/editor time.
+`assets/assets-viewer.tscn` is an in-project gallery for enemy and character PNG assets. It scans enemy folders, NPC sprites, and the player spritesheet, then builds a scrollable thumbnail grid at runtime/editor time.
 
 ## Files
 
@@ -20,6 +20,7 @@ tags: [assets, tools, enemies]
 ## Behavior
 
 - Recursively finds PNG assets under `res://assets/enemies`.
+- Includes `res://assets/player.png` and PNGs under `res://assets/npcs`.
 - Excludes GIF previews for now.
 - Builds:
   - `Scroll`

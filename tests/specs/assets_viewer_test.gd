@@ -28,7 +28,7 @@ func test_assets_viewer_scene_loads_with_expected_root() -> void:
 	root.free()
 
 
-func test_assets_viewer_collects_enemy_png_assets() -> void:
+func test_assets_viewer_collects_enemy_and_character_png_assets() -> void:
 	var root = _instantiate_viewer()
 	if root == null:
 		return
@@ -37,6 +37,8 @@ func test_assets_viewer_collects_enemy_png_assets() -> void:
 	assert_in("res://assets/enemies/Bat/Bat_Fly.png", paths)
 	assert_in("res://assets/enemies/Slime/Slime_Spiked_Idle.png", paths)
 	assert_in("res://assets/enemies/Golem/Armored/Golem_Armor_Idle.png", paths)
+	assert_in("res://assets/player.png", paths)
+	assert_in("res://assets/npcs/forest_guard.png", paths)
 	root.free()
 
 

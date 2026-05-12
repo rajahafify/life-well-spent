@@ -64,6 +64,7 @@ func test_field_has_slime_and_simple_life_combat_text() -> void:
 		return
 	var slime := root.get_node_or_null("Enemies/Slime")
 	assert_not_null(slime, "Field should show first Slime enemy")
+	assert_eq(5, root.get_node("Enemies").get_child_count(), "Field should start with five Slimes")
 	if slime:
 		assert_eq("slime_spiked", slime.enemy_id)
 	var life_label := root.get_node_or_null("UI/LifeLabel") as Label
@@ -110,6 +111,11 @@ func test_auto_attack_damages_slime_shows_hit_text_and_slime_damages_life() -> v
 	var hit_label := slime.get_node("HitLabel") as Label
 	assert_true(hit_label.visible)
 	assert_eq("3", hit_label.text)
+	var movement = root.get_node("Player/Sprite")
+	assert_eq("attacking", movement._anim.state)
+	assert_eq("slash", movement._anim.attack_style)
+	root._physics_process(0.016)
+	assert_eq("attacking", movement._anim.state, "movement stop should not cancel visible slash animation")
 
 
 func test_player_can_stop_auto_attack_by_moving_away() -> void:
@@ -135,7 +141,7 @@ func test_aggro_slime_chases_player_when_player_moves_away() -> void:
 	assert_true(slime.global_position.x > 530.0)
 
 
-func test_slime_dies_and_is_removed_when_hp_reaches_zero() -> void:
+func test_slime_dies_plays_death_before_removal() -> void:
 	if root == null:
 		return
 	var player: Node2D = root.get_node("Player") as Node2D
@@ -145,9 +151,15 @@ func test_slime_dies_and_is_removed_when_hp_reaches_zero() -> void:
 	root.enemy_states["field_slime_001"].hp = 1
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.1)
+	assert_true(root.enemy_states.has("field_slime_001"))
+	assert_not_null(root.get_node_or_null("Enemies/Slime"))
+	assert_eq("die", root.enemy_states["field_slime_001"].behavior_state)
+	var sprite := slime.get_node("AnimatedSprite2D") as AnimatedSprite2D
+	assert_eq("death", sprite.animation)
+	assert_eq(5, root.player_xp)
+	root._physics_process(0.8)
 	assert_false(root.enemy_states.has("field_slime_001"))
 	assert_null(root.get_node_or_null("Enemies/Slime"))
-	assert_eq(5, root.player_xp)
 
 
 func test_field_has_forest_guard_dialog_copy() -> void:

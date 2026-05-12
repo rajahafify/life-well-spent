@@ -4,7 +4,12 @@ class_name AssetGallery
 extends Control
 
 const CATALOG_SCRIPT := preload("res://scripts/models/enemy_sprite_catalog.gd")
+const LPC_BUILDER_SCRIPT := preload("res://scripts/views/lpc_sprite_frames_builder.gd")
 const VIEW_ROOT := "Center/Panel/Margin/VBox"
+const CHARACTER_SPRITES := {
+	"player": {"display_name": "Player", "texture_path": "res://assets/player.png"},
+	"forest_guard": {"display_name": "Forest Guard", "texture_path": "res://assets/npcs/forest_guard.png"},
+}
 const ENEMY_SPRITE_NODES := {
 	"slime_spiked": "GalleryScroll/GalleryGrid/SlimePreview/SlimeArea/SlimeSprite",
 	"rat": "GalleryScroll/GalleryGrid/RatPreview/RatArea/RatSprite",
@@ -39,6 +44,52 @@ func rebuild_gallery() -> void:
 				sprite.animation = "idle"
 				sprite.play("idle")
 	catalog.free()
+	_rebuild_character_previews()
+
+
+func sprite_node_for_character(character_id: String) -> AnimatedSprite2D:
+	return get_node_or_null(VIEW_ROOT + "/GalleryScroll/GalleryGrid/%sPreview/%sArea/%sSprite" % [character_id.to_pascal_case(), character_id.to_pascal_case(), character_id.to_pascal_case()]) as AnimatedSprite2D
+
+
+func _rebuild_character_previews() -> void:
+	var grid := get_node_or_null(VIEW_ROOT + "/GalleryScroll/GalleryGrid") as GridContainer
+	if grid == null:
+		return
+	var builder = LPC_BUILDER_SCRIPT.new()
+	for character_id in ["player", "forest_guard"]:
+		var sprite := sprite_node_for_character(character_id)
+		if sprite == null:
+			sprite = _add_character_preview(grid, character_id)
+		var data: Dictionary = CHARACTER_SPRITES[character_id]
+		sprite.sprite_frames = builder.build(str(data["texture_path"]))
+		sprite.centered = true
+		sprite.scale = Vector2(2, 2)
+		if sprite.sprite_frames.has_animation("idle"):
+			sprite.animation = "idle"
+			sprite.play("idle")
+	builder.free()
+
+
+func _add_character_preview(grid: GridContainer, character_id: String) -> AnimatedSprite2D:
+	var pascal := character_id.to_pascal_case()
+	var preview := VBoxContainer.new()
+	preview.name = "%sPreview" % pascal
+	preview.custom_minimum_size = Vector2(160, 140)
+	var label := Label.new()
+	label.name = "Label"
+	label.text = str((CHARACTER_SPRITES[character_id] as Dictionary).get("display_name", character_id))
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	preview.add_child(label)
+	var area := Control.new()
+	area.name = "%sArea" % pascal
+	area.custom_minimum_size = Vector2(128, 96)
+	preview.add_child(area)
+	var sprite := AnimatedSprite2D.new()
+	sprite.name = "%sSprite" % pascal
+	sprite.position = Vector2(64, 70)
+	area.add_child(sprite)
+	grid.add_child(preview)
+	return sprite
 
 
 func sprite_node_for_enemy(enemy_id: String) -> AnimatedSprite2D:

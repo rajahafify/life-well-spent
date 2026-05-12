@@ -152,19 +152,23 @@ func _tick_player_auto_attack(delta: float) -> void:
 		return
 	var movement := _player_movement()
 	if movement:
-		movement.stop_moving()
+		if not movement.is_attacking():
+			movement.stop_moving()
 		movement.face_target(state.position)
 	player_attack_timer += delta
 	if player_attack_timer < player_attack_interval:
 		return
 	player_attack_timer = 0.0
+	movement.play_attack("slash")
 	var result: Dictionary = _combat.player_attack_enemy(_player_combat_dict(), state.to_combat_dict())
 	state.apply_combat_dict(result["enemy_state"])
 	if bool(result.get("enemy_defeated", false)):
 		if not state.reward_granted:
 			player_xp += int(result.get("xp_reward", 0))
 			state.reward_granted = true
-		_remove_enemy(player_target_enemy_instance_id)
+		state.behavior_state = "die"
+		state.is_defeated = true
+		_update_enemy_view(state)
 		player_target_enemy_instance_id = ""
 	else:
 		_update_enemy_view(state)
@@ -190,7 +194,10 @@ func _tick_enemies(delta: float) -> void:
 			if attack_view and attack_view.has_method("play_attack_feedback"):
 				attack_view.play_attack_feedback()
 		if state.behavior_state == "die" or bool(result.get("died", false)):
-			_remove_enemy(instance_id)
+			state.death_timer += delta
+			_update_enemy_view(state)
+			if state.death_timer >= definition.death_duration:
+				_remove_enemy(instance_id)
 		else:
 			_update_enemy_view(state)
 
@@ -220,7 +227,17 @@ func _apply_player_combat_dict(next_player: Dictionary) -> void:
 func _spawn_initial_slime() -> void:
 	if enemy_states.has("field_slime_001"):
 		return
-	spawn_enemy("slime_spiked", Vector2(900, 610), "field_slime_001", "Slime")
+	var positions := [
+		Vector2(900, 610),
+		Vector2(720, 500),
+		Vector2(1110, 560),
+		Vector2(820, 720),
+		Vector2(1240, 700),
+	]
+	for i in range(positions.size()):
+		var index := i + 1
+		var node_name := "Slime" if index == 1 else "Slime%d" % index
+		spawn_enemy("slime_spiked", positions[i], "field_slime_%03d" % index, node_name)
 
 
 func spawn_enemy(enemy_id: String, position: Vector2, instance_id: String = "", node_name: String = "Enemy") -> Node:

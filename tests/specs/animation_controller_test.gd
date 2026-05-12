@@ -186,3 +186,21 @@ func test_stop_walking_preserves_direction() -> void:
 	anim.stop_walking()
 	assert_eq("left", anim.direction)
 	assert_eq(Vector2i(1, 9), anim.frame_coords)
+
+
+func test_start_slash_attack_uses_lpc_slash_rows() -> void:
+	anim.set_direction("down")
+	anim.start_attack("slash")
+	assert_eq("attacking", anim.state)
+	assert_eq("slash", anim.attack_style)
+	assert_eq(Vector2i(0, 14), anim.frame_coords)
+
+
+func test_slash_attack_advances_and_returns_idle() -> void:
+	anim.set_direction("down")
+	anim.start_attack("slash")
+	anim.tick(AnimationController.ATTACK_FRAME_DURATION)
+	assert_eq(Vector2i(1, 14), anim.frame_coords)
+	anim.tick(AnimationController.ATTACK_FRAME_DURATION * 6)
+	assert_eq("idle", anim.state)
+	assert_eq(Vector2i(1, 10), anim.frame_coords)

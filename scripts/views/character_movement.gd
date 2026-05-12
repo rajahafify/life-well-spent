@@ -134,6 +134,17 @@ func face_target(target_pos: Vector2) -> void:
 	face_player(target_pos)
 
 
+func play_attack(style: String = "slash") -> void:
+	_ensure_anim()
+	_anim.start_attack(style)
+	_apply_frame()
+
+
+func is_attacking() -> bool:
+	_ensure_anim()
+	return _anim.state == "attacking"
+
+
 func stop_moving() -> void:
 	var body := get_parent() as CharacterBody2D
 	if body:
@@ -151,7 +162,8 @@ func _stop_moving(body: CharacterBody2D, snap_to_destination: bool) -> void:
 	if snap_to_destination:
 		body.global_position = destination
 	moving = false
-	_anim.stop_walking()
+	if _anim.state != "attacking":
+		_anim.stop_walking()
 	body.velocity = Vector2.ZERO
 	_update_marker_visibility()
 

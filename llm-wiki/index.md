@@ -17,12 +17,12 @@
 | [architecture/quest-manager](architecture/quest-manager.md) | concept | 2026-05-11 | Quest catalog, multi-quest tracking, free acceptance, completion HP cost. |
 | [architecture/game-balance](architecture/game-balance.md) | reference | 2026-05-11 | Shared pure constants model for quest cost and animation timings. |
 | [assets/lpc-sprite-generator](assets/lpc-sprite-generator.md) | reference | 2026-05-09 | LPC sprite generator tool — prompt-driven character spritesheet pipeline. |
-| [assets/assets-viewer](assets/assets-viewer.md) | reference | 2026-05-11 | In-project gallery scene that recursively displays enemy PNG assets as thumbnails. |
-| [assets/slime-asset-view](assets/slime-asset-view.md) | reference | 2026-05-12 | Enemy asset tools: focused AssetView single preview plus looping AssetGallery SpriteFrames editor scene. |
+| [assets/assets-viewer](assets/assets-viewer.md) | reference | 2026-05-12 | In-project gallery scene that recursively displays enemy, NPC, and player PNG assets as thumbnails. |
+| [assets/slime-asset-view](assets/slime-asset-view.md) | reference | 2026-05-12 | Enemy and character asset tools: focused AssetView preview plus looping AssetGallery SpriteFrames/LPC previews. |
 | [scenes/main-menu](scenes/main-menu.md) | reference | 2026-05-11 | Main menu scene — title, New Game button, Quit button. Transitions to town hub. |
 | [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-12 | Prototype Town scene — reborn prompt, three old institutions, worldbuilding NPC dialog, and deferred direct Field gateway. |
-| [scenes/field](scenes/field.md) | reference | 2026-05-12 | Playable Field slice — movement, camera follow, deferred Town gateway, Forest Guard gate, and first Slime combat flow. |
-| [architecture/animation-controller](architecture/animation-controller.md) | reference | 2026-05-11 | LPC spritesheet animation state machine. Idle cycling + walking frame advance via `tick(delta)`. |
+| [scenes/field](scenes/field.md) | reference | 2026-05-12 | Playable Field slice — movement, camera follow, Forest Guard gate, five-Slime combat, RO damage numbers, and slash animation. |
+| [architecture/animation-controller](architecture/animation-controller.md) | reference | 2026-05-12 | LPC spritesheet animation state machine. Idle, walking, slash/thrust attack frame advance via `tick(delta)`. |
 | [architecture/player-movement](architecture/player-movement.md) | reference | 2026-05-11 | CharacterMovement Sprite2D view. Click-to-move/static facing, collision/dialog stop, modal move lock, AnimationController frames. |
 | [architecture/npc-system](architecture/npc-system.md) | reference | 2026-05-11 | NPC scene/controller/dialog wiring with TownDialogView, RO-style pending approach, talk range, name labels, modal quest UI. |
 | [architecture/player-stats](architecture/player-stats.md) | reference | 2026-05-11 | Player HP, level, death/rebirth, XP, unlocked facilities, and serialization. |
