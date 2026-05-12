@@ -330,3 +330,22 @@
 - Reduced Slime preview scale to `Vector2(2.5, 2.5)` for cleaner card fit.
 - Updated Slime asset viewer wiki docs.
 - Validation: `202 tests, 202 passed, 0 failed`.
+
+## [2026-05-12] feat | Enemy sprite metadata V1 for Spiked Slime
+
+- RED: added `tests/specs/enemy_sprite_metadata_test.gd` for metadata schema, catalog loading, texture/dimension validation, and SpriteFrames generation.
+- Updated `tests/specs/slime_asset_viewer_test.gd` so Slime viewer consumes metadata instead of hardcoded paths/frame size.
+- Created `assets/enemies/Slime/slime_spiked.asset.json` with `schema_version = 1`, `enemy_id = slime_spiked`, `display_name = Spiked Slime`, `horizontal_2d` facing, flip support, frame size, scale, anchor, and animation actions.
+- Created `scripts/models/enemy_sprite_catalog.gd` for JSON loading/normalization/validation.
+- Created `scripts/views/enemy_sprite_frames_builder.gd` for metadata-driven `SpriteFrames` construction.
+- Refactored `assets/asset_view.gd` to load `slime_spiked` through the catalog/builder.
+- Added `llm-wiki/architecture/enemy-sprite-metadata.md` and updated asset viewer docs, catalog, index, and log.
+- Validation: `208 tests, 208 passed, 0 failed`.
+
+## [2026-05-12] refactor | Single-sprite Slime asset viewer controls
+
+- RED: rewrote `tests/specs/slime_asset_viewer_test.gd` expectations so `asset-view.tscn` has one `AnimatedSprite2D`, defaults to `idle`, removes the old multi-card animation grid, and exposes one button per supported animation.
+- Refactored `assets/asset_view.gd` to build one centered preview sprite with metadata-driven `SpriteFrames` containing all animations.
+- Added `play_animation(animation_name)` and generated animation buttons for ability/death/hit/idle/jump/run.
+- Updated Slime asset view wiki docs.
+- Validation: `210 tests, 210 passed, 0 failed`.

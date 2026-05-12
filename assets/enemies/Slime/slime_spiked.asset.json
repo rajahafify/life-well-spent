@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "enemy_id": "slime_spiked",
+  "display_name": "Spiked Slime",
+  "directions": "horizontal_2d",
+  "supports_flip": true,
+  "frame_size": [64, 64],
+  "preview_scale": [2.5, 2.5],
+  "world_scale": [2.0, 2.0],
+  "ground_anchor": [32, 56],
+  "animations": {
+    "idle": {
+      "texture": "Slime_Spiked_Idle.png",
+      "fps": 6.0,
+      "loop": true
+    },
+    "run": {
+      "texture": "Slime_Spiked_Run.png",
+      "fps": 10.0,
+      "loop": true
+    },
+    "hit": {
+      "texture": "Slime_Spiked_Hit.png",
+      "fps": 10.0,
+      "loop": false
+    },
+    "jump": {
+      "texture": "Slime_Spiked_Jump.png",
+      "fps": 10.0,
+      "loop": false
+    },
+    "death": {
+      "texture": "Slime_Spiked_Death.png",
+      "fps": 10.0,
+      "loop": false
+    },
+    "ability": {
+      "texture": "Slime_Spiked_Ability.png",
+      "fps": 10.0,
+      "loop": false
+    }
+  }
+}

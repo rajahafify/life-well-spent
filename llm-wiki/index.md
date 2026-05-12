@@ -10,6 +10,7 @@
 | [architecture/gateway-definition](architecture/gateway-definition.md) | reference | 2026-05-11 | Pure gateway target and lock rules for direct map transitions. |
 
 | [architecture/combat-system](architecture/combat-system.md) | reference | 2026-05-11 | Pure Field combat rules for enemy HP, Combat HP, defeat, and XP hooks. |
+| [architecture/enemy-sprite-metadata](architecture/enemy-sprite-metadata.md) | reference | 2026-05-12 | RO-ish sprite/action metadata pipeline for enemy animation strips; V1 covers Spiked Slime. |
 | [architecture/npc-placement](architecture/npc-placement.md) | reference | 2026-05-11 | Stable NPC map placement data, including Forest Guard gateway blocking. |
 | [architecture/biome-definition](architecture/biome-definition.md) | reference | 2026-05-11 | Field grassland palette, enemy pool, props, and biome filters. |
 | [architecture/quest-manager](architecture/quest-manager.md) | concept | 2026-05-11 | Quest catalog, multi-quest tracking, free acceptance, completion HP cost. |

@@ -82,8 +82,9 @@ New enemy assets use per-animation PNG strips plus preview GIFs. Most animation 
 
 - `assets/assets-viewer.tscn` opens a scrollable gallery of PNG enemy assets.
 - `assets/assets_viewer.gd` scans `res://assets/enemies` recursively.
-- `assets/asset-view.tscn` opens a focused animated **SLIME** viewer.
-- `assets/asset_view.gd` builds AnimatedSprite2D previews from Slime animation strips.
+- `assets/asset-view.tscn` opens a focused animated **Spiked Slime** viewer.
+- `assets/asset_view.gd` loads `slime_spiked` metadata and builds AnimatedSprite2D previews from Slime animation strips.
+- `assets/enemies/Slime/slime_spiked.asset.json` is the first V1 sprite/action metadata file.
 - GIF previews are cataloged in this document but not shown in the gallery yet.
 
 ## Rebuild Tasks
@@ -109,7 +110,7 @@ Suggested specs:
 
 ### 3. Build pure models first
 
-Do not attach art or scene nodes yet.
+V1 started with `EnemySpriteCatalog` and `slime_spiked.asset.json`. Continue without gameplay scene nodes until metadata validation is stable.
 
 Possible model boundaries:
 
