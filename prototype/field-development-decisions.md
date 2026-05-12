@@ -44,9 +44,21 @@ Initial model/system set:
 - `GatewayDefinition`
 - `NpcPlacement`
 - `BiomeDefinition`
+- `EnemyLibrary`
 - `EnemyDefinition`
+- `EnemyState`
+- `EnemyBehaviorSystem`
+- `EnemyRandomSequence`
+- `DropSystem`
 - `CombatSystem`
 - `RandomEnemyRespawnSystem`
+
+Current controller split:
+
+- `Field` remains scene glue for movement, gateways, HUD, dialog, inventory use, and helper delegation.
+- `FieldCameraController` owns camera follow/shake.
+- `FieldEnemySpawnController` owns spawn registration and polling.
+- `FieldCombatController` owns combat tick orchestration.
 
 ### Naming
 

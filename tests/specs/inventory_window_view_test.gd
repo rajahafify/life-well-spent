@@ -63,3 +63,12 @@ func test_show_inventory_renders_item_stacks() -> void:
 	assert_eq(2, list.get_child_count())
 	assert_eq("rat_tail x1", (list.get_child(0) as Label).text)
 	assert_eq("slime_gel x2", (list.get_child(1) as Label).text)
+
+
+func test_close_button_emits_close_requested() -> void:
+	if window == null:
+		return
+	var emitted: Array = []
+	window.close_requested.connect(func(): emitted.append(true))
+	(window.get_node("VBox/Header/CloseButton") as Button).pressed.emit()
+	assert_eq([true], emitted)

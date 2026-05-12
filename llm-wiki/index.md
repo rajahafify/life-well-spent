@@ -13,6 +13,8 @@
 | [architecture/enemy-sprite-metadata](architecture/enemy-sprite-metadata.md) | reference | 2026-05-12 | RO-ish sprite/action metadata pipeline for enemy animation strips; V1 covers Spiked Slime. |
 | [architecture/enemy-behavior-system](architecture/enemy-behavior-system.md) | reference | 2026-05-13 | Runtime enemy definitions/states, 10x Field HP tuning for Slime/Bat/Rat, random spawn zones, and idle/wander/chase/attack/die behavior. |
 | [architecture/enemy-spawn-system](architecture/enemy-spawn-system.md) | reference | 2026-05-12 | Game-wide persistent enemy spawn slots, biome max-active caps, and respawn timers across scene changes. |
+| [architecture/drop-system](architecture/drop-system.md) | reference | 2026-05-13 | Pure chance-roll helper for Field enemy drops with deterministic test rolls. |
+| [architecture/field-controller-boundaries](architecture/field-controller-boundaries.md) | reference | 2026-05-13 | Field scene glue boundaries for camera, spawn, and combat helper controllers. |
 | [architecture/npc-placement](architecture/npc-placement.md) | reference | 2026-05-11 | Stable NPC map placement data, including Forest Guard gateway blocking. |
 | [architecture/biome-definition](architecture/biome-definition.md) | reference | 2026-05-12 | Field grassland palette, Slime/Bat/Rat enemy pool, props, and biome filters. |
 | [architecture/quest-manager](architecture/quest-manager.md) | concept | 2026-05-12 | Quest catalog, main objective progression, side chain activation, certification state, and free acceptance. |

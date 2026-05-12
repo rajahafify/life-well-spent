@@ -27,15 +27,11 @@ func show_inventory(inventory) -> void:
 	visible = true
 	_render_slots(inventory)
 	_clear_items()
-	if inventory == null or inventory.item_counts.is_empty():
+	if inventory == null or not inventory.has_method("items_list"):
 		_add_item_label("No items")
 		return
-	var ids: Array = inventory.item_counts.keys()
-	ids.sort()
-	for item_id in ids:
-		var count: int = inventory.quantity(str(item_id))
-		if count > 0:
-			_add_item_label("%s x%d" % [str(item_id), count])
+	for row in inventory.items_list():
+		_add_item_label("%s x%d" % [str(row["item_id"]), int(row["quantity"])])
 	if _item_list.get_child_count() == 0:
 		_add_item_label("No items")
 

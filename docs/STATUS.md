@@ -1,12 +1,12 @@
 # Life Well Spent - Project Status
 
-> Last updated: 2026-05-11
+> Last updated: 2026-05-13
 
 ## QA Status
 
-- Automated suite: `155 tests, 155 passed, 0 failed`
+- Automated suite: `328 tests, 328 passed, 0 failed`
 - Manual QA: pass for MVP flow
-- Godot warnings/errors: fixed. Current MCP run reports `Session has no errors`; headless suite passes.
+- Godot warnings/errors: headless suite passes. Current known non-failing output includes existing `assets-gallery.tscn` invalid UID fallback warnings and resource cleanup warnings.
 
 ## Current MVP State
 
@@ -22,6 +22,7 @@ Life Well Spent now has a playable MVP foundation:
 8. Settings, audio, and scene transition boundaries exist as minimal systems.
 9. GDAI MCP remains enabled for editor use while headless tests skip runtime startup.
 10. Legacy demo scene/controller have been removed; `town_scene.tscn` is the playable MVP flow.
+11. Field is playable with shared HUD, Slime/Bat/Rat combat, drops, respawn polling, Forest Guard gate, and extracted camera/spawn/combat helper controllers.
 
 ## Architecture
 
@@ -56,6 +57,11 @@ MVC + SOLID remains active convention:
 | Scene transitions | `scripts/controllers/scene_transition_controller.gd` | Transition request/execute boundary. |
 | CI output check | `.github/workflows/tests.yml` | Runs tests and checks Godot output for unexpected errors. |
 | GDAI MCP runtime guard | `scripts/managers/gdai_mcp_runtime_guard.gd`, `project.godot` | Keeps Godot MCP enabled in editor while skipping runtime autoload in headless tests. |
+| Field scene | `scenes/field.tscn`, `scripts/controllers/field.gd` | Thin scene glue for movement, gateways, HUD, dialog, and helper-controller delegation. |
+| Field helper controllers | `scripts/controllers/field_camera_controller.gd`, `scripts/controllers/field_enemy_spawn_controller.gd`, `scripts/controllers/field_combat_controller.gd` | Camera shake/follow, enemy spawn polling, and combat tick orchestration. |
+| Enemy catalog/state/behavior | `scripts/models/enemy_library.gd`, `scripts/models/enemy_definition.gd`, `scripts/models/enemy_state.gd`, `scripts/models/enemy_behavior_system.gd`, `scripts/models/enemy_random_sequence.gd` | Registry-backed enemy definitions, data-only enemy resources, runtime state, mutating behavior system, and deterministic random sequencing. |
+| Drop system | `scripts/models/drop_system.gd` | Pure chance-roll helper for enemy drops. |
+| Inventory model/window | `scripts/models/inventory_model.gd`, `scripts/views/inventory_window_view.gd` | Public item row API plus inventory overlay rendering without direct model internals access. |
 
 ## Tests Added / Updated
 
@@ -66,6 +72,10 @@ MVC + SOLID remains active convention:
 - `tests/specs/settings_audio_transition_test.gd`
 - `tests/specs/gdai_mcp_runtime_guard_test.gd`
 - `tests/specs/town_scene_dialog_test.gd`
+- `tests/specs/field_scene_test.gd`
+- `tests/specs/enemy_library_test.gd`
+- `tests/specs/enemy_state_test.gd`
+- `tests/specs/drop_system_test.gd`
 - Existing model specs updated for serialization/progression support, cleanup, and legacy demo removal guard.
 
 ## Manual QA Checklist

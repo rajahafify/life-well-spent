@@ -61,22 +61,22 @@ Legacy primitive Field art nodes (`Ground`, `Paths`, `ForestEdge`, and `Props`) 
 - starts Player at named spawn point `SpawnPoints/FromTownGateway`, near TownGateway
 - keeps Player outside the TownGateway trigger on scene load
 - routes ground clicks to `CharacterMovement`
-- updates `Camera2D` with RO-style offset
+- delegates camera follow and shake to `FieldCameraController`
 - uses `TownDialogView` for Forest Guard dialog
 - updates `SharedHUDView` with player Life and `QuestSystem.current_main_objective_text()`
 - handles far-click Guard approach before dialog
 - marks the `forest_guard` checkpoint only after the Forest Guard dialog is closed, whether reached by NPC click or Forest Gateway collision
 - direct Town gateway request to `res://scenes/town_scene.tscn`, with the scene-tree change deferred outside the physics callback
 - blocks Forest gateway at the southeast road end, marks the `forest_guard` checkpoint, advances `Explore the World` to `Get Swordsman Certification.`, activates `Rebuilding Swordsman Guild`, and opens Guard warning
-- registers Field grassland enemy spawn slots with `EnemySpawnManager`
-- samples active enemy positions from `SpawnZones/Grassland`, rejecting points inside `FieldCollision`
-- spawns five Slimes, two Bats, and two Rats from `EnemyDefinition.for_id()`
+- delegates enemy slot registration, spawn polling, and random spawn placement to `FieldEnemySpawnController`
+- spawns five Slimes, two Bats, and two Rats from `EnemyLibrary.for_id()`
 - routes enemy click to player approach + auto-attack
 - keeps player approach points outside the enlarged enemy footprint (`96px` stop distance)
-- ticks enemy behavior: idle/wander/chase/attack/die, then rejects enemy movement that would enter `FieldCollision`
-- applies `CombatSystem` damage to enemy HP and player Life
+- delegates player auto-attack and enemy behavior/combat loops to `FieldCombatController`
+- applies `CombatSystem` damage to enemy HP and player Life through the combat helper
 - uses prototype balance scaling: player attack is 40 and enemy HP is 10x larger, while player Life and enemy attack values stay unchanged
 - grants item drops into the game-wide `InventorySystem` when enemy rewards are granted
+- delegates chance-based drop rolls to the pure `DropSystem`
 - uses the shared HUD inventory window opened from the `Inventory` button or `I` key
 - handles shared HUD shortcut slot `1` as Apple use: consumes one Apple, heals current Life by up to 20 without exceeding Max Life, refreshes Life UI, and shows a toast
 - emits enemy hit feedback through reusable `HitFeedbackComponent` / `DamageTextComponent` children
@@ -105,7 +105,7 @@ Current Field combat scope is five Slimes, two Bats, and two Rats.
 - Aggro enemy chases if player moves away.
 - Enemy attacks current Life on its attack interval.
 - Enemy death plays `death`, waits `death_duration`, removes the node, awards XP, and marks the persistent spawn slot defeated.
-- Enemy death also grants item drops from `EnemyDefinition.drop_table`.
+- Enemy death also grants item drops from `EnemyDefinition.drop_table`, with chance rolls handled by `DropSystem`.
 - Current guaranteed drops: Slime -> `slime_gel`, Bat -> `bat_wing`, Rat -> `rat_tail`.
 - Current chance drop: all Field enemies have a 1-in-5 chance to also drop `apple`.
 - Drop grants show a short `+ item xN` loot toast.
@@ -118,9 +118,9 @@ Current Field combat scope is five Slimes, two Bats, and two Rats.
 ## Test Coverage
 
 - `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, generated `FieldMap` and `FieldCollision`, north TownGateway placement, shared HUD, Inventory button/window and `I` key toggle, Apple shortcut use, removal of legacy primitive Field art and the old visible ForestBlocker bar, southeast Forest Guard/gateway placement, enemy collision rejection, spawn zone, enlarged Slime/Bat/Rat sprite and collision footprint, player approach spacing, per-enemy HP bars, removal of text-based enemy HP labels, click targeting without immediate aggro, player auto-attack, first-hit aggro, enemy Life damage, hit shake/flash, loot toast, chase, death removal/XP/drop grant, Guard dialog, QuestSystem Forest Guard checkpoint and Forest Gate objective progression, Quest Window refresh, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
-- Gateway, NPC placement, biome, movement, enemy behavior, combat, and dialog systems remain covered by their model/scene specs.
+- Gateway, NPC placement, biome, movement, enemy behavior, combat, drop, and dialog systems remain covered by their model/scene specs.
 
-Latest Field validation: Field scene specs included in the full suite. Full suite currently reports `295 tests, 295 passed, 0 failed`.
+Latest Field validation: Field scene specs included in the full suite. Full suite currently reports `328 tests, 328 passed, 0 failed`.
 
 ## Related
 
@@ -130,6 +130,8 @@ Latest Field validation: Field scene specs included in the full suite. Full suit
 - `llm-wiki/architecture/gateway-definition.md`
 - `llm-wiki/architecture/enemy-behavior-system.md`
 - `llm-wiki/architecture/enemy-spawn-system.md`
+- `llm-wiki/architecture/field-controller-boundaries.md`
+- `llm-wiki/architecture/drop-system.md`
 - `llm-wiki/architecture/quest-system.md`
 - `llm-wiki/architecture/shared-hud-view.md`
 - `llm-wiki/architecture/inventory-system.md`

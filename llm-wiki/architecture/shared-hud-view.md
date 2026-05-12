@@ -40,7 +40,7 @@ func close_inventory_window() -> void
 
 ## Test Coverage
 
-- `tests/specs/shared_hud_view_test.gd` covers scene structure, Life updates, quest rendering, Inventory button, `I` key toggle, shortcut bar rendering, visible shortcut styling, and `1` key signal emission.
+- `tests/specs/shared_hud_view_test.gd` covers scene structure, Life updates, quest rendering, Inventory button, `I` key toggle, echo-key rejection, shortcut bar rendering, visible shortcut styling, shortcut number mapping, and `1` key signal emission.
 - `tests/specs/field_scene_test.gd` covers Field using the shared HUD and handling Apple shortcut consumption.
 - `tests/specs/town_scene_dialog_test.gd` covers Town using the shared HUD.
 

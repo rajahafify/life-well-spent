@@ -29,12 +29,13 @@ func hide_inventory() -> void
 
 - The window is its own scene under `scenes/ui/`.
 - The view renders equipment/consumable slot text and item stack text; it does not own item rules.
+- Stack rendering depends on the inventory model's `items_list()` public API, not the model's internal item-count storage.
 - `SharedHUDView` opens it from the `Inventory` HUD button and the `I` key.
 - It starts hidden and emits `close_requested` when the close button is pressed.
 
 ## Test Coverage
 
-- `tests/specs/inventory_window_view_test.gd` covers scene load, hidden default state, title/close button, starter slot rendering, empty state, and sorted item stack rendering.
+- `tests/specs/inventory_window_view_test.gd` covers scene load, hidden default state, title/close button, close signal emission, starter slot rendering, empty state, and sorted item stack rendering.
 - `tests/specs/shared_hud_view_test.gd` covers HUD button and `I` key toggling.
 
 ## Related

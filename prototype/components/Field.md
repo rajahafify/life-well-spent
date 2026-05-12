@@ -128,7 +128,15 @@ Forest Guard stands near the blocked Forest path. He blocks progression and poin
 
 ## Enemy System Slice
 
-Field currently implements a real enemy/combat slice through `CombatSystem`, `EnemyDefinition`, `EnemyState`, and `EnemyBehaviorSystem`.
+Field currently implements a real enemy/combat slice through `CombatSystem`, `EnemyLibrary`, data-only `EnemyDefinition`, `EnemyState`, `EnemyBehaviorSystem`, `EnemyRandomSequence`, and `DropSystem`.
+
+Scene orchestration is split so `scripts/controllers/field.gd` stays as scene glue:
+
+- `FieldCameraController` owns camera follow offset and hit shake.
+- `FieldEnemySpawnController` owns spawn slot registration, live respawn polling, and random spawn placement.
+- `FieldCombatController` owns player auto-attack and enemy behavior/combat tick orchestration.
+
+Field tests use public query helpers such as `enemy_state()`, `enemy_view()`, `player_target_id()`, and `is_camera_shaking()` instead of reaching directly into controller dictionaries or private timers.
 
 Current runtime enemies:
 

@@ -30,7 +30,7 @@ The 10x Field tuning lives in enemy definitions and the Field controller, not in
 
 ## Test Coverage
 
-- `tests/specs/combat_system_test.gd` should cover player damage, enemy defeat XP, enemy counter damage to current Life, defeat at Life 0, and clamping current Life to Max Life.
+- `tests/specs/combat_system_test.gd` covers player damage, enemy defeat XP, enemy counter damage to current Life, player defense with minimum 1 damage, defeat at Life 0, and clamping current Life to Max Life.
 
 ## Related
 

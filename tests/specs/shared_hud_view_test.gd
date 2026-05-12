@@ -86,3 +86,27 @@ func test_shortcut_bar_renders_nine_slots_and_number_keys_emit_slot() -> void:
 	event.keycode = KEY_1
 	hud._unhandled_input(event)
 	assert_eq([[1, "apple"]], pressed)
+
+
+func test_inventory_key_ignores_echo_events() -> void:
+	if hud == null:
+		return
+	var event := InputEventKey.new()
+	event.pressed = true
+	event.echo = true
+	event.keycode = KEY_I
+	hud._unhandled_input(event)
+	assert_false((hud.get_node("InventoryWindow") as PanelContainer).visible)
+
+
+func test_shortcut_number_maps_only_one_through_nine() -> void:
+	if hud == null:
+		return
+	var zero := InputEventKey.new()
+	zero.pressed = true
+	zero.keycode = KEY_0
+	var one := InputEventKey.new()
+	one.pressed = true
+	one.keycode = KEY_1
+	assert_eq(0, hud._shortcut_number_for_event(zero))
+	assert_eq(1, hud._shortcut_number_for_event(one))

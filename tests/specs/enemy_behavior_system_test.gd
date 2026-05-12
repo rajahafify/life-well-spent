@@ -4,7 +4,7 @@
 class_name TestEnemyBehaviorSystem
 extends TestCase
 
-const DEF_SCRIPT := "res://scripts/models/enemy_definition.gd"
+const DEF_SCRIPT := "res://scripts/models/enemy_library.gd"
 const STATE_SCRIPT := "res://scripts/models/enemy_state.gd"
 const BEHAVIOR_SCRIPT := "res://scripts/models/enemy_behavior_system.gd"
 
@@ -14,7 +14,7 @@ func _slime_definition():
 	assert_not_null(script, "EnemyDefinition script should exist")
 	if script == null:
 		return null
-	return script.slime_spiked()
+	return script.for_id("slime_spiked")
 
 
 func _slime_state():
@@ -63,8 +63,8 @@ func test_bat_and_rat_definitions_are_available_for_field() -> void:
 	assert_not_null(script, "EnemyDefinition script should exist")
 	if script == null:
 		return
-	var bat = script.bat()
-	var rat = script.rat()
+	var bat = script.for_id("bat")
+	var rat = script.for_id("rat")
 	assert_eq("bat", bat.enemy_id)
 	assert_eq("Bat", bat.display_name)
 	assert_eq(80, bat.max_hp)
@@ -151,9 +151,9 @@ func test_slime_enters_attack_when_in_range_and_attacks_on_interval() -> void:
 		return
 	state.is_aggro = true
 	state.behavior_state = "chase"
-	var result: Dictionary = behavior.tick(state, def, {"player_position": Vector2(530, 500)}, 1.4)
+	behavior.tick(state, def, {"player_position": Vector2(530, 500)}, 1.4)
 	assert_eq("attack", state.behavior_state)
-	assert_true(result.get("enemy_attack", false))
+	assert_true(state.enemy_attack_ready)
 	behavior.free()
 
 
@@ -177,8 +177,8 @@ func test_slime_dies_when_hp_reaches_zero() -> void:
 	if behavior == null or def == null or state == null:
 		return
 	state.hp = 0
-	var result: Dictionary = behavior.tick(state, def, {"player_position": Vector2(530, 500)}, 0.1)
+	behavior.tick(state, def, {"player_position": Vector2(530, 500)}, 0.1)
 	assert_eq("die", state.behavior_state)
 	assert_true(state.is_defeated)
-	assert_true(result.get("died", false))
+	assert_true(state.died_this_tick)
 	behavior.free()

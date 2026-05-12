@@ -43,13 +43,19 @@ func test_field_controller_class_name_is_field() -> void:
 	assert_true(source.contains("class_name Field"))
 
 
-func test_field_has_player_camera_gateways_and_objective() -> void:
+func test_field_has_player_and_camera() -> void:
+	if root == null:
+		return
+	var player := root.get_node_or_null("Player") as Node2D
+	assert_not_null(player, "Field should have Player")
+	assert_not_null(root.get_node_or_null("Camera2D"), "Field should have Camera2D")
+
+
+func test_field_has_town_gateway_spawn_point_near_portal() -> void:
 	if root == null:
 		return
 	var player := root.get_node_or_null("Player") as Node2D
 	var town_gateway := root.get_node_or_null("TownGateway") as Node2D
-	assert_not_null(player, "Field should have Player")
-	assert_not_null(root.get_node_or_null("Camera2D"), "Field should have Camera2D")
 	assert_not_null(town_gateway, "Field should have Town Gateway")
 	var spawn := root.get_node_or_null("SpawnPoints/FromTownGateway") as Marker2D
 	assert_not_null(spawn, "Field should have named spawn point for Town gateway arrivals")
@@ -57,24 +63,44 @@ func test_field_has_player_camera_gateways_and_objective() -> void:
 		assert_eq(spawn.global_position, player.global_position)
 		assert_true(spawn.global_position.distance_to(town_gateway.global_position) <= 180.0, "Field spawn should sit close to Town portal")
 		assert_true(spawn.global_position.distance_to(town_gateway.global_position) > 64.0, "Field spawn should not auto-trigger Town portal")
+
+
+func test_field_has_forest_gateway_and_grassland_spawn_zone() -> void:
+	if root == null:
+		return
 	assert_not_null(root.get_node_or_null("ForestGateway"), "Field should have Forest Gateway")
 	assert_not_null(root.get_node_or_null("SpawnZones/Grassland"), "Field should have explicit enemy spawn zone")
+
+
+func test_field_uses_shared_hud_without_scene_specific_objective_label() -> void:
+	if root == null:
+		return
 	var hud := root.get_node_or_null("UI")
 	assert_true(hud != null and hud.has_method("set_life") and hud.has_method("show_quest"), "Field should use the shared gameplay HUD")
 	assert_null(root.get_node_or_null("UI/ObjectivePrompt"), "Field should not own a scene-specific objective HUD label")
+
+
+func test_field_quest_window_renders_current_objective() -> void:
+	if root == null:
+		return
 	var quest_window := root.get_node_or_null("UI/QuestWindow") as PanelContainer
 	var quest_label := root.get_node_or_null("UI/QuestWindow/VBox/ObjectiveLabel") as Label
-	var inventory_button := root.get_node_or_null("UI/InventoryButton") as Button
-	var inventory_window := root.get_node_or_null("UI/InventoryWindow") as PanelContainer
 	assert_not_null(quest_window, "Field should have a dedicated Quest Window")
 	assert_not_null(quest_label, "Quest Window should show current objective")
-	assert_not_null(inventory_button, "Field should have an inventory HUD button")
-	assert_not_null(inventory_window, "Field should instance the reusable inventory window")
 	if quest_window and quest_label:
 		assert_true(quest_window.visible)
 		assert_eq(1.0, quest_window.anchor_right)
 		assert_eq(-28.0, quest_window.offset_right)
 		assert_eq("Explore the World\nFind the Forest path.", quest_label.text)
+
+
+func test_field_inventory_button_starts_with_hidden_inventory_window() -> void:
+	if root == null:
+		return
+	var inventory_button := root.get_node_or_null("UI/InventoryButton") as Button
+	var inventory_window := root.get_node_or_null("UI/InventoryWindow") as PanelContainer
+	assert_not_null(inventory_button, "Field should have an inventory HUD button")
+	assert_not_null(inventory_window, "Field should instance the reusable inventory window")
 	if inventory_button and inventory_window:
 		assert_eq("Inventory", inventory_button.text)
 		assert_false(inventory_window.visible)
@@ -143,8 +169,8 @@ func test_enemy_movement_rejects_field_collision_blockers() -> void:
 	blocker.add_child(shape_node)
 	collision_root.add_child(blocker)
 	blocker.global_position = Vector2(600, 500)
-	var state = root.enemy_states["field_slime_001"]
-	var view := root.enemy_views["field_slime_001"] as Node2D
+	var state = root.enemy_state("field_slime_001")
+	var view := root.enemy_view("field_slime_001") as Node2D
 	state.position = Vector2(500, 500)
 	view.global_position = state.position
 	root._move_enemy_with_collision(state, Vector2(600, 500))
@@ -153,7 +179,7 @@ func test_enemy_movement_rejects_field_collision_blockers() -> void:
 	blocker.free()
 
 
-func test_field_has_slime_and_shared_life_hud() -> void:
+func test_field_starts_with_slime_bat_and_rat_enemies() -> void:
 	if root == null:
 		return
 	var slime := root.get_node_or_null("Enemies/Slime")
@@ -165,30 +191,55 @@ func test_field_has_slime_and_shared_life_hud() -> void:
 	var rat = root.get_node("Enemies/Rat")
 	assert_eq("bat", bat.enemy_id)
 	assert_eq("rat", rat.enemy_id)
+
+
+func test_field_enemy_spawn_positions_are_inside_grassland_zone() -> void:
+	if root == null:
+		return
 	var spawn_rect: Rect2 = root.enemy_spawn_rect()
 	assert_eq(Rect2(Vector2(380, 300), Vector2(2480, 1640)), spawn_rect)
 	for enemy in root.get_node("Enemies").get_children():
 		assert_true(spawn_rect.has_point(enemy.global_position))
 		assert_true(enemy.global_position.distance_to(root.get_node("TownGateway").global_position) >= 260.0)
+
+
+func test_field_bat_and_rat_use_sprite_frame_resources() -> void:
+	if root == null:
+		return
+	var bat = root.get_node("Enemies/Bat")
+	var rat = root.get_node("Enemies/Rat")
 	assert_eq("res://assets/enemies/Bat/bat_sprite_frames.tres", bat.get_node("AnimatedSprite2D").sprite_frames.resource_path)
 	assert_eq("res://assets/enemies/Rat/rat_sprite_frames.tres", rat.get_node("AnimatedSprite2D").sprite_frames.resource_path)
+
+
+func test_field_shared_hud_shows_life_and_removes_legacy_inventory_text() -> void:
+	if root == null:
+		return
 	var life_label := root.get_node_or_null("UI/LifeLabel") as Label
 	var player_damage_label := root.get_node_or_null("Player/DamageLabel") as Label
-	var slime_hp_bar := slime.get_node_or_null("HpBar") as ProgressBar
-	var slime_sprite := slime.get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
-	var slime_collision := slime.get_node_or_null("CollisionShape2D") as CollisionShape2D
-	assert_not_null(slime.get_node_or_null("HitFeedbackComponent"), "Enemy should own reusable hit feedback component")
-	assert_not_null(slime.get_node_or_null("DamageTextComponent"), "Enemy should own reusable damage text component")
-	assert_not_null(slime_hp_bar, "Enemy HP should be shown as a bar")
-	assert_not_null(slime_sprite, "Enemy should have a visible sprite")
-	assert_not_null(slime_collision, "Enemy should have click/spacing collision")
-	assert_null(slime.get_node_or_null("HpLabel"), "Enemy HP should not be shown as text")
 	assert_not_null(life_label, "Shared HUD should show player Life text")
-	assert_null(root.get_node_or_null("UI/SlimeHpLabel"), "Field should not use the temporary enemy HP text HUD")
 	assert_null(root.get_node_or_null("UI/InventoryLabel"), "Inventory text should live in the shared inventory window, not Field HUD")
 	assert_not_null(player_damage_label, "Field should show RO-style damage text above Player")
 	if life_label:
 		assert_eq("Life: 100/100", life_label.text)
+
+
+func test_field_enemy_feedback_components_are_attached_to_slime() -> void:
+	if root == null:
+		return
+	var slime := root.get_node_or_null("Enemies/Slime")
+	assert_not_null(slime.get_node_or_null("HitFeedbackComponent"), "Enemy should own reusable hit feedback component")
+	assert_not_null(slime.get_node_or_null("DamageTextComponent"), "Enemy should own reusable damage text component")
+
+
+func test_field_slime_uses_hp_bar_instead_of_hp_text() -> void:
+	if root == null:
+		return
+	var slime := root.get_node_or_null("Enemies/Slime")
+	var slime_hp_bar := slime.get_node_or_null("HpBar") as ProgressBar
+	assert_not_null(slime_hp_bar, "Enemy HP should be shown as a bar")
+	assert_null(slime.get_node_or_null("HpLabel"), "Enemy HP should not be shown as text")
+	assert_null(root.get_node_or_null("UI/SlimeHpLabel"), "Field should not use the temporary enemy HP text HUD")
 	if slime_hp_bar:
 		assert_eq(0.0, slime_hp_bar.min_value)
 		assert_eq(140.0, slime_hp_bar.max_value)
@@ -198,6 +249,16 @@ func test_field_has_slime_and_shared_life_hud() -> void:
 		assert_eq(112.0, slime_hp_bar.size.x)
 		assert_true(slime_hp_bar.scale.y <= 0.2, "enemy HP bar should render thin")
 		assert_false(slime_hp_bar.visible, "enemy HP bar should stay hidden until the enemy is attacked")
+
+
+func test_field_slime_sprite_and_collision_are_enlarged() -> void:
+	if root == null:
+		return
+	var slime := root.get_node_or_null("Enemies/Slime")
+	var slime_sprite := slime.get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
+	var slime_collision := slime.get_node_or_null("CollisionShape2D") as CollisionShape2D
+	assert_not_null(slime_sprite, "Enemy should have a visible sprite")
+	assert_not_null(slime_collision, "Enemy should have click/spacing collision")
 	if slime_sprite:
 		assert_eq(Vector2(4, 4), slime_sprite.scale)
 	if slime_collision and slime_collision.shape is CircleShape2D:
@@ -212,8 +273,13 @@ func test_field_uses_game_wide_enemy_spawn_manager() -> void:
 	var source := file.get_as_text()
 	file.close()
 	assert_true(source.contains("EnemySpawnManager"), "Field should use the game-wide enemy spawn manager")
-	assert_true(source.contains("mark_defeated"), "Field should mark defeated enemy slots globally")
 	assert_true(source.contains("_tick_enemy_spawns"), "Field should poll respawns while the scene remains loaded")
+	var combat_file := FileAccess.open("res://scripts/controllers/field_combat_controller.gd", FileAccess.READ)
+	assert_not_null(combat_file, "Field combat controller script should exist")
+	if combat_file:
+		var combat_source := combat_file.get_as_text()
+		combat_file.close()
+		assert_true(combat_source.contains("mark_defeated"), "Field combat controller should mark defeated enemy slots globally")
 
 
 func test_field_uses_quest_system_for_forest_gate_progress() -> void:
@@ -280,17 +346,17 @@ func test_field_respawns_enemy_after_global_timer_while_loaded() -> void:
 		return
 	root.get_node("Player").global_position = Vector2(500, 500)
 	slime.global_position = Vector2(530, 500)
-	root.enemy_states["field_slime_001"].position = slime.global_position
-	root.enemy_states["field_slime_001"].hp = 1
+	root.enemy_state("field_slime_001").position = slime.global_position
+	root.enemy_state("field_slime_001").hp = 1
 	root.forced_drop_roll = 5
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.1)
 	root._physics_process(0.8)
-	assert_false(root.enemy_states.has("field_slime_001"))
+	assert_false(root.has_enemy("field_slime_001"))
 	assert_eq(8, root.get_node("Enemies").get_child_count())
 	EnemySpawnManager._process(60.0)
 	root._physics_process(1.0)
-	assert_true(root.enemy_states.has("field_slime_001"))
+	assert_true(root.has_enemy("field_slime_001"))
 	assert_eq(9, root.get_node("Enemies").get_child_count())
 
 
@@ -303,43 +369,79 @@ func test_clicking_slime_engages_and_moves_player_toward_slime() -> void:
 	movement._ready()
 	player.global_position = Vector2(200, 700)
 	slime.global_position = Vector2(700, 700)
-	root.enemy_states["field_slime_001"].position = slime.global_position
+	root.enemy_state("field_slime_001").position = slime.global_position
 	root.engage_enemy("field_slime_001")
-	assert_eq("field_slime_001", root.player_target_enemy_instance_id)
-	assert_false(root.enemy_states["field_slime_001"].is_aggro, "targeted Slime should wait until first hit before aggro")
+	assert_eq("field_slime_001", root.player_target_id())
+	assert_false(root.enemy_state("field_slime_001").is_aggro, "targeted Slime should wait until first hit before aggro")
 	assert_true(movement.moving)
 	assert_eq(Vector2(604, 700), movement.destination)
 	assert_true(movement.destination.distance_to(slime.global_position) >= 96.0, "player should stop outside the enlarged enemy footprint")
 
 
-func test_auto_attack_damages_slime_shows_hit_text_and_slime_damages_life() -> void:
+func test_auto_attack_damages_slime_and_reveals_hp_bar() -> void:
 	if root == null:
 		return
 	var player: Node2D = root.get_node("Player") as Node2D
 	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
 	player.global_position = Vector2(500, 500)
 	slime.global_position = Vector2(530, 500)
-	root.enemy_states["field_slime_001"].position = slime.global_position
+	root.enemy_state("field_slime_001").position = slime.global_position
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.5)
-	assert_true(root.enemy_states["field_slime_001"].hp < 140)
+	assert_true(root.enemy_state("field_slime_001").hp < 140)
 	var slime_hp_bar := slime.get_node("HpBar") as ProgressBar
-	assert_eq(float(root.enemy_states["field_slime_001"].hp), slime_hp_bar.value)
+	assert_eq(float(root.enemy_state("field_slime_001").hp), slime_hp_bar.value)
 	assert_true(slime_hp_bar.visible, "enemy HP bar should appear after the enemy is attacked")
-	assert_true(root.enemy_states["field_slime_001"].is_aggro)
-	assert_true(root._camera_shake_timer > 0.0, "player hit should start a small camera shake")
+	assert_true(root.enemy_state("field_slime_001").is_aggro)
+	assert_true(root.is_camera_shaking(), "player hit should start a small camera shake")
+
+
+func test_enemy_attack_damages_player_life_and_shows_red_damage() -> void:
+	if root == null:
+		return
+	var player: Node2D = root.get_node("Player") as Node2D
+	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
+	player.global_position = Vector2(500, 500)
+	slime.global_position = Vector2(530, 500)
+	root.enemy_state("field_slime_001").position = slime.global_position
+	root.engage_enemy("field_slime_001")
+	root._physics_process(1.5)
 	root._physics_process(1.5)
 	assert_true(root.player_life < 100)
-	assert_true(root._camera_shake_timer > 0.0, "enemy hit should also start a small camera shake")
+	assert_true(root.is_camera_shaking(), "enemy hit should also start a small camera shake")
 	var player_damage_label := root.get_node("Player/DamageLabel") as Label
 	assert_true(player_damage_label.visible)
 	assert_eq("1", player_damage_label.text)
 	assert_eq(Color(1.0, 0.2, 0.2, 1.0), player_damage_label.get_theme_color("font_color"), "player damage should be red")
+
+
+func test_auto_attack_shows_white_enemy_hit_text_and_flash() -> void:
+	if root == null:
+		return
+	var player: Node2D = root.get_node("Player") as Node2D
+	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
+	player.global_position = Vector2(500, 500)
+	slime.global_position = Vector2(530, 500)
+	root.enemy_state("field_slime_001").position = slime.global_position
+	root.engage_enemy("field_slime_001")
+	root._physics_process(1.5)
 	var hit_label := slime.get_node("HitLabel") as Label
 	assert_true(hit_label.visible)
 	assert_eq("30", hit_label.text)
 	assert_eq(Color.WHITE, hit_label.get_theme_color("font_color"), "enemy damage should be white")
 	assert_neq(Color(1, 1, 1, 1), slime.modulate, "enemy should briefly flash on hit")
+
+
+func test_auto_attack_plays_visible_slash_animation() -> void:
+	if root == null:
+		return
+	var player: Node2D = root.get_node("Player") as Node2D
+	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
+	player.global_position = Vector2(500, 500)
+	slime.global_position = Vector2(530, 500)
+	root.enemy_state("field_slime_001").position = slime.global_position
+	root.engage_enemy("field_slime_001")
+	root._physics_process(1.5)
 	var movement = root.get_node("Player/Sprite")
 	assert_eq("attacking", movement._anim.state)
 	assert_eq("slash", movement._anim.attack_style)
@@ -351,9 +453,9 @@ func test_player_can_stop_auto_attack_by_moving_away() -> void:
 	if root == null:
 		return
 	root.engage_enemy("field_slime_001")
-	assert_eq("field_slime_001", root.player_target_enemy_instance_id)
+	assert_eq("field_slime_001", root.player_target_id())
 	root.stop_auto_attack()
-	assert_eq("", root.player_target_enemy_instance_id)
+	assert_eq("", root.player_target_id())
 
 
 func test_aggro_slime_chases_player_when_player_moves_away() -> void:
@@ -363,12 +465,12 @@ func test_aggro_slime_chases_player_when_player_moves_away() -> void:
 	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
 	player.global_position = Vector2(760, 500)
 	slime.global_position = Vector2(790, 500)
-	root.enemy_states["field_slime_001"].position = slime.global_position
+	root.enemy_state("field_slime_001").position = slime.global_position
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.5)
 	player.global_position = Vector2(1040, 500)
 	root._physics_process(0.5)
-	assert_eq("chase", root.enemy_states["field_slime_001"].behavior_state)
+	assert_eq("chase", root.enemy_state("field_slime_001").behavior_state)
 	assert_true(slime.global_position.x > 790.0)
 
 
@@ -379,14 +481,14 @@ func test_slime_dies_plays_death_before_removal() -> void:
 	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
 	player.global_position = Vector2(500, 500)
 	slime.global_position = Vector2(530, 500)
-	root.enemy_states["field_slime_001"].position = slime.global_position
-	root.enemy_states["field_slime_001"].hp = 1
+	root.enemy_state("field_slime_001").position = slime.global_position
+	root.enemy_state("field_slime_001").hp = 1
 	root.forced_drop_roll = 5
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.1)
-	assert_true(root.enemy_states.has("field_slime_001"))
+	assert_true(root.has_enemy("field_slime_001"))
 	assert_not_null(root.get_node_or_null("Enemies/Slime"))
-	assert_eq("die", root.enemy_states["field_slime_001"].behavior_state)
+	assert_eq("die", root.enemy_state("field_slime_001").behavior_state)
 	var sprite := slime.get_node("AnimatedSprite2D") as AnimatedSprite2D
 	assert_eq("death", sprite.animation)
 	assert_eq(5, root.player_xp)
@@ -404,7 +506,7 @@ func test_slime_dies_plays_death_before_removal() -> void:
 	root._physics_process(1.7)
 	assert_false(loot_toast.visible)
 	root._physics_process(0.8)
-	assert_false(root.enemy_states.has("field_slime_001"))
+	assert_false(root.has_enemy("field_slime_001"))
 	assert_null(root.get_node_or_null("Enemies/Slime"))
 
 

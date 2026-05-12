@@ -1,5 +1,25 @@
 # Wiki Log
 
+## [2026-05-13] refactor | Fix Field SOLID and TDD review findings
+
+- RED: added focused specs for `EnemyLibrary`, `EnemyState`, combat defense floors, InventoryWindow close signal, and SharedHUD input edge cases.
+- Split broad Field scene coverage into smaller behavior-named specs for player/camera, gateways, HUD, enemy setup, spawn zones, combat feedback, and animation.
+- Moved enemy catalog/factory responsibility from `EnemyDefinition` to registry-backed `EnemyLibrary`; `EnemyDefinition` is now data-only with dictionary config.
+- Moved deterministic enemy random sequencing out of `EnemyState` into `EnemyRandomSequence`.
+- Changed `EnemyBehaviorSystem.tick()` to a state-mutating contract instead of both mutating state and returning an event dictionary.
+- Extracted `FieldCameraController`, `FieldEnemySpawnController`, and `FieldCombatController` from the Field scene controller.
+- Added query/glue methods on Field so specs use public accessors instead of raw `enemy_states`, `enemy_views`, and target-id internals.
+- Validation: full suite `328 tests, 328 passed, 0 failed`.
+
+## [2026-05-13] refactor | Encapsulate inventory rows and extract drop rolls
+
+- RED: added `InventoryModel.items_list()` coverage and `DropSystem` edge-case specs for guaranteed drops, zero numerator, roll boundary, failed rolls, and numerator clamping.
+- Added `InventoryModel.items_list()` as the public read model for sorted stack rows.
+- Updated `InventoryWindowView` to render item stacks through `items_list()` instead of reading `item_counts` directly.
+- Added pure `DropSystem` and delegated Field chance-based drop rolls to it.
+- Updated inventory, Field, and DropSystem wiki pages.
+- Validation: full suite `301 tests, 301 passed, 0 failed`.
+
 ## [2026-05-13] fix | Regenerate enemy SpriteFrames resources
 
 - Fixed the full-suite blocker in `EnemySpriteMetadataTest.test_builder_creates_sprite_frames_from_metadata`.

@@ -55,6 +55,18 @@ func test_enemy_attack_damages_current_life() -> void:
 	combat.free()
 
 
+func test_enemy_attack_respects_player_defense_with_minimum_one_damage() -> void:
+	var combat = _combat_system()
+	if combat == null:
+		return
+	var enemy := {"attack": 2}
+	var player := {"life": 10, "max_life": 10, "defense": 8}
+	var result: Dictionary = combat.enemy_attack_player(enemy, player)
+	assert_eq(1, result["damage"])
+	assert_eq(9, result["player_state"]["life"])
+	combat.free()
+
+
 func test_enemy_attack_reports_player_defeated_when_life_reaches_zero() -> void:
 	var combat = _combat_system()
 	if combat == null:

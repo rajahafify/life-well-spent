@@ -77,6 +77,19 @@ func test_summary_text_lists_item_counts() -> void:
 	assert_eq("Inventory: slime_gel x2", inventory.summary_text())
 
 
+func test_items_list_returns_sorted_public_item_rows() -> void:
+	if inventory == null:
+		return
+	inventory.add_item("slime_gel", 2)
+	inventory.add_item("rat_tail", 1)
+	var rows: Array = inventory.items_list()
+	assert_eq(2, rows.size())
+	assert_eq("rat_tail", rows[0]["item_id"])
+	assert_eq(1, rows[0]["quantity"])
+	assert_eq("slime_gel", rows[1]["item_id"])
+	assert_eq(2, rows[1]["quantity"])
+
+
 func test_equipment_slots_reject_blank_ids() -> void:
 	if inventory == null:
 		return

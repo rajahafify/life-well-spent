@@ -93,6 +93,20 @@ func slot_summary_text() -> String:
 	return "Weapon: %s\nArmor: %s\nConsumable: %s" % [weapon_slot, armor_slot, consumable_slot]
 
 
+func items_list() -> Array[Dictionary]:
+	var rows: Array[Dictionary] = []
+	var ids := item_counts.keys()
+	ids.sort()
+	for item_id in ids:
+		var count := quantity(str(item_id))
+		if count > 0:
+			rows.append({
+				"item_id": str(item_id),
+				"quantity": count,
+			})
+	return rows
+
+
 func _normalized_shortcut_slots(values: Array) -> Array[String]:
 	var normalized: Array[String] = []
 	for index in range(9):
@@ -101,15 +115,9 @@ func _normalized_shortcut_slots(values: Array) -> Array[String]:
 
 
 func summary_text() -> String:
-	if item_counts.is_empty():
-		return "Inventory: empty"
 	var parts: Array[String] = []
-	var ids := item_counts.keys()
-	ids.sort()
-	for item_id in ids:
-		var count := quantity(str(item_id))
-		if count > 0:
-			parts.append("%s x%d" % [str(item_id), count])
+	for row in items_list():
+		parts.append("%s x%d" % [row["item_id"], row["quantity"]])
 	if parts.is_empty():
 		return "Inventory: empty"
 	return "Inventory: %s" % ", ".join(parts)
