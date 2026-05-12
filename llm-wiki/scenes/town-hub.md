@@ -9,7 +9,7 @@ tags: [scenes, town, prototype]
 
 ## Overview
 
-`scenes/town_scene.tscn` is the first-slice **Town** scene for the prototype. It replaces the previous MVP town-hub task/quest UI with a systemic prototype slice: hopeful post-Demon-King worldbuilding, three old institutions, a top-right Quest Window, QuestSystem-aware Guildmaster dialog, and a direct glowing gateway to Field.
+`scenes/town_scene.tscn` is the first-slice **Town** scene for the prototype. It replaces the previous MVP town-hub task/quest UI with a systemic prototype slice: hopeful post-Demon-King worldbuilding, three old institutions, shared gameplay HUD, QuestSystem-aware Guildmaster dialog, and a direct glowing gateway to Field.
 
 First-slice goal:
 
@@ -53,7 +53,7 @@ Town (Node2D, Town)
 │   └── Label — "Field"
 ├── Camera2D
 └── UI (CanvasLayer)
-    ├── RebornPrompt — "You have been reborn.\nWill you spend this life well?"
+    ├── LifeLabel / InventoryButton / QuestWindow / InventoryWindow
     └── DialogPanel (TownDialogView)
 ```
 
@@ -117,7 +117,7 @@ Old roads have a way of calling again.
 
 `Town` is thin glue:
 
-- sets reborn prompt copy in `_ready()`
+- opens the reborn copy in `TownDialogView` on `_ready()`
 - connects worldbuilding NPC `interacted(npc)` signals
 - routes ground clicks to `CharacterMovement` while dialog is closed
 - follows player with a camera offset for RO-style play
@@ -125,7 +125,7 @@ Old roads have a way of calling again.
 - handles RO-style NPC approach after sprite click: far NPC click moves Player to the NPC talk point, near/in-range sprite click opens dialog
 - shows paged NPC dialog via `TownDialogView.show_dialog()`
 - reads `QuestSystem.current_main_objective_id()` so Guildmaster dialog can react to the Forest Gate objective
-- updates `QuestWindowView` with the current main quest objective
+- updates `SharedHUDView` with player Life and the current main quest objective
 - starts Player at named spawn point `SpawnPoints/FromFieldGateway`, up the south road and outside the FieldGateway trigger
 - records Field transition request through `request_field()`
 - records the direct Field transition when the Player enters `FieldGateway`, then defers the actual scene change outside the physics callback
@@ -150,11 +150,11 @@ Tiny Town visual art is imported as `TownMap`, an instanced generated scene from
 
 ## Tests
 
-- `tests/specs/town_prototype_test.gd` covers root/class naming, buildings, NPCs, custom NPC sprite textures, NPC scale matching player, dialog copy, reborn prompt, Field gateway label, 1080p viewport, and primitive mouse filter settings.
+- `tests/specs/town_prototype_test.gd` covers root/class naming, buildings, NPCs, custom NPC sprite textures, NPC scale matching player, dialog copy, absence of persistent reborn HUD label, Field gateway label, 1080p viewport, and primitive mouse filter settings.
 - `tests/specs/town_prototype_test.gd` also covers the generated Tiny Town `TownMap` and `TownCollision` instance paths, position, scale, and collision blocker shape.
 - `tests/specs/town_prototype_test.gd` covers the Tiny Town-facing NPC placements: Shopkeeper at `Vector2(512, 1140)`, Guildmaster at `Vector2(960, 450)`, and Smith at `Vector2(1472, 820)`.
 - `tests/specs/town_prototype_test.gd` covers the south-road Field gateway at `Vector2(960, 1320)` and its safe spawn at `Vector2(960, 980)`, far enough to avoid auto-transition.
-- `tests/specs/town_scene_dialog_test.gd` covers readable 1080p dialog text, top-right Quest Window, NPC face portrait crop above the box, paged NPC dialog, RO-style sprite-click NPC approach, pending dialog open in talk range after click, camera follow, desynced NPC idle timing, hidden overhead NPC names, first-slice quest buttons hidden, QuestSystem Guildmaster certification prompt, click-to-move routing/blocking, dialog close behavior, and direct Field gateway request.
+- `tests/specs/town_scene_dialog_test.gd` covers startup reborn dialog, readable 1080p dialog text, shared HUD, top-right Quest Tracker, NPC face portrait crop above the box, paged NPC dialog, RO-style sprite-click NPC approach, pending dialog open in talk range after click, camera follow, desynced NPC idle timing, hidden overhead NPC names, first-slice quest buttons hidden, QuestSystem Guildmaster certification prompt, click-to-move routing/blocking, dialog close behavior, and direct Field gateway request.
 - `tests/specs/npc_controller_test.gd` and `tests/specs/scene_smoke_test.gd` cover removal of proximity-based NPC dialog triggers.
 - `tests/specs/scene_smoke_test.gd` covers Town dialog smoke behavior.
 
@@ -166,7 +166,7 @@ Systems introduced by Town are cataloged in `prototype/game-systems.md` using sy
 
 Passed on 2026-05-11:
 
-- Town opens with reborn prompt.
+- Town opens with the reborn copy in the dialog box.
 - Ground click-to-move works after world primitives set `mouse_filter = ignore`.
 - Far NPC sprite click moves Player toward NPC before dialog opens.
 - Dialog opens in talk range after an NPC sprite click.

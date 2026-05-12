@@ -5,32 +5,51 @@ extends Node2D
 
 const FIELD_PATH := "res://scenes/field.tscn"
 const CAMERA_OFFSET := Vector2(0, -150)
+const INVENTORY_SCRIPT := preload("res://scripts/models/inventory_model.gd")
+const REBORN_DIALOG := "You have been reborn.\nWill you spend this life well?"
 
 @onready var _dialog_view: TownDialogView = $UI/DialogPanel
-@onready var _reborn_prompt: Label = $UI/RebornPrompt
-@onready var _quest_window: PanelContainer = $UI/QuestWindow
+@onready var _hud: CanvasLayer = $UI
 @onready var _field_gateway: Area2D = $FieldGateway
 @onready var _player: CharacterBody2D = $Player
 
 var requested_scene_path: String = ""
 var _pending_npc: NpcController
+var _local_inventory_model = null
+
+
+func _exit_tree() -> void:
+	if _local_inventory_model:
+		_local_inventory_model.free()
+		_local_inventory_model = null
 
 
 func _ready() -> void:
 	QuestSystem.setup_core_quests()
-	_reborn_prompt.text = "You have been reborn.\nWill you spend this life well?"
+	_connect_hud()
 	_update_quest_window()
-	_dialog_view.hide_dialog()
 	_connect_dialog()
+	_show_reborn_dialog()
 	_connect_portal()
 	_connect_worldbuilding_npcs()
 	_update_camera()
+
+
+func _connect_hud() -> void:
+	if _hud:
+		_hud.ensure_ready()
+		_hud.set_inventory_model(_inventory_model_for_hud())
+		_hud.set_life(100, 100)
 
 
 func _connect_dialog() -> void:
 	_dialog_view.ensure_ready()
 	if not _dialog_view.close_requested.is_connected(close_dialog):
 		_dialog_view.close_requested.connect(close_dialog)
+
+
+func _show_reborn_dialog() -> void:
+	_dialog_view.show_dialog("Reborn", REBORN_DIALOG, false, false)
 
 
 func _connect_portal() -> void:
@@ -117,8 +136,8 @@ func _npc_portrait_texture(npc: NpcController) -> Texture2D:
 
 
 func _update_quest_window() -> void:
-	if _quest_window and _quest_window.has_method("show_main_objective"):
-		_quest_window.show_main_objective("Explore the World", QuestSystem.current_main_objective_text(), QuestSystem.current_main_checkpoint_text())
+	if _hud:
+		_hud.show_quest("Explore the World", QuestSystem.current_main_objective_text(), QuestSystem.current_main_checkpoint_text())
 
 
 func _dialog_text_for(npc: NpcController) -> String:
@@ -132,3 +151,18 @@ func _dialog_text_for(npc: NpcController) -> String:
 
 func _player_movement() -> CharacterMovement:
 	return _player.get_node_or_null("Sprite") as CharacterMovement
+
+
+func _inventory_system() -> Node:
+	if not is_inside_tree():
+		return null
+	return get_node_or_null("/root/InventorySystem")
+
+
+func _inventory_model_for_hud():
+	var system := _inventory_system()
+	if system:
+		return system.model()
+	if _local_inventory_model == null:
+		_local_inventory_model = INVENTORY_SCRIPT.new()
+	return _local_inventory_model

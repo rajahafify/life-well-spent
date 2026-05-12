@@ -9,7 +9,7 @@ tags: [architecture, models, enemies, combat]
 
 ## Overview
 
-`EnemyBehaviorSystem` drives runtime enemy state transitions. Current Field implementation starts Slime, Bat, and Rat instances: idle, wander, chase, attack, die. State lives in `EnemyState`; static tuning lives in `EnemyDefinition`.
+`EnemyBehaviorSystem` drives runtime enemy state transitions. Current Field implementation starts Slime, Bat, and Rat instances: idle, wander, chase, attack, die. State lives in `EnemyState`; static tuning, XP, and deterministic item drops live in `EnemyDefinition`.
 
 ## API
 
@@ -39,7 +39,7 @@ func tick(state, definition, context: Dictionary, delta: float) -> Dictionary
 - Proximity aggro is disabled for now with `aggro_radius = 0.0`; future enemies can enable it by setting radius > 0.
 - Aggro Slime chases player until attack range.
 - In attack range, Slime attacks on `attack_interval`.
-- HP <= 0 enters `die`; Field plays death animation, waits `death_duration`, removes the view, and grants XP once.
+- HP <= 0 enters `die`; Field plays death animation, waits `death_duration`, removes the view, and grants XP plus item drops once.
 - Behavior model is testable without scene tree. Field controller applies resulting actions to combat/UI/views.
 
 ## Slime Defaults

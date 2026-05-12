@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" path="res://assets/npcs/forest_guard.png" id="5_guard"]
 [ext_resource type="PackedScene" path="res://scenes/maps/field_map.tscn" id="1_town_map"]
 [ext_resource type="PackedScene" path="res://scenes/maps/field_collision.tscn" id="1_town_collision"]
-[ext_resource type="Script" path="res://scripts/views/quest_window_view.gd" id="8_quest_window"]
+[ext_resource type="PackedScene" path="res://scenes/ui/shared_hud.tscn" id="8_shared_hud"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog"]
 content_margin_left = 28.0
@@ -106,24 +106,7 @@ idle_cycle_interval = 0.95
 position = Vector2(620, 640)
 enabled = true
 
-[node name="UI" type="CanvasLayer" parent="."]
-
-[node name="ObjectivePrompt" type="Label" parent="UI"]
-offset_left = 28.0
-offset_top = 24.0
-offset_right = 620.0
-offset_bottom = 70.0
-theme_override_font_sizes/font_size = 30
-text = "Objective: Find the Forest path."
-
-[node name="QuestWindow" type="PanelContainer" parent="UI"]
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -430.0
-offset_top = 24.0
-offset_right = -28.0
-offset_bottom = 150.0
-script = ExtResource("8_quest_window")
+[node name="UI" parent="." instance=ExtResource("8_shared_hud")]
 
 [node name="DialogPortrait" type="TextureRect" parent="UI"]
 visible = false

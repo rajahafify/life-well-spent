@@ -138,7 +138,7 @@ Current runtime enemies:
 
 Current combat behavior:
 
-- Simple text UI: `Life: x/y` and `Slime: x/y`.
+- Shared HUD UI: `Life: x/y`, Inventory button/window, and Quest Tracker. Field still shows temporary enemy HP text `Slime: x/y`.
 - Clicking an enemy engages it and moves Player toward attack range.
 - Player auto-attacks while in range.
 - First player hit aggros the enemy.
@@ -351,6 +351,7 @@ Current Field slice:
 - On aggro: enemy chases Player until attack range.
 - On enemy attack interval: enemy damages current Life.
 - On enemy HP `<= 0`: enemy dies, is removed after death animation timing, and grants XP once.
+- On enemy reward grant: deterministic item drops are added to `InventoryModel`.
 - On enemy movement into collision: movement is rejected.
 - On Forest Gateway body entered by Player: scene transition remains blocked, QuestSystem marks `forest_guard`, advances `Explore the World` to `Get Swordsman Certification`, `Rebuilding Swordsman Guild` becomes active, and Guard warning opens.
 
@@ -394,11 +395,11 @@ Color language:
 
 ## Current Non-Goals
 
-- No enemy drops.
-- No inventory use in Field.
+- Enemy drops are model-backed and shown as simple inventory text.
+- No consumable use in Field yet.
 - No playable Forest.
 - No Swordsman Guild quest completion UI.
-- No drop/inventory rewards yet.
+- No drop pickup animation yet.
 
 ## Deliverables
 
@@ -473,6 +474,7 @@ Player can:
 - [x] Enemy attacks current Life.
 - [x] Aggro enemy chases Player when Player moves away.
 - [x] Enemy HP `<= 0` removes enemy and grants XP.
+- [x] Enemy HP `<= 0` grants deterministic item drop.
 - [x] Enemy movement rejects `FieldCollision` blockers.
 - [x] Defeated enemies stay gone across portal changes until their global respawn timer expires.
 - [x] Eligible enemies respawn while Field remains loaded.
@@ -488,5 +490,5 @@ Player can:
 - [x] Forest Gateway advances QuestSystem to `Get Swordsman Certification`.
 - [x] Forest Gateway records the `forest_guard` checkpoint.
 - [x] `Rebuilding Swordsman Guild` activates from the Forest Gateway flow.
-- [ ] Enemy drops exist.
+- [x] Enemy drops exist.
 - [ ] Inventory/consume behavior exists in Field.

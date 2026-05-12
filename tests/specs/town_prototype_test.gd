@@ -119,14 +119,11 @@ func test_town_has_field_gateway() -> void:
 	root.free()
 
 
-func test_town_has_reborn_prompt_copy() -> void:
+func test_town_does_not_have_persistent_reborn_prompt_label() -> void:
 	var root := _instantiate_town()
 	if root == null:
 		return
-	var prompt := root.get_node_or_null("UI/RebornPrompt") as Label
-	assert_not_null(prompt, "Town should show reborn prompt label")
-	if prompt:
-		assert_eq(REBORN_PROMPT, prompt.text)
+	assert_null(root.get_node_or_null("UI/RebornPrompt"), "Reborn copy should appear in dialog, not persistent HUD")
 	root.free()
 
 

@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" path="res://assets/npcs/smith.png" id="7_smith"]
 [ext_resource type="PackedScene" path="res://scenes/maps/town_map.tscn" id="1_town_map"]
 [ext_resource type="PackedScene" path="res://scenes/maps/town_collision.tscn" id="1_town_collision"]
-[ext_resource type="Script" path="res://scripts/views/quest_window_view.gd" id="8_quest_window"]
+[ext_resource type="PackedScene" path="res://scenes/ui/shared_hud.tscn" id="8_shared_hud"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog"]
 content_margin_left = 28.0
@@ -198,23 +198,7 @@ horizontal_alignment = 1
 position = Vector2(960, 500)
 enabled = true
 
-[node name="UI" type="CanvasLayer" parent="."]
-
-[node name="RebornPrompt" type="Label" parent="UI"]
-offset_left = 28.0
-offset_top = 24.0
-offset_right = 520.0
-offset_bottom = 86.0
-text = "You have been reborn.\nWill you spend this life well?"
-
-[node name="QuestWindow" type="PanelContainer" parent="UI"]
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -430.0
-offset_top = 24.0
-offset_right = -28.0
-offset_bottom = 150.0
-script = ExtResource("8_quest_window")
+[node name="UI" parent="." instance=ExtResource("8_shared_hud")]
 
 [node name="DialogPortrait" type="TextureRect" parent="UI"]
 visible = false

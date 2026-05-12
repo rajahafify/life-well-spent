@@ -18,13 +18,17 @@
 | [architecture/quest-manager](architecture/quest-manager.md) | concept | 2026-05-12 | Quest catalog, main objective progression, side chain activation, certification state, and free acceptance. |
 | [architecture/quest-system](architecture/quest-system.md) | reference | 2026-05-12 | Game-wide quest autoload sharing main quest, side quest chain, and certification state across scenes. |
 | [architecture/quest-window-view](architecture/quest-window-view.md) | reference | 2026-05-12 | Reusable top-right quest objective UI view for Town and Field. |
+| [architecture/inventory-model](architecture/inventory-model.md) | reference | 2026-05-12 | Pure stackable item count model used by Field enemy drops. |
+| [architecture/inventory-system](architecture/inventory-system.md) | reference | 2026-05-12 | Game-wide inventory autoload for drops and shared HUD inventory display. |
+| [architecture/inventory-window-view](architecture/inventory-window-view.md) | reference | 2026-05-12 | Reusable inventory overlay scene opened from SharedHUDView with the Inventory button or I key. |
+| [architecture/shared-hud-view](architecture/shared-hud-view.md) | reference | 2026-05-12 | Reusable gameplay HUD for player Life, Inventory button/window, and Quest Tracker. |
 | [architecture/game-balance](architecture/game-balance.md) | reference | 2026-05-11 | Shared pure constants model for quest cost and animation timings. |
 | [assets/lpc-sprite-generator](assets/lpc-sprite-generator.md) | reference | 2026-05-09 | LPC sprite generator tool — prompt-driven character spritesheet pipeline. |
 | [assets/assets-viewer](assets/assets-viewer.md) | reference | 2026-05-12 | In-project gallery scene that recursively displays enemy, NPC, and player PNG assets as thumbnails. |
 | [assets/slime-asset-view](assets/slime-asset-view.md) | reference | 2026-05-12 | Enemy and character asset tools: focused AssetView preview plus looping AssetGallery SpriteFrames/LPC previews. |
 | [assets/tiny-town-map-import](assets/tiny-town-map-import.md) | reference | 2026-05-12 | TMJ-to-Godot visual map importer for the Tiny Town TownMap scene. |
 | [scenes/main-menu](scenes/main-menu.md) | reference | 2026-05-11 | Main menu scene — title, New Game button, Quit button. Transitions to town hub. |
-| [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-12 | Prototype Town scene — named gateway spawn, reborn prompt, three old institutions, NPC dialog, and deferred direct Field gateway. |
+| [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-12 | Prototype Town scene — named gateway spawn, reborn start dialog, three old institutions, NPC dialog, and deferred direct Field gateway. |
 | [scenes/field](scenes/field.md) | reference | 2026-05-12 | Playable Field slice — spawn zones, Slime/Bat/Rat combat, RO damage numbers, slash animation, Forest Guard gate. |
 | [architecture/animation-controller](architecture/animation-controller.md) | reference | 2026-05-12 | LPC spritesheet animation state machine. Idle, walking, slash/thrust attack frame advance via `tick(delta)`. |
 | [architecture/player-movement](architecture/player-movement.md) | reference | 2026-05-11 | CharacterMovement Sprite2D view. Click-to-move/static facing, collision/dialog stop, modal move lock, AnimationController frames. |

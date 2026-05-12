@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/views/shared_hud_view.gd" id="1_shared_hud"]
+[ext_resource type="Script" path="res://scripts/views/quest_window_view.gd" id="2_quest_window"]
+[ext_resource type="PackedScene" path="res://scenes/ui/inventory_window.tscn" id="3_inventory_window"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_life"]
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
+bg_color = Color(0.08, 0.10, 0.08, 0.86)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="SharedHUD" type="CanvasLayer"]
+script = ExtResource("1_shared_hud")
+
+[node name="LifeLabel" type="Label" parent="."]
+offset_left = 28.0
+offset_top = 24.0
+offset_right = 260.0
+offset_bottom = 70.0
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_life")
+text = "Life: 100/100"
+
+[node name="InventoryButton" type="Button" parent="."]
+offset_left = 28.0
+offset_top = 84.0
+offset_right = 168.0
+offset_bottom = 124.0
+theme_override_font_sizes/font_size = 22
+text = "Inventory"
+
+[node name="QuestWindow" type="PanelContainer" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -430.0
+offset_top = 24.0
+offset_right = -28.0
+offset_bottom = 150.0
+script = ExtResource("2_quest_window")
+
+[node name="InventoryWindow" parent="." instance=ExtResource("3_inventory_window")]

@@ -6,9 +6,9 @@ Town is safe base and first scene. The Demon King is dead, heroes won long ago, 
 
 Player begins here after rebirth. First Town slice is about mood, orientation, and worldbuilding: talk to three NPCs, understand the old world, then enter the glowing gateway to Field.
 
-## Start Prompt
+## Start Dialog
 
-Town opens with:
+Town opens a dialog box with:
 
 ```text
 You have been reborn.
@@ -184,7 +184,8 @@ Old roads have a way of calling again.
 
 - Player
 - Camera
-- HUD or start prompt banner
+- Shared HUD
+- Start/reborn dialog
 - Dialog Panel
 - Shop building
 - Shopkeeper NPC with generated LPC sprite: `assets/npcs/shopkeeper.png`
@@ -252,7 +253,7 @@ First Town slice may show:
 - Armor slot
 - Consumable count
 
-If HUD is deferred, Town must still show start prompt and NPC dialog.
+Town must show the start/reborn copy through the dialog panel.
 
 ## Rules
 
@@ -275,7 +276,7 @@ Future rules:
 
 First Town slice:
 
-- On scene start: show reborn prompt.
+- On scene start: show reborn copy in a dialog box.
 - On ground click while dialog is closed: route Player movement to `CharacterMovement`.
 - Camera follows Player with RO-style upward offset.
 - On ground click while dialog is open: block movement.
@@ -362,7 +363,7 @@ Color language:
 ### Spec
 
 - `tests/specs/town_prototype_test.gd` defines RED acceptance specs before implementation.
-- Specs cover root naming, controller class naming, buildings, NPCs, dialog copy, reborn prompt, and portal.
+- Specs cover root naming, controller class naming, buildings, NPCs, dialog copy, reborn start dialog, and portal.
 
 ### Scene
 
@@ -381,7 +382,7 @@ Color language:
 Player can:
 
 1. Spawn in Town.
-2. Read reborn prompt.
+2. Read reborn start dialog.
 3. See Shop, Swordsman Guild, Blacksmith, and glowing Field Gateway.
 4. Talk to Guildmaster, Shopkeeper, and Smith.
 5. Use gateway to request Field transition.
@@ -389,7 +390,7 @@ Player can:
 ## First Slice
 
 1. Start in Town.
-2. Show reborn prompt.
+2. Show reborn start dialog.
 3. Click ground to move around Town; camera follows Player.
 4. See Shop, Swordsman Guild, Blacksmith, and glowing Field Gateway in 1080p viewport.
 5. Click an NPC from far away; Player approaches before dialog opens.
@@ -409,7 +410,7 @@ Player can:
 - [ ] Shop, Swordsman Guild, and Blacksmith buildings exist.
 - [ ] Shopkeeper, Guildmaster, and Smith NPCs exist.
 - [ ] Field Gateway exists.
-- [ ] Reborn prompt displays on scene start.
+- [ ] Reborn start dialog displays on scene start.
 - [ ] Guildmaster dialog matches first-slice worldbuilding text.
 - [ ] Shopkeeper dialog matches first-slice worldbuilding text.
 - [ ] Smith dialog matches first-slice worldbuilding text.

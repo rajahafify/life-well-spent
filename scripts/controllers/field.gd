@@ -11,6 +11,7 @@ const ENEMY_DEFINITION_SCRIPT := preload("res://scripts/models/enemy_definition.
 const ENEMY_STATE_SCRIPT := preload("res://scripts/models/enemy_state.gd")
 const ENEMY_BEHAVIOR_SCRIPT := preload("res://scripts/models/enemy_behavior_system.gd")
 const COMBAT_SCRIPT := preload("res://scripts/models/combat_system.gd")
+const INVENTORY_SCRIPT := preload("res://scripts/models/inventory_model.gd")
 const ENEMY_COLLISION_RADIUS := 28.0
 const FIELD_MAP_ID := "field"
 const FIELD_BIOME_ID := "grassland"
@@ -19,8 +20,7 @@ const FIELD_RESPAWN_DELAY := 60.0
 const ENEMY_SPAWN_POLL_INTERVAL := 1.0
 
 @onready var _dialog_view: TownDialogView = $UI/DialogPanel
-@onready var _objective_prompt: Label = $UI/ObjectivePrompt
-@onready var _quest_window: PanelContainer = $UI/QuestWindow
+@onready var _hud: CanvasLayer = $UI
 @onready var _town_gateway: Area2D = $TownGateway
 @onready var _forest_gateway: Area2D = $ForestGateway
 @onready var _player: CharacterBody2D = $Player
@@ -35,6 +35,7 @@ var player_attack_interval: float = 1.0
 var player_attack_timer: float = 0.0
 var player_xp: int = 0
 var player_target_enemy_instance_id: String = ""
+var inventory = null
 var enemy_states: Dictionary = {}
 var enemy_views: Dictionary = {}
 var enemy_definitions: Dictionary = {}
@@ -45,7 +46,7 @@ var _spawn_rng := RandomNumberGenerator.new()
 var _pending_npc: NpcController
 var _behavior = ENEMY_BEHAVIOR_SCRIPT.new()
 var _combat = COMBAT_SCRIPT.new()
-var _life_label: Label
+var _local_inventory_model = null
 var _slime_hp_label: Label
 var _player_damage_label: Label
 var _player_damage_timer: float = 0.0
@@ -56,8 +57,15 @@ func _ready() -> void:
 	if _is_test_run():
 		EnemySpawnManager.reset()
 		QuestSystem.reset()
+		var test_inventory_system := _inventory_system()
+		if test_inventory_system:
+			test_inventory_system.reset()
+	inventory = _inventory_system()
+	if inventory == null:
+		_local_inventory_model = INVENTORY_SCRIPT.new()
+		inventory = _local_inventory_model
 	QuestSystem.setup_core_quests()
-	_objective_prompt.text = "Objective: Find the Forest path."
+	_connect_hud()
 	_update_quest_window()
 	_dialog_view.hide_dialog()
 	_connect_dialog()
@@ -92,6 +100,10 @@ func _cleanup_combat_refs() -> void:
 	if _combat:
 		_combat.free()
 		_combat = null
+	if _local_inventory_model:
+		_local_inventory_model.free()
+		_local_inventory_model = null
+	inventory = null
 	enemy_states.clear()
 	enemy_views.clear()
 	enemy_definitions.clear()
@@ -115,6 +127,13 @@ func _connect_forest_guard() -> void:
 		_forest_guard.interacted.connect(_on_npc_interacted)
 
 
+func _connect_hud() -> void:
+	if _hud:
+		_hud.ensure_ready()
+		_hud.set_inventory_model(_inventory_model_for_hud())
+		_hud.set_life(player_life, player_max_life)
+
+
 func _physics_process(delta: float) -> void:
 	_update_camera()
 	if _pending_npc != null and _pending_npc.is_player_in_talk_range(_player.global_position):
@@ -132,6 +151,16 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		stop_auto_attack()
 		move_player_to(get_global_mouse_position())
+
+
+func toggle_inventory_window() -> void:
+	if _hud:
+		_hud.toggle_inventory_window()
+
+
+func close_inventory_window() -> void:
+	if _hud:
+		_hud.close_inventory_window()
 
 
 func stop_auto_attack() -> void:
@@ -189,6 +218,7 @@ func _tick_player_auto_attack(delta: float) -> void:
 	if bool(result.get("enemy_defeated", false)):
 		if not state.reward_granted:
 			player_xp += int(result.get("xp_reward", 0))
+			_grant_enemy_drops(state)
 			state.reward_granted = true
 			EnemySpawnManager.mark_defeated(state.instance_id)
 		state.behavior_state = "die"
@@ -426,16 +456,6 @@ func _update_enemy_view(state) -> void:
 
 
 func _ensure_combat_ui() -> void:
-	_life_label = get_node_or_null("UI/LifeLabel") as Label
-	if _life_label == null:
-		_life_label = Label.new()
-		_life_label.name = "LifeLabel"
-		_life_label.offset_left = 28.0
-		_life_label.offset_top = 76.0
-		_life_label.offset_right = 340.0
-		_life_label.offset_bottom = 112.0
-		_life_label.add_theme_font_size_override("font_size", 26)
-		$UI.add_child(_life_label)
 	_slime_hp_label = get_node_or_null("UI/SlimeHpLabel") as Label
 	if _slime_hp_label == null:
 		_slime_hp_label = Label.new()
@@ -472,14 +492,19 @@ func _tick_player_damage_label(delta: float) -> void:
 
 
 func _update_combat_ui() -> void:
-	if _life_label:
-		_life_label.text = "Life: %d/%d" % [player_life, player_max_life]
+	if _hud:
+		_hud.set_life(player_life, player_max_life)
 	if _slime_hp_label:
 		if enemy_states.has("field_slime_001"):
 			var slime = enemy_states["field_slime_001"]
 			_slime_hp_label.text = "Slime: %d/%d" % [slime.hp, slime.max_hp]
 		else:
 			_slime_hp_label.text = "Slime: defeated"
+
+
+func _grant_enemy_drops(state) -> void:
+	for drop in state.drop_table:
+		inventory.add_item(str(drop.get("item_id", "")), int(drop.get("quantity", 1)))
 
 
 func _on_npc_interacted(npc: NpcController) -> void:
@@ -541,8 +566,8 @@ func _npc_portrait_texture(npc: NpcController) -> Texture2D:
 
 
 func _update_quest_window() -> void:
-	if _quest_window and _quest_window.has_method("show_main_objective"):
-		_quest_window.show_main_objective("Explore the World", QuestSystem.current_main_objective_text(), QuestSystem.current_main_checkpoint_text())
+	if _hud:
+		_hud.show_quest("Explore the World", QuestSystem.current_main_objective_text(), QuestSystem.current_main_checkpoint_text())
 
 
 func _reach_forest_guard_checkpoint() -> void:
@@ -553,3 +578,16 @@ func _reach_forest_guard_checkpoint() -> void:
 
 func _player_movement() -> CharacterMovement:
 	return _player.get_node_or_null("Sprite") as CharacterMovement
+
+
+func _inventory_system() -> Node:
+	if not is_inside_tree():
+		return null
+	return get_node_or_null("/root/InventorySystem")
+
+
+func _inventory_model_for_hud():
+	var system := _inventory_system()
+	if system:
+		return system.model()
+	return inventory

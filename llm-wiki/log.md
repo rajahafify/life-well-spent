@@ -1,5 +1,39 @@
 # Wiki Log
 
+## [2026-05-12] change | Show reborn copy as Town start dialog
+
+- RED: updated Town specs so the reborn copy must appear in `TownDialogView` on scene start and must not exist as a persistent HUD label.
+- Removed `UI/RebornPrompt` from `scenes/town_scene.tscn`.
+- Town now opens `You have been reborn.\nWill you spend this life well?` as a dialog named `Reborn` during `_ready()`.
+- Updated Town scene and prototype docs.
+- Validation: TownSceneDialog specs `20 tests, 20 passed`; TownPrototype specs `21 tests, 21 passed`.
+
+## [2026-05-12] refactor | Add shared gameplay HUD
+
+- RED: added SharedHUDView specs plus Field and Town coverage requiring a shared HUD with player Life, Inventory button/window, and Quest Tracker.
+- Added `scenes/ui/shared_hud.tscn` and `scripts/views/shared_hud_view.gd`.
+- Added `InventorySystem` as the game-wide inventory autoload and moved Field drops to the global inventory boundary.
+- Field and Town now instance the shared HUD as `UI`; Field scene-specific objective/inventory text HUD nodes were removed.
+- Updated shared HUD, inventory system, Field, Town, and prototype inventory docs.
+- Validation: SharedHUDView specs `3 tests, 3 passed`; InventorySystem specs `2 tests, 2 passed`; Field scene specs `27 tests, 27 passed`; Town scene dialog specs `19 tests, 19 passed`.
+
+## [2026-05-12] feat | Add reusable Inventory Window UI
+
+- RED: added InventoryWindowView scene specs and Field scene coverage for the Inventory button plus `I` key toggle.
+- Added `scenes/ui/inventory_window.tscn` and `scripts/views/inventory_window_view.gd` as a reusable inventory overlay scene.
+- Field now instances the inventory window, opens it from the HUD Inventory button or `I`, and renders current InventoryModel stacks.
+- Updated InventoryWindowView, Field, and prototype inventory docs.
+- Validation: InventoryWindowView specs `3 tests, 3 passed`; Field scene specs `27 tests, 27 passed`.
+
+## [2026-05-12] feat | Add InventoryModel and Field enemy drops
+
+- RED: added InventoryModel specs, enemy drop definition checks, and Field scene coverage for inventory text plus Slime drop grants.
+- Added `scripts/models/inventory_model.gd` for pure stackable item counts.
+- Added deterministic drop tables to Slime, Bat, and Rat enemy definitions.
+- Field now grants enemy drops once with XP rewards and shows a simple inventory summary label.
+- Updated InventoryModel, Field, enemy behavior, and prototype inventory docs.
+- Validation: InventoryModel specs `5 tests, 5 passed`; EnemyBehaviorSystem specs `9 tests, 9 passed`; Field scene specs `26 tests, 26 passed`.
+
 ## [2026-05-12] map | Reimport edited Field TMJ
 
 - Re-rendered `D:\godot\kenney_tiny-town\field.tmj` with the Tiny Town layout skill renderer.

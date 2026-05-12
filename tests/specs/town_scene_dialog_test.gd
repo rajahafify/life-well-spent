@@ -21,7 +21,12 @@ func teardown() -> void:
 		root = null
 
 
+func _close_start_dialog() -> void:
+	root.close_dialog()
+
+
 func test_near_guildmaster_interaction_opens_first_dialog_page() -> void:
+	_close_start_dialog()
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
@@ -35,12 +40,32 @@ func test_near_guildmaster_interaction_opens_first_dialog_page() -> void:
 	assert_true(next.visible)
 
 
+func test_town_opens_reborn_copy_as_start_dialog() -> void:
+	var dialog: TownDialogView = root.get_node("UI/DialogPanel") as TownDialogView
+	var title: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	var next: Button = root.get_node("UI/DialogPanel/VBox/Buttons/NextButton") as Button
+	assert_true(dialog.visible)
+	assert_eq("Reborn", title.text)
+	assert_eq("You have been reborn.\nWill you spend this life well?", body.text)
+	assert_false(next.visible)
+	assert_null(root.get_node_or_null("UI/RebornPrompt"))
+
+
 func test_town_has_top_right_quest_window() -> void:
+	var hud := root.get_node_or_null("UI")
+	assert_true(hud != null and hud.has_method("set_life") and hud.has_method("show_quest"), "Town should use the shared gameplay HUD")
+	var life_label := root.get_node_or_null("UI/LifeLabel") as Label
+	var inventory_button := root.get_node_or_null("UI/InventoryButton") as Button
 	var quest_window := root.get_node_or_null("UI/QuestWindow") as PanelContainer
 	var quest_label := root.get_node_or_null("UI/QuestWindow/VBox/ObjectiveLabel") as Label
+	assert_not_null(life_label)
+	assert_not_null(inventory_button)
 	assert_not_null(quest_window)
 	assert_not_null(quest_label)
-	if quest_window and quest_label:
+	if life_label and inventory_button and quest_window and quest_label:
+		assert_eq("Life: 100/100", life_label.text)
+		assert_eq("Inventory", inventory_button.text)
 		assert_true(quest_window.visible)
 		assert_eq(1.0, quest_window.anchor_right)
 		assert_eq(-28.0, quest_window.offset_right)
@@ -57,6 +82,7 @@ func test_dialog_text_is_large_enough_for_1080p() -> void:
 
 
 func test_dialog_shows_npc_portrait_from_sprite_sheet_above_box() -> void:
+	_close_start_dialog()
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
@@ -71,6 +97,7 @@ func test_dialog_shows_npc_portrait_from_sprite_sheet_above_box() -> void:
 
 
 func test_guildmaster_dialog_advances_pages() -> void:
+	_close_start_dialog()
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
@@ -86,6 +113,7 @@ func test_guildmaster_dialog_advances_pages() -> void:
 
 
 func test_guildmaster_offers_swordsman_chain_after_forest_gate_objective() -> void:
+	_close_start_dialog()
 	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
@@ -97,6 +125,7 @@ func test_guildmaster_offers_swordsman_chain_after_forest_gate_objective() -> vo
 
 
 func test_far_guildmaster_interaction_moves_player_without_opening_dialog() -> void:
+	_close_start_dialog()
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = Vector2(960, 700)
 	var movement: CharacterMovement = root.get_node("Player/Sprite") as CharacterMovement
@@ -109,6 +138,7 @@ func test_far_guildmaster_interaction_moves_player_without_opening_dialog() -> v
 
 
 func test_pending_npc_opens_dialog_when_player_reaches_talk_range() -> void:
+	_close_start_dialog()
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = Vector2(960, 700)
 	npc.interacted.emit(npc)
@@ -121,6 +151,7 @@ func test_pending_npc_opens_dialog_when_player_reaches_talk_range() -> void:
 
 
 func test_shopkeeper_interaction_opens_worldbuilding_dialog() -> void:
+	_close_start_dialog()
 	var npc: NpcController = root.get_node("Shopkeeper") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
@@ -131,6 +162,7 @@ func test_shopkeeper_interaction_opens_worldbuilding_dialog() -> void:
 
 
 func test_smith_interaction_opens_worldbuilding_dialog() -> void:
+	_close_start_dialog()
 	var npc: NpcController = root.get_node("Smith") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
@@ -141,6 +173,7 @@ func test_smith_interaction_opens_worldbuilding_dialog() -> void:
 
 
 func test_first_slice_dialog_hides_quest_buttons() -> void:
+	_close_start_dialog()
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
@@ -153,6 +186,7 @@ func test_first_slice_dialog_hides_quest_buttons() -> void:
 
 
 func test_town_routes_player_movement_to_character_movement() -> void:
+	_close_start_dialog()
 	var movement: CharacterMovement = root.get_node("Player/Sprite") as CharacterMovement
 	movement._ready()
 	var target := Vector2(700, 520)
@@ -162,6 +196,7 @@ func test_town_routes_player_movement_to_character_movement() -> void:
 
 
 func test_dialog_blocks_player_movement() -> void:
+	_close_start_dialog()
 	var movement: CharacterMovement = root.get_node("Player/Sprite") as CharacterMovement
 	movement._ready()
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
@@ -172,6 +207,7 @@ func test_dialog_blocks_player_movement() -> void:
 
 
 func test_camera_follows_player_with_ro_style_offset() -> void:
+	_close_start_dialog()
 	var player: Node2D = root.get_node("Player") as Node2D
 	var camera: Camera2D = root.get_node("Camera2D") as Camera2D
 	player.global_position = Vector2(1200, 700)
@@ -188,6 +224,7 @@ func test_town_npc_idle_animation_has_distinct_timing() -> void:
 
 
 func test_close_button_signal_hides_dialog() -> void:
+	_close_start_dialog()
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)

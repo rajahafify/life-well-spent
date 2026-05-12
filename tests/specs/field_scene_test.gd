@@ -6,7 +6,6 @@ extends TestCase
 
 const FIELD_SCENE := "res://scenes/field.tscn"
 const FIELD_SCRIPT := "res://scripts/controllers/field.gd"
-const FIELD_OBJECTIVE := "Objective: Find the Forest path."
 const TOWN_PATH := "res://scenes/town_scene.tscn"
 const FOREST_GUARD_DIALOG := "Stop.\n\nThe Demon King is gone.\nBut old places do not become safe overnight.\n\nThe Forest remembers what we forgot.\nReturn to Town.\nEarn certification from the Swordsman Guild."
 
@@ -60,20 +59,25 @@ func test_field_has_player_camera_gateways_and_objective() -> void:
 		assert_true(spawn.global_position.distance_to(town_gateway.global_position) > 64.0, "Field spawn should not auto-trigger Town portal")
 	assert_not_null(root.get_node_or_null("ForestGateway"), "Field should have Forest Gateway")
 	assert_not_null(root.get_node_or_null("SpawnZones/Grassland"), "Field should have explicit enemy spawn zone")
-	var objective := root.get_node_or_null("UI/ObjectivePrompt") as Label
-	assert_not_null(objective, "Field should have objective prompt")
-	if objective:
-		assert_eq(FIELD_OBJECTIVE, objective.text)
-		assert_true(objective.visible)
+	var hud := root.get_node_or_null("UI")
+	assert_true(hud != null and hud.has_method("set_life") and hud.has_method("show_quest"), "Field should use the shared gameplay HUD")
+	assert_null(root.get_node_or_null("UI/ObjectivePrompt"), "Field should not own a scene-specific objective HUD label")
 	var quest_window := root.get_node_or_null("UI/QuestWindow") as PanelContainer
 	var quest_label := root.get_node_or_null("UI/QuestWindow/VBox/ObjectiveLabel") as Label
+	var inventory_button := root.get_node_or_null("UI/InventoryButton") as Button
+	var inventory_window := root.get_node_or_null("UI/InventoryWindow") as PanelContainer
 	assert_not_null(quest_window, "Field should have a dedicated Quest Window")
 	assert_not_null(quest_label, "Quest Window should show current objective")
+	assert_not_null(inventory_button, "Field should have an inventory HUD button")
+	assert_not_null(inventory_window, "Field should instance the reusable inventory window")
 	if quest_window and quest_label:
 		assert_true(quest_window.visible)
 		assert_eq(1.0, quest_window.anchor_right)
 		assert_eq(-28.0, quest_window.offset_right)
 		assert_eq("Explore the World\nFind the Forest path.", quest_label.text)
+	if inventory_button and inventory_window:
+		assert_eq("Inventory", inventory_button.text)
+		assert_false(inventory_window.visible)
 
 
 func test_field_instances_tiny_town_field_map() -> void:
@@ -149,7 +153,7 @@ func test_enemy_movement_rejects_field_collision_blockers() -> void:
 	blocker.free()
 
 
-func test_field_has_slime_and_simple_life_combat_text() -> void:
+func test_field_has_slime_and_shared_life_hud() -> void:
 	if root == null:
 		return
 	var slime := root.get_node_or_null("Enemies/Slime")
@@ -171,8 +175,9 @@ func test_field_has_slime_and_simple_life_combat_text() -> void:
 	var life_label := root.get_node_or_null("UI/LifeLabel") as Label
 	var slime_label := root.get_node_or_null("UI/SlimeHpLabel") as Label
 	var player_damage_label := root.get_node_or_null("Player/DamageLabel") as Label
-	assert_not_null(life_label, "Field should show simple Life text")
+	assert_not_null(life_label, "Shared HUD should show player Life text")
 	assert_not_null(slime_label, "Field should show simple Slime HP text")
+	assert_null(root.get_node_or_null("UI/InventoryLabel"), "Inventory text should live in the shared inventory window, not Field HUD")
 	assert_not_null(player_damage_label, "Field should show RO-style damage text above Player")
 	if life_label:
 		assert_eq("Life: 100/100", life_label.text)
@@ -201,6 +206,23 @@ func test_field_uses_quest_system_for_forest_gate_progress() -> void:
 	file.close()
 	assert_true(source.contains("QuestSystem"), "Field should use the game-wide quest system")
 	assert_true(source.contains("get_swordsman_certification"), "Forest gate should advance the main quest objective")
+
+
+func test_inventory_button_and_i_key_toggle_inventory_window() -> void:
+	if root == null:
+		return
+	var button := root.get_node("UI/InventoryButton") as Button
+	var window := root.get_node("UI/InventoryWindow") as PanelContainer
+	assert_false(window.visible)
+	button.pressed.emit()
+	assert_true(window.visible)
+	button.pressed.emit()
+	assert_false(window.visible)
+	var event := InputEventKey.new()
+	event.pressed = true
+	event.keycode = KEY_I
+	root.get_node("UI")._unhandled_input(event)
+	assert_true(window.visible)
 
 
 func test_field_respawns_enemy_after_global_timer_while_loaded() -> void:
@@ -311,6 +333,10 @@ func test_slime_dies_plays_death_before_removal() -> void:
 	var sprite := slime.get_node("AnimatedSprite2D") as AnimatedSprite2D
 	assert_eq("death", sprite.animation)
 	assert_eq(5, root.player_xp)
+	assert_eq(1, root.inventory.quantity("slime_gel"))
+	root.toggle_inventory_window()
+	var item_list := root.get_node("UI/InventoryWindow/VBox/ItemList") as VBoxContainer
+	assert_eq("slime_gel x1", (item_list.get_child(0) as Label).text)
 	root._physics_process(0.8)
 	assert_false(root.enemy_states.has("field_slime_001"))
 	assert_null(root.get_node_or_null("Enemies/Slime"))

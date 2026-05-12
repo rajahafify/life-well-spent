@@ -10,6 +10,7 @@ var max_hp: int = 1
 var attack: int = 1
 var defense: int = 0
 var xp_reward: int = 0
+var drop_table: Array[Dictionary] = []
 var spawn_position: Vector2 = Vector2.ZERO
 var position: Vector2 = Vector2.ZERO
 var target_position: Vector2 = Vector2.ZERO
@@ -34,6 +35,7 @@ func to_combat_dict() -> Dictionary:
 		"attack": attack,
 		"defense": defense,
 		"xp_reward": xp_reward,
+		"drop_table": drop_table.duplicate(true),
 	}
 
 
@@ -55,6 +57,7 @@ static func from_definition(instance_id_value: String, definition, spawn_pos: Ve
 	state.attack = definition.attack
 	state.defense = definition.defense
 	state.xp_reward = definition.xp_reward
+	state.drop_table = definition.drop_table.duplicate(true)
 	state.spawn_position = spawn_pos
 	state.position = spawn_pos
 	state.target_position = spawn_pos
