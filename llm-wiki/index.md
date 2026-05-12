@@ -11,7 +11,7 @@
 
 | [architecture/combat-system](architecture/combat-system.md) | reference | 2026-05-12 | Pure Field combat rules for enemy HP, current Life damage, Max Life pressure, defeat, and XP hooks. |
 | [architecture/enemy-sprite-metadata](architecture/enemy-sprite-metadata.md) | reference | 2026-05-12 | RO-ish sprite/action metadata pipeline for enemy animation strips; V1 covers Spiked Slime. |
-| [architecture/enemy-behavior-system](architecture/enemy-behavior-system.md) | reference | 2026-05-12 | Runtime enemy definitions/states and first Slime idle/wander/chase/attack/die behavior. |
+| [architecture/enemy-behavior-system](architecture/enemy-behavior-system.md) | reference | 2026-05-12 | Runtime enemy definitions/states, Slime/Bat/Rat stats, random spawn zones, and idle/wander/chase/attack/die behavior. |
 | [architecture/npc-placement](architecture/npc-placement.md) | reference | 2026-05-11 | Stable NPC map placement data, including Forest Guard gateway blocking. |
 | [architecture/biome-definition](architecture/biome-definition.md) | reference | 2026-05-12 | Field grassland palette, Slime/Bat/Rat enemy pool, props, and biome filters. |
 | [architecture/quest-manager](architecture/quest-manager.md) | concept | 2026-05-11 | Quest catalog, multi-quest tracking, free acceptance, completion HP cost. |
@@ -21,7 +21,7 @@
 | [assets/slime-asset-view](assets/slime-asset-view.md) | reference | 2026-05-12 | Enemy and character asset tools: focused AssetView preview plus looping AssetGallery SpriteFrames/LPC previews. |
 | [scenes/main-menu](scenes/main-menu.md) | reference | 2026-05-11 | Main menu scene — title, New Game button, Quit button. Transitions to town hub. |
 | [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-12 | Prototype Town scene — named gateway spawn, reborn prompt, three old institutions, NPC dialog, and deferred direct Field gateway. |
-| [scenes/field](scenes/field.md) | reference | 2026-05-12 | Playable Field slice — named gateway spawn, movement, Forest Guard gate, five-Slime combat, RO damage numbers, slash animation. |
+| [scenes/field](scenes/field.md) | reference | 2026-05-12 | Playable Field slice — spawn zones, Slime/Bat/Rat combat, RO damage numbers, slash animation, Forest Guard gate. |
 | [architecture/animation-controller](architecture/animation-controller.md) | reference | 2026-05-12 | LPC spritesheet animation state machine. Idle, walking, slash/thrust attack frame advance via `tick(delta)`. |
 | [architecture/player-movement](architecture/player-movement.md) | reference | 2026-05-11 | CharacterMovement Sprite2D view. Click-to-move/static facing, collision/dialog stop, modal move lock, AnimationController frames. |
 | [architecture/npc-system](architecture/npc-system.md) | reference | 2026-05-11 | NPC scene/controller/dialog wiring with TownDialogView, RO-style pending approach, talk range, name labels, modal quest UI. |

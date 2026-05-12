@@ -31,6 +31,7 @@ var player_target_enemy_instance_id: String = ""
 var enemy_states: Dictionary = {}
 var enemy_views: Dictionary = {}
 var enemy_definitions: Dictionary = {}
+var _spawn_rng := RandomNumberGenerator.new()
 
 var _pending_npc: NpcController
 var _behavior = ENEMY_BEHAVIOR_SCRIPT.new()
@@ -227,30 +228,65 @@ func _apply_player_combat_dict(next_player: Dictionary) -> void:
 func _spawn_initial_slime() -> void:
 	if enemy_states.has("field_slime_001"):
 		return
-	var positions := [
-		Vector2(900, 610),
-		Vector2(720, 500),
-		Vector2(1110, 560),
-		Vector2(820, 720),
-		Vector2(1240, 700),
+	_spawn_rng.randomize()
+	var spawns := [
+		{"enemy_id": "slime_spiked", "id": "field_slime_001", "name": "Slime"},
+		{"enemy_id": "slime_spiked", "id": "field_slime_002", "name": "Slime2"},
+		{"enemy_id": "slime_spiked", "id": "field_slime_003", "name": "Slime3"},
+		{"enemy_id": "slime_spiked", "id": "field_slime_004", "name": "Slime4"},
+		{"enemy_id": "slime_spiked", "id": "field_slime_005", "name": "Slime5"},
+		{"enemy_id": "bat", "id": "field_bat_001", "name": "Bat"},
+		{"enemy_id": "bat", "id": "field_bat_002", "name": "Bat2"},
+		{"enemy_id": "rat", "id": "field_rat_001", "name": "Rat"},
+		{"enemy_id": "rat", "id": "field_rat_002", "name": "Rat2"},
 	]
-	for i in range(positions.size()):
-		var index := i + 1
-		var node_name := "Slime" if index == 1 else "Slime%d" % index
-		spawn_enemy("slime_spiked", positions[i], "field_slime_%03d" % index, node_name)
+	var occupied: Array[Vector2] = []
+	for spawn in spawns:
+		var position := _random_enemy_spawn_position(occupied)
+		occupied.append(position)
+		spawn_enemy(spawn["enemy_id"], position, spawn["id"], spawn["name"])
+
+
+func _random_enemy_spawn_position(occupied: Array[Vector2]) -> Vector2:
+	var rect := enemy_spawn_rect()
+	for attempt in range(24):
+		var candidate := Vector2(_spawn_rng.randf_range(rect.position.x, rect.end.x), _spawn_rng.randf_range(rect.position.y, rect.end.y))
+		if _is_spawn_position_clear(candidate, occupied):
+			return candidate
+	return Vector2(_spawn_rng.randf_range(rect.position.x, rect.end.x), _spawn_rng.randf_range(rect.position.y, rect.end.y))
+
+
+func enemy_spawn_rect() -> Rect2:
+	var zone := get_node_or_null("SpawnZones/Grassland") as ColorRect
+	if zone == null:
+		return Rect2(Vector2(380, 300), Vector2(1260, 620))
+	return Rect2(Vector2(zone.offset_left, zone.offset_top), Vector2(zone.offset_right - zone.offset_left, zone.offset_bottom - zone.offset_top))
+
+
+func _is_spawn_position_clear(candidate: Vector2, occupied: Array[Vector2]) -> bool:
+	if candidate.distance_to(_player.global_position) < 260.0:
+		return false
+	if candidate.distance_to(_town_gateway.global_position) < 260.0:
+		return false
+	if candidate.distance_to(_forest_guard.global_position) < 180.0:
+		return false
+	for point in occupied:
+		if candidate.distance_to(point) < 120.0:
+			return false
+	return true
 
 
 func spawn_enemy(enemy_id: String, position: Vector2, instance_id: String = "", node_name: String = "Enemy") -> Node:
 	var enemies := _ensure_enemies_node()
-	var definition = ENEMY_DEFINITION_SCRIPT.slime_spiked()
+	var definition = ENEMY_DEFINITION_SCRIPT.for_id(enemy_id)
 	enemy_definitions[definition.enemy_id] = definition
 	var resolved_id := instance_id if instance_id != "" else "%s_%d" % [enemy_id, enemy_states.size() + 1]
 	var state = ENEMY_STATE_SCRIPT.from_definition(resolved_id, definition, position)
 	enemy_states[resolved_id] = state
 	var view = ENEMY_VIEW_SCENE.instantiate()
 	view.name = node_name
-	enemies.add_child(view)
 	view.configure(resolved_id, enemy_id)
+	enemies.add_child(view)
 	view.global_position = position
 	view.clicked.connect(engage_enemy)
 	enemy_views[resolved_id] = view

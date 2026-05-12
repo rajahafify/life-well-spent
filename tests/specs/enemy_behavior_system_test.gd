@@ -50,6 +50,27 @@ func test_slime_definition_is_tweakable_and_uses_life_combat_values() -> void:
 	assert_eq(48.0, slime.attack_range)
 	assert_eq(1.4, slime.attack_interval)
 	assert_eq(0.8, slime.death_duration)
+	assert_eq(0.4, slime.idle_min_time)
+	assert_eq(3.5, slime.idle_max_time)
+
+
+func test_bat_and_rat_definitions_are_available_for_field() -> void:
+	var script := load(DEF_SCRIPT) as GDScript
+	assert_not_null(script, "EnemyDefinition script should exist")
+	if script == null:
+		return
+	var bat = script.bat()
+	var rat = script.rat()
+	assert_eq("bat", bat.enemy_id)
+	assert_eq("Bat", bat.display_name)
+	assert_eq(8, bat.max_hp)
+	assert_eq(2, bat.attack)
+	assert_eq(4, bat.xp_reward)
+	assert_eq("rat", rat.enemy_id)
+	assert_eq("Rat", rat.display_name)
+	assert_eq(6, rat.max_hp)
+	assert_eq(2, rat.attack)
+	assert_eq(3, rat.xp_reward)
 
 
 func test_enemy_state_starts_idle_with_full_hp() -> void:
@@ -74,8 +95,10 @@ func test_slime_wander_targets_vary_by_instance_id() -> void:
 		state_b = script.from_definition("field_slime_002", def, Vector2(500, 500))
 	if behavior == null or def == null or state_a == null or state_b == null:
 		return
-	behavior.tick(state_a, def, {"player_position": Vector2(2000, 2000)}, 3.0)
-	behavior.tick(state_b, def, {"player_position": Vector2(2000, 2000)}, 3.0)
+	state_a.idle_timer = state_a.idle_duration
+	state_b.idle_timer = state_b.idle_duration
+	behavior.tick(state_a, def, {"player_position": Vector2(2000, 2000)}, 0.01)
+	behavior.tick(state_b, def, {"player_position": Vector2(2000, 2000)}, 0.01)
 	assert_eq("wander", state_a.behavior_state)
 	assert_eq("wander", state_b.behavior_state)
 	assert_neq(state_a.target_position, state_b.target_position)

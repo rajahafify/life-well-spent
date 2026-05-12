@@ -1,5 +1,14 @@
 # Wiki Log
 
+## [2026-05-12] feature | Add Bat/Rat and spawn zones
+
+- Added Bat and Rat enemy definitions and spawned them alongside Slimes in Field.
+- Fixed EnemyView configuration order so Bat/Rat load their own SpriteFrames instead of default Slime frames.
+- Added hidden scene-authored `SpawnZones/Grassland` and randomized initial enemy positions across the larger map area.
+- Expanded enemy idle timing/random movement so enemies do not move in synchronized batches.
+- Updated Field and enemy behavior wiki pages plus index.
+- Validation: `241 tests, 241 passed, 0 failed`.
+
 ## [2026-05-12] refactor | Add named gateway spawn points
 
 - Added `SpawnPoints/FromFieldGateway` and `SpawnPoints/Default` to Town.

@@ -39,7 +39,7 @@ func tick(state, definition, context: Dictionary, delta: float) -> Dictionary:
 		state.idle_timer += delta
 		if state.idle_timer >= state.idle_duration:
 			state.idle_timer = 0.0
-			state.idle_duration = _next_idle_duration(state, definition)
+			state.idle_duration = state.next_idle_duration(definition)
 			state.behavior_state = "wander"
 			state.target_position = _next_wander_target(state, definition)
 	elif state.behavior_state == "wander":
@@ -49,15 +49,8 @@ func tick(state, definition, context: Dictionary, delta: float) -> Dictionary:
 	return result
 
 
-func _next_idle_duration(state, definition) -> float:
-	var span: float = max(0.0, definition.idle_max_time - definition.idle_min_time)
-	var seed: int = abs(hash("%s_idle_%d" % [state.instance_id, state.wander_step])) % 1000
-	return definition.idle_min_time + span * (float(seed) / 999.0)
-
-
 func _next_wander_target(state, definition) -> Vector2:
 	state.wander_step += 1
-	var seed: int = abs(hash("%s_wander_%d" % [state.instance_id, state.wander_step]))
-	var angle := TAU * (float(seed % 1000) / 1000.0)
-	var distance: float = definition.wander_radius * (0.35 + 0.55 * (float((seed / 1000) % 1000) / 999.0))
+	var angle: float = TAU * state.next_random_unit()
+	var distance: float = definition.wander_radius * state.next_random_range(0.35, 0.9)
 	return state.spawn_position + Vector2(cos(angle), sin(angle)) * distance

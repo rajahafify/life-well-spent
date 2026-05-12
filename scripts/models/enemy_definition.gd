@@ -13,8 +13,8 @@ extends Resource
 @export var wander_radius: float = 120.0
 @export var aggro_radius: float = 0.0
 @export var attack_range: float = 48.0
-@export var idle_min_time: float = 0.6
-@export var idle_max_time: float = 2.0
+@export var idle_min_time: float = 0.4
+@export var idle_max_time: float = 3.5
 @export var attack_interval: float = 1.4
 @export var death_duration: float = 0.25
 
@@ -32,21 +32,43 @@ func to_enemy_state_dict(hp_override: int = -1) -> Dictionary:
 
 
 static func slime_spiked():
+	return _build("slime_spiked", "Spiked Slime", 14, 1, 1, 5, 45.0, 65.0, 120.0, 48.0, 1.4, 0.8)
+
+
+static func bat():
+	return _build("bat", "Bat", 8, 2, 0, 4, 70.0, 95.0, 170.0, 54.0, 1.1, 0.7)
+
+
+static func rat():
+	return _build("rat", "Rat", 6, 2, 0, 3, 75.0, 105.0, 140.0, 44.0, 1.0, 0.6)
+
+
+static func for_id(enemy_id_value: String):
+	match enemy_id_value:
+		"bat":
+			return bat()
+		"rat":
+			return rat()
+		_:
+			return slime_spiked()
+
+
+static func _build(enemy_id_value: String, display_name_value: String, hp: int, attack_value: int, defense_value: int, xp: int, move: float, chase: float, wander: float, range: float, interval: float, death: float):
 	var script: GDScript = load("res://scripts/models/enemy_definition.gd")
 	var enemy = script.new()
-	enemy.enemy_id = "slime_spiked"
-	enemy.display_name = "Spiked Slime"
-	enemy.max_hp = 14
-	enemy.attack = 1
-	enemy.defense = 1
-	enemy.xp_reward = 5
-	enemy.move_speed = 45.0
-	enemy.chase_speed = 65.0
-	enemy.wander_radius = 120.0
+	enemy.enemy_id = enemy_id_value
+	enemy.display_name = display_name_value
+	enemy.max_hp = hp
+	enemy.attack = attack_value
+	enemy.defense = defense_value
+	enemy.xp_reward = xp
+	enemy.move_speed = move
+	enemy.chase_speed = chase
+	enemy.wander_radius = wander
 	enemy.aggro_radius = 0.0
-	enemy.attack_range = 48.0
-	enemy.idle_min_time = 0.6
-	enemy.idle_max_time = 2.0
-	enemy.attack_interval = 1.4
-	enemy.death_duration = 0.8
+	enemy.attack_range = range
+	enemy.idle_min_time = 0.4
+	enemy.idle_max_time = 3.5
+	enemy.attack_interval = interval
+	enemy.death_duration = death
 	return enemy

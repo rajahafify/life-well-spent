@@ -14,6 +14,7 @@ var _sprite: AnimatedSprite2D
 var _hp_label: Label
 var _shape: CollisionShape2D
 var _hit_label: Label
+var _loaded_enemy_id: String = ""
 var _hit_label_timer: float = 0.0
 
 
@@ -131,7 +132,7 @@ func _animation_for_state(state_name: String) -> String:
 
 
 func _load_sprite_frames() -> void:
-	if _sprite.sprite_frames != null:
+	if _sprite.sprite_frames != null and _loaded_enemy_id == enemy_id:
 		return
 	var catalog = CATALOG_SCRIPT.new()
 	var sprite_set: Dictionary = catalog.load_enemy(enemy_id)
@@ -141,6 +142,7 @@ func _load_sprite_frames() -> void:
 	builder.free()
 	_sprite.centered = true
 	_sprite.scale = Vector2(2, 2)
+	_loaded_enemy_id = enemy_id
 	if _sprite.sprite_frames != null and _sprite.sprite_frames.has_animation("idle"):
 		_sprite.play("idle")
 

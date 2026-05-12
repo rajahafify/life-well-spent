@@ -59,6 +59,7 @@ func test_field_has_player_camera_gateways_and_objective() -> void:
 		assert_true(spawn.global_position.distance_to(town_gateway.global_position) <= 180.0, "Field spawn should sit close to Town portal")
 	assert_not_null(root.get_node_or_null("ForestGateway"), "Field should have Forest Gateway")
 	assert_not_null(root.get_node_or_null("ForestBlocker"), "Field should have Forest Blocker")
+	assert_not_null(root.get_node_or_null("SpawnZones/Grassland"), "Field should have explicit enemy spawn zone")
 	var objective := root.get_node_or_null("UI/ObjectivePrompt") as Label
 	assert_not_null(objective, "Field should have objective prompt")
 	if objective:
@@ -71,9 +72,20 @@ func test_field_has_slime_and_simple_life_combat_text() -> void:
 		return
 	var slime := root.get_node_or_null("Enemies/Slime")
 	assert_not_null(slime, "Field should show first Slime enemy")
-	assert_eq(5, root.get_node("Enemies").get_child_count(), "Field should start with five Slimes")
+	assert_eq(9, root.get_node("Enemies").get_child_count(), "Field should start with Slimes, Bats, and Rats")
 	if slime:
 		assert_eq("slime_spiked", slime.enemy_id)
+	var bat = root.get_node("Enemies/Bat")
+	var rat = root.get_node("Enemies/Rat")
+	assert_eq("bat", bat.enemy_id)
+	assert_eq("rat", rat.enemy_id)
+	var spawn_rect: Rect2 = root.enemy_spawn_rect()
+	assert_eq(Rect2(Vector2(380, 300), Vector2(1260, 620)), spawn_rect)
+	for enemy in root.get_node("Enemies").get_children():
+		assert_true(spawn_rect.has_point(enemy.global_position))
+		assert_true(enemy.global_position.distance_to(root.get_node("TownGateway").global_position) >= 260.0)
+	assert_eq("res://assets/enemies/Bat/bat_sprite_frames.tres", bat.get_node("AnimatedSprite2D").sprite_frames.resource_path)
+	assert_eq("res://assets/enemies/Rat/rat_sprite_frames.tres", rat.get_node("AnimatedSprite2D").sprite_frames.resource_path)
 	var life_label := root.get_node_or_null("UI/LifeLabel") as Label
 	var slime_label := root.get_node_or_null("UI/SlimeHpLabel") as Label
 	var player_damage_label := root.get_node_or_null("Player/DamageLabel") as Label
@@ -95,6 +107,7 @@ func test_clicking_slime_engages_and_moves_player_toward_slime() -> void:
 	movement._ready()
 	player.global_position = Vector2(200, 700)
 	slime.global_position = Vector2(700, 700)
+	root.enemy_states["field_slime_001"].position = slime.global_position
 	root.engage_enemy("field_slime_001")
 	assert_eq("field_slime_001", root.player_target_enemy_instance_id)
 	assert_false(root.enemy_states["field_slime_001"].is_aggro, "targeted Slime should wait until first hit before aggro")
@@ -109,6 +122,7 @@ func test_auto_attack_damages_slime_shows_hit_text_and_slime_damages_life() -> v
 	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
 	player.global_position = Vector2(500, 500)
 	slime.global_position = Vector2(530, 500)
+	root.enemy_states["field_slime_001"].position = slime.global_position
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.5)
 	assert_true(root.enemy_states["field_slime_001"].hp < 14)
@@ -144,6 +158,7 @@ func test_aggro_slime_chases_player_when_player_moves_away() -> void:
 	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
 	player.global_position = Vector2(500, 500)
 	slime.global_position = Vector2(530, 500)
+	root.enemy_states["field_slime_001"].position = slime.global_position
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.5)
 	player.global_position = Vector2(760, 500)
@@ -159,6 +174,7 @@ func test_slime_dies_plays_death_before_removal() -> void:
 	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
 	player.global_position = Vector2(500, 500)
 	slime.global_position = Vector2(530, 500)
+	root.enemy_states["field_slime_001"].position = slime.global_position
 	root.enemy_states["field_slime_001"].hp = 1
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.1)

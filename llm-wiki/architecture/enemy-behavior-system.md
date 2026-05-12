@@ -9,13 +9,16 @@ tags: [architecture, models, enemies, combat]
 
 ## Overview
 
-`EnemyBehaviorSystem` drives runtime enemy state transitions. Current Field implementation starts five Slime instances: idle, wander, chase, attack, die. State lives in `EnemyState`; static tuning lives in `EnemyDefinition`.
+`EnemyBehaviorSystem` drives runtime enemy state transitions. Current Field implementation starts Slime, Bat, and Rat instances: idle, wander, chase, attack, die. State lives in `EnemyState`; static tuning lives in `EnemyDefinition`.
 
 ## API
 
 ```gdscript
 # scripts/models/enemy_definition.gd
 static func slime_spiked()
+static func bat()
+static func rat()
+static func for_id(enemy_id: String)
 
 # scripts/models/enemy_state.gd
 static func from_definition(instance_id: String, definition, spawn_pos: Vector2)
@@ -30,7 +33,8 @@ func tick(state, definition, context: Dictionary, delta: float) -> Dictionary
 
 - `enemy_id` identifies type; `instance_id` identifies spawned copy.
 - Slime starts idle with full HP.
-- Slime can wander near spawn with per-instance idle timing and deterministic pseudo-random wander targets.
+- Enemies spawn from the scene-authored `SpawnZones/Grassland` rect, not fixed coordinates.
+- Enemies use per-instance RNG seeds for staggered idle timing and pseudo-random wander targets.
 - Targeting/clicking Slime does not aggro it immediately; Slime waits until first player hit.
 - Proximity aggro is disabled for now with `aggro_radius = 0.0`; future enemies can enable it by setting radius > 0.
 - Aggro Slime chases player until attack range.
@@ -50,8 +54,8 @@ xp: 5
 move_speed: 45
 chase_speed: 65
 aggro_radius: 0
-idle_min_time: 0.6
-idle_max_time: 2.0
+idle_min_time: 0.4
+idle_max_time: 3.5
 attack_range: 48
 attack_interval: 1.4
 death_duration: 0.8
@@ -59,8 +63,8 @@ death_duration: 0.8
 
 ## Test Coverage
 
-- `tests/specs/enemy_behavior_system_test.gd` covers Slime definition defaults, idle state, per-instance wander variation, proximity aggro disabled by default, optional radius aggro, attack interval, chase after target leaves range, and death transition.
-- `tests/specs/field_scene_test.gd` covers Field spawning five Slimes, click engage, player slash auto-attack, RO-style damage numbers, Slime Life damage, chase, death animation delay, removal, and XP reward.
+- `tests/specs/enemy_behavior_system_test.gd` covers Slime/Bat/Rat definition defaults, idle state, per-instance wander variation, proximity aggro disabled by default, optional radius aggro, attack interval, chase after target leaves range, and death transition.
+- `tests/specs/field_scene_test.gd` covers Field spawning Slimes/Bats/Rats inside `SpawnZones/Grassland`, click engage, player slash auto-attack, RO-style damage numbers, enemy Life damage, chase, death animation delay, removal, and XP reward.
 
 ## Related
 
