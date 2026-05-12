@@ -22,6 +22,7 @@
 | [architecture/quest-window-view](architecture/quest-window-view.md) | reference | 2026-05-12 | Reusable top-right quest objective UI view for Town and Field. |
 | [architecture/inventory-model](architecture/inventory-model.md) | reference | 2026-05-13 | Pure inventory model for stack counts, Weapon/Armor/Consumable slots, and 1-9 shortcut slots. |
 | [architecture/inventory-system](architecture/inventory-system.md) | reference | 2026-05-13 | Game-wide inventory autoload for drops, starter slots, reset, and shared HUD inventory display. |
+| [architecture/profile-system](architecture/profile-system.md) | reference | 2026-05-13 | Persistent player profile autoload for Swordsman Guild unlocks and rebirth state. |
 | [architecture/inventory-window-view](architecture/inventory-window-view.md) | reference | 2026-05-13 | Reusable inventory overlay scene showing Weapon, Armor, Consumable, and item stacks. |
 | [architecture/shared-hud-view](architecture/shared-hud-view.md) | reference | 2026-05-13 | Reusable gameplay HUD for player Life, Inventory, Quest Tracker, and 1-9 shortcut bar. |
 | [architecture/feedback-components](architecture/feedback-components.md) | reference | 2026-05-13 | Reusable combat feedback components for hit flash, floating damage text, loot toast, camera shake, and SFX requests. |
@@ -33,6 +34,7 @@
 | [scenes/main-menu](scenes/main-menu.md) | reference | 2026-05-11 | Main menu scene — title, New Game button, Quit button. Transitions to town hub. |
 | [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-13 | Prototype Town scene - named gateway spawn, reborn start dialog, three old institutions, NPC dialog, Swordsman certification, and deferred direct Field gateway. |
 | [scenes/field](scenes/field.md) | reference | 2026-05-13 | Playable Field slice - spawn zones, enemy HP bars, 10x enemy HP/player damage tuning, RO damage numbers, Forest Guard gate, and certified Forest endpoint. |
+| [scenes/forest](scenes/forest.md) | reference | 2026-05-13 | Forest endpoint scene reached after Swordsman certification, with return gateway to Field. |
 | [architecture/animation-controller](architecture/animation-controller.md) | reference | 2026-05-12 | LPC spritesheet animation state machine. Idle, walking, slash/thrust attack frame advance via `tick(delta)`. |
 | [architecture/player-movement](architecture/player-movement.md) | reference | 2026-05-11 | CharacterMovement Sprite2D view. Click-to-move/static facing, collision/dialog stop, modal move lock, AnimationController frames. |
 | [architecture/npc-system](architecture/npc-system.md) | reference | 2026-05-11 | NPC scene/controller/dialog wiring with TownDialogView, RO-style pending approach, talk range, name labels, modal quest UI. |

@@ -52,11 +52,17 @@ Current implemented pieces:
 - Town Guildmaster can react to `QuestSystem.current_main_objective_id()`.
 - Shared HUD shows Life / Max Life through Town and Field.
 
+Current completion pieces:
+
+- Final certification shows `UI/RebirthPanel` with a Rebirth button.
+- Rebirth resets Life / Max Life to `100 / 100`, resets the aging sprite, and preserves `swordsman_guild`.
+- `ProfileSystem` saves and loads the persistent player profile at `user://life_well_spent_profile.json`.
+- Certified Forest Gateway transitions to `scenes/forest.tscn`.
+- `scenes/forest.tscn` is the current Forest endpoint scene with return access to Field.
+
 Still missing:
 
-- Dedicated rebirth/game-over screen after final certification.
-- Profile-level save/load for the persistent `swordsman_guild` unlock.
-- Full Forest scene after the prototype endpoint.
+- Full Forest combat/exploration content beyond the endpoint scene.
 
 ## Progression Arc
 
@@ -168,7 +174,8 @@ Prototype behavior:
 - Inventory resets to starter loadout
 - `swordsman_guild` remains in `PlayerStats.unlocked_facilities`
 - Main objective advances to `Enter the Forest.`
-- Forest Guard and Forest Gateway no longer use the original certification block after certification and show `The path to forest is open.`
+- Forest Guard no longer uses the original certification block after certification and shows `The path to forest is open.`
+- Forest Gateway no longer shows the endpoint copy; it transitions to `scenes/forest.tscn`.
 - Certified Forest interactions preserve the `Enter the Forest.` objective instead of returning to `Get Swordsman Certification.`
 
 ## Functional Zones
@@ -313,7 +320,7 @@ Next slice conditions:
 - If chain step is `2`: show the Rat Life oath objective.
 - If 2 Rats are defeated while step 2 is active: step 3 can be completed, spending remaining Max Life, unlocking Swordsman Guild, advancing the main objective to `Enter the Forest.`, requesting game over, and showing the unlock message.
 - If player rebirths after unlock: reset run Life state but preserve Swordsman Guild unlock in `PlayerStats.unlocked_facilities`.
-- If player reaches Forest Gateway after unlock: show the open-path prototype endpoint instead of the original certification block.
+- If player reaches Forest Gateway after unlock: transition to `scenes/forest.tscn` instead of the original certification block.
 - If player talks to Forest Guard after unlock: show the same endpoint and preserve the `Enter the Forest.` objective.
 
 ## Permissions
@@ -386,7 +393,7 @@ Color language:
 
 ## Current Non-Goals
 
-- No full Forest map.
+- No full Forest combat loop beyond the endpoint scene.
 - No complete facility management UI.
 - No vendor/shop economy.
 - No alternate certification routes.
@@ -454,7 +461,7 @@ Player can:
 10. See the objective change to `Enter the Forest.`
 11. Rebirth with Life / Max Life reset to `100 / 100`.
 12. Keep Swordsman Guild unlocked after rebirth.
-13. Return to Field and see Forest Gateway no longer use the original certification block.
+13. Return to Field and use Forest Gateway to enter the Forest endpoint scene.
 
 ## First Slice Flow
 
@@ -472,6 +479,7 @@ Player can:
 12. Defeat 2 Rats, then choose the completed Life oath.
 13. Swordsman Guild unlocks and game over is requested.
 14. Rebirth resets the run while preserving the Guild unlock.
+15. Enter Forest from the certified Field gateway.
 
 ## Tests
 
@@ -498,5 +506,8 @@ Player can:
 - [x] Rebirth resets current Life to `100`.
 - [x] Rebirth resets Max Life to `100`.
 - [x] Rebirth preserves Swordsman Guild unlock.
-- [x] Forest Gateway no longer shows the original certification block after Swordsman Guild unlock.
+- [x] Forest Gateway transitions to the Forest endpoint scene after Swordsman Guild unlock.
 - [x] Shared HUD updates Life / Max Life after each certification step.
+- [x] Final certification shows a rebirth panel.
+- [x] Profile save data preserves the Swordsman Guild unlock.
+- [x] Forest endpoint scene loads and can return to Field.

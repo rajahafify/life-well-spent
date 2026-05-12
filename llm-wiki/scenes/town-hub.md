@@ -54,7 +54,8 @@ Town (Node2D, Town)
 ├── Camera2D
 └── UI (CanvasLayer)
     ├── LifeLabel / InventoryButton / QuestWindow / InventoryWindow
-    └── DialogPanel (TownDialogView)
+    ├── DialogPanel (TownDialogView)
+    └── RebirthPanel
 ```
 
 ## NPC Dialog
@@ -86,7 +87,7 @@ It is earned with life.
 Defeat 10 Slimes for Guildmaster stance training. (0/10)
 ```
 
-The Complete button only appears after the active objective is done. The sequence is 10 Slimes, 2 Bat Wings, then 2 Rats. Each completion spends 40 Max Life until the third step spends the remaining Life. The final step grants `swordsman_certification`, unlocks `swordsman_guild`, and shows `SWORDSMAN GUILD UNLOCKED`.
+The Complete button only appears after the active objective is done. The sequence is 10 Slimes, 2 Bat Wings, then 2 Rats. Each completion spends 40 Max Life until the third step spends the remaining Life. The final step grants `swordsman_certification`, unlocks `swordsman_guild`, shows `SWORDSMAN GUILD UNLOCKED`, saves the profile, and opens the rebirth panel.
 
 ### Shopkeeper
 
@@ -132,6 +133,9 @@ Old roads have a way of calling again.
 - reads `QuestSystem.current_main_objective_id()` so Guildmaster dialog can react to the Forest Gate objective
 - routes Guildmaster quest-completion button presses through `ProgressionModel.complete_swordsman_certification_step()`
 - updates the shared HUD after certification changes Life / Max Life
+- shows `UI/RebirthPanel` when final certification requests game over
+- routes the Rebirth button through `PlayerStats.rebirth()`, refreshes HUD/sprite state, and saves through `ProfileSystem`
+- uses `ProfileSystem.player()` when running in the scene tree so persistent facilities survive scene reloads
 - updates `SharedHUDView` with player Life and the current main quest objective
 - starts Player at named spawn point `SpawnPoints/FromFieldGateway`, up the south road and outside the FieldGateway trigger
 - records Field transition request through `request_field()`
@@ -158,6 +162,7 @@ Tiny Town visual art is imported as `TownMap`, an instanced generated scene from
 ## Tests
 
 - `tests/specs/town_prototype_test.gd` covers root/class naming, buildings, NPCs, custom NPC sprite textures, NPC scale matching player, dialog copy, absence of persistent reborn HUD label, Field gateway label, 1080p viewport, and primitive mouse filter settings.
+- `tests/specs/town_scene_dialog_test.gd` covers Guildmaster certification, final rebirth panel display, Rebirth button reset behavior, persistent Swordsman Guild unlock preservation, and direct Field gateway transition.
 - `tests/specs/town_prototype_test.gd` also covers the generated Tiny Town `TownMap` and `TownCollision` instance paths, position, scale, and collision blocker shape.
 - `tests/specs/town_prototype_test.gd` covers the Tiny Town-facing NPC placements: Shopkeeper at `Vector2(512, 1140)`, Guildmaster at `Vector2(960, 450)`, and Smith at `Vector2(1472, 820)`.
 - `tests/specs/town_prototype_test.gd` covers the south-road Field gateway at `Vector2(960, 1320)` and its safe spawn at `Vector2(960, 980)`, far enough to avoid auto-transition.

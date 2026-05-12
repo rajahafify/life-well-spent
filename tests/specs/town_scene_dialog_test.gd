@@ -224,6 +224,54 @@ func test_guildmaster_final_certification_unlocks_achievement() -> void:
 	assert_true(sprite.texture.resource_path.ends_with("player_age_3.png"))
 
 
+func test_guildmaster_final_certification_shows_rebirth_panel() -> void:
+	_close_start_dialog()
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_record_swordsman_objective("slime_spiked", 10)
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
+	complete.pressed.emit()
+	_gather_swordsman_item("bat_wing", 2)
+	complete.pressed.emit()
+	_record_swordsman_objective("rat", 2)
+	complete.pressed.emit()
+	var panel := root.get_node_or_null("UI/RebirthPanel") as PanelContainer
+	var label := root.get_node_or_null("UI/RebirthPanel/VBox/MessageLabel") as Label
+	assert_not_null(panel)
+	assert_not_null(label)
+	if panel and label:
+		assert_true(panel.visible)
+		assert_true(label.text.contains("Swordsman Guild"))
+
+
+func test_rebirth_button_resets_life_and_preserves_swordsman_guild() -> void:
+	_close_start_dialog()
+	root.player_stats.max_hp = 0
+	root.player_stats.state = "dead"
+	root.player_stats.game_over_requested = true
+	root.player_stats.unlock_facility("swordsman_guild")
+	root.show_rebirth_panel()
+	var button := root.get_node("UI/RebirthPanel/VBox/RebirthButton") as Button
+	button.pressed.emit()
+	assert_eq(100, root.player_stats.max_hp)
+	assert_eq("alive", root.player_stats.state)
+	assert_false(root.player_stats.game_over_requested)
+	assert_in("swordsman_guild", root.player_stats.unlocked_facilities)
+	assert_false((root.get_node("UI/RebirthPanel") as PanelContainer).visible)
+	assert_eq("Life: 100/100", (root.get_node("UI/LifeLabel") as Label).text)
+
+
+func test_rebirth_panel_blocks_player_movement() -> void:
+	_close_start_dialog()
+	root.show_rebirth_panel()
+	var movement: CharacterMovement = root.get_node("Player/Sprite") as CharacterMovement
+	movement._ready()
+	assert_false(root.move_player_to(Vector2(700, 520)))
+	assert_false(movement.moving)
+
+
 func test_town_player_starts_with_age_stage_one_sprite() -> void:
 	_close_start_dialog()
 	var sprite := root.get_node("Player/Sprite") as Sprite2D

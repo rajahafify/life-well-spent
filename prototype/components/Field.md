@@ -393,8 +393,8 @@ Current Field slice:
 
 Certified endpoint:
 
-- If player approaches Forest Gate after Swordsman Certification: show `The path to forest is open.`
-- If player talks to Forest Guard after Swordsman Certification: show the same endpoint and keep the quest objective on `Enter the Forest.`
+- If player approaches Forest Gate after Swordsman Certification: transition to `scenes/forest.tscn`.
+- If player talks to Forest Guard after Swordsman Certification: show `The path to forest is open.` and keep the quest objective on `Enter the Forest.`
 
 ## Permissions
 
@@ -407,7 +407,7 @@ Player can:
 
 Player cannot:
 
-- enter Forest in current prototype; certification changes the block into a `To be continued` endpoint
+- enter Forest before certification changes the gateway state
 - unlock Swordsman Guild directly from Field
 
 ## Art Direction

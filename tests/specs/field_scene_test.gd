@@ -739,7 +739,22 @@ func test_forest_gateway_stays_blocked_and_opens_guard_dialog() -> void:
 	assert_true(dialog.visible)
 
 
-func test_forest_gateway_shows_to_be_continued_after_swordsman_certification() -> void:
+func test_forest_guard_shows_open_path_after_swordsman_certification() -> void:
+	if root == null:
+		return
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	QuestSystem.complete_side_quest_chain("rebuilding_swordsman_guild")
+	QuestSystem.advance_main_quest_objective("explore_the_world", "enter_forest")
+	var guard: NpcController = root.get_node("ForestGuard") as NpcController
+	root.get_node("Player").global_position = guard.global_position + Vector2(40, 0)
+	guard.interacted.emit(guard)
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	assert_eq("", root.requested_scene_path)
+	assert_true(body.text.contains("The path to forest is open."))
+	assert_eq("enter_forest", QuestSystem.current_main_objective_id())
+
+
+func test_forest_gateway_transitions_to_forest_after_swordsman_certification() -> void:
 	if root == null:
 		return
 	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
@@ -747,10 +762,7 @@ func test_forest_gateway_shows_to_be_continued_after_swordsman_certification() -
 	QuestSystem.advance_main_quest_objective("explore_the_world", "enter_forest")
 	var player: Node = root.get_node("Player")
 	root._on_forest_gateway_body_entered(player)
-	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
-	assert_eq("", root.requested_scene_path)
-	assert_true(body.text.contains("The path to forest is open."))
-	assert_eq("enter_forest", QuestSystem.current_main_objective_id())
+	assert_eq("res://scenes/forest.tscn", root.requested_scene_path)
 
 
 func test_forest_guard_interaction_after_certification_does_not_revert_objective() -> void:

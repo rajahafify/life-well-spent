@@ -256,3 +256,33 @@ text = "Next"
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Close"
+
+[node name="RebirthPanel" type="PanelContainer" parent="UI"]
+visible = false
+offset_left = 610.0
+offset_top = 280.0
+offset_right = 1310.0
+offset_bottom = 560.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dialog")
+
+[node name="VBox" type="VBoxContainer" parent="UI/RebirthPanel"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="UI/RebirthPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Life Well Spent"
+horizontal_alignment = 1
+
+[node name="MessageLabel" type="Label" parent="UI/RebirthPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 26
+autowrap_mode = 3
+text = "The Swordsman Guild is restored. Rebirth begins the next life with that work preserved."
+horizontal_alignment = 1
+
+[node name="RebirthButton" type="Button" parent="UI/RebirthPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Rebirth"

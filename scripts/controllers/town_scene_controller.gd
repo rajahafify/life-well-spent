@@ -18,6 +18,7 @@ const REBORN_DIALOG := "You have been reborn.\nWill you spend this life well?"
 
 var requested_scene_path: String = ""
 var player_stats: PlayerStats = PLAYER_STATS_SCRIPT.new()
+var _owns_player_stats: bool = true
 var _pending_npc: NpcController
 var _local_inventory_model = null
 var _progression = null
@@ -34,12 +35,13 @@ func _exit_tree() -> void:
 	if _player_aging:
 		_player_aging.free()
 		_player_aging = null
-	if player_stats:
+	if player_stats and _owns_player_stats:
 		player_stats.free()
-		player_stats = null
+	player_stats = null
 
 
 func _ready() -> void:
+	_bind_profile_player()
 	QuestSystem.setup_core_quests()
 	_progression = PROGRESSION_SCRIPT.new(player_stats, QuestSystem.quests, null)
 	_connect_hud()
@@ -49,7 +51,18 @@ func _ready() -> void:
 	_show_reborn_dialog_once()
 	_connect_portal()
 	_connect_worldbuilding_npcs()
+	_connect_rebirth_panel()
+	_refresh_rebirth_panel()
 	_update_camera()
+
+
+func _bind_profile_player() -> void:
+	var profile := _profile_system()
+	if profile and profile.has_method("player"):
+		if player_stats and _owns_player_stats:
+			player_stats.free()
+		player_stats = profile.player()
+		_owns_player_stats = false
 
 
 func _connect_hud() -> void:
@@ -65,6 +78,12 @@ func _connect_dialog() -> void:
 		_dialog_view.close_requested.connect(close_dialog)
 	if not _dialog_view.complete_quest_requested.is_connected(_on_complete_quest_requested):
 		_dialog_view.complete_quest_requested.connect(_on_complete_quest_requested)
+
+
+func _connect_rebirth_panel() -> void:
+	var button := get_node_or_null("UI/RebirthPanel/VBox/RebirthButton") as Button
+	if button and not button.pressed.is_connected(_on_rebirth_pressed):
+		button.pressed.connect(_on_rebirth_pressed)
 
 
 func _show_reborn_dialog_once() -> void:
@@ -121,7 +140,7 @@ func _open_dialog(npc: NpcController) -> void:
 
 
 func move_player_to(target: Vector2) -> bool:
-	if _dialog_view.is_open():
+	if _dialog_view.is_open() or _rebirth_panel_is_open():
 		return false
 	var movement := _player_movement()
 	if movement == null:
@@ -207,6 +226,8 @@ func _on_complete_quest_requested() -> void:
 	if QuestSystem.has_certification("swordsman_certification"):
 		_dialog_view.set_body("SWORDSMAN GUILD UNLOCKED\n\nYou spent this life well.\n\nTo be continued.")
 		_dialog_view.configure_buttons(false, false)
+		_save_profile()
+		show_rebirth_panel()
 		return
 	var objective := QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild")
 	_dialog_view.set_body("Life given. The old halls remember.\n\n%s" % objective)
@@ -216,6 +237,39 @@ func _on_complete_quest_requested() -> void:
 func _update_life_hud() -> void:
 	if _hud:
 		_hud.set_life(player_stats.max_hp, player_stats.max_hp)
+
+
+func show_rebirth_panel() -> void:
+	var panel := get_node_or_null("UI/RebirthPanel") as PanelContainer
+	if panel:
+		panel.visible = true
+
+
+func _refresh_rebirth_panel() -> void:
+	var panel := get_node_or_null("UI/RebirthPanel") as PanelContainer
+	if panel:
+		panel.visible = player_stats != null and player_stats.game_over_requested
+
+
+func _rebirth_panel_is_open() -> bool:
+	var panel := get_node_or_null("UI/RebirthPanel") as PanelContainer
+	return panel != null and panel.visible
+
+
+func _on_rebirth_pressed() -> void:
+	if player_stats == null:
+		return
+	player_stats.rebirth()
+	_update_life_hud()
+	_update_player_age_sprite()
+	_save_profile()
+	_refresh_rebirth_panel()
+
+
+func _save_profile() -> void:
+	var profile := _profile_system()
+	if profile and profile.has_method("save_profile"):
+		profile.save_profile()
 
 
 func _update_player_age_sprite() -> void:
@@ -251,6 +305,12 @@ func _inventory_system() -> Node:
 	if not is_inside_tree():
 		return null
 	return get_node_or_null("/root/InventorySystem")
+
+
+func _profile_system() -> Node:
+	if not is_inside_tree():
+		return null
+	return get_node_or_null("/root/ProfileSystem")
 
 
 func _inventory_model_for_hud():

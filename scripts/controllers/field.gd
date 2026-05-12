@@ -4,6 +4,7 @@ class_name Field
 extends Node2D
 
 const TOWN_PATH := "res://scenes/town_scene.tscn"
+const FOREST_PATH := "res://scenes/forest.tscn"
 const FOREST_TO_BE_CONTINUED := "The path to forest is open."
 const CAMERA_OFFSET := Vector2(0, -150)
 const FOREST_GUARD_DIALOG := "Stop.\n\nThe Demon King is gone.\nBut old places do not become safe overnight.\n\nThe Forest remembers what we forgot.\nReturn to Town.\nEarn certification from the Swordsman Guild."
@@ -623,7 +624,7 @@ func _on_town_gateway_body_entered(body: Node) -> void:
 func _on_forest_gateway_body_entered(body: Node) -> void:
 	if body.name == "Player":
 		if QuestSystem.has_certification("swordsman_certification"):
-			_dialog_view.show_dialog("Forest Path", FOREST_TO_BE_CONTINUED, false, false)
+			request_scene(FOREST_PATH)
 			return
 		_open_dialog(_forest_guard)
 

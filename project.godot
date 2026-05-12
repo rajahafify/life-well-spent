@@ -22,6 +22,7 @@ EnemySpawnManager="*res://scripts/managers/enemy_spawn_manager.gd"
 QuestSystem="*res://scripts/managers/quest_system.gd"
 InventorySystem="*res://scripts/managers/inventory_system.gd"
 FeedbackSystem="*res://scripts/managers/feedback_system.gd"
+ProfileSystem="*res://scripts/managers/profile_system.gd"
 
 [display]
 

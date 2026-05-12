@@ -24,11 +24,16 @@ On Reborn:
 - Max Life resets to 100 unless meta rules later preserve sacrifices differently.
 - Aging sprite resets to Born.
 - Inventory resets to starter loadout.
-- Current run XP reset/persist TBD.
-- Swordsman Guild unlock persistence TBD.
+- Swordsman Guild unlock persists through `ProfileSystem`.
+- Current run XP reset/persist remains TBD.
+
+## Current Implementation
+
+- Town shows `UI/RebirthPanel` after final Swordsman Guild certification.
+- The Rebirth button calls `PlayerStats.rebirth()`.
+- `ProfileSystem` saves the persistent player profile to `user://life_well_spent_profile.json`.
 
 ## Open Decisions
 
-- Does Swordsman Guild remain unlocked after Reborn?
 - Does XP reset per run or track lifetime too?
 - What does Reborn No do?

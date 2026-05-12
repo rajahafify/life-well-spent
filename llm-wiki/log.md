@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-13] feature | Complete progression endpoint loop
+
+- RED: added SaveManager, Town, Field, and Forest specs for profile unlock persistence, final rebirth panel, certified Forest transition, and Forest endpoint return.
+- Added `ProfileSystem` autoload, profile save/load helpers, Town `RebirthPanel`, `scenes/forest.tscn`, and `Forest` controller.
+- Certified Forest Gateway now transitions to Forest; Forest Guard still shows the open-path copy without reverting the objective.
+- Validation: full suite `392 tests, 392 passed, 0 failed`.
+
 ## [2026-05-13] balance | Add rare enemy loot drops
 
 - RED: updated EnemyBehaviorSystem and Field specs so enemy loot tables expose the requested 5% rare drops.
