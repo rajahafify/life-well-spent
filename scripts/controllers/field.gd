@@ -588,6 +588,9 @@ func _open_dialog(npc: NpcController) -> void:
 		movement.face_target(npc.global_position)
 	npc.face_toward_player(_player.global_position)
 	if npc.role == "forest_guard":
+		if QuestSystem.has_certification("swordsman_certification"):
+			_dialog_view.show_dialog("Forest Path", FOREST_TO_BE_CONTINUED, false, false)
+			return
 		_pending_forest_guard_checkpoint = true
 	_dialog_view.show_dialog(npc.display_name, npc.dialog_text, false, false, _npc_portrait_texture(npc))
 
@@ -659,6 +662,10 @@ func _update_quest_window() -> void:
 
 
 func _reach_forest_guard_checkpoint() -> void:
+	if QuestSystem.has_certification("swordsman_certification"):
+		return
+	if QuestSystem.current_main_objective_id() == "enter_forest":
+		return
 	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
 	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
 	_update_quest_window()

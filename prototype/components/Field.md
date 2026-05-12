@@ -389,6 +389,7 @@ Current Field slice:
 Certified endpoint:
 
 - If player approaches Forest Gate after Swordsman Certification: show `The Forest path opens. To be continued.`
+- If player talks to Forest Guard after Swordsman Certification: show the same endpoint and keep the quest objective on `Enter the Forest.`
 
 ## Permissions
 
@@ -534,4 +535,5 @@ Player can:
 - [x] Enemy drops exist.
 - [x] Inventory/consume behavior exists in Field.
 - [x] Certified Forest Gateway shows `To be continued` instead of the original Guard block.
+- [x] Certified Forest Guard interaction shows `To be continued` without reverting the quest objective.
 - [ ] Weapon/armor equipment effects exist in Field.

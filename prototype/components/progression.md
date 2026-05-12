@@ -154,7 +154,8 @@ Prototype behavior:
 - Inventory resets to starter loadout
 - `swordsman_guild` remains in `PlayerStats.unlocked_facilities`
 - Main objective advances to `Enter the Forest.`
-- Forest Gateway no longer uses the original certification block and shows `The Forest path opens. To be continued.`
+- Forest Guard and Forest Gateway no longer use the original certification block after certification and show `The Forest path opens. To be continued.`
+- Certified Forest interactions preserve the `Enter the Forest.` objective instead of returning to `Get Swordsman Certification.`
 
 ## Functional Zones
 
@@ -298,6 +299,7 @@ Next slice conditions:
 - If player accepts step 3: spend remaining Max Life, unlock Swordsman Guild, advance the main objective to `Enter the Forest.`, request game over, and show unlock message.
 - If player rebirths after unlock: reset run Life state but preserve Swordsman Guild unlock in `PlayerStats.unlocked_facilities`.
 - If player reaches Forest Gateway after unlock: show the `To be continued` prototype endpoint instead of the original certification block.
+- If player talks to Forest Guard after unlock: show the same endpoint and preserve the `Enter the Forest.` objective.
 
 ## Permissions
 

@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-13] fix | Keep certified Forest objective stable
+
+- RED: added a Field scene regression spec for talking to Forest Guard after Swordsman certification.
+- Forest Guard now uses the certified `To be continued` endpoint after certification instead of re-running the certification checkpoint.
+- Forest checkpoint progression now no-ops after certification or after the main objective has already advanced to `enter_forest`.
+- Validation: full suite `348 tests, 348 passed, 0 failed`.
+
 ## [2026-05-13] fix | Polish progression QA issues
 
 - RED: added specs for held-mouse movement in Town/Field, one-time Town reborn intro, Forest endpoint objective after certification, and Town HUD/objective behavior after the final Guild step.
