@@ -9,7 +9,7 @@
 | [architecture/test-runner](architecture/test-runner.md) | reference | 2026-05-11 | Minitest-style GDScript spec runner — loads specs, runs tests, reports results. |
 | [architecture/gateway-definition](architecture/gateway-definition.md) | reference | 2026-05-11 | Pure gateway target and lock rules for direct map transitions. |
 
-| [architecture/combat-system](architecture/combat-system.md) | reference | 2026-05-11 | Pure Field combat rules for enemy HP, Combat HP, defeat, and XP hooks. |
+| [architecture/combat-system](architecture/combat-system.md) | reference | 2026-05-12 | Pure Field combat rules for enemy HP, current Life damage, Max Life pressure, defeat, and XP hooks. |
 | [architecture/enemy-sprite-metadata](architecture/enemy-sprite-metadata.md) | reference | 2026-05-12 | RO-ish sprite/action metadata pipeline for enemy animation strips; V1 covers Spiked Slime. |
 | [architecture/npc-placement](architecture/npc-placement.md) | reference | 2026-05-11 | Stable NPC map placement data, including Forest Guard gateway blocking. |
 | [architecture/biome-definition](architecture/biome-definition.md) | reference | 2026-05-12 | Field grassland palette, Slime/Bat/Rat enemy pool, props, and biome filters. |

@@ -2,7 +2,7 @@
 
 ## Core Idea
 
-Simple starter combat for field engagement. Separate from Life economy.
+Simple starter combat for Field engagement. Combat uses Life directly: enemies damage current Life, while quests/progression reduce Max Life. This makes every life-spend decision affect survival.
 
 ## Actors
 
@@ -13,7 +13,8 @@ Simple starter combat for field engagement. Separate from Life economy.
 
 ## Resources
 
-- Combat HP
+- Life
+- Max Life
 - Enemy HP
 - Attack
 - Defense
@@ -30,12 +31,14 @@ Simple starter combat for field engagement. Separate from Life economy.
 
 ## Rules
 
-- Combat damage affects Combat HP only.
-- Combat never spends Life.
+- Enemy attacks damage current Life.
+- Player is defeated when current Life reaches 0.
+- Quests/progression spend Max Life, not temporary combat HP.
+- Current Life cannot exceed Max Life.
 - Enemy defeat grants XP.
 - Weapon adds attack.
-- Armor reduces incoming damage.
-- Apple heals Combat HP.
+- Armor reduces incoming Life damage.
+- Apple heals current Life up to Max Life if consumables are enabled later.
 
 ## Prototype Enemies
 
@@ -45,4 +48,4 @@ Simple starter combat for field engagement. Separate from Life economy.
 
 ## Open Decision
 
-- What happens when Combat HP reaches 0? Return to Town, respawn in Field, or lose XP TBD.
+- Exact defeat behavior when Life reaches 0: Game Over/rebirth immediately, return to Town first, or show summary panel TBD.

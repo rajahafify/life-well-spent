@@ -7,8 +7,7 @@ UI displays model state and routes player intent. UI does not own rules.
 ## HUD
 
 Shows:
-- Life
-- Combat HP
+- Life / Max Life
 - XP
 - weapon
 - armor

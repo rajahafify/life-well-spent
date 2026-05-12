@@ -360,7 +360,8 @@ Each system should list:
 
 ### Resources
 
-- player Combat HP
+- player Life
+- player Max Life
 - enemy HP
 - player attack
 - enemy attack
@@ -369,18 +370,20 @@ Each system should list:
 
 ### Rules
 
-- Combat affects Combat HP, not Life.
+- Combat damage reduces current Life.
+- Quests/progression reduce Max Life, making future combat harder.
+- Current Life cannot exceed Max Life.
 - Player can damage enemies.
-- Enemies can damage player.
+- Enemies can damage player Life.
 - Enemy defeat grants reward/XP hook.
-- Life cannot be healed or damaged by Field combat.
+- Healing can restore current Life up to Max Life only.
 
 ### Conditions
 
 - If player attacks: enemy HP decreases.
-- If enemy attacks: Combat HP decreases.
+- If enemy attacks: current Life decreases.
 - If enemy HP <= 0: enemy defeated and reward hook fires.
-- If Combat HP <= 0: combat-down behavior TBD.
+- If Life <= 0: player defeat / Game Over flow TBD.
 
 ---
 

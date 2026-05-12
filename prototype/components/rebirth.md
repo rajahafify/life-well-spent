@@ -21,7 +21,7 @@ Run restart after Life is spent.
 
 On Reborn:
 - Life resets to 100.
-- Combat HP resets full.
+- Max Life resets to 100 unless meta rules later preserve sacrifices differently.
 - Aging sprite resets to Born.
 - Inventory resets to starter loadout.
 - Current run XP reset/persist TBD.

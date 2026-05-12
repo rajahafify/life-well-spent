@@ -139,10 +139,11 @@ Build:
 
 Combat rules:
 
-- Combat HP is separate from Life.
-- Field combat never changes Life.
+- Life is the combat health resource.
+- Quests/progression reduce Max Life, making later combat harder.
+- Current Life cannot exceed Max Life.
 - Player attack damages enemy HP.
-- Enemy attack damages player Combat HP.
+- Enemy attack damages current Life.
 - Damage minimum should probably be 1.
 - Enemy defeat grants XP hook/result.
 

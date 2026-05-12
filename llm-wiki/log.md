@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-12] decision | Make Life the combat health resource
+
+- Corrected prototype docs: combat now damages current Life, while quests/progression reduce Max Life.
+- Removed Combat HP wording from prototype combat, run state, Field, inventory, UI, Town, and system docs.
+- Updated combat-system wiki and index to describe current Life damage and Max Life pressure.
+- Design consequence: spending Max Life for progress makes future combat harder; preserving Max Life improves combat survivability but blocks progression.
+
 ## [2026-05-12] change | Update Field enemy target set
 
 - Changed Field grassland enemy pool from Chick/Rabbit/Slime to Slime/Bat/Rat (`slime_spiked`, `bat`, `rat`).

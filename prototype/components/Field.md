@@ -212,7 +212,8 @@ First Field slice writes:
 Future Field reads:
 
 - `swordsman_guild_unlocked`
-- `combat_hp`
+- `life`
+- `max_life`
 - `inventory`
 - `xp`
 
@@ -220,7 +221,7 @@ Future Field writes:
 
 - enemy defeated events
 - XP rewards
-- combat HP changes
+- current Life damage
 - Forest gate seen flag
 
 ## Verbs
@@ -247,7 +248,7 @@ Future verbs:
 First Field slice shows:
 
 - objective text
-- Combat HP
+- Life / Max Life
 - XP
 
 Future Field may show:

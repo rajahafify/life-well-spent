@@ -44,8 +44,8 @@ Prototype truth: Forest access requires Swordsman Guild certification, and certi
 
 ### Resources
 
-- **Life** — starts at 100, cannot heal, spent by major choices.
-- **Combat HP** — tactical health, healable with consumables.
+- **Life** — current survival health; enemies damage it in combat.
+- **Max Life** — lifetime capacity; quests/progression spend it permanently for the run.
 - **XP** — score/accomplishment measure; does not gate Swordsman Guild.
 - **Inventory slots** — 1 weapon, 1 armor, 1 consumable stack.
 - **Unlocks** — Swordsman Guild legacy/progression state.
@@ -59,7 +59,7 @@ Prototype truth: Forest access requires Swordsman Guild certification, and certi
 - **Field** — beginner combat field; Slime/Bat/Rat; Forest Gate.
 - **Forest Gate** — Guard blocks Forest and unlocks guild quest.
 - **Swordsman Guild Quest** — 3 ordered quest steps; each completion costs Life; final unlock ends run.
-- **Combat** — field combat uses Combat HP only and grants XP.
+- **Combat** — Field combat damages current Life and grants XP.
 - **Inventory** — Wooden Sword, Cloth Armor, Apple x3.
 - **UI** — HUD, dialog, quest status, Game Over.
 - **Rebirth** — restarts run; persistence rules still open.
@@ -92,7 +92,7 @@ Color language:
 - Interactable: yellow.
 - Locked: gray.
 - Life: crimson.
-- Combat HP: red/pink.
+- Life: crimson/red; Max Life shown as the cap behind current Life.
 - XP: gold.
 
 ## Related

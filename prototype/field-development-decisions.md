@@ -91,7 +91,8 @@ Responsibilities:
 - player attack
 - enemy attack
 - damage calculation
-- combat HP changes
+- current Life damage
+- Max Life pressure from quest progression
 - enemy HP changes
 - enemy defeat
 - XP reward hook
@@ -151,6 +152,6 @@ Biome affects:
 
 - Exact combat input style.
 - Combat timing: turn-based, click-to-attack, or contact/auto-attack.
-- Player Combat HP values.
+- Player Life/Max Life starting values for Field tuning.
 - Enemy HP/attack/XP values.
 - Whether Field enemy respawn runs live while player remains in map or only when re-entering.

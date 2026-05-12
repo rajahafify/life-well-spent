@@ -246,8 +246,7 @@ Future verbs:
 
 First Town slice may show:
 
-- Life
-- Combat HP
+- Life / Max Life
 - XP
 - Weapon slot
 - Armor slot
