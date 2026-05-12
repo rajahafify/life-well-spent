@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "enemy_id": "golem",
+  "display_name": "Golem",
+  "sprite_frames_resource": "golem_sprite_frames.tres",
+  "directions": "horizontal_2d",
+  "supports_flip": true,
+  "frame_size": [64, 64],
+  "preview_scale": [2.5, 2.5],
+  "world_scale": [2.0, 2.0],
+  "ground_anchor": [32, 56],
+  "animations": {
+    "idle": { "texture": "Golem_IdleA.png", "fps": 6.0, "loop": true },
+    "idle_b": { "texture": "Golem_IdleB.png", "fps": 6.0, "loop": true },
+    "run": { "texture": "Golem_Run.png", "fps": 10.0, "loop": true },
+    "hit": { "texture": "Golem_HitA.png", "fps": 10.0, "loop": false },
+    "hit_b": { "texture": "Golem_HitB.png", "fps": 10.0, "loop": false },
+    "attack_a": { "texture": "Golem_AttackA.png", "fps": 12.0, "loop": false },
+    "attack_b": { "texture": "Golem_AttackB.png", "fps": 12.0, "loop": false },
+    "attack_c": { "texture": "Golem_AttackC.png", "fps": 12.0, "loop": false },
+    "death": { "texture": "Golem_DeathA.png", "fps": 10.0, "loop": false },
+    "death_b": { "texture": "Golem_DeathB.png", "fps": 10.0, "loop": false },
+    "reset": { "texture": "Golem_Reset.png", "fps": 10.0, "loop": false },
+    "upgrade": { "texture": "Golem_Upgrade.png", "fps": 10.0, "loop": false }
+  }
+}

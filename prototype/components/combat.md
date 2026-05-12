@@ -2,18 +2,21 @@
 
 ## Core Idea
 
-Simple starter combat for field engagement. Separate from Life economy.
+Simple starter combat for Field engagement. Combat uses Life directly: enemies damage current Life, while quests/progression reduce Max Life. This makes every life-spend decision affect survival.
+
+Current Field tuning scales enemy HP and Player outgoing attack by 10x for combat readability. Player Life and enemy attack damage to Player are not scaled.
 
 ## Actors
 
 - Player
-- Chick
-- Rabbit
 - Slime
+- Bat
+- Rat
 
 ## Resources
 
-- Combat HP
+- Life
+- Max Life
 - Enemy HP
 - Attack
 - Defense
@@ -30,19 +33,25 @@ Simple starter combat for field engagement. Separate from Life economy.
 
 ## Rules
 
-- Combat damage affects Combat HP only.
-- Combat never spends Life.
+- Enemy attacks damage current Life.
+- Player is defeated when current Life reaches 0.
+- Quests/progression spend Max Life, not temporary combat HP.
+- Current Life cannot exceed Max Life.
 - Enemy defeat grants XP.
+- Field Player attack is currently 40.
+- Field enemy HP is currently Slime 140, Bat 80, Rat 60.
+- Field enemy attack values remain Slime 1, Bat 2, Rat 2.
+- Enemy sprites render larger in Field and use wider attack/click spacing so they do not stand underneath the player sprite.
 - Weapon adds attack.
-- Armor reduces incoming damage.
-- Apple heals Combat HP.
+- Armor reduces incoming Life damage.
+- Apple heals current Life up to Max Life from shortcut slot 1.
 
 ## Prototype Enemies
 
-- Chick: easiest/tutorial
-- Rabbit: fast/medium
-- Slime: tanky/simple
+- Slime: tanky/simple tutorial
+- Bat: quick aerial starter
+- Rat: fast/medium ground starter
 
 ## Open Decision
 
-- What happens when Combat HP reaches 0? Return to Town, respawn in Starter Area, or lose XP TBD.
+- Exact defeat behavior when Life reaches 0: Game Over/rebirth immediately, return to Town first, or show summary panel TBD.

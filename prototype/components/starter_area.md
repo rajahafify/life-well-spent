@@ -1,5 +1,7 @@
 # Starter Area
 
+> Superseded by `prototype/components/Field.md`; kept as historical draft.
+
 ## Core Idea
 
 Beginner field outside Town. Player learns movement/combat, sees Forest path, and gets blocked by Guard.
@@ -37,7 +39,7 @@ Beginner field outside Town. Player learns movement/combat, sees Forest path, an
 ## Rules
 
 - Player can fight Chick/Rabbit/Slime.
-- Combat uses Combat HP, not Life.
+- Combat damages current Life; quests/progression reduce Max Life.
 - Enemy defeat grants XP.
 - Player cannot enter Forest in prototype.
 - Approaching Forest triggers Guard dialog and unlocks guild quest.

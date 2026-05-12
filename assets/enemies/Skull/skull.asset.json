@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "enemy_id": "skull",
+  "display_name": "Skull",
+  "sprite_frames_resource": "skull_sprite_frames.tres",
+  "directions": "horizontal_2d",
+  "supports_flip": true,
+  "frame_size": [64, 64],
+  "preview_scale": [2.5, 2.5],
+  "world_scale": [2.0, 2.0],
+  "ground_anchor": [32, 56],
+  "animations": {
+    "idle": { "texture": "Bones_SingleSkull_Idle.png", "fps": 6.0, "loop": true },
+    "run": { "texture": "Bones_SingleSkull_Fly.png", "fps": 10.0, "loop": true },
+    "fly": { "texture": "Bones_SingleSkull_Fly.png", "fps": 10.0, "loop": true },
+    "hit": { "texture": "Bones_SingleSkull_Hit.png", "fps": 10.0, "loop": false },
+    "death": { "texture": "Bones_SingleSkull_Death.png", "fps": 10.0, "loop": false }
+  }
+}

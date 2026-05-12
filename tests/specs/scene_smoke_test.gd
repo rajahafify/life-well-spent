@@ -21,6 +21,9 @@ func test_player_scene_root_is_player_without_npc_controller() -> void:
 	assert_null(root.get_node_or_null("Proximity"), "player scene should not include NPC proximity trigger")
 	var sprite = root.get_node_or_null("Sprite")
 	assert_true(sprite is CharacterMovement, "player Sprite should use CharacterMovement")
+	assert_eq(AnimationController.COLUMNS, sprite.hframes, "player editor preview should slice LPC sheet columns")
+	assert_eq(AnimationController.ROWS, sprite.vframes, "player editor preview should slice LPC sheet rows")
+	assert_eq(Vector2i(1, 10), sprite.frame_coords, "player editor preview should show standing-down frame")
 	root.free()
 
 
@@ -34,32 +37,34 @@ func test_npc_scene_sprite_is_static_without_marker() -> void:
 	assert_not_null(sprite, "npc scene should have CharacterMovement Sprite")
 	assert_true(sprite.is_static, "npc Sprite should be static")
 	assert_eq(NodePath(""), sprite.marker_path, "npc Sprite should not control shared destination marker")
+	assert_eq(AnimationController.COLUMNS, sprite.hframes, "npc editor preview should slice LPC sheet columns")
+	assert_eq(AnimationController.ROWS, sprite.vframes, "npc editor preview should slice LPC sheet rows")
+	assert_eq(Vector2i(1, 10), sprite.frame_coords, "npc editor preview should show standing-down frame")
 	root.free()
 
 
-func test_npc_scene_collision_and_talk_range_radii() -> void:
+func test_npc_scene_has_solid_collision_without_proximity_dialog_trigger() -> void:
 	var scene: PackedScene = load("res://scenes/npc.tscn")
 	assert_not_null(scene, "npc scene should load")
 	if scene == null:
 		return
 	var root: Node = scene.instantiate()
 	var collision: CollisionShape2D = root.get_node("Collision") as CollisionShape2D
-	var area_collision: CollisionShape2D = root.get_node("Proximity/AreaCollision") as CollisionShape2D
 	assert_eq(20.0, collision.shape.radius, "solid NPC collision should be body-sized")
-	assert_eq(60.0, area_collision.shape.radius, "talk range should be wider than solid collision")
+	assert_null(root.get_node_or_null("Proximity"), "NPC dialog should not trigger from proximity")
 	root.free()
 
 
-func test_town_scene_npc_interaction_updates_quest_label() -> void:
+func test_town_scene_first_slice_dialog_opens() -> void:
 	var scene: PackedScene = load("res://scenes/town_scene.tscn")
 	assert_not_null(scene, "town scene should load")
 	if scene == null:
 		return
-	var root: TownSceneController = scene.instantiate() as TownSceneController
+	var root: Node = scene.instantiate()
 	root._ready()
-	var npc: NpcController = root.get_node("QuestGiver") as NpcController
-	root.get_player().global_position = npc.global_position + Vector2(40, 0)
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
-	var label: Label = root.get_node("UI/QuestLabel") as Label
-	assert_eq("Talking to: QuestGiver", label.text)
+	var label: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
+	assert_eq("Guildmaster", label.text)
 	root.free()

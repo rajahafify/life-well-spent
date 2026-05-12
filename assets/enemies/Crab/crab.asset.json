@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "enemy_id": "crab",
+  "display_name": "Crab",
+  "sprite_frames_resource": "crab_sprite_frames.tres",
+  "directions": "horizontal_2d",
+  "supports_flip": true,
+  "frame_size": [64, 64],
+  "preview_scale": [2.5, 2.5],
+  "world_scale": [2.0, 2.0],
+  "ground_anchor": [32, 56],
+  "animations": {
+    "idle": { "texture": "Crab_Idle.png", "fps": 6.0, "loop": true },
+    "run": { "texture": "Crab_Run.png", "fps": 10.0, "loop": true },
+    "hit": { "texture": "Crab_Hit.png", "fps": 10.0, "loop": false },
+    "attack_a": { "texture": "Crab_AttackA.png", "fps": 12.0, "loop": false },
+    "attack_b": { "texture": "Crab_AttackB.png", "fps": 12.0, "loop": false },
+    "attack_c": { "texture": "Crab_AttackC.png", "fps": 12.0, "loop": false },
+    "death": { "texture": "Crab_Death.png", "fps": 10.0, "loop": false },
+    "ability": { "texture": "Crab_Ability.png", "fps": 10.0, "loop": false }
+  }
+}

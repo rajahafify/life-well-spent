@@ -45,6 +45,9 @@ static func _dir_from_vector(v: Vector2) -> String
 
 ## Design Decisions
 
+### Why set scene-level LPC preview frames?
+`CharacterMovement._ready()` configures `hframes`, `vframes`, and `frame_coords` at runtime, but Godot editor preview does not run that script. `scenes/player.tscn` and `scenes/npc.tscn` now store `hframes = 13`, `vframes = 21`, and standing-down `frame_coords = Vector2i(1, 10)` so instanced Player/NPC sprites show one LPC frame in the editor instead of the full spritesheet.
+
 ### Why view, not controller?
 `CharacterMovement` manages sprite frame rendering, physics movement, facing, and marker visibility — all view concerns. It contains no business logic.
 
@@ -87,6 +90,7 @@ return "down" if v.y > 0 else "up"          # vertical
 - `stop_moving()` clears movement and velocity, returning to idle frames
 - `face_target()` faces a world target
 - `can_move = false` blocks `move_to()` while dialog is open
+- `player.tscn` and `npc.tscn` store editor-preview LPC slicing/frame data so scene previews are readable
 
 ## Related
 - `AnimationController` — model for frame calculation

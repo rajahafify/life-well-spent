@@ -7,8 +7,7 @@ UI displays model state and routes player intent. UI does not own rules.
 ## HUD
 
 Shows:
-- Life
-- Combat HP
+- Life / Max Life
 - XP
 - weapon
 - armor
@@ -31,6 +30,12 @@ Rules:
 - Controllers forward intent to models.
 
 ## Quest Status Panel
+
+Current implementation:
+
+- Dedicated `QuestWindow` appears at the top right in Town and Field.
+- Shows main quest title and current objective from `QuestSystem`; checkpoint text is not shown.
+- Updates after Field Forest Gateway advances `Explore the World` to `Get Swordsman Certification`.
 
 Shows:
 - current objective

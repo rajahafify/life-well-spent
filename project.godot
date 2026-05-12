@@ -18,6 +18,15 @@ config/icon="res://icon.svg"
 [autoload]
 
 GDAIMCPRuntime="*res://scripts/managers/gdai_mcp_runtime_guard.gd"
+EnemySpawnManager="*res://scripts/managers/enemy_spawn_manager.gd"
+QuestSystem="*res://scripts/managers/quest_system.gd"
+InventorySystem="*res://scripts/managers/inventory_system.gd"
+FeedbackSystem="*res://scripts/managers/feedback_system.gd"
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
 
 [editor_plugins]
 

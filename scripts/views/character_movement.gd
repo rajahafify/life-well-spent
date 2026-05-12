@@ -11,6 +11,9 @@ extends Sprite2D
 ## If true, no movement — static NPC anim only.
 @export var is_static: bool = false
 
+## Idle animation cycle length. Set per NPC for subtle RO-style desync.
+@export var idle_cycle_interval: float = AnimationController.IDLE_CYCLE_INTERVAL
+
 var destination: Vector2 = Vector2.ZERO
 var moving: bool = false
 var can_move: bool = true
@@ -131,6 +134,17 @@ func face_target(target_pos: Vector2) -> void:
 	face_player(target_pos)
 
 
+func play_attack(style: String = "slash") -> void:
+	_ensure_anim()
+	_anim.start_attack(style)
+	_apply_frame()
+
+
+func is_attacking() -> bool:
+	_ensure_anim()
+	return _anim.state == "attacking"
+
+
 func stop_moving() -> void:
 	var body := get_parent() as CharacterBody2D
 	if body:
@@ -148,7 +162,8 @@ func _stop_moving(body: CharacterBody2D, snap_to_destination: bool) -> void:
 	if snap_to_destination:
 		body.global_position = destination
 	moving = false
-	_anim.stop_walking()
+	if _anim.state != "attacking":
+		_anim.stop_walking()
 	body.velocity = Vector2.ZERO
 	_update_marker_visibility()
 
@@ -160,3 +175,4 @@ func _ensure_anim() -> void:
 		vframes = AnimationController.ROWS
 	if _anim == null:
 		_anim = AnimationController.new()
+	_anim.idle_cycle_interval = idle_cycle_interval

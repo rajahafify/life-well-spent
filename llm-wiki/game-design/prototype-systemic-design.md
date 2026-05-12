@@ -1,7 +1,7 @@
 ---
 title: Prototype Systemic Design
 type: synthesis
-updated: 2026-05-11
+updated: 2026-05-12
 sources:
   - prototype-checklists.md
   - prototype/components/README.md
@@ -15,7 +15,7 @@ tags: [game-design, prototype, systemic-design]
 
 ## Overview
 
-First playable prototype goal: **spend your life to unlock the Swordsman Guild**. Player starts in **Town**, leaves for **Starter Area**, finds Forest blocked by Guard, returns to Town, completes a 3-step Swordsman Guild quest chain, spends all Life, unlocks Swordsman Guild, and reaches Game Over asking: **Was it a life well spent?**
+First playable prototype goal: **spend your life to unlock the Swordsman Guild**. Player starts in **Town**, leaves for **Field**, finds Forest blocked by Guard, returns to Town, completes a 3-step Swordsman Guild quest chain, spends all Life, unlocks Swordsman Guild, and reaches Game Over asking: **Was it a life well spent?**
 
 ## Stage 1: Ideation
 
@@ -29,10 +29,10 @@ Prototype truth: Forest access requires Swordsman Guild certification, and certi
 
 ### Activities
 
-- Move through Town and Starter Area.
+- Move through Town and Field.
 - Talk to NPCs.
-- Explore Starter Area.
-- Fight Chick/Rabbit/Slime.
+- Explore Field.
+- Fight Slime/Bat/Rat.
 - Approach Forest path.
 - Get blocked by Forest Guard.
 - Return to Town.
@@ -44,22 +44,22 @@ Prototype truth: Forest access requires Swordsman Guild certification, and certi
 
 ### Resources
 
-- **Life** — starts at 100, cannot heal, spent by major choices.
-- **Combat HP** — tactical health, healable with consumables.
+- **Life** — current survival health; enemies damage it in combat.
+- **Max Life** — lifetime capacity; quests/progression spend it permanently for the run.
 - **XP** — score/accomplishment measure; does not gate Swordsman Guild.
 - **Inventory slots** — 1 weapon, 1 armor, 1 consumable stack.
 - **Unlocks** — Swordsman Guild legacy/progression state.
-- **Quest State** — Forest Guard seen, guild quest unlocked, chain step 0–3.
+- **Quest State** — `Explore the World` main objective, `Rebuilding Swordsman Guild` side chain, certification state, chain step 0–3.
 
 ## Systems
 
 - **Run State** — owns Life, XP, Forest Gate seen, Swordsman chain, aging, unlock, game-over request.
 - **Life / Aging** — maps Life/chain progress to born/older/old/dead presentation.
-- **Town** — safe first scene; Swordsman Guild NPC; exit to Starter Area.
-- **Starter Area** — beginner combat field; Chick/Rabbit/Slime; Forest Gate.
-- **Forest Gate** — Guard blocks Forest and unlocks guild quest.
+- **Town** — safe first scene; Swordsman Guild NPC; exit to Field.
+- **Field** — beginner combat field; Slime/Bat/Rat; Forest Gate.
+- **Forest Gate** — Guard blocks Forest and advances the main quest to `Get Swordsman Certification`.
 - **Swordsman Guild Quest** — 3 ordered quest steps; each completion costs Life; final unlock ends run.
-- **Combat** — field combat uses Combat HP only and grants XP.
+- **Combat** — Field combat damages current Life and grants XP.
 - **Inventory** — Wooden Sword, Cloth Armor, Apple x3.
 - **UI** — HUD, dialog, quest status, Game Over.
 - **Rebirth** — restarts run; persistence rules still open.
@@ -86,13 +86,13 @@ Rules:
 Color language:
 
 - Town: warm tan/brown/orange = safe.
-- Starter Area: bright green/dirt brown = beginner field.
+- Field: bright green/dirt brown = beginner field.
 - Forest Gate: dark green/blue shadow = danger/not ready.
 - Danger: red.
 - Interactable: yellow.
 - Locked: gray.
 - Life: crimson.
-- Combat HP: red/pink.
+- Life: crimson/red; Max Life shown as the cap behind current Life.
 - XP: gold.
 
 ## Related

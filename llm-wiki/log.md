@@ -1,5 +1,284 @@
 # Wiki Log
 
+## [2026-05-13] fix | Regenerate enemy SpriteFrames resources
+
+- Fixed the full-suite blocker in `EnemySpriteMetadataTest.test_builder_creates_sprite_frames_from_metadata`.
+- Regenerated enemy `*_sprite_frames.tres` resources from metadata with `tools/generate_enemy_sprite_frames.gd` so the saved Slime death animation frame count matches the source strip.
+- Validation: full suite `295 tests, 295 passed, 0 failed`.
+
+## [2026-05-13] polish | Enlarge Field enemy footprint
+
+- RED: updated Field and enemy behavior specs for larger enemy sprite scale, larger click collision, wider attack range, and wider player approach stop distance.
+- Increased `EnemyView` world sprite scale to 4x and click collision radius to 76.
+- Increased Field enemy blocker growth radius and player approach distance so enemies avoid tighter overlap with map blockers and the player sprite.
+- Widened Field enemy attack ranges for the larger footprint: Slime 96, Bat 104, Rat 96.
+- Validation: full suite now passes after regenerating enemy SpriteFrames resources.
+
+## [2026-05-13] feature | Use Apple from shortcut bar
+
+- RED: added Field scene coverage for shortcut `1` consuming an Apple, healing current Life, updating the HUD, and showing feedback.
+- Added `InventoryModel.consume_item()` plus the `InventorySystem` wrapper.
+- Wired `SharedHUDView.shortcut_pressed` into Field so Apple heals up to 20 current Life and consumes one stack item.
+- Made shortcut bar slots more pronounced with white backgrounds and dark borders.
+- Validation: full suite now passes after regenerating enemy SpriteFrames resources.
+
+## [2026-05-13] feature | Add inventory shortcut bar
+
+- RED: updated InventoryModel and SharedHUDView specs for 9 shortcut slots mapped to number keys `1` through `9`.
+- Added `shortcut_slots` to `InventoryModel`, with slot 1 defaulting to `apple`, plus assignment, lookup, reset, and serialization.
+- Added `ShortcutBar` to the shared HUD; pressing number keys emits `shortcut_pressed(slot_number, item_id)`.
+- Validation: InventoryModel specs `7 tests, 7 passed`; SharedHUDView specs `4 tests, 4 passed`; Field scene specs `27 tests, 27 passed`.
+
+## [2026-05-13] feature | Add inventory equipment slots
+
+- RED: updated InventoryModel and InventoryWindowView specs for dedicated Weapon, Armor, and Consumable slots.
+- Added starter slots to `InventoryModel`: `wooden_sword`, `cloth_armor`, and `apple`.
+- Added slot setters, slot serialization, slot summary text, and reset behavior that restores starter slots.
+- InventoryWindowView now renders the three slots above stackable item counts.
+- Validation: InventoryModel specs `6 tests, 6 passed`; InventorySystem specs `3 tests, 3 passed`; InventoryWindowView specs `3 tests, 3 passed`.
+
+## [2026-05-13] feature | Add Apple chance drops to Field enemies
+
+- RED: updated EnemyBehaviorSystem specs so Slime, Bat, and Rat each include an `apple` drop with `chance_numerator = 1` and `chance_denominator = 5`.
+- Updated Field drop granting to roll chance-based drops while keeping existing material drops guaranteed.
+- Added deterministic Field scene coverage for the 1-in-5 drop roll helper.
+- Validation: EnemyBehaviorSystem specs `9 tests, 9 passed`; Field scene specs `27 tests, 27 passed`.
+
+## [2026-05-13] polish | Use enemy HP bars
+
+- RED: updated Field scene specs to require per-enemy `HpBar` progress bars and removal of text-based enemy HP labels.
+- Replaced `EnemyView` HP text with a local `ProgressBar` that tracks `state.hp / state.max_hp`.
+- Moved enemy HP bars below enemy sprites and scaled them thinner for a quieter combat read.
+- Enemy HP bars are hidden at full HP and become visible after that enemy takes damage.
+- Removed the temporary Field `UI/SlimeHpLabel`; enemy HP now follows each enemy view.
+- Validation: Field scene specs `27 tests, 27 passed`. Full suite remains blocked by the existing unrelated `EnemySpriteMetadataTest` frame-count mismatch.
+
+## [2026-05-13] polish | Enlarge combat damage text
+
+- RED: updated DamageTextComponent specs so new and existing damage labels must use a readable larger font.
+- Added a `font_size` export to `DamageTextComponent`, defaulting to 36, and enforce it when the component resolves its label.
+- Existing Field player damage labels now get resized by the component instead of staying at the earlier 24px label default.
+- Validation: DamageTextComponent specs `3 tests, 3 passed`.
+
+## [2026-05-13] tune | Scale Field enemy HP and player damage
+
+- RED: updated EnemyBehaviorSystem and Field scene specs for 10x enemy HP and 10x visible player damage.
+- Slime HP changed from 14 to 140, Bat from 8 to 80, and Rat from 6 to 60.
+- Field player attack changed from 4 to 40; Slime defense changed from 1 to 10 so visible Slime damage remains exact 10x from 3 to 30.
+- Player Life and enemy attack values are unchanged.
+- Validation: EnemyBehaviorSystem specs `9 tests, 9 passed`; FieldScene specs `27 tests, 27 passed`; CombatSystem specs `4 tests, 4 passed`.
+
+## [2026-05-13] feat | Add component-based combat juice
+
+- RED: extended Field specs for enemy feedback components, hit flash, camera shake, and loot toast; added FeedbackSystem spec for global SFX requests.
+- Added `HitFeedbackComponent` and `DamageTextComponent` as reusable enemy feedback children.
+- Damage numbers now use RO-style parabolic motion; enemy damage is white and player damage is red.
+- Added `FeedbackSystem` autoload as the global feedback/SFX request boundary.
+- Field now starts short camera shake on player/enemy hits and shows a temporary loot toast when drops are granted.
+- Updated Field and feedback architecture docs.
+- Validation: Field scene specs `27 tests, 27 passed`; FeedbackSystem specs `1 test, 1 passed`; EnemySpriteFramesResource specs `2 tests, 2 passed`.
+
+## [2026-05-12] change | Show reborn copy as Town start dialog
+
+- RED: updated Town specs so the reborn copy must appear in `TownDialogView` on scene start and must not exist as a persistent HUD label.
+- Removed `UI/RebornPrompt` from `scenes/town_scene.tscn`.
+- Town now opens `You have been reborn.\nWill you spend this life well?` as a dialog named `Reborn` during `_ready()`.
+- Updated Town scene and prototype docs.
+- Validation: TownSceneDialog specs `20 tests, 20 passed`; TownPrototype specs `21 tests, 21 passed`.
+
+## [2026-05-12] refactor | Add shared gameplay HUD
+
+- RED: added SharedHUDView specs plus Field and Town coverage requiring a shared HUD with player Life, Inventory button/window, and Quest Tracker.
+- Added `scenes/ui/shared_hud.tscn` and `scripts/views/shared_hud_view.gd`.
+- Added `InventorySystem` as the game-wide inventory autoload and moved Field drops to the global inventory boundary.
+- Field and Town now instance the shared HUD as `UI`; Field scene-specific objective/inventory text HUD nodes were removed.
+- Updated shared HUD, inventory system, Field, Town, and prototype inventory docs.
+- Validation: SharedHUDView specs `3 tests, 3 passed`; InventorySystem specs `2 tests, 2 passed`; Field scene specs `27 tests, 27 passed`; Town scene dialog specs `19 tests, 19 passed`.
+
+## [2026-05-12] feat | Add reusable Inventory Window UI
+
+- RED: added InventoryWindowView scene specs and Field scene coverage for the Inventory button plus `I` key toggle.
+- Added `scenes/ui/inventory_window.tscn` and `scripts/views/inventory_window_view.gd` as a reusable inventory overlay scene.
+- Field now instances the inventory window, opens it from the HUD Inventory button or `I`, and renders current InventoryModel stacks.
+- Updated InventoryWindowView, Field, and prototype inventory docs.
+- Validation: InventoryWindowView specs `3 tests, 3 passed`; Field scene specs `27 tests, 27 passed`.
+
+## [2026-05-12] feat | Add InventoryModel and Field enemy drops
+
+- RED: added InventoryModel specs, enemy drop definition checks, and Field scene coverage for inventory text plus Slime drop grants.
+- Added `scripts/models/inventory_model.gd` for pure stackable item counts.
+- Added deterministic drop tables to Slime, Bat, and Rat enemy definitions.
+- Field now grants enemy drops once with XP rewards and shows a simple inventory summary label.
+- Updated InventoryModel, Field, enemy behavior, and prototype inventory docs.
+- Validation: InventoryModel specs `5 tests, 5 passed`; EnemyBehaviorSystem specs `9 tests, 9 passed`; Field scene specs `26 tests, 26 passed`.
+
+## [2026-05-12] map | Reimport edited Field TMJ
+
+- Re-rendered `D:\godot\kenney_tiny-town\field.tmj` with the Tiny Town layout skill renderer.
+- Reimported the edited Field TMJ into `scenes/maps/field_map.tscn` and `scenes/maps/field_collision.tscn`.
+- Refreshed `scenes/field.tscn` map/collision instances through `tools/import_tiny_town_tmj.py`.
+- Validation: Field scene specs `26 tests, 26 passed`; Godot MCP main-scene play reports no errors.
+
+## [2026-05-12] fix | Complete Forest Guard dialog before quest progress
+
+- RED: updated Field specs so Forest Guard dialog opening does not progress QuestSystem; closing the dialog does.
+- Field now stores a pending Forest Guard checkpoint while the warning dialog is open and applies it from `close_dialog()`.
+- QuestWindowView no longer renders checkpoint text; it shows only quest title and objective.
+- Validation: Field scene specs `26 tests, 26 passed`; QuestWindowView specs `3 tests, 3 passed`; QuestManager specs `18 tests, 18 passed`.
+
+## [2026-05-12] fix | Update quest when talking to Forest Guard
+
+- RED: extended Field scene spec to cover Forest Guard click/talk path updating QuestSystem and QuestWindow.
+- Field now marks the `forest_guard` checkpoint and advances the main quest whenever Forest Guard dialog opens, not only when the Forest Gateway body is entered.
+- Validation: Field scene specs `25 tests, 25 passed`; QuestManager specs `18 tests, 18 passed`; QuestWindowView specs `3 tests, 3 passed`.
+
+## [2026-05-12] feat | Add Forest Guard quest checkpoint
+
+- RED: added QuestManager, Field, and QuestWindow specs for a `forest_guard` main quest checkpoint.
+- QuestManager now tracks main quest checkpoints, serializes them, and exposes checkpoint text.
+- QuestSystem proxies checkpoint APIs for scenes.
+- Field marks the Forest Guard checkpoint before advancing the main objective and refreshing the Quest Window.
+- QuestWindowView can display an optional checkpoint line.
+- Validation: QuestManager specs `18 tests, 18 passed`; Field scene specs `25 tests, 25 passed`; QuestWindowView specs `3 tests, 3 passed`.
+
+## [2026-05-12] feat | Add top-right Quest Window
+
+- RED: added QuestWindowView, Field, and Town dialog specs for a dedicated top-right quest objective panel.
+- Added `scripts/views/quest_window_view.gd` as a dumb reusable UI view.
+- Added `UI/QuestWindow` to Town and Field and wired controllers to display the current QuestSystem main objective.
+- Field refreshes the Quest Window after Forest Gateway progression changes the objective to `Get Swordsman Certification`.
+- Updated Field, Town, UI, and Quest Window wiki docs.
+- Validation: QuestWindowView specs `2 tests, 2 passed`; Field scene specs `25 tests, 25 passed`; Town dialog specs `19 tests, 19 passed`.
+
+## [2026-05-12] feat | Add QuestSystem main and side quest progression
+
+- RED: added QuestManager, Field, and Town dialog specs for main quest objective progression, Swordsman Guild side chain activation, certification state, and Guildmaster response.
+- Added `QuestSystem` autoload wrapping pure `QuestManager` progression state.
+- Field Forest Gateway now advances `Explore the World` to `Get Swordsman Certification` and activates `Rebuilding Swordsman Guild`.
+- Town Guildmaster now reacts to that objective with certification guidance.
+- Updated quest, Field, Town, Forest Gate, Run State, and prototype design docs.
+- Validation: QuestManager specs `17 tests, 17 passed`; Field scene specs `25 tests, 25 passed`; Town dialog specs `18 tests, 18 passed`.
+
+## [2026-05-12] fix | Move Field Town portal to north road
+
+- Moved `TownGateway` to the north road entry at `Vector2(768, 64)`.
+- Moved `SpawnPoints/FromTownGateway`, `SpawnPoints/Default`, and initial Player position to `Vector2(768, 160)` so Field load does not auto-trigger the Town portal.
+- Removed legacy primitive Field terrain/prop visuals now covered by imported `FieldMap`.
+- Updated Field specs for north portal placement, safe spawn distance, and removed primitive art nodes.
+- Validation: `249 tests, 249 passed, 0 failed`; Godot MCP main-scene play reports no errors.
+
+## [2026-05-12] feature | Import Tiny Town Field map
+
+- Generated `scenes/maps/field_map.tscn` and `scenes/maps/field_collision.tscn` from `D:\godot\kenney_tiny-town\field.tmj`.
+- Instanced `FieldMap` and `FieldCollision` into `scenes/field.tscn`.
+- Moved `ForestGateway`, `ForestBlocker`, and `ForestGuard` to the southeast road end.
+- Generalized `tools/import_tiny_town_tmj.py` so it can update non-Town scenes and arbitrary generated map/collision scene paths.
+- Added Field scene specs for generated map/collision and southeast forest-gate placement.
+- Updated Field and Tiny Town import wiki pages.
+- Validation: `248 tests, 248 passed, 0 failed`; Godot MCP main-scene play starts, with existing GDScript warnings reported by `get_godot_errors`.
+
+## [2026-05-12] fix | Move Town spawn away from portal trigger
+
+- Kept `FieldGateway` at the south road exit.
+- Moved `SpawnPoints/FromFieldGateway`, `SpawnPoints/Default`, and initial Player position to `Vector2(960, 980)` so Town load does not auto-trigger the portal.
+- Updated Town specs to require the spawn be clear of the portal trigger.
+- Validation: `246 tests, 246 passed, 0 failed`; Godot MCP main-scene play reports no errors.
+
+## [2026-05-12] polish | Move Town portal to south road
+
+- Moved `FieldGateway` to the south road exit at `Vector2(960, 1320)`.
+- Moved Town Field-return spawn and default Player start to `Vector2(960, 1240)` near the south road.
+- Moved Shopkeeper to the bottom Tiny Town house at `Vector2(512, 1140)`.
+- Added Town specs for the south-road gateway/spawn and bottom-house Shopkeeper placement.
+- Validation: `246 tests, 246 passed, 0 failed`; Godot MCP main-scene play reports no errors.
+
+## [2026-05-12] change | Remove proximity-based NPC dialog
+
+- Removed the `Proximity` Area2D from `scenes/npc.tscn`.
+- Removed `NpcController` proximity `body_entered` hookup so NPC dialog only starts from clicking the NPC sprite.
+- Added specs covering the absence of proximity dialog triggers.
+- Updated NPC system and Town scene wiki pages.
+- Validation: `245 tests, 245 passed, 0 failed`; Godot MCP main-scene play reports no errors.
+
+## [2026-05-12] polish | Move Town NPCs in front of Tiny Town buildings
+
+- Moved Shopkeeper, Guildmaster, and Smith from the old primitive-building coordinates to positions in front of the imported Tiny Town house/castle facades.
+- Added a Town spec for the Tiny Town-facing NPC coordinates.
+- Updated Town scene wiki with the new placement intent.
+- Validation: `244 tests, 244 passed, 0 failed`; Godot MCP main-scene play reports no errors.
+
+## [2026-05-12] tooling | Automate Tiny Town map import
+
+- Added `tools/import_tiny_town_tmj.py` to convert the external layered TMJ into `scenes/maps/town_map.tscn`.
+- Extended the importer to generate `scenes/maps/town_collision.tscn` from solid Tiny Town layers using merged `StaticBody2D` rectangle blockers.
+- Copied `tilemap_packed_2x.png` into `assets/tiny_town/` and imported it for Godot.
+- Instanced generated `TownMap` and `TownCollision` into `scenes/town_scene.tscn` while preserving Player, NPCs, gateways, spawn points, camera, and UI ownership.
+- Added Town specs for the generated map and collision instances.
+- Updated Tiny Town import and Town scene wiki pages plus index.
+- Validation: `243 tests, 243 passed, 0 failed`; Godot MCP main-scene play reports no errors.
+
+## [2026-05-12] feature | Add Bat/Rat and spawn zones
+
+- Added Bat and Rat enemy definitions and spawned them alongside Slimes in Field.
+- Fixed EnemyView configuration order so Bat/Rat load their own SpriteFrames instead of default Slime frames.
+- Added hidden scene-authored `SpawnZones/Grassland` and randomized initial enemy positions across the larger map area.
+- Expanded enemy idle timing/random movement so enemies do not move in synchronized batches.
+- Updated Field and enemy behavior wiki pages plus index.
+- Validation: `241 tests, 241 passed, 0 failed`.
+
+## [2026-05-12] refactor | Add named gateway spawn points
+
+- Added `SpawnPoints/FromFieldGateway` and `SpawnPoints/Default` to Town.
+- Added `SpawnPoints/FromTownGateway` and `SpawnPoints/Default` to Field.
+- Updated GatewayDefinition target spawn IDs to `from_town_gateway` and `from_field_gateway`.
+- Documented spawn-point pattern so maps can support multiple portals without hardcoded player positions.
+- Validation: `240 tests, 240 passed, 0 failed`.
+
+## [2026-05-12] tune | Slime wander and first-hit aggro
+
+- Changed Slime wander from synchronized rightward movement to per-instance pseudo-random idle timing and wander targets.
+- Disabled default proximity aggro with `aggro_radius = 0.0`; Slime now aggros on first player hit, not on click/target.
+- Updated enemy behavior and Field scene wiki pages.
+- Validation: `239 tests, 239 passed, 0 failed`.
+
+## [2026-05-12] polish | RO-style Field combat and character asset previews
+
+- Added LPC SpriteFrames builder and wired Player/Forest Guard into AssetView, AssetGallery, and AssetsViewer.
+- Added player slash attack animation support through AnimationController and CharacterMovement.
+- Updated Field to start with five Slimes, stop canceling slash animation, show RO-style damage numbers above actors, and delay Slime removal until death animation plays.
+- Updated Field, animation, asset tooling, and enemy behavior wiki pages plus index.
+- Validation: `237 tests, 237 passed, 0 failed`.
+
+## [2026-05-12] feature | Add first Slime combat flow
+
+- Added EnemyDefinition, EnemyState, EnemyBehaviorSystem, EnemyView, and reusable enemy scene for first Field Slime.
+- Wired Field click-to-engage, player approach/auto-attack, Slime aggro chase, Slime interval attacks against Life, death removal, and XP reward.
+- Updated combat tests from Combat HP to current Life damage.
+- Added enemy behavior specs and Field scene combat-flow specs.
+- Updated Field scene wiki, enemy behavior wiki, wiki index, and this log.
+- Validation: `232 tests, 232 passed, 0 failed`.
+
+## [2026-05-12] decision | Make Life the combat health resource
+
+- Corrected prototype docs: combat now damages current Life, while quests/progression reduce Max Life.
+- Removed Combat HP wording from prototype combat, run state, Field, inventory, UI, Town, and system docs.
+- Updated combat-system wiki and index to describe current Life damage and Max Life pressure.
+- Design consequence: spending Max Life for progress makes future combat harder; preserving Max Life improves combat survivability but blocks progression.
+
+## [2026-05-12] change | Update Field enemy target set
+
+- Changed Field grassland enemy pool from Chick/Rabbit/Slime to Slime/Bat/Rat (`slime_spiked`, `bat`, `rat`).
+- Updated prototype Field docs, combat docs, game systems docs, biome wiki, Field scene wiki, and wiki index.
+- Added RED biome spec first, then updated `BiomeDefinition.field_grassland()`.
+- Validation: `223 tests, 223 passed, 0 failed`.
+
+## [2026-05-12] fix | Defer gateway scene changes outside physics callbacks
+
+- Updated Town and Field gateway controllers to call deferred scene-change helpers from `body_entered` transitions.
+- Added specs covering the deferred transition path for Town -> Field and Field -> Town gateways.
+- Updated `scenes/town-hub.md`, `scenes/field.md`, and `index.md` with the gateway transition behavior note.
+- Validation: `204 tests, 204 passed, 0 failed`; MCP main-scene play reports no errors.
+
 ## [2026-05-08] init | Wiki initialized
 
 - Created `SCHEMA.md` with proposed schema
@@ -235,3 +514,215 @@
 - Created `prototype-checklists.md` with systemic design checklist, component inventory, rules, permissions, restrictions, conditions, and primitive/SVG art direction.
 - Created `prototype/components/` one-page specs for Town, Run State, Starter Area, Forest Gate, Swordsman Guild Quest, Inventory, Combat, UI, and Rebirth.
 - Created `llm-wiki/game-design/prototype-systemic-design.md` and updated wiki index.
+
+## [2026-05-11] feat | Prototype Town first slice
+
+- RED: added `tests/specs/town_prototype_test.gd` for Town root/class naming, buildings, NPCs, dialog copy, reborn prompt, and Starter Area Portal.
+- Rewrote `scenes/town_scene.tscn` as first-slice Town: Shop, Swordsman Guild, Blacksmith, Guildmaster, Shopkeeper, Smith, reborn prompt, dialog panel, and glowing portal.
+- Rewrote `scripts/controllers/town_scene_controller.gd` as `class_name Town`, thin glue for worldbuilding NPC dialog and portal transition request.
+- Updated `tests/specs/town_scene_dialog_test.gd` and `tests/specs/scene_smoke_test.gd` for first-slice systemic Town behavior.
+- Updated `prototype/components/town.md`, removed duplicate `prototype/town.md`, and updated `scenes/town-hub.md` wiki page.
+- Completed pre-Starter Town behavior: 1920×1080 viewport, RO-style camera follow, click-to-move while dialog is closed, world primitives ignore mouse so ground clicks move, dialog blocks movement, far NPC click approaches before dialog, paged NPC dialog with Next/Close, Player entering Starter Area Portal shows Yes/No prompt, No hides it, and Yes records Starter Area target path.
+- Generated distinct LPC sprites for Guildmaster, Shopkeeper, and Smith using `tools/lpc-sprite-gen` and wired them into `scenes/town_scene.tscn`.
+- Scaled Town NPC instances to `Vector2(2, 2)` so they match player size.
+- Enlarged dialog typography for 1080p and moved NPC face portrait above the dialog box using cropped LPC spritesheet face frame.
+- Reworked idle animation to use calm standing walk-row frames instead of LPC spellcast/prayer frames; Town NPCs use varied idle timing for desync.
+- Hid NPC overhead name labels by default; NPC names remain in dialog.
+- Validation: `173 tests, 173 passed, 0 failed`; MCP play current scene reports no errors.
+- Manual QA passed: ground click movement, RO-style NPC approach, paged dialog Next/Close, dialog movement lock, camera follow, and portal Yes/No prompt.
+- Created `prototype/game-systems.md` as append-only system inventory using systemic design terms: verbs, components, resources, rules, and conditions.
+- Added `prototype/components/Field.md` and `prototype/field-development-decisions.md` documenting Field terminology, real combat scope, direct gateway transitions, model-first implementation order, Guard LPC sprite, and SVG/primitive monsters.
+
+## [2026-05-11] feat | Playable Field MVP
+
+- RED: added specs for gateway, enemy, combat, respawn, NPC placement, biome, Field scene, and direct Town → Field gateway behavior.
+- Created pure models: `GatewayDefinition`, `EnemyDefinition`, `CombatSystem`, `RandomEnemyRespawnSystem`, `NpcPlacement`, and `BiomeDefinition`.
+- Created `scenes/field.tscn` and `scripts/controllers/field.gd` with click movement, camera follow, direct Town gateway, blocked Forest gateway, Forest Guard dialog, Chick/Rabbit/Slime placeholders, and click-attack combat.
+- Updated Town gateway from Starter Area prompt flow to direct Field transition.
+- Generated `assets/npcs/forest_guard.png` with local LPC sprite generator.
+- Updated prototype docs and wiki pages for new models, Field scene, and Town gateway behavior.
+- Validation: `202 tests, 202 passed, 0 failed`; MCP play `scenes/field.tscn` reports no errors.
+
+## [2026-05-11] art | SVG enemy placeholders for Field
+
+- RED: added `tests/specs/field_scene_test.gd` coverage requiring Chick/Rabbit/Slime SVG art resources.
+- Created `assets/enemies/chick.svg`, `assets/enemies/rabbit.svg`, and `assets/enemies/slime.svg` plus import metadata.
+- Replaced Field enemy `ColorRect` visuals with `TextureRect` SVG visuals while preserving mouse-filter ignore behavior.
+- Updated Field prototype docs and scene wiki.
+- Validation: `203 tests, 203 passed, 0 failed`; MCP play `scenes/field.tscn` reports no errors.
+
+## [2026-05-11] fix | Editor preview LPC sprites and test runner UID warning
+
+- RED: added `tests/specs/scene_smoke_test.gd` coverage requiring Player/NPC scene sprites to store LPC sheet slicing and standing-down preview frame.
+- Updated `scenes/player.tscn` and `scenes/npc.tscn` with `hframes = 13`, `vframes = 21`, and `frame_coords = Vector2i(1, 10)` so Field editor view no longer displays full LPC sheets tiled across the map.
+- Removed stale UID from `tests/test_runner.tscn` ext_resource so headless runs do not warn and fall back to text path.
+- Updated player movement wiki docs.
+- Validation: `203 tests, 203 passed, 0 failed`.
+
+## [2026-05-11] feat | Enemy art registry and Slime spritesheet integration
+
+- Created `assets/assets-catalog.md` with enemy sprite integration tasks and current asset list.
+- RED: added specs for `EnemyArtDefinition`, `EnemyView`, and Field Slime spritesheet wiring.
+- Created `scripts/models/enemy_art_definition.gd` for art-only enemy metadata and Field factories.
+- Created `scripts/views/enemy_view.gd` and `scenes/enemy.tscn` as reusable `Area2D` visual/click target.
+- Wired Field Slime to `assets/enemies/slime_water_blue_spritesheet.png` through `EnemyView`; Chick/Rabbit remain SVG fallbacks.
+- Updated Field scene wiki, architecture pages, and index.
+- Validation: `210 tests, 210 passed, 0 failed`; MCP play `scenes/field.tscn` reports no errors.
+
+## [2026-05-11] reset | Remove Field enemies for EnemySystem rebuild
+
+- RED: updated `tests/specs/field_scene_test.gd` to require no `Enemies` node, no `CombatHud`, and no stale Field enemy attack/connect API.
+- Removed all enemy placements from `scenes/field.tscn`.
+- Removed enemy/combat wiring from `scripts/controllers/field.gd`.
+- Removed first-pass EnemySystem implementation files/specs: `EnemyDefinition`, `RandomEnemyRespawnSystem`, `EnemyArtDefinition`, `EnemyView`, and related wiki pages.
+- Kept enemy art assets in `assets/enemies/` for future rebuild.
+- Updated `assets/assets-catalog.md`, Field prototype docs, wiki Field scene page, and index.
+
+## [2026-05-11] feat | Enemy assets viewer gallery
+
+- RED: added `tests/specs/assets_viewer_test.gd` for asset viewer scene load, recursive PNG collection, and gallery card generation.
+- Created `assets/assets-viewer.tscn`.
+- Created `assets/assets_viewer.gd` with `AssetsViewer.collect_asset_paths()` and `rebuild_gallery()`.
+- Viewer scans `res://assets/enemies` recursively and builds a scrollable thumbnail grid for PNG assets.
+- Updated `assets/assets-catalog.md`, wiki assets viewer page, index, and log.
+- Validation: `198 tests, 198 passed, 0 failed`.
+
+## [2026-05-11] feat | Focused Slime asset animation viewer
+
+- RED: added `tests/specs/slime_asset_viewer_test.gd` for focused Slime viewer scene, animation path catalog, animated cards, playback, and 64×64 frame slicing.
+- Created `assets/asset-view.tscn`.
+- Created `assets/asset_view.gd` with `SlimeAssetView`, generated `SpriteFrames`, and `AnimatedSprite2D` preview cards for idle/run/hit/jump/death/ability.
+- Updated `assets/assets-catalog.md`, wiki Slime asset view page, index, and log.
+- Validation: `202 tests, 202 passed, 0 failed`.
+
+## [2026-05-11] fix | Center Slime asset viewer animations
+
+- RED: updated `tests/specs/slime_asset_viewer_test.gd` to require each animation card to reserve a `PreviewArea` and center `AnimatedSprite2D` at `Vector2(110, 80)`.
+- Updated `assets/asset_view.gd` so animated sprites are children of a fixed preview area instead of direct VBox children, fixing clipped/overlapping previews.
+- Reduced Slime preview scale to `Vector2(2.5, 2.5)` for cleaner card fit.
+- Updated Slime asset viewer wiki docs.
+- Validation: `202 tests, 202 passed, 0 failed`.
+
+## [2026-05-12] feat | Enemy sprite metadata V1 for Spiked Slime
+
+- RED: added `tests/specs/enemy_sprite_metadata_test.gd` for metadata schema, catalog loading, texture/dimension validation, and SpriteFrames generation.
+- Updated `tests/specs/slime_asset_viewer_test.gd` so Slime viewer consumes metadata instead of hardcoded paths/frame size.
+- Created `assets/enemies/Slime/slime_spiked.asset.json` with `schema_version = 1`, `enemy_id = slime_spiked`, `display_name = Spiked Slime`, `horizontal_2d` facing, flip support, frame size, scale, anchor, and animation actions.
+- Created `scripts/models/enemy_sprite_catalog.gd` for JSON loading/normalization/validation.
+- Created `scripts/views/enemy_sprite_frames_builder.gd` for metadata-driven `SpriteFrames` construction.
+- Refactored `assets/asset_view.gd` to load `slime_spiked` through the catalog/builder.
+- Added `llm-wiki/architecture/enemy-sprite-metadata.md` and updated asset viewer docs, catalog, index, and log.
+- Validation: `208 tests, 208 passed, 0 failed`.
+
+## [2026-05-12] refactor | Single-sprite Slime asset viewer controls
+
+- RED: rewrote `tests/specs/slime_asset_viewer_test.gd` expectations so `asset-view.tscn` has one `AnimatedSprite2D`, defaults to `idle`, removes the old multi-card animation grid, and exposes one button per supported animation.
+- Refactored `assets/asset_view.gd` to build one centered preview sprite with metadata-driven `SpriteFrames` containing all animations.
+- Added `play_animation(animation_name)` and generated animation buttons for ability/death/hit/idle/jump/run.
+- Updated Slime asset view wiki docs.
+- Validation: `210 tests, 210 passed, 0 failed`.
+
+## [2026-05-12] feat | Import Rat enemy sprite metadata
+
+- RED: added `tests/specs/enemy_sprite_rat_test.gd` for Rat metadata schema, catalog loading, actions, texture path resolution, and validation.
+- Created `assets/enemies/Rat/rat.asset.json` with V1 sprite/action metadata.
+- Registered `rat` in `EnemySpriteCatalog`.
+- Updated asset catalog and enemy sprite metadata wiki docs.
+- Validation: `213 tests, 213 passed, 0 failed`.
+
+## [2026-05-12] feat | Add Rat to asset-view selector
+
+- RED: updated `tests/specs/slime_asset_viewer_test.gd` to require an `EnemySelector`, Rat metadata loading, Rat switching, and selected-enemy animation button rebuilding.
+- Added `EnemySpriteCatalog.enemy_ids()` and registered selector order.
+- Refactored `assets/asset_view.gd` to show an `OptionButton` for Spiked Slime/Rat and rebuild the single-sprite preview when selection changes.
+- Updated Slime asset viewer wiki docs.
+- Validation: `214 tests, 214 passed, 0 failed`.
+
+## [2026-05-12] fix | Center asset-view panel layout
+
+- RED: updated `tests/specs/slime_asset_viewer_test.gd` to require full-rect `Center/Panel/Margin/VBox` and fixed centered panel sizing.
+- Updated `assets/asset_view.gd` to use a root-level full-rect `CenterContainer` + `PanelContainer`, center the VBox content, and use larger panel margins.
+- Updated Slime asset view wiki docs.
+- Validation: `215 tests, 215 passed, 0 failed`.
+
+## [2026-05-12] feat | Add all enemy sprite metadata types
+
+- RED: added `tests/specs/enemy_sprite_catalog_all_test.gd` requiring catalog entries and validation for all imported enemy types.
+- Added V1 metadata for Bat, Crab, Armored Golem, Golem, Pebble, and Skull.
+- Registered all enemy IDs in `EnemySpriteCatalog.enemy_ids()` for asset-view selector use.
+- Updated asset catalog and enemy sprite metadata wiki docs.
+- Validation: `217 tests, 217 passed, 0 failed`.
+
+## [2026-05-12] refactor | Make asset-view nodes editor-visible
+
+- RED: updated `tests/specs/slime_asset_viewer_test.gd` to require saved scene nodes for `EnemySelector`, `PreviewArea/AnimatedSprite2D`, and `AnimationButtons` before runtime setup.
+- Rebuilt `assets/asset-view.tscn` with editor-visible `Center/Panel/Margin/VBox` hierarchy and preview sprite node.
+- Refactored `assets/asset_view.gd` to populate existing scene nodes instead of creating the whole UI dynamically.
+- Updated enemy asset view wiki docs.
+- Validation: `218 tests, 218 passed, 0 failed`.
+
+## [2026-05-12] refactor | Convert asset-view to editor-visible enemy gallery
+
+- RED: updated `tests/specs/slime_asset_viewer_test.gd` to require one saved `AnimatedSprite2D` per catalog enemy with direct `.tres` resource references.
+- Rebuilt `assets/asset-view.tscn` as a scrollable gallery with `SlimeSprite`, `RatSprite`, `BatSprite`, `CrabSprite`, `ArmoredGolemSprite`, `GolemSprite`, `PebbleSprite`, and `SkullSprite`.
+- Refactored `assets/asset_view.gd` so animation buttons target the selected gallery sprite instead of swapping one runtime preview node.
+- Updated asset catalog and enemy asset view wiki docs.
+- Validation: `220 tests, 220 passed, 0 failed`.
+
+## [2026-05-12] refine | Show one asset-view sprite at a time
+
+- RED: updated `tests/specs/slime_asset_viewer_test.gd` to require only the selected enemy preview to be visible while hidden enemy sprite nodes remain editor-selectable.
+- Updated `assets/asset_view.gd` to toggle preview container visibility from `enemy_id`.
+- Reduced `assets/asset-view.tscn` back to a compact single-preview panel while preserving all per-enemy `AnimatedSprite2D` nodes and `.tres` references.
+- Updated asset catalog and enemy asset view wiki docs.
+- Validation: `221 tests, 221 passed, 0 failed`.
+
+## [2026-05-12] refactor | Split AssetView and AssetGallery
+
+- RED: updated `tests/specs/slime_asset_viewer_test.gd` for `AssetView` root naming and focused single-preview behavior.
+- RED: added `tests/specs/asset_gallery_test.gd` requiring `assets-gallery.tscn` to expose all enemy sprites, direct `.tres` references, and looping idle playback.
+- Renamed `SlimeAssetView` script/root semantics to `AssetView`.
+- Added `assets/assets-gallery.tscn` and `assets/asset_gallery.gd` as one root Control for all looping enemy sprite previews.
+- Updated asset catalog, enemy asset tools wiki, wiki index, and enemy sprite metadata docs.
+- Validation: `223 tests, 223 passed, 0 failed`.
+
+## [2026-05-12] fix | Enforce Field collision for enemies
+
+- RED: updated `tests/specs/field_scene_test.gd` to require enemy movement through `FieldCollision` and removal of the old visible ForestBlocker bar.
+- Added Field controller collision checks for enemy movement and spawn placement against generated collision shapes.
+- Removed `ForestBlocker` from `scenes/field.tscn`; the Forest Guard remains at the southeast road end and blockers come from `FieldCollision`.
+- Updated Field scene wiki docs.
+- Validation: `250 tests, 250 passed, 0 failed`; Godot MCP main-scene play reports no errors.
+
+## [2026-05-12] refine | Import expanded Field map
+
+- Imported the edited `D:\godot\kenney_tiny-town\field.tmj` into `scenes/maps/field_map.tscn` and `scenes/maps/field_collision.tscn`.
+- Updated Tiny Town import collision generation so only layers beginning with `C-` produce blockers.
+- Updated Field scene specs for the expanded `96x68` map, larger enemy spawn zone, and southeast Forest Guard/Gateway placement.
+- Validation: Field scene specs `22 tests, 22 passed, 0 failed`. Full suite has an unrelated existing `EnemySpriteMetadataTest` asset-frame failure.
+
+## [2026-05-12] fix | Reposition Field portals on expanded map
+
+- Moved the Town gateway, default spawn, and player start to the current north road center at `Vector2(1552, 64)` / `Vector2(1552, 160)`.
+- Centered the Forest gateway and Forest Guard on the southeast road at `Vector2(2768, 2112)` / `Vector2(2768, 2000)`.
+- Validation: Field scene specs `22 tests, 22 passed, 0 failed`.
+
+## [2026-05-12] docs | Refresh Field prototype tracker
+
+- Updated `prototype/components/Field.md` to reflect the current imported Tiny Town Field implementation, expanded `96x68` map, `C-` render/collision layer rule, Slime/Bat/Rat runtime enemies, portal coordinates, and remaining open work.
+- Documentation-only change; no runtime validation required.
+
+## [2026-05-12] feat | Add game-wide enemy spawn system
+
+- RED: added `tests/specs/enemy_spawn_system_test.gd` for biome max-active caps, defeated-slot timers, serialization, and autoload registration.
+- Added pure `EnemySpawnSystem` and game-wide `EnemySpawnManager` autoload with 60 second respawn delay support and runtime persistence.
+- Updated Field to register grassland enemy slots through `EnemySpawnManager`, spawn active slots only, and mark defeated slots globally.
+- Updated Field docs and enemy spawn wiki docs.
+- Validation: `EnemySpawnSystem` specs `5 tests, 5 passed`; Field scene specs `23 tests, 23 passed`.
+
+## [2026-05-12] fix | Poll Field enemy respawns while loaded
+
+- RED: added Field scene coverage for a defeated enemy respawning after the global 60 second timer while the player remains in Field.
+- Added `_tick_enemy_spawns()` to poll `EnemySpawnManager` once per second and fill eligible missing slots up to the biome cap.
+- Updated Field and enemy spawn docs.
+- Validation: Field scene specs `24 tests, 24 passed`; EnemySpawnSystem specs `5 tests, 5 passed`.

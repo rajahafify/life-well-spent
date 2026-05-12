@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "enemy_id": "rat",
+  "display_name": "Rat",
+  "sprite_frames_resource": "rat_sprite_frames.tres",
+  "directions": "horizontal_2d",
+  "supports_flip": true,
+  "frame_size": [64, 64],
+  "preview_scale": [2.5, 2.5],
+  "world_scale": [2.0, 2.0],
+  "ground_anchor": [32, 56],
+  "animations": {
+    "idle": {
+      "texture": "Rat_Idle.png",
+      "fps": 6.0,
+      "loop": true
+    },
+    "run": {
+      "texture": "Rat_Run.png",
+      "fps": 10.0,
+      "loop": true
+    },
+    "hit": {
+      "texture": "Rat_Hit.png",
+      "fps": 10.0,
+      "loop": false
+    },
+    "attack": {
+      "texture": "Rat_Attack.png",
+      "fps": 12.0,
+      "loop": false
+    },
+    "death": {
+      "texture": "Rat_Death.png",
+      "fps": 10.0,
+      "loop": false
+    },
+    "ability": {
+      "texture": "Rat_Ability.png",
+      "fps": 10.0,
+      "loop": false
+    }
+  }
+}

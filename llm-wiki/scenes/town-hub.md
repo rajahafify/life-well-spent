@@ -1,121 +1,188 @@
 ---
-title: Town Hub Scene
+title: Town Scene
 type: reference
-updated: 2026-05-11
-tags: [scenes, hub, player]
+updated: 2026-05-12
+tags: [scenes, town, prototype]
 ---
 
-# Town Hub Scene
+# Town Scene
 
 ## Overview
-The town hub is the central gameplay area where players interact with the world. Features a 1280×720 room with a player character, stats overlay, daily task panel, settings panel, static NPCs, RO-style approach-to-talk interaction, modal dialog/quest UI, and deterministic cleanup for owned model objects.
+
+`scenes/town_scene.tscn` is the first-slice **Town** scene for the prototype. It replaces the previous MVP town-hub task/quest UI with a systemic prototype slice: hopeful post-Demon-King worldbuilding, three old institutions, shared gameplay HUD, QuestSystem-aware Guildmaster dialog, and a direct glowing gateway to Field.
+
+First-slice goal:
+
+1. Player is reborn in Town.
+2. Player sees Shop, Swordsman Guild, Blacksmith, and Field Gateway.
+3. Player talks to Guildmaster, Shopkeeper, and Smith.
+4. Player exits through the gateway toward Field.
+
+## Naming
+
+- Scene file: `scenes/town_scene.tscn`
+- Root node: `Town`
+- Controller script: `scripts/controllers/town_scene_controller.gd`
+- Controller class: `Town`
+- No `TownModel` yet; future pure rules belong in `RunState`, inventory, combat, and quest-chain models.
 
 ## Scene Structure
-```
-TownScene (Node2D)
-├── Background (ColorRect) — 1280×720, Color(0.15, 0.12, 0.1)
-├── UI (CanvasLayer)
-│   ├── StatsTitle (Label) — "Stats" title
-│   ├── HPLabel (Label) — "HP: 100 / 100"
-│   ├── QuestLabel (Label) — "Quests: 0 active"
-│   ├── DailyTaskPanel (PanelContainer) — task buttons + XP label
-│   ├── SettingsPanel (PanelContainer) — options overlay
-│   └── DialogPanel (PanelContainer, TownDialogView) — NPC name/body + quest buttons
-├── Player (CharacterBody2D) — instanced from player.tscn, scale 2×
-├── DestinationMarker (Sprite2D)
+
+```text
+Town (Node2D, Town)
+├── Ground (ColorRect)
+├── Paths (Node2D)
+│   ├── MainPath (ColorRect)
+│   └── PortalPath (ColorRect)
+├── Buildings (Node2D)
+│   ├── Shop (ColorRect)
+│   ├── SwordsmanGuild (ColorRect)
+│   └── Blacksmith (ColorRect)
+├── TownMap (instance: scenes/maps/town_map.tscn)
+├── TownCollision (instance: scenes/maps/town_collision.tscn)
+├── SpawnPoints
+│   ├── FromFieldGateway (Marker2D)
+│   └── Default (Marker2D)
+├── Player (instance: player.tscn, starts at FromFieldGateway)
+├── Shopkeeper (NpcController, `assets/npcs/shopkeeper.png`, in front of bottom Tiny Town house)
+├── Guildmaster (NpcController, `assets/npcs/guildmaster.png`, in front of castle/guild)
+├── Smith (NpcController, `assets/npcs/smith.png`, in front of right Tiny Town house)
+├── FieldGateway (Area2D, south road exit)
+│   ├── CollisionShape2D
+│   ├── Visual (ColorRect)
+│   └── Label — "Field"
 ├── Camera2D
-├── QuestGiver (NpcController)
-├── Vendor (NpcController)
-└── Guard (NpcController)
+└── UI (CanvasLayer)
+    ├── LifeLabel / InventoryButton / QuestWindow / InventoryWindow
+    └── DialogPanel (TownDialogView)
 ```
 
-## Player Scene (`player.tscn`)
-```
-Player (CharacterBody2D)
-├── Sprite (Sprite2D) — player.png, hframes=13, vframes=21, script=player_movement.gd
-└── CollisionShape2D — CircleShape2D, radius=20
-```
+## NPC Dialog
 
-## Controller: TownSceneController
+### Guildmaster
 
-```gdscript
-class_name TownSceneController
-extends Node2D
+Before the player reaches the Forest Gate, the Guildmaster reveals old institutions / rebuilding hope.
 
-@onready var _hp_label: Label = $UI/HPLabel
-@onready var _quest_label: Label = $UI/QuestLabel
-@onready var _title_label: Label = $UI/StatsTitle
-@onready var _dialog_view = $UI/DialogPanel
-@onready var _daily_task_list: VBoxContainer = $UI/DailyTaskPanel/VBox/TaskList
-@onready var _xp_label: Label = $UI/DailyTaskPanel/VBox/XPLabel
-@onready var _settings_panel: Control = $UI/SettingsPanel
-@onready var _player: CharacterBody2D = $Player
+```text
+The Swordsman Guild still stands.
 
-func _ready() -> void:
-    _title_label.add_theme_font_size_override("font_size", 24)
-    _connect_dialog_buttons()
-    _connect_npcs()
-    _dialog_view.hide_dialog()
-    _update_stats()
+Not as it was.
+The halls are quiet, and the old names fade from the register.
 
-func _physics_process(delta) -> void:
-    # If pending NPC is now in range, stop movement and open dialog.
+But a guild is not stone or banners.
+It lives when someone chooses the path.
 
-func _on_npc_interacted(npc) -> void:
-    # Far: set _pending_npc and move player to npc.talk_point_for(player_pos)
-    # Near: open dialog immediately.
-
-func _open_dialog(npc) -> void:
-    # Stop movement, face player/NPC, disable CharacterMovement.can_move.
-    # Delegates dialog labels/buttons to TownDialogView.show_dialog().
-
-func _on_close_dialog_pressed() -> void:
-    # Hide dialog, clear active/pending NPC, restore movement.
-
-func complete_daily_task(task_id, date) -> bool:
-    # Complete LifeTracker task through ProgressionModel, play SFX, refresh XP/quest/HP labels.
-
-func _on_options_pressed() -> void:
-    # Show settings panel.
-
-func get_player() -> CharacterBody2D:
-    return _player
-
-func _notification(NOTIFICATION_PREDELETE) -> void:
-    # Frees owned PlayerStats, QuestManager, LifeTracker, ProgressionModel, and SettingsModel.
+Perhaps one day, someone will help me raise it again.
 ```
 
-## Player Movement (`player_movement.gd`)
-- Extends Sprite2D
-- **Mouse click-to-move:** Left-click anywhere to set destination
-- Screen→world conversion via `get_global_mouse_position()`
-- LPC spritesheet: 13 columns × 21 rows, 64×64 cells
-- Walk rows: 8-11, Idle: rows 0-3
-- Destination marker: shows during movement, hides when idle
-- `can_move` flag: toggle movement on/off
+After Field advances the main quest objective to `Get Swordsman Certification.`, the Guildmaster points the player at the `Rebuilding Swordsman Guild` side quest chain:
 
-## Dialog View (`scripts/views/town_dialog_view.gd`)
-- Extends `PanelContainer` and is attached to `UI/DialogPanel`.
-- Owns dialog presentation only: name/body labels, button visibility, panel hide/show.
-- Emits `accept_quest_requested`, `complete_quest_requested`, and `close_requested` so `TownSceneController` keeps quest orchestration.
-- Provides `show_dialog(display_name, body_text, can_offer_quest, has_active_quest)`, `configure_buttons()`, `set_body()`, `hide_dialog()`, and `is_open()`.
+```text
+You found the Forest gate, and now you need Swordsman Certification.
 
-## Design Decisions
-- **Simple background:** Solid ColorRect for now. Will be replaced with TileMap.
-- **Stats overlay:** Absolute positioned labels in top-left corner.
-- **Daily task panel:** Buttons call `complete_daily_task()` and update XP via `LifeTracker` + `ProgressionModel`.
-- **Settings panel:** Lightweight options overlay; model validation lives in `SettingsModel`.
-- **Player scale:** 2× for visibility (64px → 128px).
-- **Player movement:** Click-to-move with LPC animation rows.
+Then you understand why the old rules exist.
 
-## Specs
-- `tests/specs/town_scene_dialog_test.gd` covers dialog visibility, `TownDialogView` scene wiring, NPC metadata, quest accept/complete, pending approach, modal movement lock, close restore, mutual facing, daily task UI, XP update, and settings panel opening.
-- `tests/specs/scene_smoke_test.gd` covers town NPC interaction wiring.
+Help rebuild the Swordsman Guild first.
+```
+
+### Shopkeeper
+
+Reveals ordinary life worth protecting.
+
+```text
+Welcome, traveler.
+
+This shop once packed bags for heroes.
+Now I sell apples, candles, and thread.
+
+It is quieter, yes.
+But quiet days are worth protecting too.
+```
+
+### Smith
+
+Reveals old tools waiting / practical nostalgia.
+
+```text
+I used to shape steel for adventurers.
+
+Now I mend plows, hinges, and cooking pots.
+Honest work.
+
+Still, I keep the sword molds clean.
+Old roads have a way of calling again.
+```
+
+## Controller
+
+`Town` is thin glue:
+
+- opens the reborn copy in `TownDialogView` on `_ready()`
+- connects worldbuilding NPC `interacted(npc)` signals
+- routes ground clicks to `CharacterMovement` while dialog is closed
+- follows player with a camera offset for RO-style play
+- blocks click-to-move while dialog is open
+- handles RO-style NPC approach after sprite click: far NPC click moves Player to the NPC talk point, near/in-range sprite click opens dialog
+- shows paged NPC dialog via `TownDialogView.show_dialog()`
+- reads `QuestSystem.current_main_objective_id()` so Guildmaster dialog can react to the Forest Gate objective
+- updates `SharedHUDView` with player Life and the current main quest objective
+- starts Player at named spawn point `SpawnPoints/FromFieldGateway`, up the south road and outside the FieldGateway trigger
+- records Field transition request through `request_field()`
+- records the direct Field transition when the Player enters `FieldGateway`, then defers the actual scene change outside the physics callback
+- hides NPC overhead names; names appear in dialog only
+- passes NPC sprite texture to `TownDialogView` for face portrait display above the dialog box
+- hides NPC dialog when `TownDialogView.close_requested` emits
+
+Shop, forge, and life-spend quest completion logic are not active in this slice. Town can now read QuestSystem state and present the Guildmaster certification prompt after the Forest Gate is reached.
+
+## Art Direction
+
+Prototype Town uses primitives/SVG world art with generated LPC sprites for Player and NPCs. Project viewport is 1920×1080 for prototype readability. World primitive `Control` nodes set `mouse_filter = ignore` so ground clicks reach Town movement.
+
+Tiny Town visual art is imported as `TownMap`, an instanced generated scene from `tools/import_tiny_town_tmj.py`. The same importer generates `TownCollision` from solid Tiny Town layers as merged native `StaticBody2D` blockers. Tiled remains the editable source, while Town keeps ownership of Player, NPCs, gateways, spawn points, camera, and UI.
+
+- warm tan ground
+- brown path strips
+- rectangle buildings
+- central Swordsman Guild landmark
+- blue/green glowing portal
+- parchment/dark dialog panel
+
+## Tests
+
+- `tests/specs/town_prototype_test.gd` covers root/class naming, buildings, NPCs, custom NPC sprite textures, NPC scale matching player, dialog copy, absence of persistent reborn HUD label, Field gateway label, 1080p viewport, and primitive mouse filter settings.
+- `tests/specs/town_prototype_test.gd` also covers the generated Tiny Town `TownMap` and `TownCollision` instance paths, position, scale, and collision blocker shape.
+- `tests/specs/town_prototype_test.gd` covers the Tiny Town-facing NPC placements: Shopkeeper at `Vector2(512, 1140)`, Guildmaster at `Vector2(960, 450)`, and Smith at `Vector2(1472, 820)`.
+- `tests/specs/town_prototype_test.gd` covers the south-road Field gateway at `Vector2(960, 1320)` and its safe spawn at `Vector2(960, 980)`, far enough to avoid auto-transition.
+- `tests/specs/town_scene_dialog_test.gd` covers startup reborn dialog, readable 1080p dialog text, shared HUD, top-right Quest Tracker, NPC face portrait crop above the box, paged NPC dialog, RO-style sprite-click NPC approach, pending dialog open in talk range after click, camera follow, desynced NPC idle timing, hidden overhead NPC names, first-slice quest buttons hidden, QuestSystem Guildmaster certification prompt, click-to-move routing/blocking, dialog close behavior, and direct Field gateway request.
+- `tests/specs/npc_controller_test.gd` and `tests/specs/scene_smoke_test.gd` cover removal of proximity-based NPC dialog triggers.
+- `tests/specs/scene_smoke_test.gd` covers Town dialog smoke behavior.
+
+Current validation after south portal placement: `246 tests, 246 passed, 0 failed`; MCP main-scene play reports no errors.
+
+Systems introduced by Town are cataloged in `prototype/game-systems.md` using systemic design terms: verbs, components, resources, rules, and conditions.
+
+## Manual QA
+
+Passed on 2026-05-11:
+
+- Town opens with the reborn copy in the dialog box.
+- Ground click-to-move works after world primitives set `mouse_filter = ignore`.
+- Far NPC sprite click moves Player toward NPC before dialog opens.
+- Dialog opens in talk range after an NPC sprite click.
+- Dialog pages advance with Next.
+- Close hides dialog.
+- Dialog blocks movement.
+- Camera follows Player with RO-style offset.
+- Field Gateway transitions directly to Field without physics-callback removal errors.
+- Godot MCP current-scene play reports no errors.
 
 ## Related
-- `scripts/models/player_stats.gd` — HP, level, quest state
-- `scripts/models/quest_manager.gd` — quest catalog, take/complete lifecycle
-- `scripts/models/life_tracker.gd` — daily tasks, habits, completions, streaks, XP
-- `scripts/models/progression_model.gd` — task completion rewards, linked quest completion, facility unlocks
-- `scripts/views/character_movement.gd` — movement + animation
-- `scripts/views/town_dialog_view.gd` — dialog panel presentation + button signals
+
+- `prototype/game-systems.md`
+- `prototype/components/town.md`
+- `scripts/controllers/town_scene_controller.gd`
+- `scripts/views/town_dialog_view.gd`
+- `scripts/controllers/npc_controller.gd`
+- `scenes/npc.tscn`
+- `llm-wiki/architecture/quest-system.md`

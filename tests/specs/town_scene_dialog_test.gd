@@ -1,182 +1,256 @@
 # tests/specs/town_scene_dialog_test.gd
-# Spec: Town NPC dialog + quest UI
+# Spec: Town first-slice NPC dialog presentation.
 
 class_name TestTownSceneDialog
 extends TestCase
 
-const TownDialogViewScript = preload("res://scripts/views/town_dialog_view.gd")
-
-var root: TownSceneController
-
-
-func _move_player_near(npc: NpcController, offset := Vector2(40, 0)) -> void:
-	root.get_player().global_position = npc.global_position + offset
-
-
-func _emit_near(npc: NpcController) -> void:
-	_move_player_near(npc)
-	npc.interacted.emit(npc)
+var root: Node
 
 
 func setup() -> void:
+	if QuestSystem:
+		QuestSystem.reset()
 	var scene: PackedScene = load("res://scenes/town_scene.tscn")
-	root = scene.instantiate() as TownSceneController
+	root = scene.instantiate()
 	root._ready()
 
 
 func teardown() -> void:
 	if root:
 		root.free()
+		root = null
 
 
-func test_dialog_panel_starts_hidden() -> void:
-	var panel: Control = root.get_node("UI/DialogPanel") as Control
-	assert_not_null(panel, "town scene should include DialogPanel")
-	assert_false(panel.visible, "dialog should start hidden")
+func _close_start_dialog() -> void:
+	root.close_dialog()
 
 
-func test_dialog_panel_uses_town_dialog_view() -> void:
-	var panel: Control = root.get_node("UI/DialogPanel") as Control
-	assert_eq(TownDialogViewScript, panel.get_script(), "DialogPanel should delegate dialog UI to TownDialogView")
-
-
-func test_town_dialog_view_configures_dialog_metadata() -> void:
-	var panel: Control = root.get_node("UI/DialogPanel") as Control
-	panel.show_dialog("Quest Giver", "Can you spare some life?", true, false)
+func test_near_guildmaster_interaction_opens_first_dialog_page() -> void:
+	_close_start_dialog()
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var dialog: TownDialogView = root.get_node("UI/DialogPanel") as TownDialogView
 	var title: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
 	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	var next: Button = root.get_node("UI/DialogPanel/VBox/Buttons/NextButton") as Button
+	assert_true(dialog.visible)
+	assert_eq("Guildmaster", title.text)
+	assert_eq("The Swordsman Guild still stands.", body.text)
+	assert_true(next.visible)
+
+
+func test_town_opens_reborn_copy_as_start_dialog() -> void:
+	var dialog: TownDialogView = root.get_node("UI/DialogPanel") as TownDialogView
+	var title: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	var next: Button = root.get_node("UI/DialogPanel/VBox/Buttons/NextButton") as Button
+	assert_true(dialog.visible)
+	assert_eq("Reborn", title.text)
+	assert_eq("You have been reborn.\nWill you spend this life well?", body.text)
+	assert_false(next.visible)
+	assert_null(root.get_node_or_null("UI/RebornPrompt"))
+
+
+func test_town_has_top_right_quest_window() -> void:
+	var hud := root.get_node_or_null("UI")
+	assert_true(hud != null and hud.has_method("set_life") and hud.has_method("show_quest"), "Town should use the shared gameplay HUD")
+	var life_label := root.get_node_or_null("UI/LifeLabel") as Label
+	var inventory_button := root.get_node_or_null("UI/InventoryButton") as Button
+	var quest_window := root.get_node_or_null("UI/QuestWindow") as PanelContainer
+	var quest_label := root.get_node_or_null("UI/QuestWindow/VBox/ObjectiveLabel") as Label
+	assert_not_null(life_label)
+	assert_not_null(inventory_button)
+	assert_not_null(quest_window)
+	assert_not_null(quest_label)
+	if life_label and inventory_button and quest_window and quest_label:
+		assert_eq("Life: 100/100", life_label.text)
+		assert_eq("Inventory", inventory_button.text)
+		assert_true(quest_window.visible)
+		assert_eq(1.0, quest_window.anchor_right)
+		assert_eq(-28.0, quest_window.offset_right)
+		assert_eq("Explore the World\nFind the Forest path.", quest_label.text)
+
+
+func test_dialog_text_is_large_enough_for_1080p() -> void:
+	var title: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	var next: Button = root.get_node("UI/DialogPanel/VBox/Buttons/NextButton") as Button
+	assert_true(int(title.get_theme_font_size("font_size")) >= 28)
+	assert_true(int(body.get_theme_font_size("font_size")) >= 30)
+	assert_true(int(next.get_theme_font_size("font_size")) >= 24)
+
+
+func test_dialog_shows_npc_portrait_from_sprite_sheet_above_box() -> void:
+	_close_start_dialog()
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var portrait: TextureRect = root.get_node("UI/DialogPortrait") as TextureRect
+	var dialog: PanelContainer = root.get_node("UI/DialogPanel") as PanelContainer
+	assert_true(portrait.visible)
+	assert_true(portrait.texture is AtlasTexture)
+	assert_true(portrait.position.y < dialog.position.y, "portrait should sit above dialog box, not inside text flow")
+	var atlas := (portrait.texture as AtlasTexture).atlas
+	assert_true(atlas.resource_path.ends_with("guildmaster.png"))
+	assert_eq(Rect2(80, 648, 32, 32), (portrait.texture as AtlasTexture).region)
+
+
+func test_guildmaster_dialog_advances_pages() -> void:
+	_close_start_dialog()
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var dialog: TownDialogView = root.get_node("UI/DialogPanel") as TownDialogView
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	var next: Button = root.get_node("UI/DialogPanel/VBox/Buttons/NextButton") as Button
+	dialog.next_page()
+	assert_true(body.text.contains("Not as it was"))
+	dialog.next_page()
+	dialog.next_page()
+	assert_true(body.text.contains("Perhaps one day"))
+	assert_false(next.visible)
+
+
+func test_guildmaster_offers_swordsman_chain_after_forest_gate_objective() -> void:
+	_close_start_dialog()
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	assert_true(body.text.contains("Forest gate"))
+	assert_true(body.text.contains("Swordsman Certification"))
+	assert_true(QuestSystem.is_side_quest_active("rebuilding_swordsman_guild"))
+
+
+func test_far_guildmaster_interaction_moves_player_without_opening_dialog() -> void:
+	_close_start_dialog()
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = Vector2(960, 700)
+	var movement: CharacterMovement = root.get_node("Player/Sprite") as CharacterMovement
+	movement._ready()
+	npc.interacted.emit(npc)
+	var dialog: TownDialogView = root.get_node("UI/DialogPanel") as TownDialogView
+	assert_false(dialog.visible)
+	assert_true(movement.moving)
+	assert_true(root.get_node("Player").global_position.distance_to(movement.destination) >= 95.0, "talk point should prevent sprite overlap")
+
+
+func test_pending_npc_opens_dialog_when_player_reaches_talk_range() -> void:
+	_close_start_dialog()
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = Vector2(960, 700)
+	npc.interacted.emit(npc)
+	root.get_node("Player").global_position = npc.global_position + Vector2(100, 0)
+	root._physics_process(0.016)
+	var dialog: TownDialogView = root.get_node("UI/DialogPanel") as TownDialogView
+	var title: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
+	assert_true(dialog.visible)
+	assert_eq("Guildmaster", title.text)
+
+
+func test_shopkeeper_interaction_opens_worldbuilding_dialog() -> void:
+	_close_start_dialog()
+	var npc: NpcController = root.get_node("Shopkeeper") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var title: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	assert_eq("Shopkeeper", title.text)
+	assert_true(body.text.contains("Welcome, traveler."))
+
+
+func test_smith_interaction_opens_worldbuilding_dialog() -> void:
+	_close_start_dialog()
+	var npc: NpcController = root.get_node("Smith") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var title: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	assert_eq("Smith", title.text)
+	assert_true(body.text.contains("I used to shape steel"))
+
+
+func test_first_slice_dialog_hides_quest_buttons() -> void:
+	_close_start_dialog()
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
 	var accept: Button = root.get_node("UI/DialogPanel/VBox/Buttons/AcceptQuestButton") as Button
 	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
-	assert_true(panel.visible, "dialog view should show panel")
-	assert_eq("Quest Giver", title.text)
-	assert_eq("Can you spare some life?", body.text)
-	assert_true(accept.visible, "accept should show when quest can be offered")
-	assert_false(complete.visible, "complete should hide when no active quest exists")
+	var close: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CloseButton") as Button
+	assert_false(accept.visible)
+	assert_false(complete.visible)
+	assert_true(close.visible)
 
 
-func test_quest_giver_interaction_opens_dialog_with_metadata() -> void:
-	var npc: NpcController = root.get_node("QuestGiver") as NpcController
-	_emit_near(npc)
-	var panel: Control = root.get_node("UI/DialogPanel") as Control
-	var title: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
-	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
-	var accept: Button = root.get_node("UI/DialogPanel/VBox/Buttons/AcceptQuestButton") as Button
-	assert_true(panel.visible, "dialog should show after NPC interaction")
-	assert_eq("Quest Giver", title.text)
-	assert_true(body.text.contains("spare some life"), "quest giver dialog text should show")
-	assert_true(accept.visible, "quest giver should show Accept Quest button")
+func test_town_routes_player_movement_to_character_movement() -> void:
+	_close_start_dialog()
+	var movement: CharacterMovement = root.get_node("Player/Sprite") as CharacterMovement
+	movement._ready()
+	var target := Vector2(700, 520)
+	assert_true(root.move_player_to(target))
+	assert_eq(target, movement.destination)
+	assert_true(movement.moving)
 
 
-func test_vendor_interaction_opens_dialog_without_quest_button() -> void:
-	var npc: NpcController = root.get_node("Vendor") as NpcController
-	_emit_near(npc)
-	var title: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
-	var accept: Button = root.get_node("UI/DialogPanel/VBox/Buttons/AcceptQuestButton") as Button
-	assert_eq("Vendor", title.text)
-	assert_false(accept.visible, "vendor should not show Accept Quest button yet")
-
-
-func test_accept_quest_from_dialog_costs_no_hp_and_updates_ui() -> void:
-	var npc: NpcController = root.get_node("QuestGiver") as NpcController
-	_emit_near(npc)
-	root._on_accept_quest_pressed()
-	var hp: Label = root.get_node("UI/HPLabel") as Label
-	var quest: Label = root.get_node("UI/QuestLabel") as Label
-	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
-	assert_eq("HP: 100 / 100", hp.text)
-	assert_eq("Quests: 1 active", quest.text)
-	assert_true(body.text.contains("Quest accepted"), "dialog should confirm accepted quest")
-
-
-func test_complete_quest_from_dialog_removes_active_and_updates_ui() -> void:
-	var npc: NpcController = root.get_node("QuestGiver") as NpcController
-	_emit_near(npc)
-	root._on_accept_quest_pressed()
-	root._on_complete_quest_pressed()
-	var hp: Label = root.get_node("UI/HPLabel") as Label
-	var quest: Label = root.get_node("UI/QuestLabel") as Label
-	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
-	assert_eq("HP: 60 / 60", hp.text)
-	assert_eq("Quests: 0 active", quest.text)
-	assert_true(body.text.contains("Quest completed"), "dialog should confirm completed quest")
-
-
-func test_close_dialog_hides_panel() -> void:
-	var npc: NpcController = root.get_node("QuestGiver") as NpcController
-	_emit_near(npc)
-	root._on_close_dialog_pressed()
-	var panel: Control = root.get_node("UI/DialogPanel") as Control
-	assert_false(panel.visible)
-
-
-func test_click_npc_outside_range_sets_pending_npc_without_opening_dialog() -> void:
-	var npc: NpcController = root.get_node("QuestGiver") as NpcController
-	root.get_player().global_position = Vector2(640, 360)
+func test_dialog_blocks_player_movement() -> void:
+	_close_start_dialog()
+	var movement: CharacterMovement = root.get_node("Player/Sprite") as CharacterMovement
+	movement._ready()
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
-	var panel: Control = root.get_node("UI/DialogPanel") as Control
-	var movement: CharacterMovement = root.get_player().get_node("Sprite") as CharacterMovement
-	assert_false(panel.visible, "far NPC click should not open dialog immediately")
-	assert_eq(npc, root.get("_pending_npc"))
-	assert_true(movement.moving, "far NPC click should move player toward talk point")
+	assert_false(root.move_player_to(Vector2(700, 520)))
+	assert_false(movement.moving)
 
 
-func test_pending_npc_opens_dialog_when_player_enters_range() -> void:
-	var npc: NpcController = root.get_node("QuestGiver") as NpcController
-	root.get_player().global_position = Vector2(640, 360)
-	npc.interacted.emit(npc)
-	root.get_player().global_position = npc.global_position + Vector2(40, 0)
+func test_camera_follows_player_with_ro_style_offset() -> void:
+	_close_start_dialog()
+	var player: Node2D = root.get_node("Player") as Node2D
+	var camera: Camera2D = root.get_node("Camera2D") as Camera2D
+	player.global_position = Vector2(1200, 700)
 	root._physics_process(0.016)
-	var panel: Control = root.get_node("UI/DialogPanel") as Control
-	assert_true(panel.visible, "pending NPC should open when player reaches talk range")
-	assert_null(root.get("_pending_npc"))
+	assert_eq(player.global_position + Vector2(0, -150), camera.global_position)
 
 
-func test_click_npc_inside_range_opens_dialog_immediately() -> void:
-	var npc: NpcController = root.get_node("QuestGiver") as NpcController
-	_move_player_near(npc)
+func test_town_npc_idle_animation_has_distinct_timing() -> void:
+	var guild: CharacterMovement = root.get_node("Guildmaster/Sprite") as CharacterMovement
+	var shop: CharacterMovement = root.get_node("Shopkeeper/Sprite") as CharacterMovement
+	var smith: CharacterMovement = root.get_node("Smith/Sprite") as CharacterMovement
+	assert_neq(guild.idle_cycle_interval, shop.idle_cycle_interval)
+	assert_neq(shop.idle_cycle_interval, smith.idle_cycle_interval)
+
+
+func test_close_button_signal_hides_dialog() -> void:
+	_close_start_dialog()
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
-	var panel: Control = root.get_node("UI/DialogPanel") as Control
-	assert_true(panel.visible, "near NPC click should open dialog immediately")
+	var dialog: TownDialogView = root.get_node("UI/DialogPanel") as TownDialogView
+	assert_true(dialog.visible)
+	dialog.close_requested.emit()
+	assert_false(dialog.visible)
 
 
-func test_dialog_open_disables_player_movement() -> void:
-	var npc: NpcController = root.get_node("QuestGiver") as NpcController
-	_emit_near(npc)
-	var movement: CharacterMovement = root.get_player().get_node("Sprite") as CharacterMovement
-	assert_false(movement.can_move, "dialog should lock player click-to-move")
+func test_field_gateway_body_entered_requests_field_directly() -> void:
+	var player: Node = root.get_node("Player")
+	root._on_field_gateway_body_entered(player)
+	assert_eq("res://scenes/field.tscn", root.requested_scene_path)
 
 
-func test_close_dialog_reenables_player_movement() -> void:
-	var npc: NpcController = root.get_node("QuestGiver") as NpcController
-	_emit_near(npc)
-	root._on_close_dialog_pressed()
-	var movement: CharacterMovement = root.get_player().get_node("Sprite") as CharacterMovement
-	assert_true(movement.can_move, "closing dialog should restore movement")
+func test_field_gateway_defers_scene_change_outside_physics_callback() -> void:
+	var file := FileAccess.open("res://scripts/controllers/town_scene_controller.gd", FileAccess.READ)
+	assert_not_null(file, "Town controller script should exist")
+	if file == null:
+		return
+	var source := file.get_as_text()
+	file.close()
+	assert_true(source.contains("call_deferred(\"_change_scene_to_file\", FIELD_PATH)"))
+	assert_true(source.contains("func _change_scene_to_file(scene_path: String) -> void:"))
 
 
-func test_dialog_open_faces_player_and_npc() -> void:
-	var npc: NpcController = root.get_node("QuestGiver") as NpcController
-	_move_player_near(npc, Vector2(40, 0))
-	npc.interacted.emit(npc)
-	var movement: CharacterMovement = root.get_player().get_node("Sprite") as CharacterMovement
-	assert_eq("right", npc.npc_state.facing)
-	assert_eq(Vector2i(0, 1), movement.frame_coords)
-
-
-func test_town_scene_has_daily_task_panel() -> void:
-	var panel := root.get_node_or_null("UI/DailyTaskPanel") as PanelContainer
-	assert_not_null(panel, "town scene should include daily task panel")
-	assert_not_null(root.get_node_or_null("UI/DailyTaskPanel/VBox/TaskList"), "daily panel should include task list")
-
-
-func test_complete_daily_task_updates_xp_label() -> void:
-	root.complete_daily_task("hydrate", "2026-05-11")
-	var xp_label := root.get_node("UI/DailyTaskPanel/VBox/XPLabel") as Label
-	assert_eq("XP: 10", xp_label.text)
-
-
-func test_options_button_opens_settings_panel() -> void:
-	var panel := root.get_node("UI/SettingsPanel") as Control
-	assert_false(panel.visible)
-	root._on_options_pressed()
-	assert_true(panel.visible)
+func test_field_gateway_uses_direct_transition_without_prompt() -> void:
+	assert_null(root.get_node_or_null("UI/PortalChoices"), "direct gateways should not show confirmation choices")
+	assert_null(root.get_node_or_null("UI/PortalPrompt"), "direct gateways should not show confirmation prompt")

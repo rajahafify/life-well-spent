@@ -4,10 +4,20 @@
 class_name QuestManager
 extends Object
 
+const MAIN_EXPLORE_WORLD := "explore_the_world"
+const OBJ_FIND_FOREST_PATH := "find_forest_path"
+const OBJ_GET_SWORDSMAN_CERTIFICATION := "get_swordsman_certification"
+const CHECKPOINT_FOREST_GUARD := "forest_guard"
+const SIDE_REBUILD_SWORDSMAN_GUILD := "rebuilding_swordsman_guild"
+const CERT_SWORDSMAN := "swordsman_certification"
+
 var quest_catalog: Array[Dictionary] = []
 var active_quests: Array[Dictionary] = []
 var quests_taken: int = 0
 var last_rejection = null
+var main_quests: Dictionary = {}
+var side_quest_chains: Dictionary = {}
+var certifications: Dictionary = {}
 
 
 func add_quest(name: String, cost: int, description: String) -> void:
@@ -66,12 +76,129 @@ func reset_for_life() -> void:
 	quests_taken = 0
 
 
+func setup_core_quests() -> void:
+	if not main_quests.has(MAIN_EXPLORE_WORLD):
+		main_quests[MAIN_EXPLORE_WORLD] = {
+			"title": "Explore the World",
+			"objective_id": OBJ_FIND_FOREST_PATH,
+			"objectives": {
+				OBJ_FIND_FOREST_PATH: "Find the Forest path.",
+				OBJ_GET_SWORDSMAN_CERTIFICATION: "Get Swordsman Certification.",
+			},
+			"checkpoints": {
+				CHECKPOINT_FOREST_GUARD: {
+					"text": "Forest Guard reached.",
+					"completed": false,
+				},
+			},
+			"active": true,
+			"completed": false,
+		}
+
+
+func current_main_objective_id(main_id: String = MAIN_EXPLORE_WORLD) -> String:
+	setup_core_quests()
+	if not main_quests.has(main_id):
+		return ""
+	return str(main_quests[main_id].get("objective_id", ""))
+
+
+func current_main_objective_text(main_id: String = MAIN_EXPLORE_WORLD) -> String:
+	setup_core_quests()
+	if not main_quests.has(main_id):
+		return ""
+	var quest: Dictionary = main_quests[main_id]
+	var objectives: Dictionary = quest.get("objectives", {})
+	return str(objectives.get(quest.get("objective_id", ""), ""))
+
+
+func advance_main_quest_objective(main_id: String, objective_id: String) -> bool:
+	setup_core_quests()
+	if not main_quests.has(main_id):
+		return false
+	var quest: Dictionary = main_quests[main_id]
+	var objectives: Dictionary = quest.get("objectives", {})
+	if not objectives.has(objective_id):
+		return false
+	quest["objective_id"] = objective_id
+	main_quests[main_id] = quest
+	if main_id == MAIN_EXPLORE_WORLD and objective_id == OBJ_GET_SWORDSMAN_CERTIFICATION:
+		_activate_swordsman_guild_chain()
+	return true
+
+
+func mark_main_checkpoint(main_id: String, checkpoint_id: String) -> bool:
+	setup_core_quests()
+	if not main_quests.has(main_id):
+		return false
+	var quest: Dictionary = main_quests[main_id]
+	var checkpoints: Dictionary = quest.get("checkpoints", {})
+	if not checkpoints.has(checkpoint_id):
+		return false
+	var checkpoint: Dictionary = checkpoints[checkpoint_id]
+	checkpoint["completed"] = true
+	checkpoints[checkpoint_id] = checkpoint
+	quest["checkpoints"] = checkpoints
+	main_quests[main_id] = quest
+	return true
+
+
+func has_main_checkpoint(main_id: String, checkpoint_id: String) -> bool:
+	setup_core_quests()
+	if not main_quests.has(main_id):
+		return false
+	var checkpoints: Dictionary = main_quests[main_id].get("checkpoints", {})
+	if not checkpoints.has(checkpoint_id):
+		return false
+	return bool(Dictionary(checkpoints[checkpoint_id]).get("completed", false))
+
+
+func current_main_checkpoint_text(main_id: String = MAIN_EXPLORE_WORLD) -> String:
+	setup_core_quests()
+	if not main_quests.has(main_id):
+		return ""
+	var checkpoints: Dictionary = main_quests[main_id].get("checkpoints", {})
+	for checkpoint_id in checkpoints.keys():
+		var checkpoint: Dictionary = checkpoints[checkpoint_id]
+		if bool(checkpoint.get("completed", false)):
+			return str(checkpoint.get("text", ""))
+	return ""
+
+
+func is_side_quest_active(chain_id: String) -> bool:
+	if not side_quest_chains.has(chain_id):
+		return false
+	var chain: Dictionary = side_quest_chains[chain_id]
+	return bool(chain.get("active", false)) and not bool(chain.get("completed", false))
+
+
+func complete_side_quest_chain(chain_id: String) -> bool:
+	if not side_quest_chains.has(chain_id):
+		return false
+	var chain: Dictionary = side_quest_chains[chain_id]
+	if bool(chain.get("completed", false)):
+		return false
+	chain["active"] = false
+	chain["completed"] = true
+	side_quest_chains[chain_id] = chain
+	if chain_id == SIDE_REBUILD_SWORDSMAN_GUILD:
+		certifications[CERT_SWORDSMAN] = true
+	return true
+
+
+func has_certification(certification_id: String) -> bool:
+	return bool(certifications.get(certification_id, false))
+
+
 func to_dict() -> Dictionary:
 	return {
 		"quest_catalog": quest_catalog.duplicate(true),
 		"active_quests": active_quests.duplicate(true),
 		"quests_taken": quests_taken,
 		"last_rejection": last_rejection,
+		"main_quests": main_quests.duplicate(true),
+		"side_quest_chains": side_quest_chains.duplicate(true),
+		"certifications": certifications.duplicate(true),
 	}
 
 
@@ -80,6 +207,9 @@ func apply_dict(data: Dictionary) -> void:
 	active_quests = _duplicate_array(data.get("active_quests", []))
 	quests_taken = int(data.get("quests_taken", 0))
 	last_rejection = data.get("last_rejection", null)
+	main_quests = Dictionary(data.get("main_quests", {})).duplicate(true)
+	side_quest_chains = Dictionary(data.get("side_quest_chains", {})).duplicate(true)
+	certifications = Dictionary(data.get("certifications", {})).duplicate(true)
 
 
 func _duplicate_array(value) -> Array[Dictionary]:
@@ -87,3 +217,19 @@ func _duplicate_array(value) -> Array[Dictionary]:
 	for item in value:
 		result.append(Dictionary(item).duplicate(true))
 	return result
+
+
+func _activate_swordsman_guild_chain() -> void:
+	if side_quest_chains.has(SIDE_REBUILD_SWORDSMAN_GUILD):
+		var existing: Dictionary = side_quest_chains[SIDE_REBUILD_SWORDSMAN_GUILD]
+		if not bool(existing.get("completed", false)):
+			existing["active"] = true
+			side_quest_chains[SIDE_REBUILD_SWORDSMAN_GUILD] = existing
+		return
+	side_quest_chains[SIDE_REBUILD_SWORDSMAN_GUILD] = {
+		"title": "Rebuilding Swordsman Guild",
+		"active": true,
+		"completed": false,
+		"step": 0,
+		"max_step": 3,
+	}

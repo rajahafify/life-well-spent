@@ -4,10 +4,10 @@
   "status": "spec",
   "description": "Static NPCs for town hub: quest givers, vendors. Reusable Sprite2D + collision + interact. Refactors player movement into character base. Inspired by Ragnarok Online dialogs and sprites.",
   "acceptance_criteria": [
-    "NPC scene/component reusable (Sprite2D + idle anim + CollisionShape2D solid + Area2D proximity)",
+    "NPC scene/component reusable (Sprite2D + idle anim + CollisionShape2D solid)",
     "Static only — no movement or patrol",
-    "Auto face player on interact or area enter (4-dir LPC)",
-    "Click or proximity triggers 'interacted' signal + basic dialog/quest UI hook",
+    "Auto face player on sprite-click interaction (4-dir LPC)",
+    "Clicking an NPC sprite triggers 'interacted' signal + basic dialog/quest UI hook",
     "NpcState model pure: idle state, facing, current_quest",
     "3 example NPCs placed in town_scene.tscn",
     "All behaviors covered by executable GDScript spec (RED first)",
@@ -22,8 +22,8 @@
       "test_state_idle_on_interact / set_interacting"
     ],
     "integration": [
-      "npc_scene_loads_with_collision_and_area",
-      "click_or_proximity_emits_interacted",
+      "npc_scene_loads_with_solid_collision",
+      "sprite_click_emits_interacted",
       "face_player_on_interact",
       "quest_assign_via_controller"
     ]
