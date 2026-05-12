@@ -1,5 +1,14 @@
 # Wiki Log
 
+## [2026-05-12] feature | Add first Slime combat flow
+
+- Added EnemyDefinition, EnemyState, EnemyBehaviorSystem, EnemyView, and reusable enemy scene for first Field Slime.
+- Wired Field click-to-engage, player approach/auto-attack, Slime aggro chase, Slime interval attacks against Life, death removal, and XP reward.
+- Updated combat tests from Combat HP to current Life damage.
+- Added enemy behavior specs and Field scene combat-flow specs.
+- Updated Field scene wiki, enemy behavior wiki, wiki index, and this log.
+- Validation: `232 tests, 232 passed, 0 failed`.
+
 ## [2026-05-12] decision | Make Life the combat health resource
 
 - Corrected prototype docs: combat now damages current Life, while quests/progression reduce Max Life.

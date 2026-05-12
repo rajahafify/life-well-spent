@@ -1,0 +1,116 @@
+# tests/specs/enemy_behavior_system_test.gd
+# Spec: EnemyBehaviorSystem — Slime idle/wander/chase/attack/die behavior.
+
+class_name TestEnemyBehaviorSystem
+extends TestCase
+
+const DEF_SCRIPT := "res://scripts/models/enemy_definition.gd"
+const STATE_SCRIPT := "res://scripts/models/enemy_state.gd"
+const BEHAVIOR_SCRIPT := "res://scripts/models/enemy_behavior_system.gd"
+
+
+func _slime_definition():
+	var script := load(DEF_SCRIPT) as GDScript
+	assert_not_null(script, "EnemyDefinition script should exist")
+	if script == null:
+		return null
+	return script.slime_spiked()
+
+
+func _slime_state():
+	var def = _slime_definition()
+	if def == null:
+		return null
+	var script := load(STATE_SCRIPT) as GDScript
+	assert_not_null(script, "EnemyState script should exist")
+	if script == null:
+		return null
+	return script.from_definition("field_slime_001", def, Vector2(500, 500))
+
+
+func _behavior():
+	var script := load(BEHAVIOR_SCRIPT) as GDScript
+	assert_not_null(script, "EnemyBehaviorSystem script should exist")
+	if script == null:
+		return null
+	return script.new()
+
+
+func test_slime_definition_is_tweakable_and_uses_life_combat_values() -> void:
+	var slime = _slime_definition()
+	if slime == null:
+		return
+	assert_eq("slime_spiked", slime.enemy_id)
+	assert_eq("Spiked Slime", slime.display_name)
+	assert_eq(14, slime.max_hp)
+	assert_eq(1, slime.attack)
+	assert_eq(1, slime.defense)
+	assert_eq(5, slime.xp_reward)
+	assert_eq(180.0, slime.aggro_radius)
+	assert_eq(48.0, slime.attack_range)
+	assert_eq(1.4, slime.attack_interval)
+
+
+func test_enemy_state_starts_idle_with_full_hp() -> void:
+	var state = _slime_state()
+	if state == null:
+		return
+	assert_eq("field_slime_001", state.instance_id)
+	assert_eq("slime_spiked", state.enemy_id)
+	assert_eq(14, state.hp)
+	assert_eq(14, state.max_hp)
+	assert_eq("idle", state.behavior_state)
+	assert_false(state.is_defeated)
+
+
+func test_slime_aggros_and_chases_when_player_inside_radius() -> void:
+	var behavior = _behavior()
+	var def = _slime_definition()
+	var state = _slime_state()
+	if behavior == null or def == null or state == null:
+		return
+	behavior.tick(state, def, {"player_position": Vector2(620, 500)}, 0.1)
+	assert_eq("chase", state.behavior_state)
+	assert_true(state.is_aggro)
+	behavior.free()
+
+
+func test_slime_enters_attack_when_in_range_and_attacks_on_interval() -> void:
+	var behavior = _behavior()
+	var def = _slime_definition()
+	var state = _slime_state()
+	if behavior == null or def == null or state == null:
+		return
+	state.is_aggro = true
+	state.behavior_state = "chase"
+	var result: Dictionary = behavior.tick(state, def, {"player_position": Vector2(530, 500)}, 1.4)
+	assert_eq("attack", state.behavior_state)
+	assert_true(result.get("enemy_attack", false))
+	behavior.free()
+
+
+func test_slime_chases_when_attack_target_moves_out_of_range() -> void:
+	var behavior = _behavior()
+	var def = _slime_definition()
+	var state = _slime_state()
+	if behavior == null or def == null or state == null:
+		return
+	state.is_aggro = true
+	state.behavior_state = "attack"
+	behavior.tick(state, def, {"player_position": Vector2(700, 500)}, 0.1)
+	assert_eq("chase", state.behavior_state)
+	behavior.free()
+
+
+func test_slime_dies_when_hp_reaches_zero() -> void:
+	var behavior = _behavior()
+	var def = _slime_definition()
+	var state = _slime_state()
+	if behavior == null or def == null or state == null:
+		return
+	state.hp = 0
+	var result: Dictionary = behavior.tick(state, def, {"player_position": Vector2(530, 500)}, 0.1)
+	assert_eq("die", state.behavior_state)
+	assert_true(state.is_defeated)
+	assert_true(result.get("died", false))
+	behavior.free()

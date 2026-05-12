@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/views/enemy_view.gd" id="1_enemy_view"]
+
+[node name="EnemyView" type="Area2D"]
+script = ExtResource("1_enemy_view")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(2, 2)
+
+[node name="HpLabel" type="Label" parent="."]
+offset_left = -48.0
+offset_top = -74.0
+offset_right = 120.0
+offset_bottom = -48.0
+theme_override_font_sizes/font_size = 18
+text = "Enemy: 1/1"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]

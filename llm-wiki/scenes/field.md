@@ -9,7 +9,7 @@ tags: [scenes, field, prototype]
 
 ## Overview
 
-`scenes/field.tscn` is playable Field outside Town. Current reset slice has click movement, camera follow, Forest Guard blocking the Forest path, and a direct Town gateway. It intentionally contains **no enemies** while EnemySystem is being rebuilt.
+`scenes/field.tscn` is playable Field outside Town. Current slice has click movement, camera follow, Forest Guard blocking the Forest path, a direct Town gateway, and the first Slime combat flow.
 
 ## Scene Structure
 
@@ -21,9 +21,13 @@ Field (Node2D, Field)
 ├── ForestGateway
 ├── ForestBlocker
 ├── ForestGuard (NpcController, forest_guard.png)
+├── Enemies
+│   └── Slime (EnemyView, spawned by Field controller)
 ├── Camera2D
 └── UI
     ├── ObjectivePrompt
+    ├── LifeLabel
+    ├── SlimeHpLabel
     └── DialogPanel (TownDialogView)
 ```
 
@@ -37,30 +41,36 @@ Field (Node2D, Field)
 - handles far-click Guard approach before dialog
 - direct Town gateway request to `res://scenes/town_scene.tscn`, with the scene-tree change deferred outside the physics callback
 - blocks Forest gateway and opens Guard warning
+- spawns one Slime from `EnemyDefinition.slime_spiked()`
+- routes Slime click to player approach + auto-attack
+- ticks Slime behavior: idle/wander/chase/attack/die
+- applies `CombatSystem` damage to enemy HP and player Life
+- removes Slime and grants XP once when HP reaches zero
 
-No enemy/combat APIs are active in the controller during EnemySystem reset.
+## Slime Combat Slice
 
-## EnemySystem Reset
+Current Field combat scope is one Slime only.
 
-Removed from Field until rebuilt:
+- Slime id: `slime_spiked`
+- UI: simple text `Life: x/y` and `Slime: x/y`
+- Player click engages Slime and moves toward it.
+- Player auto-attacks while in range.
+- Aggro Slime chases if player moves away.
+- Slime attacks current Life on its attack interval.
+- Slime death removes the node and awards XP.
 
-- `Enemies` scene node
-- Slime/Bat/Rat placements
-- Combat HUD
-- Field enemy click combat methods
-- `EnemyDefinition`, `RandomEnemyRespawnSystem`, `EnemyArtDefinition`, and `EnemyView` implementation files/specs
-
-Enemy art assets remain in `assets/enemies/` and future integration tasks live in `assets/assets-catalog.md`. Current Field enemy target set is Slime (`slime_spiked`), Bat (`bat`), and Rat (`rat`).
+Bat/Rat remain target enemies for the later EnemySystem expansion.
 
 ## Test Coverage
 
-- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, absence of enemies/combat HUD during reset, Guard dialog, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
-- Gateway, NPC placement, biome, movement, and dialog systems remain covered by their model/scene specs.
+- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, Slime spawn/UI, click engage, player auto-attack, Slime Life damage, Slime chase, Slime death removal/XP, Guard dialog, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
+- Gateway, NPC placement, biome, movement, enemy behavior, combat, and dialog systems remain covered by their model/scene specs.
 
-Current validation after gateway defer fix: `204 tests, 204 passed, 0 failed`; MCP main-scene play reports no errors.
+Current validation: `232 tests, 232 passed, 0 failed`.
 
 ## Related
 
 - `assets/assets-catalog.md`
 - `llm-wiki/scenes/town-hub.md`
 - `llm-wiki/architecture/gateway-definition.md`
+- `llm-wiki/architecture/enemy-behavior-system.md`

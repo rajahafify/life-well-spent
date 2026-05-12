@@ -59,18 +59,95 @@ func test_field_has_player_camera_gateways_and_objective() -> void:
 		assert_true(objective.visible)
 
 
-func test_field_has_no_enemy_nodes_or_combat_hud_while_enemy_system_is_reset() -> void:
+func test_field_has_slime_and_simple_life_combat_text() -> void:
 	if root == null:
 		return
-	assert_null(root.get_node_or_null("Enemies"), "Field should have no enemy container while EnemySystem is being rebuilt")
-	assert_null(root.get_node_or_null("UI/CombatHud"), "Field should not show combat HUD while EnemySystem is being rebuilt")
+	var slime := root.get_node_or_null("Enemies/Slime")
+	assert_not_null(slime, "Field should show first Slime enemy")
+	if slime:
+		assert_eq("slime_spiked", slime.enemy_id)
+	var life_label := root.get_node_or_null("UI/LifeLabel") as Label
+	var slime_label := root.get_node_or_null("UI/SlimeHpLabel") as Label
+	var player_damage_label := root.get_node_or_null("Player/DamageLabel") as Label
+	assert_not_null(life_label, "Field should show simple Life text")
+	assert_not_null(slime_label, "Field should show simple Slime HP text")
+	assert_not_null(player_damage_label, "Field should show RO-style damage text above Player")
+	if life_label:
+		assert_eq("Life: 100/100", life_label.text)
+	if slime_label:
+		assert_eq("Slime: 14/14", slime_label.text)
 
 
-func test_field_controller_has_no_enemy_combat_api_while_enemy_system_is_reset() -> void:
+func test_clicking_slime_engages_and_moves_player_toward_slime() -> void:
 	if root == null:
 		return
-	assert_false(root.has_method("attack_enemy"), "Field controller should not expose stale enemy attack API")
-	assert_false(root.has_method("_connect_enemies"), "Field controller should not connect stale enemies")
+	var player: Node2D = root.get_node("Player") as Node2D
+	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
+	var movement = root.get_node("Player/Sprite")
+	movement._ready()
+	player.global_position = Vector2(200, 700)
+	slime.global_position = Vector2(700, 700)
+	root.engage_enemy("field_slime_001")
+	assert_eq("field_slime_001", root.player_target_enemy_instance_id)
+	assert_true(movement.moving)
+	assert_eq(Vector2(656, 700), movement.destination)
+
+
+func test_auto_attack_damages_slime_shows_hit_text_and_slime_damages_life() -> void:
+	if root == null:
+		return
+	var player: Node2D = root.get_node("Player") as Node2D
+	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
+	player.global_position = Vector2(500, 500)
+	slime.global_position = Vector2(530, 500)
+	root.engage_enemy("field_slime_001")
+	root._physics_process(1.5)
+	assert_true(root.enemy_states["field_slime_001"].hp < 14)
+	assert_true(root.player_life < 100)
+	var player_damage_label := root.get_node("Player/DamageLabel") as Label
+	assert_true(player_damage_label.visible)
+	assert_eq("1", player_damage_label.text)
+	var hit_label := slime.get_node("HitLabel") as Label
+	assert_true(hit_label.visible)
+	assert_eq("3", hit_label.text)
+
+
+func test_player_can_stop_auto_attack_by_moving_away() -> void:
+	if root == null:
+		return
+	root.engage_enemy("field_slime_001")
+	assert_eq("field_slime_001", root.player_target_enemy_instance_id)
+	root.stop_auto_attack()
+	assert_eq("", root.player_target_enemy_instance_id)
+
+
+func test_aggro_slime_chases_player_when_player_moves_away() -> void:
+	if root == null:
+		return
+	var player: Node2D = root.get_node("Player") as Node2D
+	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
+	player.global_position = Vector2(500, 500)
+	slime.global_position = Vector2(530, 500)
+	root.engage_enemy("field_slime_001")
+	player.global_position = Vector2(760, 500)
+	root._physics_process(0.5)
+	assert_eq("chase", root.enemy_states["field_slime_001"].behavior_state)
+	assert_true(slime.global_position.x > 530.0)
+
+
+func test_slime_dies_and_is_removed_when_hp_reaches_zero() -> void:
+	if root == null:
+		return
+	var player: Node2D = root.get_node("Player") as Node2D
+	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
+	player.global_position = Vector2(500, 500)
+	slime.global_position = Vector2(530, 500)
+	root.enemy_states["field_slime_001"].hp = 1
+	root.engage_enemy("field_slime_001")
+	root._physics_process(1.1)
+	assert_false(root.enemy_states.has("field_slime_001"))
+	assert_null(root.get_node_or_null("Enemies/Slime"))
+	assert_eq(5, root.player_xp)
 
 
 func test_field_has_forest_guard_dialog_copy() -> void:

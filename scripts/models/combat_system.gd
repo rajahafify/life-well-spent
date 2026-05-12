@@ -1,4 +1,4 @@
-## CombatSystem — pure Field combat rules. Combat HP only; Life untouched.
+## CombatSystem — pure Field combat rules. Enemies damage current Life; quests spend Max Life elsewhere.
 class_name CombatSystem
 extends Object
 
@@ -20,15 +20,14 @@ func player_attack_enemy(player_stats: Dictionary, enemy_state: Dictionary) -> D
 func enemy_attack_player(enemy_state: Dictionary, player_state: Dictionary) -> Dictionary:
 	var next_player := player_state.duplicate(true)
 	var damage := _damage_value(int(enemy_state.get("attack", 1)), int(player_state.get("defense", 0)))
-	var next_hp: int = max(0, int(player_state.get("combat_hp", 0)) - damage)
-	next_player["combat_hp"] = next_hp
-	# Deliberately preserve Life exactly as provided; Field combat cannot spend/damage Life.
-	if player_state.has("life"):
-		next_player["life"] = player_state["life"]
+	var max_life := int(player_state.get("max_life", player_state.get("life", 0)))
+	var next_life: int = clampi(int(player_state.get("life", 0)) - damage, 0, max_life)
+	next_player["max_life"] = max_life
+	next_player["life"] = next_life
 	return {
 		"damage": damage,
 		"player_state": next_player,
-		"player_defeated": next_hp <= 0,
+		"player_defeated": next_life <= 0,
 	}
 
 

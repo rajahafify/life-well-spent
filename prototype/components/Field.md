@@ -40,21 +40,23 @@ Small dangers still teach first lessons.
 - Block Forest with Guard.
 - Send player back to Town with Swordsman Guild certification requirement.
 
-## EnemySystem Reset
+## EnemySystem Slice
 
-Field currently contains **no enemies** while EnemySystem is rebuilt from scratch.
+Field currently implements the first enemy/combat slice with one visible Slime.
 
-Removed from current Field:
+Current implementation:
 
-- Slime/Bat/Rat scene placements.
-- Enemy click combat.
-- Combat HUD.
-- Enemy models/views introduced by the first MVP pass.
+- One Slime spawned under `Enemies/Slime` from catalog id `slime_spiked`.
+- Simple text UI: `Life: x/y` and `Slime: x/y`.
+- Clicking Slime engages it and moves Player toward it.
+- Player auto-attacks while in range.
+- Aggro Slime chases Player if Player moves away.
+- Slime attacks current Life on its attack interval.
+- Slime HP <= 0 removes Slime and grants XP once.
 
-Enemy art assets remain in `assets/enemies/`. Rebuild tasks live in `assets/assets-catalog.md`.
+Future purpose:
 
-Future purpose, after MVP:
-
+- Add Bat/Rat placements.
 - Add item drops.
 - Trigger `forest_gate_seen` for Town Swordsman Guild quest unlock.
 
@@ -260,17 +262,16 @@ If HUD is deferred, Field must still show player movement, enemy placeholders, F
 
 ## Rules
 
-- Field is currently exploration-only while EnemySystem is reset.
 - Player can move by clicking ground.
 - Player can return to Town via portal.
 - Forest is blocked in prototype.
 - Forest Guard dialog explains certification requirement.
-- Forest Guard is dialog-only in current reset slice.
+- Forest Guard is dialog-only in current slice.
 - Field uses the same RO-style movement, camera, NPC, dialog, and portal systems as Town.
 
 Future rules:
 
-- Rebuilt EnemySystem defines enemies, combat, rewards, and feedback.
+- Expanded EnemySystem adds Bat/Rat, respawn, drops, and richer feedback.
 - Forest Guard sets `forest_gate_seen = true`.
 - Forest remains inaccessible until future slice.
 
@@ -285,7 +286,10 @@ First Field slice:
 - On far Forest Guard click: Player walks toward Guard talk point, dialog remains closed.
 - On pending Forest Guard reaching talk range: Player stops, faces Guard, Guard faces Player, paged dialog opens.
 - On Town Gateway body entered by Player: record `res://scenes/town_scene.tscn` and transition directly.
-- Enemy interactions are disabled until EnemySystem is rebuilt.
+- On Slime click: Player targets Slime, moves into range, and auto-attacks.
+- On Slime aggro: Slime chases Player until attack range.
+- On Slime attack interval: Slime damages current Life.
+- On Slime HP <= 0: Slime dies, is removed, and grants XP once.
 
 Future conditions:
 
@@ -303,7 +307,6 @@ Player can:
 Player cannot:
 
 - enter Forest in first slice
-- take Life damage in Field
 - unlock Swordsman Guild directly from Field
 
 ## Primitive / SVG Art Direction
@@ -318,7 +321,7 @@ Field uses primitive/SVG world art plus generated LPC character sprites.
 - Forest Edge: dark green tree wall / dense shape cluster.
 - Forest Blocker: barricade rectangles or dark collision line.
 - Town Portal: warm/blue portal with `Town` label.
-- Enemy art assets are cataloged in `assets/assets-catalog.md` but not currently placed in Field.
+- Slime uses cataloged enemy sprite asset `slime_spiked`; Bat/Rat are cataloged for future placement.
 - Forest Guard: generated LPC or reused guard placeholder sprite.
 - Interactable zones: faint yellow rings.
 - HUD/dialog: same Town dialog styling.
@@ -335,7 +338,7 @@ Color language:
 
 ## First Slice Non-Goals
 
-- No enemy AI.
+- No Bat/Rat runtime placement yet.
 - No enemy drops.
 - No inventory use.
 - No playable Forest.
@@ -373,22 +376,27 @@ Player can:
 1. Spawn in Field.
 2. Read objective prompt.
 3. Move around Field.
-4. See Slime, Bat, and Rat placeholders.
-5. See Forest Edge and blocked Forest path.
-6. Talk to Forest Guard.
-7. Use portal to request Town transition.
+4. See Slime.
+5. Click Slime to start approach + auto-attack.
+6. See Slime chase and attack back against Life.
+7. Kill Slime and see it removed.
+8. See Forest Edge and blocked Forest path.
+9. Talk to Forest Guard.
+10. Use portal to request Town transition.
 
 ## First Slice
 
 1. Enter Field from Town portal.
 2. Show objective prompt: `Objective: Find the Forest path.`
 3. Click ground to move around Field; camera follows Player.
-4. See Slime, Bat, Rat, Forest Edge, Forest Guard, and Town Portal in 1080p viewport.
-5. Click Forest Guard from far away; Player approaches before dialog opens.
-6. Talk to Forest Guard for paged certification warning dialog.
-7. Use `Next` to advance dialog pages; use `Close` to exit dialog.
-8. Walk into Town Gateway.
-9. Gateway transitions directly to Town.
+4. See Slime, Forest Edge, Forest Guard, and Town Portal in 1080p viewport.
+5. Click Slime; Player approaches and auto-attacks in range.
+6. Slime aggros, chases if Player moves, attacks current Life, then dies/removes at HP <= 0.
+7. Click Forest Guard from far away; Player approaches before dialog opens.
+8. Talk to Forest Guard for paged certification warning dialog.
+9. Use `Next` to advance dialog pages; use `Close` to exit dialog.
+10. Walk into Town Gateway.
+11. Gateway transitions directly to Town.
 
 ## Tests
 
@@ -399,8 +407,13 @@ Player can:
 - [ ] Camera exists and follows Player.
 - [ ] Town Portal exists.
 - [ ] Objective prompt displays on scene start.
-- [ ] Enemy container is absent while EnemySystem is reset.
-- [ ] Combat HUD is absent while EnemySystem is reset.
+- [ ] Enemy container exists with Slime.
+- [ ] Simple Life and Slime HP text exists.
+- [ ] Clicking Slime engages Player target and movement.
+- [ ] Player auto-attack damages Slime.
+- [ ] Slime attacks current Life.
+- [ ] Aggro Slime chases Player when Player moves away.
+- [ ] Slime HP <= 0 removes Slime and grants XP.
 - [ ] Forest Edge exists.
 - [ ] Forest Blocker exists.
 - [ ] Forest Guard NPC exists.
