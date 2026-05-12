@@ -39,7 +39,7 @@
 | [architecture/player-stats](architecture/player-stats.md) | reference | 2026-05-13 | Player HP, level, death/rebirth, game-over request, XP, persistent facilities, and serialization. |
 | [architecture/life-tracker](architecture/life-tracker.md) | reference | 2026-05-11 | Daily tasks, habits, completions, streaks, and XP rewards. |
 | [architecture/progression-model](architecture/progression-model.md) | reference | 2026-05-13 | Life task completion, player XP, linked quest completion, Swordsman certification, HP spend, and facility unlock rules. |
-| [architecture/player-aging-model](architecture/player-aging-model.md) | reference | 2026-05-13 | Pure Max Life to player sprite age-stage mapping for progressively greyer player visuals. |
+| [architecture/player-aging-model](architecture/player-aging-model.md) | reference | 2026-05-13 | Pure Max Life to player sprite age-stage mapping for normal, grey-haired, and white-haired player visuals. |
 | [architecture/npc-definition](architecture/npc-definition.md) | reference | 2026-05-11 | Resource-backed NPC role variants for quest givers, vendors, and facilities. |
 | [architecture/settings-model](architecture/settings-model.md) | reference | 2026-05-11 | User options state with volume clamp and fullscreen flag. |
 | [architecture/persistence-audio-settings](architecture/persistence-audio-settings.md) | reference | 2026-05-11 | SaveManager, AudioManager, SettingsModel, and SceneTransitionController system boundaries. |

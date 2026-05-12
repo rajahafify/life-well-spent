@@ -47,7 +47,7 @@ Current implemented pieces:
 - Field activates `Rebuilding Swordsman Guild`.
 - `PlayerStats` supports Life, Max Life, XP, death, rebirth, facilities, and serialization.
 - `ProgressionModel` links real-life task completion, XP, quest completion, and facility unlock hooks.
-- `PlayerAgingModel` maps Max Life pressure to three greyer player sprite stages.
+- `PlayerAgingModel` maps Max Life pressure to normal hair, grey hair/beard, and white hair/beard sprite stages.
 - Town Guildmaster can react to `QuestSystem.current_main_objective_id()`.
 - Shared HUD shows Life / Max Life through Town and Field.
 

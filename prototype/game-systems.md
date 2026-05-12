@@ -596,7 +596,7 @@ Each system should list:
 - Player `Sprite2D`
 - Town controller sprite refresh
 - Field controller sprite refresh
-- Three greyer LPC player sprites
+- Three aging LPC player sprites: normal hair, grey hair/beard, white hair/beard
 
 ### Resources
 

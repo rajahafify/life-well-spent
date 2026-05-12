@@ -340,7 +340,7 @@ Town uses primitive/SVG world art plus generated LPC character sprites for Playe
 - Dialog shows NPC face portrait above the dialog box using an AtlasTexture face crop from the NPC LPC spritesheet.
 - Dialog pages split on blank lines and advance with `Next`.
 - Character idle uses calm walk-row standing frames instead of LPC spellcast/prayer rows.
-- Player visual aging uses greyer LPC sprites as Max Life is spent.
+- Player visual aging uses normal hair, grey hair/beard, and white hair/beard LPC sprites as Max Life is spent.
 - Town NPC idle cycles use different intervals for subtle desync.
 - World primitive `Control` nodes use `mouse_filter = ignore` so ground clicks reach Town movement.
 - Project viewport: 1920×1080.

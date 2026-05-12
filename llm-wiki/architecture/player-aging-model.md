@@ -11,7 +11,7 @@ sources:
 
 ## Overview
 
-`PlayerAgingModel` is a pure presentation rule model that maps the player's Max Life to one of three greyer LPC player sprites. It keeps aging thresholds outside Town and Field scene glue while letting certification sacrifice become visible on the player character.
+`PlayerAgingModel` is a pure presentation rule model that maps the player's Max Life to three LPC player aging sprites: normal hair, grey hair/beard, and white hair/beard. It keeps aging thresholds outside Town and Field scene glue while letting certification sacrifice become visible on the player character.
 
 ## API
 
@@ -31,6 +31,7 @@ func texture_path_for_max_hp(max_hp: int) -> String
 ## Test Coverage
 
 - `tests/specs/player_aging_model_test.gd` covers stage thresholds and texture path mapping.
+- `tests/specs/player_aging_assets_test.gd` covers the visible hair/beard color story for the three generated player sprites.
 - `tests/specs/town_scene_dialog_test.gd` covers Town applying age stage 1 on start and updating to stages 2 and 3 after certification.
 - `tests/specs/field_scene_test.gd` covers Field applying the default age stage 1 player sprite.
 

@@ -3,9 +3,9 @@
 ## [2026-05-13] feature | Add player aging sprites
 
 - RED: added PlayerAgingModel, Town, and Field specs for Life-based player sprite aging.
-- Generated `player_age_1.png`, `player_age_2.png`, and `player_age_3.png` from the current LPC player sheet with progressively stronger greying.
+- Generated `player_age_1.png`, `player_age_2.png`, and `player_age_3.png` as normal hair, grey hair/beard, and white hair/beard LPC age stages.
 - Town and Field now apply age sprites from `PlayerAgingModel`; Town updates the sprite after certification Life spend.
-- Validation: full suite `363 tests, 363 passed, 0 failed`.
+- Validation: full suite `366 tests, 366 passed, 0 failed`.
 
 ## [2026-05-13] fix | Block HUD clicks from player movement
 
