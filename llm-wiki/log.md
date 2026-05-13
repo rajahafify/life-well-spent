@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-05-13] fix | Delay Guildmaster quest activation
+
+- RED: added QuestManager, Field, and Town specs for no early side-chain activation, Guildmaster-started activation, `Complete Quest` button copy, and hidden completion until the active objective is done.
+- Field Forest Guard now records the checkpoint and certification objective only; Town Guildmaster activates `Rebuilding Swordsman Guild` after the player returns.
+- Increased active Field enemies to 12 with five Bats so the 20% Bat Wing gather objective is practical to QA.
+- Updated progression, Town, Field, Forest Gate, Run State, QuestManager, QuestSystem, and scene wiki docs.
+- Validation: full suite `396 tests, 396 passed, 0 failed`.
+
 ## [2026-05-13] feature | Complete progression endpoint loop
 
 - RED: added SaveManager, Town, Field, and Forest specs for profile unlock persistence, final rebirth panel, certified Forest transition, and Forest endpoint return.

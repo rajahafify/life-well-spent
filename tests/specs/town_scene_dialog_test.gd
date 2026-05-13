@@ -145,6 +145,7 @@ func test_guildmaster_dialog_advances_pages() -> void:
 
 func test_guildmaster_offers_swordsman_chain_after_forest_gate_objective() -> void:
 	_close_start_dialog()
+	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
 	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
@@ -158,9 +159,27 @@ func test_guildmaster_offers_swordsman_chain_after_forest_gate_objective() -> vo
 	assert_true(QuestSystem.is_side_quest_active("rebuilding_swordsman_guild"))
 
 
+func test_guildmaster_button_says_complete_quest() -> void:
+	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
+	assert_eq("Complete Quest", complete.text)
+
+
+func test_guildmaster_hides_complete_button_until_objective_is_complete() -> void:
+	_close_start_dialog()
+	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
+	assert_false(complete.visible)
+
+
 func test_guildmaster_step_one_advances_to_next_guildmaster_quest() -> void:
 	_close_start_dialog()
+	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
 	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	QuestSystem.activate_swordsman_guild_chain()
 	_record_swordsman_objective("slime_spiked", 10)
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
@@ -169,11 +188,14 @@ func test_guildmaster_step_one_advances_to_next_guildmaster_quest() -> void:
 	assert_true(complete.visible)
 	complete.pressed.emit()
 	assert_eq("Gather 2 Bat Wings for Guildmaster guard training. (0/2)", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+	assert_false(complete.visible)
 
 
 func test_guildmaster_step_two_advances_to_life_oath_quest() -> void:
 	_close_start_dialog()
+	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
 	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	QuestSystem.activate_swordsman_guild_chain()
 	_record_swordsman_objective("slime_spiked", 10)
 	QuestSystem.advance_side_quest_step("rebuilding_swordsman_guild")
 	_gather_swordsman_item("bat_wing", 2)
@@ -187,7 +209,9 @@ func test_guildmaster_step_two_advances_to_life_oath_quest() -> void:
 
 func test_guildmaster_certification_completion_spends_life_to_60() -> void:
 	_close_start_dialog()
+	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
 	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	QuestSystem.activate_swordsman_guild_chain()
 	_record_swordsman_objective("slime_spiked", 10)
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
@@ -203,7 +227,9 @@ func test_guildmaster_certification_completion_spends_life_to_60() -> void:
 
 func test_guildmaster_final_certification_unlocks_achievement() -> void:
 	_close_start_dialog()
+	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
 	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	QuestSystem.activate_swordsman_guild_chain()
 	_record_swordsman_objective("slime_spiked", 10)
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
@@ -226,7 +252,9 @@ func test_guildmaster_final_certification_unlocks_achievement() -> void:
 
 func test_guildmaster_final_certification_shows_rebirth_panel() -> void:
 	_close_start_dialog()
+	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
 	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	QuestSystem.activate_swordsman_guild_chain()
 	_record_swordsman_objective("slime_spiked", 10)
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
@@ -444,3 +472,4 @@ func test_field_gateway_defers_scene_change_outside_physics_callback() -> void:
 func test_field_gateway_uses_direct_transition_without_prompt() -> void:
 	assert_null(root.get_node_or_null("UI/PortalChoices"), "direct gateways should not show confirmation choices")
 	assert_null(root.get_node_or_null("UI/PortalPrompt"), "direct gateways should not show confirmation prompt")
+

@@ -21,7 +21,9 @@ func teardown() -> void:
 
 func _start_swordsman_chain() -> void:
 	qm.setup_core_quests()
+	qm.mark_main_checkpoint("explore_the_world", "forest_guard")
 	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	qm.activate_swordsman_guild_chain()
 
 
 func _record_enemy_defeats(enemy_id: String, count: int) -> void:
@@ -152,12 +154,21 @@ func test_setup_core_quests_starts_explore_world_main_objective() -> void:
 	assert_eq("Find the Forest path.", qm.current_main_objective_text())
 
 
-func test_forest_gate_objective_starts_swordsman_guild_side_chain() -> void:
+func test_forest_gate_objective_waits_for_guildmaster_to_start_side_chain() -> void:
 	qm.setup_core_quests()
 	assert_true(qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification"))
 	assert_eq("get_swordsman_certification", qm.current_main_objective_id())
 	assert_eq("Get Swordsman Certification.", qm.current_main_objective_text())
+	assert_false(qm.is_side_quest_active("rebuilding_swordsman_guild"))
+
+
+func test_guildmaster_can_start_swordsman_guild_side_chain_after_forest_gate() -> void:
+	qm.setup_core_quests()
+	qm.mark_main_checkpoint("explore_the_world", "forest_guard")
+	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	assert_true(qm.activate_swordsman_guild_chain())
 	assert_true(qm.is_side_quest_active("rebuilding_swordsman_guild"))
+	assert_eq("Defeat 10 Slimes for Guildmaster stance training. (0/10)", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
 
 
 func test_swordsman_certification_can_advance_main_objective_to_forest_endpoint() -> void:
@@ -184,16 +195,14 @@ func test_main_quest_tracks_forest_guard_checkpoint() -> void:
 
 
 func test_completing_swordsman_guild_chain_grants_certification() -> void:
-	qm.setup_core_quests()
-	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_start_swordsman_chain()
 	assert_true(qm.complete_side_quest_chain("rebuilding_swordsman_guild"))
 	assert_true(qm.has_certification("swordsman_certification"))
 	assert_false(qm.is_side_quest_active("rebuilding_swordsman_guild"))
 
 
 func test_swordsman_guild_chain_starts_at_step_zero() -> void:
-	qm.setup_core_quests()
-	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_start_swordsman_chain()
 	assert_eq(0, qm.side_quest_step("rebuilding_swordsman_guild"))
 
 
@@ -292,6 +301,7 @@ func test_core_quest_state_round_trips_through_save_data() -> void:
 	qm.setup_core_quests()
 	qm.mark_main_checkpoint("explore_the_world", "forest_guard")
 	qm.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	qm.activate_swordsman_guild_chain()
 	_record_enemy_defeats("slime_spiked", 4)
 	assert_eq("Defeat 10 Slimes for Guildmaster stance training. (4/10)", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
 	_record_enemy_defeats("slime_spiked", 6)

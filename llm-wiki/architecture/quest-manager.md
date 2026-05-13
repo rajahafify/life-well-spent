@@ -45,6 +45,7 @@ func setup_core_quests() -> void
 func current_main_objective_id(main_id: String = "explore_the_world") -> String
 func current_main_objective_text(main_id: String = "explore_the_world") -> String
 func advance_main_quest_objective(main_id: String, objective_id: String) -> bool
+func activate_swordsman_guild_chain() -> bool
 func mark_main_checkpoint(main_id: String, checkpoint_id: String) -> bool
 func has_main_checkpoint(main_id: String, checkpoint_id: String) -> bool
 func current_main_checkpoint_text(main_id: String = "explore_the_world") -> String
@@ -69,7 +70,8 @@ func apply_dict(data: Dictionary) -> void
 - `QuestManager` stays model-only: no Node references, no scene calls, no UI decisions.
 - `QuestSystem` exists because Field and Town both need the same quest state across scene changes.
 - The main quest starts as `Explore the World` with objective `Find the Forest path.`
-- Reaching the Field Forest Gate marks the `forest_guard` checkpoint, advances the objective to `Get Swordsman Certification.`, and activates the `Rebuilding Swordsman Guild` side quest chain.
+- Reaching the Field Forest Gate marks the `forest_guard` checkpoint and advances the objective to `Get Swordsman Certification.`
+- `activate_swordsman_guild_chain()` starts `Rebuilding Swordsman Guild` only after the certification objective and `forest_guard` checkpoint are both present. Town calls this when the player talks to Guildmaster back in Town.
 - The `Rebuilding Swordsman Guild` side chain tracks ordered step state from 0 to 3, per-step objective progress, and exposes the current Guildmaster quest objective text:
   - Step 0: `Defeat 10 Slimes for Guildmaster stance training.`
   - Step 1: `Gather 2 Bat Wings for Guildmaster guard training.`
@@ -85,9 +87,9 @@ func apply_dict(data: Dictionary) -> void
 
 ## Test Coverage
 
-- `tests/specs/quest_manager_test.gd` covers catalog quests, active quest lifecycle, free acceptance, reset, core main quest setup, Forest Guard checkpoint state, Forest Gate objective advancement, side chain activation, defeat objective progress, gather objective progress, wrong-event filtering, side-chain step gating/bounds, certification grant, Town reborn intro once-state, Forest endpoint objective, and save round-trip.
-- `tests/specs/field_scene_test.gd` covers Field using `QuestSystem`, advancing the main objective when the player enters the Forest Gateway, Slime defeat progressing the active Swordsman Guild objective, and Bat Wing drops progressing the gather objective.
-- `tests/specs/town_scene_dialog_test.gd` covers the Guildmaster reacting to the `Get Swordsman Certification` objective and hiding completion until objective progress is ready.
+- `tests/specs/quest_manager_test.gd` covers catalog quests, active quest lifecycle, free acceptance, reset, core main quest setup, Forest Guard checkpoint state, Forest Gate objective advancement without early side-chain activation, Guildmaster side-chain activation, defeat objective progress, gather objective progress, wrong-event filtering, side-chain step gating/bounds, certification grant, Town reborn intro once-state, Forest endpoint objective, and save round-trip.
+- `tests/specs/field_scene_test.gd` covers Field using `QuestSystem`, advancing the main objective when the player enters the Forest Gateway without starting the Guildmaster side chain, Slime defeat progressing the active Swordsman Guild objective, and Bat Wing drops progressing the gather objective.
+- `tests/specs/town_scene_dialog_test.gd` covers the Guildmaster reacting to the `Get Swordsman Certification` objective, activating the side chain, labeling the action `Complete Quest`, and hiding completion until objective progress is ready.
 
 ## Related
 

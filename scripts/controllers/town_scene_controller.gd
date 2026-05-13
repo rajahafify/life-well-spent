@@ -203,7 +203,7 @@ func _dialog_text_for(npc: NpcController) -> String:
 	if npc.role == "guildmaster" and QuestSystem.current_main_objective_id() == "get_swordsman_certification":
 		if QuestSystem.has_certification("swordsman_certification"):
 			return "You carry Swordsman Certification now.\n\nThe Forest gate will recognize you."
-		QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+		QuestSystem.activate_swordsman_guild_chain()
 		var objective := QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild")
 		return "You found the Forest gate, and now you need Swordsman Certification.\n\nCertification is not earned with coin.\nIt is earned with life.\n\n%s" % objective
 	return npc.dialog_text
@@ -231,7 +231,7 @@ func _on_complete_quest_requested() -> void:
 		return
 	var objective := QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild")
 	_dialog_view.set_body("Life given. The old halls remember.\n\n%s" % objective)
-	_dialog_view.configure_buttons(false, true)
+	_dialog_view.configure_buttons(false, QuestSystem.is_current_side_quest_step_complete("rebuilding_swordsman_guild"))
 
 
 func _update_life_hud() -> void:

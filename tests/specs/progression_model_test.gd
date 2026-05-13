@@ -31,7 +31,9 @@ func teardown() -> void:
 
 func _start_swordsman_chain() -> void:
 	quests.setup_core_quests()
+	quests.mark_main_checkpoint("explore_the_world", "forest_guard")
 	quests.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	quests.activate_swordsman_guild_chain()
 
 
 func _complete_current_swordsman_objective(enemy_id: String, count: int) -> void:

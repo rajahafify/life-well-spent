@@ -76,7 +76,7 @@ It lives when someone chooses the path.
 Perhaps one day, someone will help me raise it again.
 ```
 
-After Field advances the main quest objective to `Get Swordsman Certification.`, the Guildmaster offers three objective-backed quest-completion steps for the `Rebuilding Swordsman Guild` side quest chain:
+After Field records the Forest Guard checkpoint and advances the main quest objective to `Get Swordsman Certification.`, the Guildmaster starts and then offers three objective-backed quest-completion steps for the `Rebuilding Swordsman Guild` side quest chain:
 
 ```text
 You found the Forest gate, and now you need Swordsman Certification.

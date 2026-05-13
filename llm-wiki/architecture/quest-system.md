@@ -25,6 +25,7 @@ func setup_core_quests() -> void
 func current_main_objective_id(main_id: String = "explore_the_world") -> String
 func current_main_objective_text(main_id: String = "explore_the_world") -> String
 func advance_main_quest_objective(main_id: String, objective_id: String) -> bool
+func activate_swordsman_guild_chain() -> bool
 func mark_main_checkpoint(main_id: String, checkpoint_id: String) -> bool
 func has_main_checkpoint(main_id: String, checkpoint_id: String) -> bool
 func current_main_checkpoint_text(main_id: String = "explore_the_world") -> String
@@ -45,16 +46,16 @@ func apply_dict(data: Dictionary) -> void
 
 - The autoload owns runtime state; `QuestManager` owns pure rules.
 - Field marks the `forest_guard` checkpoint and advances `Explore the World` from `Find the Forest path.` to `Get Swordsman Certification.` when the player enters the Forest Gateway.
-- That objective activates `Rebuilding Swordsman Guild`, which is a side quest chain rather than a standalone `forest_gate_seen` flag.
-- Town reads the current objective so the Guildmaster can point the player toward rebuilding the Swordsman Guild.
+- That objective does not activate `Rebuilding Swordsman Guild` by itself; Town starts the side chain through `activate_swordsman_guild_chain()` when the player returns and talks to Guildmaster.
+- Town reads the current objective so the Guildmaster can point the player toward rebuilding the Swordsman Guild and then start that chain.
 - Field reports enemy defeats through `record_enemy_defeated()` and material drops through `record_item_gathered()`, allowing shared quest state to track the 10-Slime, 2-Bat-Wing, and 2-Rat Guildmaster objectives across scene changes.
 - Town gates the Guildmaster Complete button through `is_current_side_quest_step_complete()` so Max Life cannot be spent before the active objective is complete.
 
 ## Test Coverage
 
 - `tests/specs/quest_manager_test.gd` covers pure quest progression rules.
-- `tests/specs/field_scene_test.gd` covers Field integration, including Forest Guard checkpoint, Quest Window refresh, and enemy defeat objective progress.
-- `tests/specs/town_scene_dialog_test.gd` covers Town dialog integration and completion-button gating.
+- `tests/specs/field_scene_test.gd` covers Field integration, including Forest Guard checkpoint, no early Guildmaster chain activation, Quest Window refresh, and enemy defeat objective progress.
+- `tests/specs/town_scene_dialog_test.gd` covers Town dialog integration, Guildmaster chain activation, `Complete Quest` button copy, and completion-button gating.
 
 ## Related
 

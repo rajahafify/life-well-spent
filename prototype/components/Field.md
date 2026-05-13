@@ -389,7 +389,7 @@ Current Field slice:
 - On shortcut `1` with no Apple: show `No apple`.
 - On shortcut `1` at full Life: show `Life is full` and do not consume Apple.
 - On enemy movement into collision: movement is rejected.
-- On Forest Gateway body entered by Player: scene transition remains blocked, QuestSystem marks `forest_guard`, advances `Explore the World` to `Get Swordsman Certification`, `Rebuilding Swordsman Guild` becomes active, and Guard warning opens.
+- On Forest Gateway body entered by Player: scene transition remains blocked, QuestSystem marks `forest_guard`, advances `Explore the World` to `Get Swordsman Certification`, and Guard warning opens. `Rebuilding Swordsman Guild` waits until the player talks to Guildmaster back in Town.
 
 Certified endpoint:
 
@@ -541,7 +541,7 @@ Player can:
 - [x] World primitive art nodes are removed/replaced by imported map art.
 - [x] Forest Gateway advances QuestSystem to `Get Swordsman Certification`.
 - [x] Forest Gateway records the `forest_guard` checkpoint.
-- [x] `Rebuilding Swordsman Guild` activates from the Forest Gateway flow.
+- [x] `Rebuilding Swordsman Guild` does not activate from the Forest Gateway flow.
 - [x] Enemy drops exist.
 - [x] Inventory/consume behavior exists in Field.
 - [x] Certified Forest Gateway shows the open-path endpoint instead of the original Guard block.

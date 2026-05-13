@@ -126,9 +126,17 @@ func advance_main_quest_objective(main_id: String, objective_id: String) -> bool
 		return false
 	quest["objective_id"] = objective_id
 	main_quests[main_id] = quest
-	if main_id == MAIN_EXPLORE_WORLD and objective_id == OBJ_GET_SWORDSMAN_CERTIFICATION:
-		_activate_swordsman_guild_chain()
 	return true
+
+
+func activate_swordsman_guild_chain() -> bool:
+	setup_core_quests()
+	if current_main_objective_id(MAIN_EXPLORE_WORLD) != OBJ_GET_SWORDSMAN_CERTIFICATION:
+		return false
+	if not has_main_checkpoint(MAIN_EXPLORE_WORLD, CHECKPOINT_FOREST_GUARD):
+		return false
+	_activate_swordsman_guild_chain()
+	return is_side_quest_active(SIDE_REBUILD_SWORDSMAN_GUILD)
 
 
 func mark_main_checkpoint(main_id: String, checkpoint_id: String) -> bool:

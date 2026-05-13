@@ -32,6 +32,10 @@ func advance_main_quest_objective(main_id: String, objective_id: String) -> bool
 	return quests.advance_main_quest_objective(main_id, objective_id)
 
 
+func activate_swordsman_guild_chain() -> bool:
+	return quests.activate_swordsman_guild_chain()
+
+
 func mark_main_checkpoint(main_id: String, checkpoint_id: String) -> bool:
 	return quests.mark_main_checkpoint(main_id, checkpoint_id)
 

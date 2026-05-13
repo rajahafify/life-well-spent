@@ -265,13 +265,14 @@ Town must show the start/reborn copy through the dialog panel.
 - Player can leave Town via Field Gateway.
 - Shop and Blacksmith services are not available yet.
 - Guildmaster reacts when QuestSystem says the main objective is `Get Swordsman Certification`.
+- Guildmaster starts `Rebuilding Swordsman Guild` only after the Forest Guard checkpoint has been recorded.
 - Guildmaster certification uses objective-backed quest completion: each step requires the active Field objective before the Complete button appears, then spends Max Life and advances the next Guildmaster step.
 - Guildmaster certification refreshes the player sprite after Max Life changes.
 
 Future rules:
 
 - Swordsman Guild quest completion is locked until the `Rebuilding Swordsman Guild` side quest chain is active.
-- Guildmaster offers the chain after Field advances `Explore the World` to `Get Swordsman Certification`.
+- Guildmaster offers the chain after Field advances `Explore the World` to `Get Swordsman Certification`; Field does not start the side chain early.
 - Each guild quest step costs 40 Life / remaining Life.
 - Step 3 triggers Swordsman Guild unlock and Game Over.
 

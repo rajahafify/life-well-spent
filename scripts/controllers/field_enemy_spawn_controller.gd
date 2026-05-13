@@ -4,7 +4,7 @@ extends Object
 
 const FIELD_MAP_ID := "field"
 const FIELD_BIOME_ID := "grassland"
-const FIELD_MAX_ACTIVE_ENEMIES := 9
+const FIELD_MAX_ACTIVE_ENEMIES := 12
 const FIELD_RESPAWN_DELAY := 60.0
 const ENEMY_SPAWN_POLL_INTERVAL := 1.0
 
@@ -25,6 +25,9 @@ func setup(owner) -> void:
 		{"enemy_id": "slime_spiked", "id": "field_slime_005", "name": "Slime5"},
 		{"enemy_id": "bat", "id": "field_bat_001", "name": "Bat"},
 		{"enemy_id": "bat", "id": "field_bat_002", "name": "Bat2"},
+		{"enemy_id": "bat", "id": "field_bat_003", "name": "Bat3"},
+		{"enemy_id": "bat", "id": "field_bat_004", "name": "Bat4"},
+		{"enemy_id": "bat", "id": "field_bat_005", "name": "Bat5"},
 		{"enemy_id": "rat", "id": "field_rat_001", "name": "Rat"},
 		{"enemy_id": "rat", "id": "field_rat_002", "name": "Rat2"},
 	]

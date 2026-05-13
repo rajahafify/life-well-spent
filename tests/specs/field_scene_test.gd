@@ -27,6 +27,12 @@ func teardown() -> void:
 		root = null
 
 
+func _start_guildmaster_chain_for_test() -> void:
+	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	QuestSystem.activate_swordsman_guild_chain()
+
+
 func test_field_scene_root_is_named_field() -> void:
 	if root == null:
 		return
@@ -191,12 +197,14 @@ func test_field_starts_with_slime_bat_and_rat_enemies() -> void:
 		return
 	var slime := root.get_node_or_null("Enemies/Slime")
 	assert_not_null(slime, "Field should show first Slime enemy")
-	assert_eq(9, root.get_node("Enemies").get_child_count(), "Field should start with Slimes, Bats, and Rats")
+	assert_eq(12, root.get_node("Enemies").get_child_count(), "Field should start with Slimes, Bats, and Rats")
 	if slime:
 		assert_eq("slime_spiked", slime.enemy_id)
 	var bat = root.get_node("Enemies/Bat")
+	var bat5 = root.get_node("Enemies/Bat5")
 	var rat = root.get_node("Enemies/Rat")
 	assert_eq("bat", bat.enemy_id)
+	assert_eq("bat", bat5.enemy_id)
 	assert_eq("rat", rat.enemy_id)
 
 
@@ -300,6 +308,17 @@ func test_field_uses_quest_system_for_forest_gate_progress() -> void:
 	assert_true(source.contains("get_swordsman_certification"), "Forest gate should advance the main quest objective")
 
 
+func test_forest_guard_does_not_start_guildmaster_side_quest() -> void:
+	if root == null:
+		return
+	var guard = root.get_node("ForestGuard")
+	root.get_node("Player").global_position = guard.global_position + Vector2(40, 0)
+	guard.interacted.emit(guard)
+	root.close_dialog()
+	assert_eq("get_swordsman_certification", QuestSystem.current_main_objective_id())
+	assert_false(QuestSystem.is_side_quest_active("rebuilding_swordsman_guild"))
+
+
 func test_inventory_button_and_i_key_toggle_inventory_window() -> void:
 	if root == null:
 		return
@@ -374,11 +393,11 @@ func test_field_respawns_enemy_after_global_timer_while_loaded() -> void:
 	root._physics_process(1.1)
 	root._physics_process(0.8)
 	assert_false(root.has_enemy("field_slime_001"))
-	assert_eq(8, root.get_node("Enemies").get_child_count())
+	assert_eq(11, root.get_node("Enemies").get_child_count())
 	EnemySpawnManager._process(60.0)
 	root._physics_process(1.0)
 	assert_true(root.has_enemy("field_slime_001"))
-	assert_eq(9, root.get_node("Enemies").get_child_count())
+	assert_eq(12, root.get_node("Enemies").get_child_count())
 
 
 func test_clicking_slime_engages_and_moves_player_toward_slime() -> void:
@@ -528,7 +547,7 @@ func test_slime_dies_plays_death_before_removal() -> void:
 func test_slime_defeat_advances_swordsman_guild_kill_objective() -> void:
 	if root == null:
 		return
-	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_start_guildmaster_chain_for_test()
 	var player: Node2D = root.get_node("Player") as Node2D
 	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
 	player.global_position = Vector2(500, 500)
@@ -545,7 +564,7 @@ func test_slime_defeat_advances_swordsman_guild_kill_objective() -> void:
 func test_bat_drop_advances_swordsman_guild_gather_objective() -> void:
 	if root == null:
 		return
-	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_start_guildmaster_chain_for_test()
 	for _i in range(10):
 		QuestSystem.record_enemy_defeated("slime_spiked")
 	QuestSystem.advance_side_quest_step("rebuilding_swordsman_guild")
@@ -674,7 +693,7 @@ func test_guard_dialog_completion_updates_quest_window() -> void:
 	assert_true(QuestSystem.has_main_checkpoint("explore_the_world", "forest_guard"))
 	assert_eq("get_swordsman_certification", QuestSystem.current_main_objective_id())
 	var quest_label := root.get_node("UI/QuestWindow/VBox/ObjectiveLabel") as Label
-	assert_eq("Explore the World\nGet Swordsman Certification.\nDefeat 10 Slimes for Guildmaster stance training. (0/10)", quest_label.text)
+	assert_eq("Explore the World\nGet Swordsman Certification.", quest_label.text)
 
 
 func test_dialog_blocks_player_movement_and_pages() -> void:
@@ -742,7 +761,7 @@ func test_forest_gateway_stays_blocked_and_opens_guard_dialog() -> void:
 func test_forest_guard_shows_open_path_after_swordsman_certification() -> void:
 	if root == null:
 		return
-	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_start_guildmaster_chain_for_test()
 	QuestSystem.complete_side_quest_chain("rebuilding_swordsman_guild")
 	QuestSystem.advance_main_quest_objective("explore_the_world", "enter_forest")
 	var guard: NpcController = root.get_node("ForestGuard") as NpcController
@@ -757,7 +776,7 @@ func test_forest_guard_shows_open_path_after_swordsman_certification() -> void:
 func test_forest_gateway_transitions_to_forest_after_swordsman_certification() -> void:
 	if root == null:
 		return
-	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_start_guildmaster_chain_for_test()
 	QuestSystem.complete_side_quest_chain("rebuilding_swordsman_guild")
 	QuestSystem.advance_main_quest_objective("explore_the_world", "enter_forest")
 	var player: Node = root.get_node("Player")
@@ -768,7 +787,7 @@ func test_forest_gateway_transitions_to_forest_after_swordsman_certification() -
 func test_forest_guard_interaction_after_certification_does_not_revert_objective() -> void:
 	if root == null:
 		return
-	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	_start_guildmaster_chain_for_test()
 	QuestSystem.complete_side_quest_chain("rebuilding_swordsman_guild")
 	QuestSystem.advance_main_quest_objective("explore_the_world", "enter_forest")
 	var guard: NpcController = root.get_node("ForestGuard") as NpcController

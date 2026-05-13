@@ -44,7 +44,7 @@ Current implemented pieces:
 - `QuestSystem` tracks the main objective and side quest chain activation.
 - Field Forest Gateway records the `forest_guard` checkpoint.
 - Field advances the main objective to `Get Swordsman Certification`.
-- Field activates `Rebuilding Swordsman Guild`.
+- Town Guildmaster activates `Rebuilding Swordsman Guild` after the Forest Guard checkpoint.
 - Field enemy defeats and material drops update the active Guildmaster objective.
 - `PlayerStats` supports Life, Max Life, XP, death, rebirth, facilities, and serialization.
 - `ProgressionModel` links real-life task completion, XP, quest completion, and facility unlock hooks.
@@ -97,14 +97,14 @@ Effects:
 
 - Record checkpoint `forest_guard`.
 - Advance main objective to `Get Swordsman Certification`.
-- Activate side quest chain `Rebuilding Swordsman Guild`.
+- Keep side quest chain inactive until the player returns to Town and talks to Guildmaster.
 - Keep Forest blocked.
 
 ### Step 2 - Return To Town
 
 Player returns to Town through the Field Town Gateway.
 
-Guildmaster dialog changes because the Forest Guard checkpoint and Swordsman Guild quest chain are active.
+Guildmaster dialog changes because the Forest Guard checkpoint and certification objective are active. Talking to Guildmaster starts the `Rebuilding Swordsman Guild` side quest chain.
 
 Guildmaster should now explain:
 
@@ -190,9 +190,9 @@ Guildmaster owns the player-facing certification dialog, but the rules live in m
 
 ### Field - Forest Gateway
 
-Primary progression trigger for the current slice.
+Primary discovery trigger for the current slice.
 
-Field starts the certification arc by blocking Forest access, setting the checkpoint, updating the main objective, and activating the side quest chain.
+Field starts the certification arc by blocking Forest access, setting the checkpoint, and updating the main objective. It does not activate the Guildmaster side quest chain.
 
 ### Shared HUD
 
@@ -281,7 +281,8 @@ Progression should not require showing:
 ## Rules
 
 - Forest access is blocked until Swordsman Guild certification is complete.
-- Forest Guard is the only current trigger for the certification chain.
+- Forest Guard is the only current trigger for the certification requirement.
+- Guildmaster starts the `Rebuilding Swordsman Guild` side quest after the Forest Guard checkpoint.
 - Certification steps must complete in order.
 - Each certification step has an objective that must be complete before the Guildmaster completion button appears.
 - Certification cannot start before `Rebuilding Swordsman Guild` is active.
@@ -306,8 +307,8 @@ Future rules:
 
 Current implemented conditions:
 
-- If player enters Field Forest Gateway before certification: block scene transition, record `forest_guard`, advance the main objective, activate `Rebuilding Swordsman Guild`, and show Forest Guard warning.
-- If player returns to Town after the Forest Guard block: Guildmaster can detect the certification objective.
+- If player enters Field Forest Gateway before certification: block scene transition, record `forest_guard`, advance the main objective, and show Forest Guard warning.
+- If player returns to Town after the Forest Guard block: Guildmaster can detect the certification objective and activate `Rebuilding Swordsman Guild`.
 - If linked real-life task completes: `ProgressionModel` can complete linked quest progress and grant XP.
 
 Next slice conditions:
@@ -485,7 +486,8 @@ Player can:
 
 - [x] Forest Gateway records the `forest_guard` checkpoint.
 - [x] Forest Gateway advances the main objective to `Get Swordsman Certification`.
-- [x] Forest Gateway activates `Rebuilding Swordsman Guild`.
+- [x] Forest Gateway does not activate `Rebuilding Swordsman Guild` early.
+- [x] Guildmaster activates `Rebuilding Swordsman Guild` after the Forest Guard checkpoint.
 - [x] Guildmaster shows worldbuilding dialog before the Forest Guard checkpoint.
 - [x] Guildmaster shows certification dialog after the Forest Guard checkpoint.
 - [x] Certification cannot complete before the side quest chain is active.

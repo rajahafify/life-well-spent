@@ -17,8 +17,8 @@
 | [architecture/field-controller-boundaries](architecture/field-controller-boundaries.md) | reference | 2026-05-13 | Field scene glue boundaries for camera, spawn, and combat helper controllers. |
 | [architecture/npc-placement](architecture/npc-placement.md) | reference | 2026-05-11 | Stable NPC map placement data, including Forest Guard gateway blocking. |
 | [architecture/biome-definition](architecture/biome-definition.md) | reference | 2026-05-12 | Field grassland palette, Slime/Bat/Rat enemy pool, props, and biome filters. |
-| [architecture/quest-manager](architecture/quest-manager.md) | concept | 2026-05-13 | Quest catalog, main objective progression, side chain activation, objective-backed Guildmaster certification steps, certification state, and free acceptance. |
-| [architecture/quest-system](architecture/quest-system.md) | reference | 2026-05-13 | Game-wide quest autoload sharing main quest, side quest objective progress, and certification state across scenes. |
+| [architecture/quest-manager](architecture/quest-manager.md) | concept | 2026-05-13 | Quest catalog, main objective progression, Guildmaster-started side chain activation, objective-backed certification steps, certification state, and free acceptance. |
+| [architecture/quest-system](architecture/quest-system.md) | reference | 2026-05-13 | Game-wide quest autoload sharing main quest, Guildmaster side quest objective progress, and certification state across scenes. |
 | [architecture/quest-window-view](architecture/quest-window-view.md) | reference | 2026-05-12 | Reusable top-right quest objective UI view for Town and Field. |
 | [architecture/inventory-model](architecture/inventory-model.md) | reference | 2026-05-13 | Pure inventory model for stack counts, Weapon/Armor/Consumable slots, and 1-9 shortcut slots. |
 | [architecture/inventory-system](architecture/inventory-system.md) | reference | 2026-05-13 | Game-wide inventory autoload for drops, starter slots, reset, and shared HUD inventory display. |
@@ -32,8 +32,8 @@
 | [assets/slime-asset-view](assets/slime-asset-view.md) | reference | 2026-05-12 | Enemy and character asset tools: focused AssetView preview plus looping AssetGallery SpriteFrames/LPC previews. |
 | [assets/tiny-town-map-import](assets/tiny-town-map-import.md) | reference | 2026-05-12 | TMJ-to-Godot visual map importer for the Tiny Town TownMap scene. |
 | [scenes/main-menu](scenes/main-menu.md) | reference | 2026-05-11 | Main menu scene — title, New Game button, Quit button. Transitions to town hub. |
-| [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-13 | Prototype Town scene - named gateway spawn, reborn start dialog, three old institutions, NPC dialog, Swordsman certification, and deferred direct Field gateway. |
-| [scenes/field](scenes/field.md) | reference | 2026-05-13 | Playable Field slice - spawn zones, enemy HP bars, 10x enemy HP/player damage tuning, RO damage numbers, Forest Guard gate, and certified Forest endpoint. |
+| [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-13 | Prototype Town scene - Guildmaster-started certification chain, reborn dialog, three old institutions, NPC dialog, and direct Field gateway. |
+| [scenes/field](scenes/field.md) | reference | 2026-05-13 | Playable Field slice - 12 active enemy slots, enemy HP bars, 10x tuning, RO damage numbers, Forest Guard gate, and certified Forest endpoint. |
 | [scenes/forest](scenes/forest.md) | reference | 2026-05-13 | Forest endpoint scene reached after Swordsman certification, with return gateway to Field. |
 | [architecture/animation-controller](architecture/animation-controller.md) | reference | 2026-05-12 | LPC spritesheet animation state machine. Idle, walking, slash/thrust attack frame advance via `tick(delta)`. |
 | [architecture/player-movement](architecture/player-movement.md) | reference | 2026-05-11 | CharacterMovement Sprite2D view. Click-to-move/static facing, collision/dialog stop, modal move lock, AnimationController frames. |

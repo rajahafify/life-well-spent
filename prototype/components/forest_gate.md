@@ -9,7 +9,7 @@ Visible promise of next adventure, blocked by certification requirement.
 - Give player concrete goal: reach Forest.
 - Block progress with narrative reason.
 - Advance the main quest toward Swordsman Certification.
-- Activate the Swordsman Guild side quest chain in Town.
+- Send the player back to Town so Guildmaster can activate the Swordsman Guild side quest chain.
 
 ## Objects
 
@@ -32,7 +32,7 @@ Earn certification from the Swordsman Guild.
 - Forest cannot be entered in prototype.
 - First approach triggers Guard dialog.
 - Forest Gateway advances `Explore the World` to `Get Swordsman Certification`.
-- Forest Gateway activates `Rebuilding Swordsman Guild`.
+- Forest Gateway does not activate `Rebuilding Swordsman Guild`; Guildmaster does that in Town after this checkpoint.
 - Forest remains blocked even after unlock; future build opens it.
 
 ## Conditions
