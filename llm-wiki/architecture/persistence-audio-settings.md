@@ -21,8 +21,9 @@ SaveManager.apply_profile_data(data, player)
 SaveManager.save_profile_to_file(path, player)
 
 ProfileSystem.player()
-ProfileSystem.save_profile(path = PROFILE_PATH)
-ProfileSystem.load_profile(path = PROFILE_PATH)
+ProfileSystem.set_profile_path(path)
+ProfileSystem.save_profile(path = "")
+ProfileSystem.load_profile(path = "")
 
 AudioManager.play_sfx(name)
 AudioManager.play_music(track_name)
@@ -43,7 +44,8 @@ SceneTransitionController.execute_transition()
 - SceneTransitionController separates transition requests from callers.
 
 ## Test Coverage
-- `tests/specs/save_manager_test.gd`: build/apply/file round trip and profile data preserving Swordsman Guild unlock.
+- `tests/specs/save_manager_test.gd`: build/apply/file round trip, corrupted/missing file recovery, empty data handling, and profile data preserving Swordsman Guild unlock.
+- `tests/specs/profile_system_test.gd`: redirected profile path save/load.
 - `tests/specs/settings_audio_transition_test.gd`: settings clamp, SFX request, transition request.
 
 ## Related

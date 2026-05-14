@@ -1,5 +1,16 @@
 # Wiki Log
 
+## [2026-05-14] refactor | Address Field and persistence review debt
+
+- RED: added `FieldRuntimeContext`, `GameBalance`, `SaveManager`, and `ProfileSystem` specs for collaborator ownership, centralized Field tuning, corrupted/missing save recovery, and redirected profile paths.
+- Extracted Field runtime collaborator construction into `FieldRuntimeContext`, reducing direct model/helper instantiation inside `Field`.
+- Moved Field tuning constants and apple healing into `GameBalance`.
+- Strengthened SaveManager coverage for missing files, corrupted JSON, JSON arrays, and empty save data.
+- Added `ProfileSystem.set_profile_path()` so profile persistence can be redirected for tests and future profile slots.
+- Moved `FieldRuntimeContext` under `scripts/controllers/`, hardened dispose with `is_instance_valid()`, and kept profile path mutation behind methods.
+- Removed silent `InventoryModel` spec setup guards and dropped trivial QuestManager catalog specs.
+- Validation: full suite `449 tests, 449 passed, 0 failed`.
+
 ## [2026-05-14] fix | Gate quest claims to final dialog page
 
 - RED: added TownDialogView and MainMenu specs for final-page-only claim actions and New Game auto-rebirth after an ended run.

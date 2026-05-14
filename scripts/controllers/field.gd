@@ -11,22 +11,16 @@ const FOREST_GUARD_DIALOG := "Stop.\n\nThe Demon King is gone.\nBut old places d
 const ENEMY_VIEW_SCENE := preload("res://scenes/enemy_view.tscn")
 const ENEMY_LIBRARY_SCRIPT := preload("res://scripts/models/enemy_library.gd")
 const ENEMY_STATE_SCRIPT := preload("res://scripts/models/enemy_state.gd")
-const ENEMY_BEHAVIOR_SCRIPT := preload("res://scripts/models/enemy_behavior_system.gd")
-const COMBAT_SCRIPT := preload("res://scripts/models/combat_system.gd")
 const INVENTORY_SCRIPT := preload("res://scripts/models/inventory_model.gd")
-const DROP_SYSTEM_SCRIPT := preload("res://scripts/models/drop_system.gd")
-const PLAYER_AGING_SCRIPT := preload("res://scripts/models/player_aging_model.gd")
-const EQUIPMENT_STATS_SCRIPT := preload("res://scripts/models/equipment_stats.gd")
+const FIELD_RUNTIME_CONTEXT_SCRIPT := preload("res://scripts/controllers/field_runtime_context.gd")
+const GAME_BALANCE_SCRIPT := preload("res://scripts/models/game_balance.gd")
 const DAMAGE_TEXT_SCRIPT := preload("res://scripts/views/damage_text_component.gd")
-const FIELD_CAMERA_CONTROLLER_SCRIPT := preload("res://scripts/controllers/field_camera_controller.gd")
-const FIELD_ENEMY_SPAWN_CONTROLLER_SCRIPT := preload("res://scripts/controllers/field_enemy_spawn_controller.gd")
-const FIELD_COMBAT_CONTROLLER_SCRIPT := preload("res://scripts/controllers/field_combat_controller.gd")
-const ENEMY_COLLISION_RADIUS := 56.0
-const ENEMY_APPROACH_DISTANCE := 96.0
-const PLAYER_ATTACK_READY_RANGE := 112.0
-const PLAYER_ATTACK_LEASH_RANGE := 192.0
-const LOOT_TOAST_DURATION := 1.4
-const APPLE_HEAL_AMOUNT := 20
+const ENEMY_COLLISION_RADIUS := GAME_BALANCE_SCRIPT.FIELD_ENEMY_COLLISION_RADIUS
+const ENEMY_APPROACH_DISTANCE := GAME_BALANCE_SCRIPT.FIELD_ENEMY_APPROACH_DISTANCE
+const PLAYER_ATTACK_READY_RANGE := GAME_BALANCE_SCRIPT.FIELD_PLAYER_ATTACK_READY_RANGE
+const PLAYER_ATTACK_LEASH_RANGE := GAME_BALANCE_SCRIPT.FIELD_PLAYER_ATTACK_LEASH_RANGE
+const LOOT_TOAST_DURATION := GAME_BALANCE_SCRIPT.FIELD_LOOT_TOAST_DURATION
+const APPLE_HEAL_AMOUNT := GAME_BALANCE_SCRIPT.APPLE_HEAL_AMOUNT
 
 @onready var _dialog_view: TownDialogView = $UI/DialogPanel
 @onready var _hud: CanvasLayer = $UI
@@ -53,14 +47,7 @@ var forced_drop_roll: int = -1
 var _drop_rng := RandomNumberGenerator.new()
 
 var _pending_npc: NpcController
-var _behavior = ENEMY_BEHAVIOR_SCRIPT.new()
-var _combat = COMBAT_SCRIPT.new()
-var _drop_system = DROP_SYSTEM_SCRIPT.new()
-var _camera_controller = FIELD_CAMERA_CONTROLLER_SCRIPT.new()
-var _spawn_controller = FIELD_ENEMY_SPAWN_CONTROLLER_SCRIPT.new()
-var _combat_controller = FIELD_COMBAT_CONTROLLER_SCRIPT.new()
-var _player_aging = PLAYER_AGING_SCRIPT.new()
-var _equipment_stats = EQUIPMENT_STATS_SCRIPT.new()
+var _runtime = FIELD_RUNTIME_CONTEXT_SCRIPT.new()
 var _local_inventory_model = null
 var _player_damage_label: Label
 var _player_damage_text
@@ -94,7 +81,7 @@ func _ready() -> void:
 	_connect_gateways()
 	_connect_forest_guard()
 	_ensure_combat_ui()
-	_camera_controller.randomize()
+	_runtime.randomize_runtime()
 	_drop_rng.randomize()
 	_spawn_initial_slime()
 	_update_combat_ui()
@@ -129,30 +116,10 @@ func _notification(what: int) -> void:
 
 
 func _cleanup_combat_refs() -> void:
-	if _behavior:
-		_behavior.free()
-		_behavior = null
-	if _combat:
-		_combat.free()
-		_combat = null
-	if _drop_system:
-		_drop_system.free()
-		_drop_system = null
-	if _camera_controller:
-		_camera_controller.free()
-		_camera_controller = null
-	if _spawn_controller:
-		_spawn_controller.free()
-		_spawn_controller = null
-	if _combat_controller:
-		_combat_controller.free()
-		_combat_controller = null
-	if _player_aging:
-		_player_aging.free()
-		_player_aging = null
-	if _equipment_stats:
-		_equipment_stats.free()
-		_equipment_stats = null
+	if _runtime:
+		_runtime.dispose()
+		_runtime.free()
+		_runtime = null
 	if _local_inventory_model:
 		_local_inventory_model.free()
 		_local_inventory_model = null
@@ -261,11 +228,11 @@ func player_node() -> CharacterBody2D:
 
 
 func behavior_system():
-	return _behavior
+	return _runtime.behavior
 
 
 func combat_system():
-	return _combat
+	return _runtime.combat
 
 
 func move_player_to(target: Vector2) -> bool:
@@ -297,11 +264,11 @@ func engage_enemy(instance_id: String) -> void:
 
 
 func _tick_player_auto_attack(delta: float) -> void:
-	_combat_controller.tick_player_auto_attack(self, delta)
+	_runtime.combat_controller.tick_player_auto_attack(self, delta)
 
 
 func _tick_enemies(delta: float) -> void:
-	_combat_controller.tick_enemies(self, delta)
+	_runtime.combat_controller.tick_enemies(self, delta)
 
 
 func _attack_point_for_enemy(enemy_position: Vector2) -> Vector2:
@@ -370,8 +337,8 @@ func player_combat_dict() -> Dictionary:
 	return {
 		"life": player_life,
 		"max_life": player_max_life,
-		"attack": player_attack + _equipment_stats.attack_bonus_for_weapon(_equipped_weapon_id()),
-		"defense": player_defense + _equipment_stats.defense_bonus_for_armor(_equipped_armor_id()),
+		"attack": player_attack + _runtime.equipment_stats.attack_bonus_for_weapon(_equipped_weapon_id()),
+		"defense": player_defense + _runtime.equipment_stats.defense_bonus_for_armor(_equipped_armor_id()),
 		"xp": player_xp,
 	}
 
@@ -388,15 +355,15 @@ func apply_player_combat_dict(next_player: Dictionary) -> void:
 
 
 func _spawn_initial_slime() -> void:
-	_spawn_controller.setup(self)
+	_runtime.spawn_controller.setup(self)
 
 
 func _tick_enemy_spawns(delta: float) -> void:
-	_spawn_controller.tick(self, delta)
+	_runtime.spawn_controller.tick(self, delta)
 
 
 func _spawn_active_enemy_slots() -> void:
-	_spawn_controller.spawn_active_slots(self)
+	_runtime.spawn_controller.spawn_active_slots(self)
 
 
 func _current_enemy_positions() -> Array[Vector2]:
@@ -404,11 +371,11 @@ func _current_enemy_positions() -> Array[Vector2]:
 
 
 func current_enemy_positions() -> Array[Vector2]:
-	return _spawn_controller.current_enemy_positions(enemy_views)
+	return _runtime.spawn_controller.current_enemy_positions(enemy_views)
 
 
 func _random_enemy_spawn_position(occupied: Array[Vector2]) -> Vector2:
-	return _spawn_controller.random_enemy_spawn_position(self, occupied)
+	return _runtime.spawn_controller.random_enemy_spawn_position(self, occupied)
 
 
 func enemy_spawn_rect() -> Rect2:
@@ -614,7 +581,7 @@ func _use_apple() -> bool:
 
 func _drop_succeeds(drop: Dictionary, roll: int = -1) -> bool:
 	var resolved_roll := roll if roll > 0 else forced_drop_roll
-	return _drop_system.succeeds(drop, resolved_roll, _drop_rng)
+	return _runtime.drop_system.succeeds(drop, resolved_roll, _drop_rng)
 
 
 func _on_npc_interacted(npc: NpcController) -> void:
@@ -672,7 +639,7 @@ func _change_scene_to_file(scene_path: String) -> void:
 
 func _update_camera() -> void:
 	var camera := get_node_or_null("Camera2D") as Camera2D
-	_camera_controller.update_camera(camera, _player, CAMERA_OFFSET)
+	_runtime.camera_controller.update_camera(camera, _player, CAMERA_OFFSET)
 
 
 func _start_camera_shake() -> void:
@@ -680,19 +647,19 @@ func _start_camera_shake() -> void:
 
 
 func start_camera_shake() -> void:
-	_camera_controller.start_shake()
+	_runtime.camera_controller.start_shake()
 
 
 func is_camera_shaking() -> bool:
-	return _camera_controller.is_shaking()
+	return _runtime.camera_controller.is_shaking()
 
 
 func _tick_camera_shake(delta: float) -> void:
-	_camera_controller.tick_shake(delta)
+	_runtime.camera_controller.tick_shake(delta)
 
 
 func _camera_shake_offset() -> Vector2:
-	return _camera_controller.camera_shake_offset()
+	return _runtime.camera_controller.camera_shake_offset()
 
 
 func _npc_portrait_texture(npc: NpcController) -> Texture2D:
@@ -723,11 +690,11 @@ func record_item_gathered(item_id: String, quantity: int = 1) -> void:
 
 
 func _update_player_age_sprite() -> void:
-	if _player_aging == null:
+	if _runtime == null or _runtime.player_aging == null:
 		return
 	var sprite := _player.get_node_or_null("Sprite") as Sprite2D
 	if sprite:
-		sprite.texture = _load_texture(_player_aging.texture_path_for_max_hp_and_equipment(player_max_life, _equipped_weapon_id(), _equipped_armor_id()))
+		sprite.texture = _load_texture(_runtime.player_aging.texture_path_for_max_hp_and_equipment(player_max_life, _equipped_weapon_id(), _equipped_armor_id()))
 
 
 func _load_texture(texture_path: String) -> Texture2D:

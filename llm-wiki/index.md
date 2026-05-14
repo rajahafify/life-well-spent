@@ -15,6 +15,7 @@
 | [architecture/enemy-spawn-system](architecture/enemy-spawn-system.md) | reference | 2026-05-12 | Game-wide persistent enemy spawn slots, biome max-active caps, and respawn timers across scene changes. |
 | [architecture/drop-system](architecture/drop-system.md) | reference | 2026-05-13 | Pure chance-roll helper for Field enemy drops with deterministic test rolls. |
 | [architecture/field-controller-boundaries](architecture/field-controller-boundaries.md) | reference | 2026-05-13 | Field scene glue boundaries for camera, spawn, and combat helper controllers. |
+| [architecture/field-runtime-context](architecture/field-runtime-context.md) | reference | 2026-05-14 | Controller-side Field collaborator construction boundary for behavior, combat, drops, spawning, camera, aging, and equipment helpers. |
 | [architecture/npc-placement](architecture/npc-placement.md) | reference | 2026-05-11 | Stable NPC map placement data, including Forest Guard gateway blocking. |
 | [architecture/biome-definition](architecture/biome-definition.md) | reference | 2026-05-12 | Field grassland palette, Slime/Bat/Rat enemy pool, props, and biome filters. |
 | [architecture/quest-manager](architecture/quest-manager.md) | concept | 2026-05-13 | Quest catalog, main objective progression, Guildmaster-started side chain activation, objective-backed certification steps, certification state, and free acceptance. |
@@ -29,7 +30,7 @@
 | [architecture/inventory-window-view](architecture/inventory-window-view.md) | reference | 2026-05-14 | Reusable inventory overlay scene showing slots, item stacks, and equipment actions. |
 | [architecture/shared-hud-view](architecture/shared-hud-view.md) | reference | 2026-05-13 | Reusable gameplay HUD for player Life, Inventory, Quest Tracker, and 1-9 shortcut bar. |
 | [architecture/feedback-components](architecture/feedback-components.md) | reference | 2026-05-13 | Reusable combat feedback components for hit flash, floating damage text, loot toast, camera shake, and SFX requests. |
-| [architecture/game-balance](architecture/game-balance.md) | reference | 2026-05-11 | Shared pure constants model for quest cost and animation timings. |
+| [architecture/game-balance](architecture/game-balance.md) | reference | 2026-05-14 | Shared pure constants model for quest cost, animation timings, Field tuning, and item healing. |
 | [assets/lpc-sprite-generator](assets/lpc-sprite-generator.md) | reference | 2026-05-09 | LPC sprite generator tool — prompt-driven character spritesheet pipeline. |
 | [assets/assets-viewer](assets/assets-viewer.md) | reference | 2026-05-12 | In-project gallery scene that recursively displays enemy, NPC, and player PNG assets as thumbnails. |
 | [assets/slime-asset-view](assets/slime-asset-view.md) | reference | 2026-05-12 | Enemy and character asset tools: focused AssetView preview plus looping AssetGallery SpriteFrames/LPC previews. |

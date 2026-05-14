@@ -70,6 +70,38 @@ func test_write_and_read_save_file() -> void:
 	assert_eq(10, data.life.xp)
 
 
+func test_load_from_file_returns_empty_for_missing_file() -> void:
+	var data: Dictionary = save_manager.load_from_file("user://missing_life_well_spent_test_save.json")
+	assert_eq({}, data)
+
+
+func test_load_from_file_returns_empty_for_corrupted_json() -> void:
+	var path := "user://life_well_spent_corrupted_test_save.json"
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	assert_not_null(file)
+	file.store_string("{not valid json")
+	file.close()
+	var data: Dictionary = save_manager.load_from_file(path)
+	assert_eq({}, data)
+
+
+func test_load_from_file_returns_empty_for_json_array() -> void:
+	var path := "user://life_well_spent_array_test_save.json"
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	assert_not_null(file)
+	file.store_string("[1, 2, 3]")
+	file.close()
+	var data: Dictionary = save_manager.load_from_file(path)
+	assert_eq({}, data)
+
+
+func test_apply_save_data_accepts_empty_data_without_mutating_defaults() -> void:
+	save_manager.apply_save_data({}, player, quests, life)
+	assert_eq(100, player.max_hp)
+	assert_eq(0, quests.active_quests.size())
+	assert_eq(0, life.xp)
+
+
 func test_profile_save_data_preserves_swordsman_guild_unlock() -> void:
 	player.unlock_facility("swordsman_guild")
 	var data: Dictionary = save_manager.build_profile_data(player)

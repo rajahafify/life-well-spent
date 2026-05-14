@@ -38,22 +38,12 @@ func _record_item_gathered(item_id: String, count: int) -> void:
 
 # ─── Catalog ──────────────────────────────────────────────────────────
 
-func test_catalog_starts_empty() -> void:
-	assert_eq(0, qm.quest_catalog.size(), "catalog should start empty")
-
-
 func test_add_quest_populates_catalog() -> void:
 	qm.add_quest("Goblin Scout", 40, "Clear goblin scouts from the ridge")
 	assert_eq(1, qm.quest_catalog.size())
 	assert_eq("Goblin Scout", qm.quest_catalog[0].name)
 	assert_eq(40, qm.quest_catalog[0].cost)
 	assert_eq("Clear goblin scouts from the ridge", qm.quest_catalog[0].description)
-
-
-func test_catalog_supports_many_quests() -> void:
-	for i in range(50):
-		qm.add_quest("Quest %d" % i, 40, "Quest %d" % i)
-	assert_eq(50, qm.quest_catalog.size(), "catalog should hold 50 quests")
 
 
 # ─── Take Quest ──────────────────────────────────────────────────────

@@ -4,7 +4,7 @@
 
 ## QA Status
 
-- Automated suite: `442 tests, 442 passed, 0 failed`
+- Automated suite: `449 tests, 449 passed, 0 failed`
 - Manual QA: playable end-to-end through Swordsman Guild unlock, Game Over run summary, Rebirth or End Game, and certified Forest access.
 - Godot warnings/errors: headless suite passes. Current known non-failing output includes existing `assets-gallery.tscn` invalid UID fallback warnings and resource cleanup warnings.
 

@@ -55,5 +55,8 @@ func load_from_file(path: String) -> Dictionary:
 		return {}
 	var text := file.get_as_text()
 	file.close()
-	var parsed = JSON.parse_string(text)
+	var json := JSON.new()
+	if json.parse(text) != OK:
+		return {}
+	var parsed = json.data
 	return Dictionary(parsed) if parsed is Dictionary else {}
