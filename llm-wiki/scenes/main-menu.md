@@ -1,14 +1,14 @@
 ---
 title: Main Menu Scene
 type: reference
-updated: 2026-05-11
+updated: 2026-05-14
 tags: [scenes, ui, entry-point]
 ---
 
 # Main Menu Scene
 
 ## Overview
-The entry point scene for Life Well Spent. Displays the game title with New Game and Quit buttons. On New Game, transitions to the town hub scene.
+The entry point scene for Life Well Spent. Displays the game title with New Game and Quit buttons. On New Game, it normalizes any ended run through rebirth and transitions to the Town scene.
 
 ## Scene Structure
 ```
@@ -40,19 +40,21 @@ func _ready() -> void:
     _quit_btn.pressed.connect(_on_quit_pressed)
 
 func _on_new_game_pressed() -> void:
-    get_tree().change_scene_to_file("res://scenes/town_hub.tscn")
+    _auto_rebirth_ended_run(_profile_system(), _inventory_system())
+    get_tree().change_scene_to_file("res://scenes/town_scene.tscn")
 
 func _on_quit_pressed() -> void:
     get_tree().quit()
 ```
 
 ## Design Decisions
-- **Thin controller:** Only handles button signals. No game logic.
+- **Thin controller:** Handles button signals and delegates ended-run normalization to a small helper before scene transition.
 - **Centered layout:** CenterContainer → VBoxContainer with alignment=CENTER, buttons centered via SHRINK_CENTER size flags.
 - **Title:** 36px font size via `add_theme_font_size_override`.
 - **Buttons:** Custom minimum size 200×40px, 16px vertical separation.
 - **Background:** Dark `Color(0.05, 0.05, 0.08)` via `self_modulate` on root.
-- **Scene transition:** Hardcoded path to `town_hub.tscn`. Will be configurable when GameState model exists.
+- **Scene transition:** Hardcoded path to `town_scene.tscn`. Will be configurable when GameState model exists.
+- **Ended run:** If `ProfileSystem.player().game_over_requested` is true, New Game calls `PlayerStats.rebirth()`, resets `InventorySystem`, saves the profile, and preserves persistent unlocks such as `swordsman_guild`.
 - **Quit button:** Calls `get_tree().quit()` — standard behavior.
 
 ## Specs
@@ -60,5 +62,5 @@ func _on_quit_pressed() -> void:
 - All 64 tests in suite pass
 
 ## Related
-- `scenes/town_hub.tscn` — next scene after New Game
+- `scenes/town_scene.tscn` - next scene after New Game
 - `scripts/models/player_stats.gd` — player state for game session

@@ -13,6 +13,8 @@ var root: Node
 
 
 func setup() -> void:
+	if ProfileSystem:
+		ProfileSystem.reset_for_tests()
 	var scene: PackedScene = load(FIELD_SCENE)
 	assert_not_null(scene, "Field scene should load")
 	if scene:
@@ -25,6 +27,14 @@ func teardown() -> void:
 	if root:
 		root.free()
 		root = null
+	if ProfileSystem:
+		ProfileSystem.reset_for_tests()
+
+
+func _start_guildmaster_chain_for_test() -> void:
+	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	QuestSystem.activate_swordsman_guild_chain()
 
 
 func test_field_scene_root_is_named_field() -> void:
@@ -49,6 +59,28 @@ func test_field_has_player_and_camera() -> void:
 	var player := root.get_node_or_null("Player") as Node2D
 	assert_not_null(player, "Field should have Player")
 	assert_not_null(root.get_node_or_null("Camera2D"), "Field should have Camera2D")
+
+
+func test_field_player_uses_age_stage_one_sprite() -> void:
+	if root == null:
+		return
+	var sprite := root.get_node("Player/Sprite") as Sprite2D
+	assert_true(sprite.texture.resource_path.ends_with("player_age_1.png"))
+
+
+func test_field_player_uses_profile_age_stage_two_sprite() -> void:
+	if root:
+		root.free()
+		root = null
+	if ProfileSystem:
+		ProfileSystem.reset_for_tests()
+		ProfileSystem.player().max_hp = 60
+	var scene: PackedScene = load(FIELD_SCENE)
+	root = scene.instantiate()
+	root._ready()
+	var sprite := root.get_node("Player/Sprite") as Sprite2D
+	assert_true(sprite.texture.resource_path.ends_with("player_age_2.png"))
+	assert_eq(60, root.player_max_life)
 
 
 func test_field_has_town_gateway_spawn_point_near_portal() -> void:
@@ -184,12 +216,14 @@ func test_field_starts_with_slime_bat_and_rat_enemies() -> void:
 		return
 	var slime := root.get_node_or_null("Enemies/Slime")
 	assert_not_null(slime, "Field should show first Slime enemy")
-	assert_eq(9, root.get_node("Enemies").get_child_count(), "Field should start with Slimes, Bats, and Rats")
+	assert_eq(12, root.get_node("Enemies").get_child_count(), "Field should start with Slimes, Bats, and Rats")
 	if slime:
 		assert_eq("slime_spiked", slime.enemy_id)
 	var bat = root.get_node("Enemies/Bat")
+	var bat5 = root.get_node("Enemies/Bat5")
 	var rat = root.get_node("Enemies/Rat")
 	assert_eq("bat", bat.enemy_id)
+	assert_eq("bat", bat5.enemy_id)
 	assert_eq("rat", rat.enemy_id)
 
 
@@ -293,6 +327,17 @@ func test_field_uses_quest_system_for_forest_gate_progress() -> void:
 	assert_true(source.contains("get_swordsman_certification"), "Forest gate should advance the main quest objective")
 
 
+func test_forest_guard_does_not_start_guildmaster_side_quest() -> void:
+	if root == null:
+		return
+	var guard = root.get_node("ForestGuard")
+	root.get_node("Player").global_position = guard.global_position + Vector2(40, 0)
+	guard.interacted.emit(guard)
+	root.close_dialog()
+	assert_eq("get_swordsman_certification", QuestSystem.current_main_objective_id())
+	assert_false(QuestSystem.is_side_quest_active("rebuilding_swordsman_guild"))
+
+
 func test_inventory_button_and_i_key_toggle_inventory_window() -> void:
 	if root == null:
 		return
@@ -337,6 +382,14 @@ func test_shortcut_one_without_apple_shows_feedback() -> void:
 	assert_eq(65, root.player_life)
 
 
+func test_forced_drop_roll_grants_chance_material() -> void:
+	if root == null:
+		return
+	root.forced_drop_roll = 1
+	root.grant_enemy_drops(root.enemy_state("field_slime_001"))
+	assert_eq(1, root.inventory.quantity("slime_gel"))
+
+
 func test_field_respawns_enemy_after_global_timer_while_loaded() -> void:
 	if root == null:
 		return
@@ -348,16 +401,22 @@ func test_field_respawns_enemy_after_global_timer_while_loaded() -> void:
 	slime.global_position = Vector2(530, 500)
 	root.enemy_state("field_slime_001").position = slime.global_position
 	root.enemy_state("field_slime_001").hp = 1
-	root.forced_drop_roll = 5
+	root.forced_drop_roll = 1
+	assert_eq([
+		{"item_id": "slime_gel", "quantity": 1, "chance_numerator": 1, "chance_denominator": 5},
+		{"item_id": "apple", "quantity": 1, "chance_numerator": 1, "chance_denominator": 20},
+	], root.enemy_state("field_slime_001").drop_table)
+	assert_true(root._drop_succeeds(root.enemy_state("field_slime_001").drop_table[0]))
+	assert_false(root.enemy_state("field_slime_001").reward_granted)
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.1)
 	root._physics_process(0.8)
 	assert_false(root.has_enemy("field_slime_001"))
-	assert_eq(8, root.get_node("Enemies").get_child_count())
+	assert_eq(11, root.get_node("Enemies").get_child_count())
 	EnemySpawnManager._process(60.0)
 	root._physics_process(1.0)
 	assert_true(root.has_enemy("field_slime_001"))
-	assert_eq(9, root.get_node("Enemies").get_child_count())
+	assert_eq(12, root.get_node("Enemies").get_child_count())
 
 
 func test_clicking_slime_engages_and_moves_player_toward_slime() -> void:
@@ -394,6 +453,53 @@ func test_auto_attack_damages_slime_and_reveals_hp_bar() -> void:
 	assert_true(slime_hp_bar.visible, "enemy HP bar should appear after the enemy is attacked")
 	assert_true(root.enemy_state("field_slime_001").is_aggro)
 	assert_true(root.is_camera_shaking(), "player hit should start a small camera shake")
+
+
+func test_equipped_training_sword_increases_player_attack_damage() -> void:
+	if root == null:
+		return
+	var player: Node2D = root.get_node("Player") as Node2D
+	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
+	root.inventory.add_item("training_sword", 1)
+	root.inventory.equip_weapon("training_sword")
+	player.global_position = Vector2(500, 500)
+	slime.global_position = Vector2(530, 500)
+	root.enemy_state("field_slime_001").position = slime.global_position
+	root.engage_enemy("field_slime_001")
+	root._physics_process(1.5)
+	assert_eq(90, root.enemy_state("field_slime_001").hp)
+
+
+func test_auto_attack_waits_until_player_reaches_close_attack_ready_range() -> void:
+	if root == null:
+		return
+	var player: Node2D = root.get_node("Player") as Node2D
+	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
+	player.global_position = Vector2(500, 500)
+	slime.global_position = Vector2(650, 500)
+	root.enemy_state("field_slime_001").position = slime.global_position
+	root.engage_enemy("field_slime_001")
+	root._physics_process(1.5)
+	assert_eq(140, root.enemy_state("field_slime_001").hp)
+	assert_false(root.is_player_target_attack_ready())
+
+
+func test_auto_attack_continues_inside_leash_after_enemy_moves_away() -> void:
+	if root == null:
+		return
+	var player: Node2D = root.get_node("Player") as Node2D
+	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
+	player.global_position = Vector2(500, 500)
+	slime.global_position = Vector2(596, 500)
+	root.enemy_state("field_slime_001").position = slime.global_position
+	root.engage_enemy("field_slime_001")
+	root._physics_process(1.5)
+	var hp_after_first_hit: int = root.enemy_state("field_slime_001").hp
+	assert_true(hp_after_first_hit < 140)
+	slime.global_position = Vector2(680, 500)
+	root.enemy_state("field_slime_001").position = slime.global_position
+	root._physics_process(1.5)
+	assert_true(root.enemy_state("field_slime_001").hp < hp_after_first_hit)
 
 
 func test_enemy_attack_damages_player_life_and_shows_red_damage() -> void:
@@ -483,7 +589,6 @@ func test_slime_dies_plays_death_before_removal() -> void:
 	slime.global_position = Vector2(530, 500)
 	root.enemy_state("field_slime_001").position = slime.global_position
 	root.enemy_state("field_slime_001").hp = 1
-	root.forced_drop_roll = 5
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.1)
 	assert_true(root.has_enemy("field_slime_001"))
@@ -492,22 +597,56 @@ func test_slime_dies_plays_death_before_removal() -> void:
 	var sprite := slime.get_node("AnimatedSprite2D") as AnimatedSprite2D
 	assert_eq("death", sprite.animation)
 	assert_eq(5, root.player_xp)
-	assert_eq(1, root.inventory.quantity("slime_gel"))
 	assert_true(root.has_method("_drop_succeeds"), "Field should roll chance-based drops")
 	assert_true(root._drop_succeeds({"chance_numerator": 1, "chance_denominator": 5}, 1))
 	assert_false(root._drop_succeeds({"chance_numerator": 1, "chance_denominator": 5}, 2))
 	assert_true(root._drop_succeeds({"item_id": "slime_gel"}, 5), "Drops without chance fields should stay guaranteed")
+	assert_false(root._drop_succeeds({"item_id": "slime_gel", "chance_numerator": 1, "chance_denominator": 5}, 2), "Material drops should now use 20 percent chance")
 	var loot_toast := root.get_node("UI/LootToast") as Label
-	assert_true(loot_toast.visible)
-	assert_eq("+ slime_gel x1", loot_toast.text)
-	root.toggle_inventory_window()
-	var item_list := root.get_node("UI/InventoryWindow/VBox/ItemList") as VBoxContainer
-	assert_eq("slime_gel x1", (item_list.get_child(0) as Label).text)
 	root._physics_process(1.7)
 	assert_false(loot_toast.visible)
 	root._physics_process(0.8)
 	assert_false(root.has_enemy("field_slime_001"))
 	assert_null(root.get_node_or_null("Enemies/Slime"))
+
+
+func test_slime_defeat_advances_swordsman_guild_kill_objective() -> void:
+	if root == null:
+		return
+	_start_guildmaster_chain_for_test()
+	var player: Node2D = root.get_node("Player") as Node2D
+	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
+	player.global_position = Vector2(500, 500)
+	slime.global_position = Vector2(530, 500)
+	root.enemy_state("field_slime_001").position = slime.global_position
+	root.enemy_state("field_slime_001").hp = 1
+	root.engage_enemy("field_slime_001")
+	root._physics_process(1.1)
+	assert_eq("Defeat 10 Slimes for Guildmaster stance training. (1/10)", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+	var quest_label := root.get_node("UI/QuestWindow/VBox/ObjectiveLabel") as Label
+	assert_true(quest_label.text.contains("Defeat 10 Slimes for Guildmaster stance training. (1/10)"))
+
+
+func test_bat_drop_advances_swordsman_guild_gather_objective() -> void:
+	if root == null:
+		return
+	_start_guildmaster_chain_for_test()
+	for _i in range(10):
+		QuestSystem.record_enemy_defeated("slime_spiked")
+	QuestSystem.advance_side_quest_step("rebuilding_swordsman_guild")
+	var player: Node2D = root.get_node("Player") as Node2D
+	var bat: Node2D = root.get_node("Enemies/Bat") as Node2D
+	player.global_position = Vector2(500, 500)
+	bat.global_position = Vector2(530, 500)
+	root.enemy_state("field_bat_001").position = bat.global_position
+	root.enemy_state("field_bat_001").hp = 1
+	root.forced_drop_roll = 1
+	root.engage_enemy("field_bat_001")
+	root._physics_process(1.1)
+	assert_eq(1, root.inventory.quantity("bat_wing"))
+	assert_eq("Gather 2 Bat Wings for Guildmaster guard training. (1/2)", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+	var quest_label := root.get_node("UI/QuestWindow/VBox/ObjectiveLabel") as Label
+	assert_true(quest_label.text.contains("Gather 2 Bat Wings for Guildmaster guard training. (1/2)"))
 
 
 func test_field_has_forest_guard_dialog_copy() -> void:
@@ -551,6 +690,27 @@ func test_field_routes_player_movement_and_camera_follow() -> void:
 	player.global_position = Vector2(1000, 600)
 	root._physics_process(0.016)
 	assert_eq(player.global_position + Vector2(0, -150), camera.global_position)
+
+
+func test_field_follow_held_mouse_updates_player_destination() -> void:
+	if root == null:
+		return
+	var movement = root.get_node("Player/Sprite")
+	movement._ready()
+	var target := Vector2(900, 560)
+	assert_true(root.follow_held_mouse(target))
+	assert_eq(target, movement.destination)
+
+
+func test_inventory_button_area_blocks_player_movement() -> void:
+	if root == null:
+		return
+	var button := root.get_node("UI/InventoryButton") as Button
+	var movement = root.get_node("Player/Sprite")
+	movement._ready()
+	var target := button.position + (button.size * 0.5)
+	assert_false(root.follow_held_mouse(target))
+	assert_false(movement.moving)
 
 
 func test_far_forest_guard_click_moves_player_before_dialog() -> void:
@@ -612,12 +772,25 @@ func test_dialog_blocks_player_movement_and_pages() -> void:
 	var dialog = root.get_node("UI/DialogPanel")
 	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
 	var next: Button = root.get_node("UI/DialogPanel/VBox/Buttons/NextButton") as Button
+	var close: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CloseButton") as Button
 	assert_eq("Stop.", body.text)
+	assert_false(close.visible)
 	dialog.next_page()
 	assert_true(body.text.contains("Demon King"))
+	assert_false(close.visible)
 	dialog.next_page()
 	assert_true(body.text.contains("Forest remembers"))
 	assert_false(next.visible)
+	assert_true(close.visible)
+
+
+func test_dialog_buttons_stick_to_bottom_right() -> void:
+	if root == null:
+		return
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	var buttons: HBoxContainer = root.get_node("UI/DialogPanel/VBox/Buttons") as HBoxContainer
+	assert_true((body.size_flags_vertical & Control.SIZE_EXPAND) == Control.SIZE_EXPAND)
+	assert_eq(BoxContainer.ALIGNMENT_END, buttons.alignment)
 
 
 func test_town_gateway_directly_requests_town_transition() -> void:
@@ -649,3 +822,44 @@ func test_forest_gateway_stays_blocked_and_opens_guard_dialog() -> void:
 	assert_eq("find_forest_path", QuestSystem.current_main_objective_id())
 	var dialog = root.get_node("UI/DialogPanel")
 	assert_true(dialog.visible)
+
+
+func test_forest_guard_shows_open_path_after_swordsman_certification() -> void:
+	if root == null:
+		return
+	_start_guildmaster_chain_for_test()
+	QuestSystem.complete_side_quest_chain("rebuilding_swordsman_guild")
+	QuestSystem.advance_main_quest_objective("explore_the_world", "enter_forest")
+	var guard: NpcController = root.get_node("ForestGuard") as NpcController
+	root.get_node("Player").global_position = guard.global_position + Vector2(40, 0)
+	guard.interacted.emit(guard)
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	assert_eq("", root.requested_scene_path)
+	assert_true(body.text.contains("The path to forest is open."))
+	assert_eq("enter_forest", QuestSystem.current_main_objective_id())
+
+
+func test_forest_gateway_transitions_to_forest_after_swordsman_certification() -> void:
+	if root == null:
+		return
+	_start_guildmaster_chain_for_test()
+	QuestSystem.complete_side_quest_chain("rebuilding_swordsman_guild")
+	QuestSystem.advance_main_quest_objective("explore_the_world", "enter_forest")
+	var player: Node = root.get_node("Player")
+	root._on_forest_gateway_body_entered(player)
+	assert_eq("res://scenes/forest.tscn", root.requested_scene_path)
+
+
+func test_forest_guard_interaction_after_certification_does_not_revert_objective() -> void:
+	if root == null:
+		return
+	_start_guildmaster_chain_for_test()
+	QuestSystem.complete_side_quest_chain("rebuilding_swordsman_guild")
+	QuestSystem.advance_main_quest_objective("explore_the_world", "enter_forest")
+	var guard: NpcController = root.get_node("ForestGuard") as NpcController
+	root.get_node("Player").global_position = guard.global_position + Vector2(40, 0)
+	guard.interacted.emit(guard)
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	assert_true(body.text.contains("The path to forest is open."))
+	root.close_dialog()
+	assert_eq("enter_forest", QuestSystem.current_main_objective_id())

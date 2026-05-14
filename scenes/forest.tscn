@@ -1,0 +1,93 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/controllers/forest.gd" id="1_forest"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/ui/shared_hud.tscn" id="3_shared_hud"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gateway"]
+radius = 64.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+content_margin_left = 28.0
+content_margin_top = 22.0
+content_margin_right = 28.0
+content_margin_bottom = 22.0
+bg_color = Color(0.05, 0.16, 0.08, 0.92)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="Forest" type="Node2D"]
+script = ExtResource("1_forest")
+
+[node name="Ground" type="ColorRect" parent="."]
+mouse_filter = 2
+offset_left = -256.0
+offset_top = -256.0
+offset_right = 2176.0
+offset_bottom = 1400.0
+color = Color(0.05, 0.22, 0.08, 1)
+
+[node name="Path" type="ColorRect" parent="."]
+mouse_filter = 2
+offset_left = 850.0
+offset_top = 760.0
+offset_right = 1070.0
+offset_bottom = 1320.0
+color = Color(0.24, 0.18, 0.09, 1)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(960, 980)
+scale = Vector2(2, 2)
+
+[node name="FieldGateway" type="Area2D" parent="."]
+position = Vector2(960, 1180)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FieldGateway"]
+shape = SubResource("CircleShape2D_gateway")
+
+[node name="Visual" type="ColorRect" parent="FieldGateway"]
+mouse_filter = 2
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 64.0
+offset_bottom = 64.0
+color = Color(0.1, 0.8, 0.9, 0.55)
+
+[node name="Label" type="Label" parent="FieldGateway"]
+offset_left = -48.0
+offset_top = 72.0
+offset_right = 48.0
+offset_bottom = 98.0
+text = "Field"
+horizontal_alignment = 1
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(960, 830)
+enabled = true
+
+[node name="UI" parent="." instance=ExtResource("3_shared_hud")]
+
+[node name="EndpointPanel" type="PanelContainer" parent="UI"]
+offset_left = 560.0
+offset_top = 650.0
+offset_right = 1360.0
+offset_bottom = 900.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="VBox" type="VBoxContainer" parent="UI/EndpointPanel"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="UI/EndpointPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Forest"
+horizontal_alignment = 1
+
+[node name="BodyLabel" type="Label" parent="UI/EndpointPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+autowrap_mode = 3
+text = "The path is open. The first restored guild has carried you beyond the old gate. More Forest content comes next."
+horizontal_alignment = 1

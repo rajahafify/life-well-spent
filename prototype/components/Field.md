@@ -152,19 +152,22 @@ Current combat behavior:
 - Player Life stays at `100/100`, and enemy attack values against Player are unchanged.
 - Slime starts at 140 HP and takes 30 visible damage from Player attack 40 against defense 10; Bat starts at 80 HP; Rat starts at 60 HP.
 - Clicking an enemy engages it and moves Player toward attack range.
+- Player must first reach close attack-ready range next to the enemy sprite; after that, attacks continue inside a larger leash so moving enemies do not force tight sprite-to-sprite repositioning.
 - Player auto-attacks while in range.
 - First player hit aggros the enemy.
 - Aggro enemy chases Player if Player moves away.
 - Enemy attacks current Life on its attack interval.
 - Enemy HP `<= 0` plays death, removes the enemy after its death duration, and grants XP once.
+- Enemy defeats and material drops also notify `QuestSystem`, so active Swordsman Guild objectives progress from real Field combat and loot.
 - Enemy movement and spawn placement reject imported `FieldCollision` blockers.
 - Field registers persistent spawn slots with `EnemySpawnManager`.
 - Defeated enemy slots stay gone across portal changes and become available after the global 60 second respawn timer.
 - Respawned slots pick a fresh valid random position in `SpawnZones/Grassland`.
 - Field polls the spawn manager while loaded, so eligible enemies respawn after the timer without requiring another portal transition.
-- Slime, Bat, and Rat each keep their guaranteed material drop and have a 1-in-5 chance to also drop `apple`.
+- Slime, Bat, and Rat each have a 1-in-5 chance to drop their material.
+- Rare drops are 1-in-20: Slime -> `apple`, Bat -> `training_sword`, Rat -> `leather_armor`.
 - Enemy sprites render larger in Field, with larger click collision and wider player/enemy spacing so enemies do not stand underneath the player sprite.
-- Shortcut slot `1` starts mapped to `apple`; pressing `1` in Field uses one Apple if available and current Life is below Max Life.
+- Shortcut slot `1` is empty until the player equips an Apple as the current consumable; pressing `1` in Field uses one Apple if available and current Life is below Max Life.
 
 Still future:
 
@@ -282,6 +285,7 @@ Current Field writes:
 - current Life damage.
 - XP rewards.
 - `QuestSystem` main quest objective and side quest chain activation when the Forest Gateway is reached.
+- `QuestSystem` Swordsman Guild objective progress when active enemies are defeated or matching items are gathered.
 - `QuestSystem` `forest_guard` checkpoint when the Forest Gateway is reached.
 - `InventorySystem` item counts when enemy drops are granted or Apple is consumed.
 
@@ -294,7 +298,6 @@ Future Field reads:
 
 Future Field writes:
 
-- enemy defeated events
 - equipment combat effects
 
 ## Verbs
@@ -366,7 +369,10 @@ Future rules:
 Current Field slice:
 
 - On scene start: show objective prompt.
+- On scene start: Player Life and sprite are selected from `ProfileSystem` Max Life through `PlayerAgingModel`.
 - On ground click while dialog is closed: route Player movement to `CharacterMovement`.
+- While left mouse is held and dialog is closed: keep updating Player movement destination to the mouse position.
+- While the pointer is over HUD controls: do not route mouse input to Player movement.
 - Camera follows Player with RO-style upward offset.
 - On ground click while dialog is open: block movement.
 - On far Forest Guard click: Player walks toward Guard talk point, dialog remains closed.
@@ -378,16 +384,18 @@ Current Field slice:
 - On aggro: enemy chases Player until attack range.
 - On enemy attack interval: enemy damages current Life.
 - On enemy HP `<= 0`: enemy dies, is removed after death animation timing, and grants XP once.
-- On enemy reward grant: guaranteed material drops and rolled chance drops are added to `InventoryModel`.
+- On enemy reward grant while Swordsman Guild certification is active: matching Slime/Rat defeats advance the current Guildmaster objective; Bat Wing ownership is synced from inventory in Town.
+- On enemy reward grant: rolled material and Apple chance drops are added to `InventoryModel`.
 - On shortcut `1` with Apple available and Life below Max Life: consume one Apple, heal up to 20 current Life, refresh Life HUD, and show a loot toast.
 - On shortcut `1` with no Apple: show `No apple`.
 - On shortcut `1` at full Life: show `Life is full` and do not consume Apple.
 - On enemy movement into collision: movement is rejected.
-- On Forest Gateway body entered by Player: scene transition remains blocked, QuestSystem marks `forest_guard`, advances `Explore the World` to `Get Swordsman Certification`, `Rebuilding Swordsman Guild` becomes active, and Guard warning opens.
+- On Forest Gateway body entered by Player: scene transition remains blocked, QuestSystem marks `forest_guard`, advances `Explore the World` to `Get Swordsman Certification`, and Guard warning opens. `Rebuilding Swordsman Guild` waits until the player talks to Guildmaster back in Town.
 
-Future conditions:
+Certified endpoint:
 
-- If player approaches Forest Gate after future unlock: behavior TBD.
+- If player approaches Forest Gate after Swordsman Certification: transition to `scenes/forest.tscn`.
+- If player talks to Forest Guard after Swordsman Certification: show `The path to forest is open.` and keep the quest objective on `Enter the Forest.`
 
 ## Permissions
 
@@ -400,7 +408,7 @@ Player can:
 
 Player cannot:
 
-- enter Forest in current prototype
+- enter Forest before certification changes the gateway state
 - unlock Swordsman Guild directly from Field
 
 ## Art Direction
@@ -415,7 +423,9 @@ Field now uses Kenney Tiny Town tile art imported from Tiled.
 - Rat uses cataloged enemy sprite asset `rat`.
 - Enemy sprites are enlarged for gameplay readability, with HP bars repositioned below the larger footprint.
 - Forest Guard uses `assets/npcs/forest_guard.png`.
+- Player uses `assets/player_age_1.png`, `assets/player_age_2.png`, or `assets/player_age_3.png` depending on Max Life. If `training_sword` is equipped, Field uses the matching `_sword` variant. If `training_sword` and `leather_armor` are both equipped, Field uses the matching `_sword_armor` variant.
 - HUD/dialog uses the same Town dialog styling.
+- Dialog buttons stay at the bottom-right of the dialog panel.
 
 Color language:
 
@@ -428,7 +438,7 @@ Color language:
 
 - Enemy drops are model-backed and shown through the inventory window / loot toast, not world pickup sprites.
 - No playable Forest.
-- No Swordsman Guild quest completion UI.
+- Swordsman Guild quest completion UI lives in Town, not Field.
 - No drop pickup animation yet.
 - No weapon/armor combat effect yet.
 
@@ -481,11 +491,11 @@ Player can:
 4. See enemies, Forest edge, Forest Guard, and Town Portal.
 5. Click enemy; Player approaches and auto-attacks in range.
 6. Enemy aggros after first hit, chases if Player moves, attacks current Life, then dies/removes at HP `<= 0`.
-7. Enemy death grants guaranteed material drop plus possible Apple chance drop.
+7. Enemy death can grant material and Apple chance drops.
 8. Press `1` to consume Apple if hurt.
 9. Click Forest Guard from far away; Player approaches before dialog opens.
 10. Talk to Forest Guard for paged certification warning dialog.
-11. Use `Next` to advance dialog pages; use `Close` to exit dialog.
+11. Use `Next` to advance dialog pages; `Close` appears only on the last dialog page.
 12. Walk into Town Gateway.
 13. Gateway transitions directly to Town.
 
@@ -495,6 +505,7 @@ Player can:
 - [x] Field scene root is named `Field`.
 - [x] Field script class is `Field`.
 - [x] Player spawns near the Town gateway on the north road.
+- [x] Player uses the age stage 1 sprite at default Max Life.
 - [x] Camera exists and follows Player.
 - [x] Town Portal exists.
 - [x] Objective prompt displays on scene start.
@@ -514,6 +525,8 @@ Player can:
 - [x] Enemy attacks current Life.
 - [x] Aggro enemy chases Player when Player moves away.
 - [x] Enemy HP `<= 0` removes enemy and grants XP.
+- [x] Enemy HP `<= 0` can advance active Swordsman Guild defeat objectives.
+- [x] Enemy drops can advance active Swordsman Guild gather objectives.
 - [x] Enemy HP `<= 0` grants deterministic item drop.
 - [x] Enemy movement rejects `FieldCollision` blockers.
 - [x] Defeated enemies stay gone across portal changes until their global respawn timer expires.
@@ -529,7 +542,9 @@ Player can:
 - [x] World primitive art nodes are removed/replaced by imported map art.
 - [x] Forest Gateway advances QuestSystem to `Get Swordsman Certification`.
 - [x] Forest Gateway records the `forest_guard` checkpoint.
-- [x] `Rebuilding Swordsman Guild` activates from the Forest Gateway flow.
+- [x] `Rebuilding Swordsman Guild` does not activate from the Forest Gateway flow.
 - [x] Enemy drops exist.
 - [x] Inventory/consume behavior exists in Field.
-- [ ] Weapon/armor equipment effects exist in Field.
+- [x] Certified Forest Gateway shows the open-path endpoint instead of the original Guard block.
+- [x] Certified Forest Guard interaction shows the open-path endpoint without reverting the quest objective.
+- [x] Weapon/armor equipment effects exist in Field.

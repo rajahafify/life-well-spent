@@ -329,7 +329,7 @@ When done, manual QA should pass:
 6. Slime/Bat/Rat visible.
 7. Click Forest Guard from far: player approaches.
 8. Guard dialog opens only in talk range.
-9. Guard dialog pages work with Next/Close.
+9. Guard dialog pages work with Next, and Close appears only on the final page.
 10. Forest path is blocked.
 11. Walk into Town portal: returns to Town.
 12. Godot output has no errors.

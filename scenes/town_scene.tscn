@@ -228,12 +228,14 @@ text = "NPC"
 
 [node name="BodyLabel" type="Label" parent="UI/DialogPanel/VBox"]
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_font_sizes/font_size = 30
 autowrap_mode = 3
 text = "Hello."
 
 [node name="Buttons" type="HBoxContainer" parent="UI/DialogPanel/VBox"]
 layout_mode = 2
+alignment = 2
 
 [node name="AcceptQuestButton" type="Button" parent="UI/DialogPanel/VBox/Buttons"]
 layout_mode = 2
@@ -243,7 +245,7 @@ text = "Accept"
 [node name="CompleteQuestButton" type="Button" parent="UI/DialogPanel/VBox/Buttons"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "Complete"
+text = "Complete Quest"
 
 [node name="NextButton" type="Button" parent="UI/DialogPanel/VBox/Buttons"]
 layout_mode = 2
@@ -254,3 +256,45 @@ text = "Next"
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Close"
+
+[node name="RebirthPanel" type="PanelContainer" parent="UI"]
+visible = false
+offset_left = 610.0
+offset_top = 280.0
+offset_right = 1310.0
+offset_bottom = 560.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dialog")
+
+[node name="VBox" type="VBoxContainer" parent="UI/RebirthPanel"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="UI/RebirthPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Game Over"
+horizontal_alignment = 1
+
+[node name="MessageLabel" type="Label" parent="UI/RebirthPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+autowrap_mode = 3
+text = "You spent this life."
+horizontal_alignment = 1
+
+[node name="SummaryLabel" type="Label" parent="UI/RebirthPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 24
+autowrap_mode = 3
+text = "Run Summary"
+horizontal_alignment = 1
+
+[node name="RebirthButton" type="Button" parent="UI/RebirthPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Rebirth"
+
+[node name="EndGameButton" type="Button" parent="UI/RebirthPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "End Game"

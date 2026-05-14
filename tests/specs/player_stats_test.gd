@@ -33,6 +33,10 @@ func test_initial_state_is_alive() -> void:
 	assert_eq("alive", player.state)
 
 
+func test_initial_game_over_is_not_requested() -> void:
+	assert_false(player.game_over_requested)
+
+
 # ─── Quest Deductions ────────────────────────────────────────────────
 
 func test_take_quest_costs_no_hp() -> void:
@@ -98,9 +102,24 @@ func test_rebirth_resets_state_to_alive() -> void:
 	assert_eq("alive", player.state)
 
 
+func test_rebirth_clears_game_over_request() -> void:
+	player.max_hp = 40
+	player.complete_quest()
+	player.rebirth()
+	assert_false(player.game_over_requested)
+
+
 func test_rebirth_preserves_unlocked_facilities() -> void:
 	player.unlocked_facilities.append("workshop")
 	player.max_hp = 40
 	player.complete_quest()
 	player.rebirth()
 	assert_in("workshop", player.unlocked_facilities, "workshop should survive rebirth")
+
+
+func test_rebirth_preserves_swordsman_guild_unlock() -> void:
+	player.unlock_facility("swordsman_guild")
+	player.max_hp = 40
+	player.complete_quest()
+	player.rebirth()
+	assert_in("swordsman_guild", player.unlocked_facilities)

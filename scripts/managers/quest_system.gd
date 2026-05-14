@@ -32,6 +32,10 @@ func advance_main_quest_objective(main_id: String, objective_id: String) -> bool
 	return quests.advance_main_quest_objective(main_id, objective_id)
 
 
+func activate_swordsman_guild_chain() -> bool:
+	return quests.activate_swordsman_guild_chain()
+
+
 func mark_main_checkpoint(main_id: String, checkpoint_id: String) -> bool:
 	return quests.mark_main_checkpoint(main_id, checkpoint_id)
 
@@ -48,8 +52,44 @@ func is_side_quest_active(chain_id: String) -> bool:
 	return quests.is_side_quest_active(chain_id)
 
 
+func side_quest_step(chain_id: String) -> int:
+	return quests.side_quest_step(chain_id)
+
+
+func current_side_quest_objective_text(chain_id: String) -> String:
+	return quests.current_side_quest_objective_text(chain_id)
+
+
+func record_enemy_defeated(enemy_id: String) -> bool:
+	return quests.record_enemy_defeated(enemy_id)
+
+
+func record_item_gathered(item_id: String, quantity: int = 1) -> bool:
+	return quests.record_item_gathered(item_id, quantity)
+
+
+func sync_current_item_objective(item_id: String, quantity: int) -> bool:
+	return quests.sync_current_item_objective(item_id, quantity)
+
+
+func is_current_side_quest_step_complete(chain_id: String) -> bool:
+	return quests.is_current_side_quest_step_complete(chain_id)
+
+
+func advance_side_quest_step(chain_id: String) -> bool:
+	return quests.advance_side_quest_step(chain_id)
+
+
 func complete_side_quest_chain(chain_id: String) -> bool:
 	return quests.complete_side_quest_chain(chain_id)
+
+
+func has_seen_town_reborn_intro() -> bool:
+	return quests.has_seen_town_reborn_intro()
+
+
+func mark_town_reborn_intro_seen() -> bool:
+	return quests.mark_town_reborn_intro_seen()
 
 
 func has_certification(certification_id: String) -> bool:

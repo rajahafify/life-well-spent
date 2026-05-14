@@ -60,7 +60,7 @@ Prototype truth: Forest access requires Swordsman Guild certification, and certi
 - **Forest Gate** — Guard blocks Forest and advances the main quest to `Get Swordsman Certification`.
 - **Swordsman Guild Quest** — 3 ordered quest steps; each completion costs Life; final unlock ends run.
 - **Combat** — Field combat damages current Life and grants XP.
-- **Inventory** — Wooden Sword, Cloth Armor, Apple x3.
+- **Inventory** — starts empty; quest rewards and enemy drops add equipment, consumables, and materials.
 - **UI** — HUD, dialog, quest status, Game Over.
 - **Rebirth** — restarts run; persistence rules still open.
 

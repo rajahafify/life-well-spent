@@ -34,7 +34,7 @@ Single source of truth for prototype run progression.
 ## Rules
 
 - New run starts with `life = 100` and `max_life = 100`.
-- Forest Gate encounter advances `Explore the World` to `Get Swordsman Certification` and activates `Rebuilding Swordsman Guild`.
+- Forest Gate encounter advances `Explore the World` to `Get Swordsman Certification`; Guildmaster activates `Rebuilding Swordsman Guild` when the player returns to Town.
 - Guild step completion spends Max Life and clamps current Life to Max Life.
 - Combat damage reduces current Life.
 - Healing restores current Life up to Max Life only; it never restores Max Life.

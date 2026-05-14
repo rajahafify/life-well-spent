@@ -68,3 +68,12 @@ func test_write_and_read_save_file() -> void:
 	assert_true(save_manager.save_to_file(path, player, quests, life))
 	var data: Dictionary = save_manager.load_from_file(path)
 	assert_eq(10, data.life.xp)
+
+
+func test_profile_save_data_preserves_swordsman_guild_unlock() -> void:
+	player.unlock_facility("swordsman_guild")
+	var data: Dictionary = save_manager.build_profile_data(player)
+	var restored_player := PlayerStats.new()
+	save_manager.apply_profile_data(data, restored_player)
+	assert_in("swordsman_guild", restored_player.unlocked_facilities)
+	restored_player.free()

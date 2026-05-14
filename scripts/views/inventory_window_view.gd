@@ -3,6 +3,7 @@ class_name InventoryWindowView
 extends PanelContainer
 
 signal close_requested
+signal equip_item_requested(item_id: String, equipment_slot: String)
 
 var _item_list: VBoxContainer
 var _slot_list: VBoxContainer
@@ -31,7 +32,7 @@ func show_inventory(inventory) -> void:
 		_add_item_label("No items")
 		return
 	for row in inventory.items_list():
-		_add_item_label("%s x%d" % [str(row["item_id"]), int(row["quantity"])])
+		_add_item_row(row)
 	if _item_list.get_child_count() == 0:
 		_add_item_label("No items")
 
@@ -74,6 +75,27 @@ func _add_item_label(text: String) -> void:
 	label.text = text
 	label.add_theme_font_size_override("font_size", 24)
 	_item_list.add_child(label)
+
+
+func _add_item_row(row: Dictionary) -> void:
+	var item_id := str(row.get("item_id", ""))
+	var quantity := int(row.get("quantity", 0))
+	var equipment_slot := str(row.get("equipment_slot", ""))
+	if equipment_slot == "":
+		_add_item_label("%s x%d" % [item_id, quantity])
+		return
+	var line := HBoxContainer.new()
+	var label := Label.new()
+	label.text = "%s x%d" % [item_id, quantity]
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.add_theme_font_size_override("font_size", 24)
+	line.add_child(label)
+	var button := Button.new()
+	button.text = "Equip"
+	button.add_theme_font_size_override("font_size", 20)
+	button.pressed.connect(func(): equip_item_requested.emit(item_id, equipment_slot))
+	line.add_child(button)
+	_item_list.add_child(line)
 
 
 func _on_close_pressed() -> void:

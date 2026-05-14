@@ -15,8 +15,7 @@ Available only after Forest Guard blocks Forest path.
 ## Verbs
 
 - Talk
-- Accept
-- Complete
+- Claim Reward
 - Spend
 - Age
 - Unlock
@@ -65,5 +64,5 @@ It is earned with life.
 Final:
 
 ```text
-SWORDSMAN GUILD UNLOCKED
+Reward: Swordsman Guild Unlocked
 ```

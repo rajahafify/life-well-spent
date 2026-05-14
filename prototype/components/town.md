@@ -185,6 +185,7 @@ Old roads have a way of calling again.
 - Player
 - Camera
 - Shared HUD
+- Player aging sprites: `assets/player_age_1.png`, `assets/player_age_2.png`, `assets/player_age_3.png`, plus `_sword` and `_sword_armor` variants when Training Sword and Leather Armor are equipped
 - Start/reborn dialog
 - Dialog Panel
 - Shop building
@@ -264,11 +265,14 @@ Town must show the start/reborn copy through the dialog panel.
 - Player can leave Town via Field Gateway.
 - Shop and Blacksmith services are not available yet.
 - Guildmaster reacts when QuestSystem says the main objective is `Get Swordsman Certification`.
+- Guildmaster starts `Rebuilding Swordsman Guild` only after the Forest Guard checkpoint has been recorded.
+- Guildmaster certification uses the reusable quest dialog flow: incomplete steps show Close only on the final page, completed steps show `Claim Reward` only on the final page, and claim opens a separate Reward panel.
+- Guildmaster certification refreshes the player sprite after Max Life changes.
 
 Future rules:
 
 - Swordsman Guild quest completion is locked until the `Rebuilding Swordsman Guild` side quest chain is active.
-- Guildmaster offers the chain after Field advances `Explore the World` to `Get Swordsman Certification`.
+- Guildmaster offers the chain after Field advances `Explore the World` to `Get Swordsman Certification`; Field does not start the side chain early.
 - Each guild quest step costs 40 Life / remaining Life.
 - Step 3 triggers Swordsman Guild unlock and Game Over.
 
@@ -276,8 +280,11 @@ Future rules:
 
 First Town slice:
 
-- On scene start: show reborn copy in a dialog box.
+- On first scene start for the current runtime: show reborn copy in a dialog box.
+- On later Town entries: do not replay the reborn copy.
 - On ground click while dialog is closed: route Player movement to `CharacterMovement`.
+- While left mouse is held and dialog is closed: keep updating Player movement destination to the mouse position.
+- While the pointer is over HUD controls: do not route mouse input to Player movement.
 - Camera follows Player with RO-style upward offset.
 - On ground click while dialog is open: block movement.
 - On far NPC click: Player walks toward NPC talk point, dialog remains closed.
@@ -290,10 +297,15 @@ First Town slice:
 Future conditions:
 
 - If main objective is `Find the Forest path`: Guildmaster shows worldbuilding dialog.
-- If main objective is `Get Swordsman Certification` and `swordsman_chain_step = 0`: Guildmaster points player at `Rebuilding Swordsman Guild`.
-- If `swordsman_chain_step = 1`: Guildmaster offers step 2.
-- If `swordsman_chain_step = 2`: Guildmaster offers step 3.
+- If main objective is `Get Swordsman Certification` and `swordsman_chain_step = 0`: Guildmaster offers the 10-Slime stance trial.
+- If `swordsman_chain_step = 1`: Guildmaster offers the 2-Bat-Wing guard trial.
+- If `swordsman_chain_step = 2`: Guildmaster offers the 2-Rat Life oath trial.
 - If `swordsman_chain_step = 3`: Swordsman Guild is unlocked, Game Over requested.
+- If Max Life is `100`: Player uses `player_age_1.png`.
+- If Max Life is `60`: Player uses `player_age_2.png`.
+- If Max Life is `20` or lower: Player uses `player_age_3.png`.
+- If `training_sword` is equipped: Town uses the matching `_sword` variant for the current Max Life stage.
+- If `training_sword` and `leather_armor` are equipped: Town uses the matching `_sword_armor` variant for the current Max Life stage.
 
 ## Permissions
 
@@ -310,7 +322,8 @@ Player cannot:
 - heal Life
 - use Shop inventory in first slice
 - use Blacksmith services in first slice
-- complete Swordsman Guild quest steps in this slice
+- complete Swordsman Guild quest steps before the Forest Guard checkpoint
+- complete Swordsman Guild quest steps before their objectives are done
 
 ## Primitive / SVG Art Direction
 
@@ -326,10 +339,12 @@ Town uses primitive/SVG world art plus generated LPC character sprites for Playe
 - Interactable NPC zones: faint yellow rings.
 - HUD/dialog: dark translucent or parchment-like rectangles.
 - Dialog text uses 1080p-readable sizes: name 28, body 30, buttons 24.
+- Dialog buttons stay at the bottom-right of the dialog panel.
 - NPC overhead name labels are hidden by default; names appear in dialog only.
 - Dialog shows NPC face portrait above the dialog box using an AtlasTexture face crop from the NPC LPC spritesheet.
 - Dialog pages split on blank lines and advance with `Next`.
 - Character idle uses calm walk-row standing frames instead of LPC spellcast/prayer rows.
+- Player visual aging uses normal hair, grey hair/beard, and white hair/beard LPC sprites as Max Life is spent.
 - Town NPC idle cycles use different intervals for subtle desync.
 - World primitive `Control` nodes use `mouse_filter = ignore` so ground clicks reach Town movement.
 - Project viewport: 1920×1080.
@@ -397,7 +412,7 @@ Player can:
 6. Talk to Guildmaster for paged rebuilding hope dialog.
 7. Talk to Shopkeeper for paged ordinary-life dialog.
 8. Talk to Smith for paged old-tools dialog.
-9. Use `Next` to advance dialog pages; use `Close` to exit dialog.
+9. Use `Next` to advance dialog pages; `Close` appears only on the last dialog page.
 10. Walk into glowing Field gateway.
 11. Gateway records Field target and transitions directly.
 
@@ -432,3 +447,5 @@ Player can:
 - [ ] World primitives ignore mouse input so ground click-to-move works.
 - [ ] Guildmaster, Shopkeeper, and Smith use distinct generated LPC sprites.
 - [ ] Guildmaster, Shopkeeper, and Smith scale to `Vector2(2, 2)` to match player size.
+- [x] Player starts with age stage 1 sprite.
+- [x] Certification Max Life spend updates the player aging sprite.

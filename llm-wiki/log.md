@@ -1,5 +1,144 @@
 # Wiki Log
 
+## [2026-05-14] fix | Gate quest claims to final dialog page
+
+- RED: added TownDialogView and MainMenu specs for final-page-only claim actions and New Game auto-rebirth after an ended run.
+- Dialog action buttons now appear only on the final page of a paged dialog, matching Close behavior.
+- Main Menu New Game now auto-rebirths saved players with `game_over_requested`, resets run inventory, saves the profile, and preserves persistent unlocks such as Swordsman Guild.
+- Documented prototype progression as playable end-to-end through Swordsman Guild unlock, Game Over summary, Rebirth or End Game, and certified Forest access.
+- Validation: full suite `442 tests, 442 passed, 0 failed`.
+
+## [2026-05-14] fix | Add Game Over run summary and leather armor color
+
+- RED: added `RunSummaryModel`, Town dialog, and player aging asset specs for run summary output, Game Over buttons, inventory reset on Rebirth, and brown leather armor sprites.
+- Added pure `RunSummaryModel` for Game Over summary text covering run items and unlocked facilities.
+- Town final certification now shows a Game Over panel with run summary, Rebirth reset, and End Game routing to the main menu.
+- Recolored sword+armor player sheets from generator-grey armor to brown leather armor while preserving the age and weapon layers.
+- Validation: full suite `438 tests, 438 passed, 0 failed`.
+
+## [2026-05-14] refactor | Systemize quest dialog flow
+
+- RED: added `QuestDialogFlow` specs for normal, incomplete quest, complete quest, item reward, and unlock reward panels.
+- Added pure `QuestDialogFlow` so future quest givers can reuse the same dialog structure instead of duplicating Guildmaster branching in controllers.
+- Town now builds Guildmaster panels through the reusable flow and only keeps scene side effects such as reward grants, Life spend, profile save, and rebirth display.
+- Validation: full suite `434 tests, 434 passed, 0 failed`.
+
+## [2026-05-14] fix | Tighten progression QA blockers
+
+- RED: added QuestManager, Town, Field, InventoryModel, InventoryWindowView, SharedHUD, EquipmentStats, and PlayerAging specs for immediate Guildmaster quest display, inventory-count Bat Wings, profile-backed Field aging, equipment actions, weapon visuals, equipment combat bonuses, and close-ready attack leash behavior.
+- Town now refreshes Quest Window as soon as Guildmaster starts the chain and syncs the Bat Wing objective from current inventory.
+- Field now reads ProfileSystem Max Life for Life/age state, and player auto-attack requires close range first before using a larger leash against moving enemies.
+- Inventory starts with empty weapon, armor, consumable, and shortcut slots; inventory rows can equip owned `training_sword`, `leather_armor`, and `apple`.
+- Guildmaster dialogs now separate normal copy, incomplete quest copy with Close only, completed quest copy with `Claim Reward`, and post-claim Reward panels.
+- Guildmaster rewards are now Training Sword, Leather Armor, then Swordsman Guild unlock before game over/rebirth.
+- Equipment now has gameplay and visual effects: Training Sword adds attack, Leather Armor adds defense, and equipped sprite selection supports bare, sword, and sword+armor variants.
+- Generated nine complete LPC player sheets: three bare age sprites, three sword age sprites, and three sword+armor age sprites.
+- Validation: full suite `429 tests, 429 passed, 0 failed`.
+
+## [2026-05-13] fix | Delay Guildmaster quest activation
+
+- RED: added QuestManager, Field, and Town specs for no early side-chain activation, Guildmaster-started activation, `Complete Quest` button copy, and hidden completion until the active objective is done.
+- Field Forest Guard now records the checkpoint and certification objective only; Town Guildmaster activates `Rebuilding Swordsman Guild` after the player returns.
+- Increased active Field enemies to 12 with five Bats so the 20% Bat Wing gather objective is practical to QA.
+- Updated progression, Town, Field, Forest Gate, Run State, QuestManager, QuestSystem, and scene wiki docs.
+- Validation: full suite `396 tests, 396 passed, 0 failed`.
+
+## [2026-05-13] feature | Complete progression endpoint loop
+
+- RED: added SaveManager, Town, Field, and Forest specs for profile unlock persistence, final rebirth panel, certified Forest transition, and Forest endpoint return.
+- Added `ProfileSystem` autoload, profile save/load helpers, Town `RebirthPanel`, `scenes/forest.tscn`, and `Forest` controller.
+- Certified Forest Gateway now transitions to Forest; Forest Guard still shows the open-path copy without reverting the objective.
+- Validation: full suite `392 tests, 392 passed, 0 failed`.
+
+## [2026-05-13] balance | Add rare enemy loot drops
+
+- RED: updated EnemyBehaviorSystem and Field specs so enemy loot tables expose the requested 5% rare drops.
+- Slime keeps `slime_gel` at 20% and now drops `apple` at 5%; Bat keeps `bat_wing` at 20% and can drop `training_sword` at 5%; Rat keeps `rat_tail` at 20% and can drop `leather_armor` at 5%.
+- Updated prototype and wiki docs for the material and rare drop split.
+- Validation: full suite `385 tests, 385 passed, 0 failed`.
+
+## [2026-05-13] balance | Make material drops 20 percent
+
+- RED: updated EnemyBehaviorSystem and Field specs so Slime, Bat, and Rat material drops use `chance_numerator = 1`, `chance_denominator = 5`.
+- Material drops now roll at 20% instead of dropping 100%; Apple remains a separate 20% chance drop.
+- Field quest gather specs force successful drop rolls where deterministic Bat Wing progress is needed.
+- Validation: full suite `385 tests, 385 passed, 0 failed`.
+
+## [2026-05-13] design | Change Guildmaster step two to gathering
+
+- RED: added QuestManager and Field specs for Bat Wing gather objective progress and enemy-defeat filtering on gather objectives.
+- Step two of the Swordsman Guild chain is now `Gather 2 Bat Wings for Guildmaster guard training.` instead of another kill-count task.
+- Field reports matching material drops through `QuestSystem.record_item_gathered()`.
+- Validation: full suite `384 tests, 384 passed, 0 failed`.
+
+## [2026-05-13] feature | Add objective-backed Guildmaster quest chain
+
+- RED: added QuestManager, ProgressionModel, Town, and Field specs for objective progress, wrong-enemy filtering, incomplete-objective rejection, completion-button gating, and Slime kill quest progress.
+- `QuestManager` now tracks per-step Swordsman Guild objective progress: 10 Slimes, 2 Bat Wings, then 2 Rats.
+- Field enemy defeats report into `QuestSystem`; Town and Field quest windows show side-objective progress.
+- Guildmaster completion is hidden and model-rejected until the current objective is complete.
+- Validation: full suite `381 tests, 381 passed, 0 failed`.
+
+## [2026-05-13] feature | Name Guildmaster certification quest steps
+
+- RED: added QuestManager and Town specs for three Guildmaster-owned Swordsman Guild quest objectives.
+- `QuestManager` now exposes current side quest objective text for the `Rebuilding Swordsman Guild` chain.
+- Guildmaster certification copy now shows old stance training, guard and footwork training, then the Life oath instead of generic numbered steps.
+- Validation: full suite `375 tests, 375 passed, 0 failed`.
+
+## [2026-05-13] feature | Add player aging sprites
+
+- RED: added PlayerAgingModel, Town, and Field specs for Life-based player sprite aging.
+- Generated `player_age_1.png`, `player_age_2.png`, and `player_age_3.png` as normal hair, grey hair/beard, and white hair/beard LPC age stages.
+- Town and Field now apply age sprites from `PlayerAgingModel`; Town updates the sprite after certification Life spend.
+- Validation: full suite `369 tests, 369 passed, 0 failed`.
+
+## [2026-05-13] fix | Block HUD clicks from player movement
+
+- RED: added SharedHUD, Town, and Field specs for Inventory button pointer blocking world movement.
+- SharedHUD now exposes `blocks_world_mouse_at()` for visible HUD controls.
+- Town and Field now ignore initial and held mouse movement while the pointer is over HUD controls.
+- Validation: full suite `354 tests, 354 passed, 0 failed`.
+
+## [2026-05-13] style | Stick dialog buttons bottom-right
+
+- RED: added Town and Field scene specs for bottom-right dialog button layout.
+- Dialog body labels now expand vertically and dialog button rows align to the right in both Town and Field scenes.
+- Validation: full suite `351 tests, 351 passed, 0 failed`.
+
+## [2026-05-13] fix | Gate dialog close to final page
+
+- RED: added scene specs for paged dialog Close visibility and the certified Forest endpoint copy.
+- Dialog Close now appears only on the last page while Next handles intermediate pages.
+- Certified Forest endpoint copy now reads `The path to forest is open.`
+- Validation: full suite `349 tests, 349 passed, 0 failed`.
+
+## [2026-05-13] fix | Keep certified Forest objective stable
+
+- RED: added a Field scene regression spec for talking to Forest Guard after Swordsman certification.
+- Forest Guard now uses the certified `To be continued` endpoint after certification instead of re-running the certification checkpoint.
+- Forest checkpoint progression now no-ops after certification or after the main objective has already advanced to `enter_forest`.
+- Validation: full suite `348 tests, 348 passed, 0 failed`.
+
+## [2026-05-13] fix | Polish progression QA issues
+
+- RED: added specs for held-mouse movement in Town/Field, one-time Town reborn intro, Forest endpoint objective after certification, and Town HUD/objective behavior after the final Guild step.
+- Town and Field now continue updating movement destination while the left mouse button is held and no dialog is open.
+- Town reborn intro is tracked through quest runtime state so returning to Town does not replay it every entry.
+- Swordsman certification step 3 now advances the main objective to `Enter the Forest.` after granting certification and unlocking `swordsman_guild`.
+- Validation: full suite `347 tests, 347 passed, 0 failed`.
+
+## [2026-05-13] feature | Complete Swordsman Guild certification progression
+
+- RED: added model specs for side-chain steps, certification step completion, game-over request, and persistent `swordsman_guild` unlock after rebirth.
+- RED: added scene specs for Guildmaster quest-completion certification, final achievement unlock, HUD Life update, and certified Forest `To be continued` endpoint.
+- Added `QuestManager.side_quest_step()` / `advance_side_quest_step()` plus `QuestSystem` wrappers.
+- Added `PlayerStats.game_over_requested` and idempotent `unlock_facility()`.
+- Added `ProgressionModel.complete_swordsman_certification_step()` for the three Life-spend certification completions.
+- Wired Town Guildmaster completion button to certification progression and Field Forest Gateway to the certified prototype endpoint.
+- Updated prototype and LLM wiki documentation for progression, Town, Field, QuestManager, PlayerStats, and ProgressionModel.
+- Validation: full suite `341 tests, 341 passed, 0 failed`.
+
 ## [2026-05-13] refactor | Fix Field SOLID and TDD review findings
 
 - RED: added focused specs for `EnemyLibrary`, `EnemyState`, combat defense floors, InventoryWindow close signal, and SharedHUD input edge cases.

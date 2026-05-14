@@ -27,9 +27,9 @@ func test_inventory_system_provides_model_for_shared_hud_window() -> void:
 	assert_not_null(model)
 	if model:
 		assert_eq(1, model.quantity("bat_wing"))
-		assert_eq("wooden_sword", model.weapon_slot)
-		assert_eq("cloth_armor", model.armor_slot)
-		assert_eq("apple", model.consumable_slot)
+		assert_eq("", model.weapon_slot)
+		assert_eq("", model.armor_slot)
+		assert_eq("", model.consumable_slot)
 
 
 func test_inventory_system_reset_restores_starter_slots() -> void:
@@ -39,9 +39,9 @@ func test_inventory_system_reset_restores_starter_slots() -> void:
 	model.equip_armor("leather_armor")
 	model.set_consumable("berry")
 	system.reset()
-	assert_eq("wooden_sword", model.weapon_slot)
-	assert_eq("cloth_armor", model.armor_slot)
-	assert_eq("apple", model.consumable_slot)
+	assert_eq("", model.weapon_slot)
+	assert_eq("", model.armor_slot)
+	assert_eq("", model.consumable_slot)
 
 
 func _inventory_system() -> Node:
