@@ -225,6 +225,27 @@ func record_item_gathered(item_id: String, quantity: int = 1) -> bool:
 	return _advance_swordsman_objective_progress(chain, step, quantity)
 
 
+func sync_current_item_objective(item_id: String, quantity: int) -> bool:
+	if quantity < 0 or not is_side_quest_active(SIDE_REBUILD_SWORDSMAN_GUILD):
+		return false
+	var chain: Dictionary = side_quest_chains[SIDE_REBUILD_SWORDSMAN_GUILD]
+	var step := int(chain.get("step", 0))
+	var objective := _swordsman_objective_for_step(step)
+	if objective.is_empty() or str(objective.get("type", "enemy")) != "item" or str(objective.get("item_id", "")) != item_id:
+		return false
+	var required := int(objective.get("required", 1))
+	var progress: Dictionary = Dictionary(chain.get(PROGRESS_KEY, {})).duplicate(true)
+	var progress_key := str(step)
+	var current := int(progress.get(progress_key, 0))
+	var next_progress = max(current, mini(quantity, required))
+	if int(progress.get(progress_key, 0)) == next_progress:
+		return false
+	progress[progress_key] = next_progress
+	chain[PROGRESS_KEY] = progress
+	side_quest_chains[SIDE_REBUILD_SWORDSMAN_GUILD] = chain
+	return true
+
+
 func _advance_swordsman_objective_progress(chain: Dictionary, step: int, amount: int) -> bool:
 	var objective := _swordsman_objective_for_step(step)
 	if objective.is_empty():

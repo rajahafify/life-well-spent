@@ -68,6 +68,10 @@ func record_item_gathered(item_id: String, quantity: int = 1) -> bool:
 	return quests.record_item_gathered(item_id, quantity)
 
 
+func sync_current_item_objective(item_id: String, quantity: int) -> bool:
+	return quests.sync_current_item_objective(item_id, quantity)
+
+
 func is_current_side_quest_step_complete(chain_id: String) -> bool:
 	return quests.is_current_side_quest_step_complete(chain_id)
 

@@ -1,7 +1,7 @@
 ---
 title: InventoryModel
 type: reference
-updated: 2026-05-13
+updated: 2026-05-14
 sources:
   - scripts/models/inventory_model.gd
   - tests/specs/inventory_model_test.gd
@@ -26,6 +26,9 @@ func quantity(item_id: String) -> int
 func consume_item(item_id: String, amount: int = 1) -> bool
 func equip_weapon(item_id: String) -> bool
 func equip_armor(item_id: String) -> bool
+func can_equip_weapon(item_id: String) -> bool
+func can_equip_armor(item_id: String) -> bool
+func equipment_slot_for_item(item_id: String) -> String
 func set_consumable(item_id: String) -> bool
 func assign_shortcut(slot_number: int, item_id: String) -> bool
 func shortcut_item(slot_number: int) -> String
@@ -42,17 +45,18 @@ func apply_dict(data: Dictionary) -> void
 - Item IDs are plain strings for the first drop slice.
 - Invalid item IDs and non-positive quantities are rejected.
 - `consume_item()` reduces stacks only when enough quantity exists, erasing stacks that reach zero.
-- Starter slots are `wooden_sword`, `cloth_armor`, and `apple`.
-- Shortcut slots map number keys `1` through `9` to item IDs; slot 1 starts as `apple`.
-- Equipment slot setters reject blank IDs but do not yet validate item ownership; equipping rules remain future work.
+- Starter equipment, consumable, and shortcut slots are empty.
+- Shortcut slots map number keys `1` through `9` to item IDs; slot 1 remains empty until a consumable is equipped.
+- Weapon, armor, and consumable equip calls require the matching item to exist in inventory. Current equipment IDs are `training_sword` for weapon, `leather_armor` for armor, and `apple` for consumable.
 - `items_list()` is the public read model for stack rows. Views must use it instead of reading `item_counts` directly.
+- `items_list()` includes `equipment_slot` metadata so inventory UI can render an Equip action without hard-coding item IDs in the view.
 - `InventorySystem` owns the runtime instance so drops persist across scene changes.
 
 ## Test Coverage
 
-- `tests/specs/inventory_model_test.gd` covers empty state, starter equipment slots, starter shortcut slot, stack adds, consume behavior, invalid add rejection, slot setter rejection, shortcut assignment bounds, save round-trip, slot summary text, public sorted `items_list()` rows, and item summary text.
-- `tests/specs/inventory_system_test.gd` covers global stack counts, starter slot access through the shared HUD model, and reset restoring starter slots.
-- `tests/specs/field_scene_test.gd` covers Field granting `slime_gel` on a forced successful Slime material-drop roll and consuming Apple through the shortcut bar.
+- `tests/specs/inventory_model_test.gd` covers empty state, empty equipment/consumable/shortcut slots, stack adds, consume behavior, invalid add rejection, equipment ownership checks, slot setter rejection, shortcut assignment bounds, save round-trip, slot summary text, public sorted `items_list()` rows, and item summary text.
+- `tests/specs/inventory_system_test.gd` covers global stack counts, empty slot access through the shared HUD model, and reset restoring empty slots.
+- `tests/specs/field_scene_test.gd` covers Field granting `slime_gel` on a forced successful Slime material-drop roll, consuming Apple through the shortcut bar, and applying Training Sword attack damage through the equipped weapon slot.
 
 ## Related
 

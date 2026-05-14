@@ -13,6 +13,8 @@ var root: Node
 
 
 func setup() -> void:
+	if ProfileSystem:
+		ProfileSystem.reset_for_tests()
 	var scene: PackedScene = load(FIELD_SCENE)
 	assert_not_null(scene, "Field scene should load")
 	if scene:
@@ -25,6 +27,8 @@ func teardown() -> void:
 	if root:
 		root.free()
 		root = null
+	if ProfileSystem:
+		ProfileSystem.reset_for_tests()
 
 
 func _start_guildmaster_chain_for_test() -> void:
@@ -62,6 +66,21 @@ func test_field_player_uses_age_stage_one_sprite() -> void:
 		return
 	var sprite := root.get_node("Player/Sprite") as Sprite2D
 	assert_true(sprite.texture.resource_path.ends_with("player_age_1.png"))
+
+
+func test_field_player_uses_profile_age_stage_two_sprite() -> void:
+	if root:
+		root.free()
+		root = null
+	if ProfileSystem:
+		ProfileSystem.reset_for_tests()
+		ProfileSystem.player().max_hp = 60
+	var scene: PackedScene = load(FIELD_SCENE)
+	root = scene.instantiate()
+	root._ready()
+	var sprite := root.get_node("Player/Sprite") as Sprite2D
+	assert_true(sprite.texture.resource_path.ends_with("player_age_2.png"))
+	assert_eq(60, root.player_max_life)
 
 
 func test_field_has_town_gateway_spawn_point_near_portal() -> void:
@@ -434,6 +453,53 @@ func test_auto_attack_damages_slime_and_reveals_hp_bar() -> void:
 	assert_true(slime_hp_bar.visible, "enemy HP bar should appear after the enemy is attacked")
 	assert_true(root.enemy_state("field_slime_001").is_aggro)
 	assert_true(root.is_camera_shaking(), "player hit should start a small camera shake")
+
+
+func test_equipped_training_sword_increases_player_attack_damage() -> void:
+	if root == null:
+		return
+	var player: Node2D = root.get_node("Player") as Node2D
+	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
+	root.inventory.add_item("training_sword", 1)
+	root.inventory.equip_weapon("training_sword")
+	player.global_position = Vector2(500, 500)
+	slime.global_position = Vector2(530, 500)
+	root.enemy_state("field_slime_001").position = slime.global_position
+	root.engage_enemy("field_slime_001")
+	root._physics_process(1.5)
+	assert_eq(90, root.enemy_state("field_slime_001").hp)
+
+
+func test_auto_attack_waits_until_player_reaches_close_attack_ready_range() -> void:
+	if root == null:
+		return
+	var player: Node2D = root.get_node("Player") as Node2D
+	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
+	player.global_position = Vector2(500, 500)
+	slime.global_position = Vector2(650, 500)
+	root.enemy_state("field_slime_001").position = slime.global_position
+	root.engage_enemy("field_slime_001")
+	root._physics_process(1.5)
+	assert_eq(140, root.enemy_state("field_slime_001").hp)
+	assert_false(root.is_player_target_attack_ready())
+
+
+func test_auto_attack_continues_inside_leash_after_enemy_moves_away() -> void:
+	if root == null:
+		return
+	var player: Node2D = root.get_node("Player") as Node2D
+	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
+	player.global_position = Vector2(500, 500)
+	slime.global_position = Vector2(596, 500)
+	root.enemy_state("field_slime_001").position = slime.global_position
+	root.engage_enemy("field_slime_001")
+	root._physics_process(1.5)
+	var hp_after_first_hit: int = root.enemy_state("field_slime_001").hp
+	assert_true(hp_after_first_hit < 140)
+	slime.global_position = Vector2(680, 500)
+	root.enemy_state("field_slime_001").position = slime.global_position
+	root._physics_process(1.5)
+	assert_true(root.enemy_state("field_slime_001").hp < hp_after_first_hit)
 
 
 func test_enemy_attack_damages_player_life_and_shows_red_damage() -> void:

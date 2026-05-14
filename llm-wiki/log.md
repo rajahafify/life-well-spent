@@ -1,5 +1,40 @@
 # Wiki Log
 
+## [2026-05-14] fix | Gate quest claims to final dialog page
+
+- RED: added TownDialogView and MainMenu specs for final-page-only claim actions and New Game auto-rebirth after an ended run.
+- Dialog action buttons now appear only on the final page of a paged dialog, matching Close behavior.
+- Main Menu New Game now auto-rebirths saved players with `game_over_requested`, resets run inventory, saves the profile, and preserves persistent unlocks such as Swordsman Guild.
+- Documented prototype progression as playable end-to-end through Swordsman Guild unlock, Game Over summary, Rebirth or End Game, and certified Forest access.
+- Validation: full suite `442 tests, 442 passed, 0 failed`.
+
+## [2026-05-14] fix | Add Game Over run summary and leather armor color
+
+- RED: added `RunSummaryModel`, Town dialog, and player aging asset specs for run summary output, Game Over buttons, inventory reset on Rebirth, and brown leather armor sprites.
+- Added pure `RunSummaryModel` for Game Over summary text covering run items and unlocked facilities.
+- Town final certification now shows a Game Over panel with run summary, Rebirth reset, and End Game routing to the main menu.
+- Recolored sword+armor player sheets from generator-grey armor to brown leather armor while preserving the age and weapon layers.
+- Validation: full suite `438 tests, 438 passed, 0 failed`.
+
+## [2026-05-14] refactor | Systemize quest dialog flow
+
+- RED: added `QuestDialogFlow` specs for normal, incomplete quest, complete quest, item reward, and unlock reward panels.
+- Added pure `QuestDialogFlow` so future quest givers can reuse the same dialog structure instead of duplicating Guildmaster branching in controllers.
+- Town now builds Guildmaster panels through the reusable flow and only keeps scene side effects such as reward grants, Life spend, profile save, and rebirth display.
+- Validation: full suite `434 tests, 434 passed, 0 failed`.
+
+## [2026-05-14] fix | Tighten progression QA blockers
+
+- RED: added QuestManager, Town, Field, InventoryModel, InventoryWindowView, SharedHUD, EquipmentStats, and PlayerAging specs for immediate Guildmaster quest display, inventory-count Bat Wings, profile-backed Field aging, equipment actions, weapon visuals, equipment combat bonuses, and close-ready attack leash behavior.
+- Town now refreshes Quest Window as soon as Guildmaster starts the chain and syncs the Bat Wing objective from current inventory.
+- Field now reads ProfileSystem Max Life for Life/age state, and player auto-attack requires close range first before using a larger leash against moving enemies.
+- Inventory starts with empty weapon, armor, consumable, and shortcut slots; inventory rows can equip owned `training_sword`, `leather_armor`, and `apple`.
+- Guildmaster dialogs now separate normal copy, incomplete quest copy with Close only, completed quest copy with `Claim Reward`, and post-claim Reward panels.
+- Guildmaster rewards are now Training Sword, Leather Armor, then Swordsman Guild unlock before game over/rebirth.
+- Equipment now has gameplay and visual effects: Training Sword adds attack, Leather Armor adds defense, and equipped sprite selection supports bare, sword, and sword+armor variants.
+- Generated nine complete LPC player sheets: three bare age sprites, three sword age sprites, and three sword+armor age sprites.
+- Validation: full suite `429 tests, 429 passed, 0 failed`.
+
 ## [2026-05-13] fix | Delay Guildmaster quest activation
 
 - RED: added QuestManager, Field, and Town specs for no early side-chain activation, Guildmaster-started activation, `Complete Quest` button copy, and hidden completion until the active objective is done.

@@ -271,18 +271,30 @@ layout_mode = 2
 [node name="TitleLabel" type="Label" parent="UI/RebirthPanel/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
-text = "Life Well Spent"
+text = "Game Over"
 horizontal_alignment = 1
 
 [node name="MessageLabel" type="Label" parent="UI/RebirthPanel/VBox"]
 layout_mode = 2
-size_flags_vertical = 3
 theme_override_font_sizes/font_size = 26
 autowrap_mode = 3
-text = "The Swordsman Guild is restored. Rebirth begins the next life with that work preserved."
+text = "You spent this life."
+horizontal_alignment = 1
+
+[node name="SummaryLabel" type="Label" parent="UI/RebirthPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 24
+autowrap_mode = 3
+text = "Run Summary"
 horizontal_alignment = 1
 
 [node name="RebirthButton" type="Button" parent="UI/RebirthPanel/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "Rebirth"
+
+[node name="EndGameButton" type="Button" parent="UI/RebirthPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "End Game"

@@ -12,8 +12,8 @@ Current implementation:
 - `scenes/ui/shared_hud.tscn` owns the shared Inventory button and `I` key toggle.
 - Town and Field both use the shared HUD.
 - Inventory state has three dedicated slots: `weapon_slot`, `armor_slot`, and `consumable_slot`.
-- Inventory state has 9 shortcut slots mapped to number keys `1` through `9`; slot 1 starts as `apple`.
-- Starter slots are `wooden_sword`, `cloth_armor`, and `apple`.
+- Inventory state has 9 shortcut slots mapped to number keys `1` through `9`; all shortcuts start empty.
+- Weapon, Armor, and Consumable slots start empty.
 - Slime has a 20% chance to drop `slime_gel`.
 - Bat has a 20% chance to drop `bat_wing`.
 - Rat has a 20% chance to drop `rat_tail`.
@@ -21,6 +21,10 @@ Current implementation:
 - Bat has a 5% chance to drop `training_sword`.
 - Rat has a 5% chance to drop `leather_armor`.
 - The inventory window lists current slots above global item stacks.
+- Weapon and armor rows show an Equip button when the item is owned.
+- Equipping `training_sword` updates the Weapon slot; equipping `leather_armor` updates the Armor slot; equipping `apple` updates the Consumable slot and shortcut slot `1`.
+- Equipping `training_sword` adds attack and switches the player to an age-matched sword spritesheet.
+- Equipping `leather_armor` adds defense and, when Training Sword is also equipped, switches the player to the age-matched sword+armor spritesheet.
 - The shared HUD shortcut bar renders pronounced white slots with dark borders.
 - Pressing shortcut `1` uses Apple in Field when available.
 
@@ -32,9 +36,10 @@ Current implementation:
 
 ## Starting Loadout
 
-- Wooden Sword
-- Cloth Armor
-- Apple x3
+- No weapon
+- No armor
+- No consumable
+- No item stacks
 
 ## Verbs
 

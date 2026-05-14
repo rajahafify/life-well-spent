@@ -185,7 +185,7 @@ Old roads have a way of calling again.
 - Player
 - Camera
 - Shared HUD
-- Player aging sprites: `assets/player_age_1.png`, `assets/player_age_2.png`, `assets/player_age_3.png`
+- Player aging sprites: `assets/player_age_1.png`, `assets/player_age_2.png`, `assets/player_age_3.png`, plus `_sword` and `_sword_armor` variants when Training Sword and Leather Armor are equipped
 - Start/reborn dialog
 - Dialog Panel
 - Shop building
@@ -266,7 +266,7 @@ Town must show the start/reborn copy through the dialog panel.
 - Shop and Blacksmith services are not available yet.
 - Guildmaster reacts when QuestSystem says the main objective is `Get Swordsman Certification`.
 - Guildmaster starts `Rebuilding Swordsman Guild` only after the Forest Guard checkpoint has been recorded.
-- Guildmaster certification uses objective-backed quest completion: each step requires the active Field objective before the Complete button appears, then spends Max Life and advances the next Guildmaster step.
+- Guildmaster certification uses the reusable quest dialog flow: incomplete steps show Close only on the final page, completed steps show `Claim Reward` only on the final page, and claim opens a separate Reward panel.
 - Guildmaster certification refreshes the player sprite after Max Life changes.
 
 Future rules:
@@ -304,6 +304,8 @@ Future conditions:
 - If Max Life is `100`: Player uses `player_age_1.png`.
 - If Max Life is `60`: Player uses `player_age_2.png`.
 - If Max Life is `20` or lower: Player uses `player_age_3.png`.
+- If `training_sword` is equipped: Town uses the matching `_sword` variant for the current Max Life stage.
+- If `training_sword` and `leather_armor` are equipped: Town uses the matching `_sword_armor` variant for the current Max Life stage.
 
 ## Permissions
 

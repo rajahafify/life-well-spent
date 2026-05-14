@@ -3,6 +3,7 @@ class_name SharedHUDView
 extends CanvasLayer
 
 signal shortcut_pressed(slot_number: int, item_id: String)
+signal equipment_changed
 
 @onready var _life_label: Label = $LifeLabel
 @onready var _inventory_button: Button = $InventoryButton
@@ -93,6 +94,8 @@ func _connect_inventory_controls() -> void:
 		_inventory_button.pressed.connect(toggle_inventory_window)
 	if _inventory_window and _inventory_window.has_signal("close_requested") and not _inventory_window.close_requested.is_connected(close_inventory_window):
 		_inventory_window.close_requested.connect(close_inventory_window)
+	if _inventory_window and _inventory_window.has_signal("equip_item_requested") and not _inventory_window.equip_item_requested.is_connected(_on_equip_item_requested):
+		_inventory_window.equip_item_requested.connect(_on_equip_item_requested)
 
 
 func _visible_control_contains(control: Control, screen_position: Vector2) -> bool:
@@ -151,6 +154,23 @@ func _shortcut_number_for_event(event: InputEventKey) -> int:
 
 func _emit_shortcut(slot_number: int) -> void:
 	shortcut_pressed.emit(slot_number, _shortcut_item(slot_number))
+
+
+func _on_equip_item_requested(item_id: String, equipment_slot: String) -> void:
+	if _inventory_model == null:
+		return
+	var changed := false
+	if equipment_slot == "weapon" and _inventory_model.has_method("equip_weapon"):
+		changed = _inventory_model.equip_weapon(item_id)
+	elif equipment_slot == "armor" and _inventory_model.has_method("equip_armor"):
+		changed = _inventory_model.equip_armor(item_id)
+	elif equipment_slot == "consumable" and _inventory_model.has_method("set_consumable"):
+		changed = _inventory_model.set_consumable(item_id)
+	if _inventory_window and _inventory_window.has_method("_render_slots"):
+		_inventory_window._render_slots(_inventory_model)
+	_render_shortcut_bar()
+	if changed:
+		equipment_changed.emit()
 
 
 func _mark_input_handled() -> void:

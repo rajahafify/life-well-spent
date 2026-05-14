@@ -10,8 +10,14 @@ func tick_player_auto_attack(owner, delta: float) -> void:
 	if state.is_defeated:
 		owner.stop_auto_attack()
 		return
-	var definition = owner.enemy_definition(state.enemy_id)
-	if owner.player_node().global_position.distance_to(state.position) > definition.attack_range:
+	var distance_to_enemy: float = owner.player_node().global_position.distance_to(state.position)
+	if not owner.is_player_target_attack_ready() and distance_to_enemy > owner.player_attack_ready_range():
+		owner.move_player_to(owner.attack_point_for_enemy(state.position))
+		return
+	if not owner.is_player_target_attack_ready():
+		owner.mark_player_target_attack_ready()
+	if distance_to_enemy > owner.player_attack_leash_range():
+		owner.clear_player_target_attack_ready()
 		owner.move_player_to(owner.attack_point_for_enemy(state.position))
 		return
 	var movement: Object = owner.player_movement()

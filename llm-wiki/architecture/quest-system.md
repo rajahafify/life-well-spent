@@ -1,7 +1,7 @@
 ---
 title: QuestSystem
 type: reference
-updated: 2026-05-13
+updated: 2026-05-14
 sources:
   - scripts/managers/quest_system.gd
   - scripts/models/quest_manager.gd
@@ -34,6 +34,7 @@ func side_quest_step(chain_id: String) -> int
 func current_side_quest_objective_text(chain_id: String) -> String
 func record_enemy_defeated(enemy_id: String) -> bool
 func record_item_gathered(item_id: String, quantity: int = 1) -> bool
+func sync_current_item_objective(item_id: String, quantity: int) -> bool
 func is_current_side_quest_step_complete(chain_id: String) -> bool
 func advance_side_quest_step(chain_id: String) -> bool
 func complete_side_quest_chain(chain_id: String) -> bool
@@ -49,13 +50,14 @@ func apply_dict(data: Dictionary) -> void
 - That objective does not activate `Rebuilding Swordsman Guild` by itself; Town starts the side chain through `activate_swordsman_guild_chain()` when the player returns and talks to Guildmaster.
 - Town reads the current objective so the Guildmaster can point the player toward rebuilding the Swordsman Guild and then start that chain.
 - Field reports enemy defeats through `record_enemy_defeated()` and material drops through `record_item_gathered()`, allowing shared quest state to track the 10-Slime, 2-Bat-Wing, and 2-Rat Guildmaster objectives across scene changes.
-- Town gates the Guildmaster Complete button through `is_current_side_quest_step_complete()` so Max Life cannot be spent before the active objective is complete.
+- Town syncs the Bat Wing objective from current inventory through `sync_current_item_objective()`, so already-owned Bat Wings count toward the Guildmaster guard trial.
+- Town gates the Guildmaster `Claim Reward` button through `is_current_side_quest_step_complete()` so Max Life cannot be spent before the active objective is complete.
 
 ## Test Coverage
 
 - `tests/specs/quest_manager_test.gd` covers pure quest progression rules.
 - `tests/specs/field_scene_test.gd` covers Field integration, including Forest Guard checkpoint, no early Guildmaster chain activation, Quest Window refresh, and enemy defeat objective progress.
-- `tests/specs/town_scene_dialog_test.gd` covers Town dialog integration, Guildmaster chain activation, `Complete Quest` button copy, and completion-button gating.
+- `tests/specs/town_scene_dialog_test.gd` covers Town dialog integration, Guildmaster chain activation, `Claim Reward` button copy, and reward-claim gating.
 
 ## Related
 

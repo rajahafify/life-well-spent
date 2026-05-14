@@ -54,8 +54,8 @@ Current implemented pieces:
 
 Current completion pieces:
 
-- Final certification shows `UI/RebirthPanel` with a Rebirth button.
-- Rebirth resets Life / Max Life to `100 / 100`, resets the aging sprite, and preserves `swordsman_guild`.
+- Final certification shows `UI/RebirthPanel` as a Game Over run summary with Rebirth and End Game buttons.
+- Rebirth resets Life / Max Life to `100 / 100`, resets run inventory, resets the aging sprite, and preserves `swordsman_guild`.
 - `ProfileSystem` saves and loads the persistent player profile at `user://life_well_spent_profile.json`.
 - Certified Forest Gateway transitions to `scenes/forest.tscn`.
 - `scenes/forest.tscn` is the current Forest endpoint scene with return access to Field.
@@ -126,12 +126,13 @@ Effects:
 - Max Life: `100 -> 60`
 - Current Life clamps to `60`
 - `swordsman_chain_step = 1`
-- Player sprite changes to aging stage 2, `assets/player_age_2.png`
+- Player sprite changes to aging stage 2, with bare, sword, or sword+armor variant based on equipped items
+- Reward dialog grants `1 x Training Sword`
 - Swordsman Guild remains locked
 
 ### Step 4 - Guildmaster Quest 2: Bat Wing Guard Trial
 
-Player completes the second Guildmaster certification objective by gathering Field drops:
+Player completes the second Guildmaster certification objective by owning Field drops:
 
 ```text
 Gather 2 Bat Wings for Guildmaster guard training.
@@ -142,7 +143,8 @@ Effects:
 - Max Life: `60 -> 20`
 - Current Life clamps to `20`
 - `swordsman_chain_step = 2`
-- Player sprite changes to aging stage 3, `assets/player_age_3.png`
+- Player sprite changes to aging stage 3, with bare, sword, or sword+armor variant based on equipped items
+- Reward dialog grants `1 x Leather Armor`
 - Swordsman Guild remains locked
 
 ### Step 5 - Guildmaster Quest 3: Rat Life Oath Trial
@@ -160,7 +162,7 @@ Effects:
 - `swordsman_chain_step = 3`
 - `swordsman_guild_unlocked = true`
 - `game_over_requested = true`
-- Show `SWORDSMAN GUILD UNLOCKED`
+- Show final Reward dialog: `Reward: Swordsman Guild Unlocked`
 
 ### Step 6 - Rebirth
 
@@ -171,7 +173,7 @@ Prototype behavior:
 - Current Life resets to `100`
 - Max Life resets to `100`
 - Aging state resets to starting sprite
-- Inventory resets to starter loadout
+- Inventory resets to empty equipment, consumable, shortcut, and item stacks
 - `swordsman_guild` remains in `PlayerStats.unlocked_facilities`
 - Main objective advances to `Enter the Forest.`
 - Forest Guard no longer uses the original certification block after certification and shows `The path to forest is open.`
@@ -204,7 +206,9 @@ HUD should show Life / Max Life changes immediately after certification steps.
 
 Future completion surface.
 
-This should eventually ask whether the life was well spent and offer rebirth after a run-ending sacrifice.
+This asks whether the life was well spent, summarizes items and unlocks from the run, and offers Rebirth or End Game after a run-ending sacrifice.
+
+If the player chooses End Game instead of Rebirth, the next New Game performs the rebirth reset automatically before entering Town.
 
 ## State Read/Write
 
@@ -238,7 +242,7 @@ Implemented:
 - Explore
 - Block
 - Activate Quest
-- Complete Quest
+- Claim Reward
 - Gain XP
 - Unlock Facility
 - Serialize
@@ -317,7 +321,7 @@ Next slice conditions:
 - If Guildmaster is clicked after Forest Guard checkpoint and chain step is `0`: show the Slime stance objective.
 - If 10 Slimes are defeated while the chain is active: step 1 can be completed, spending Max Life from `100` to `60`, clamping current Life, updating HUD, and setting chain step `1`.
 - If chain step is `1`: show the Bat Wing guard objective.
-- If 2 Bat Wings are gathered while step 1 is active: step 2 can be completed, spending Max Life from `60` to `20`, clamping current Life, updating HUD, and setting chain step `2`.
+- If the player owns 2 Bat Wings when step 1 is active: step 2 can be completed, spending Max Life from `60` to `20`, clamping current Life, updating HUD, and setting chain step `2`.
 - If chain step is `2`: show the Rat Life oath objective.
 - If 2 Rats are defeated while step 2 is active: step 3 can be completed, spending remaining Max Life, unlocking Swordsman Guild, advancing the main objective to `Enter the Forest.`, requesting game over, and showing the unlock message.
 - If player rebirths after unlock: reset run Life state but preserve Swordsman Guild unlock in `PlayerStats.unlocked_facilities`.
@@ -381,7 +385,7 @@ Swordsman Guild unlock visual language:
 Life-spend feedback:
 
 - Life / Max Life changes must be immediately visible.
-- Player appearance changes with Max Life loss: `100` uses `player_age_1.png`, `60` uses `player_age_2.png`, and `20` or lower uses `player_age_3.png`.
+- Player appearance changes with Max Life loss: `100` uses `player_age_1.png`, `60` uses `player_age_2.png`, and `20` or lower uses `player_age_3.png`. Equipped Training Sword uses the matching `_sword` spritesheet, and equipped Training Sword plus Leather Armor uses the matching `_sword_armor` spritesheet.
 - Certification should not look like damage from an enemy.
 - Use dialog copy and UI timing to frame it as a chosen sacrifice.
 
@@ -442,7 +446,7 @@ No `ProgressionController` was introduced. Coordination remains in models and th
 Implemented script changes:
 
 - Model methods for certification step completion.
-- Thin Town controller glue for Guildmaster quest-completion button presses.
+- Thin Town controller glue for Guildmaster reward-claim button presses.
 - Thin Field controller glue for Forest Gateway state.
 - Shared HUD refresh calls after Life / objective changes.
 
@@ -457,7 +461,7 @@ Player can:
 5. Return to Town.
 6. Talk to Guildmaster and see certification-specific dialog.
 7. Defeat 10 Slimes, return to Guildmaster, complete stance training, and see Max Life become `60`.
-8. Gather 2 Bat Wings, return to Guildmaster, complete guard training, and see Max Life become `20`.
+8. Own 2 Bat Wings, return to Guildmaster, complete guard training, and see Max Life become `20`.
 9. Defeat 2 Rats, return to Guildmaster, complete the Life oath, and see Swordsman Guild unlock.
 10. See the objective change to `Enter the Forest.`
 11. Rebirth with Life / Max Life reset to `100 / 100`.
@@ -475,7 +479,7 @@ Player can:
 7. Talk to Guildmaster.
 8. Defeat 10 Slimes, then choose completed stance training.
 9. Life / Max Life updates to `60 / 60`.
-10. Gather 2 Bat Wings, then choose completed guard training.
+10. Own 2 Bat Wings, then choose completed guard training.
 11. Life / Max Life updates to `20 / 20`.
 12. Defeat 2 Rats, then choose the completed Life oath.
 13. Swordsman Guild unlocks and game over is requested.
@@ -494,7 +498,7 @@ Player can:
 - [x] Certification cannot complete before the current objective is complete.
 - [x] Slime kills advance the first Swordsman Guild objective.
 - [x] Wrong enemy kills do not advance the current Swordsman Guild objective.
-- [x] Bat Wing drops advance the second Swordsman Guild objective.
+- [x] Bat Wing drops and already-owned Bat Wings advance the second Swordsman Guild objective.
 - [x] Certification step 1 spends Max Life from `100` to `60`.
 - [x] Certification step 1 clamps current Life to `60`.
 - [x] Certification step 1 sets `swordsman_chain_step` to `1`.
@@ -510,6 +514,6 @@ Player can:
 - [x] Rebirth preserves Swordsman Guild unlock.
 - [x] Forest Gateway transitions to the Forest endpoint scene after Swordsman Guild unlock.
 - [x] Shared HUD updates Life / Max Life after each certification step.
-- [x] Final certification shows a rebirth panel.
+- [x] Final certification shows a Game Over run summary panel.
 - [x] Profile save data preserves the Swordsman Guild unlock.
 - [x] Forest endpoint scene loads and can return to Field.

@@ -32,6 +32,14 @@ func consume_item(item_id: String, amount: int = 1) -> bool:
 	return _inventory.consume_item(item_id, amount)
 
 
+func equip_weapon(item_id: String) -> bool:
+	return _inventory.equip_weapon(item_id)
+
+
+func equip_armor(item_id: String) -> bool:
+	return _inventory.equip_armor(item_id)
+
+
 func summary_text() -> String:
 	return _inventory.summary_text()
 

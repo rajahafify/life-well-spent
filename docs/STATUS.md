@@ -1,11 +1,11 @@
 # Life Well Spent - Project Status
 
-> Last updated: 2026-05-13
+> Last updated: 2026-05-14
 
 ## QA Status
 
-- Automated suite: `375 tests, 375 passed, 0 failed`
-- Manual QA: pass for MVP flow
+- Automated suite: `442 tests, 442 passed, 0 failed`
+- Manual QA: playable end-to-end through Swordsman Guild unlock, Game Over run summary, Rebirth or End Game, and certified Forest access.
 - Godot warnings/errors: headless suite passes. Current known non-failing output includes existing `assets-gallery.tscn` invalid UID fallback warnings and resource cleanup warnings.
 
 ## Current MVP State
@@ -23,9 +23,10 @@ Life Well Spent now has a playable MVP foundation:
 9. GDAI MCP remains enabled for editor use while headless tests skip runtime startup.
 10. Legacy demo scene/controller have been removed; `town_scene.tscn` is the playable MVP flow.
 11. Field is playable with shared HUD, Slime/Bat/Rat combat, drops, respawn polling, Forest Guard gate, and extracted camera/spawn/combat helper controllers.
-12. Swordsman Guild certification is playable from the Guildmaster after the Forest Guard checkpoint as three named quest steps: old stance training, guard/footwork training, and the Life oath. Each step spends Max Life, unlocks `swordsman_guild` on completion, advances the quest objective to `Enter the Forest.`, and changes the Forest Guard and Forest gate to an open Forest path endpoint without reverting the objective.
+12. Swordsman Guild certification is playable from the Guildmaster after the Forest Guard checkpoint as three objective-backed quest steps: defeat 10 Slimes, own 2 Bat Wings, and defeat 2 Rats. Each step spends Max Life, rewards Training Sword, Leather Armor, then the Swordsman Guild unlock, advances the quest objective to `Enter the Forest.`, and changes the Forest Guard and Forest gate to an open Forest path endpoint without reverting the objective.
 13. Town/Field movement supports updating the destination while the left mouse button is held, except while the pointer is over HUD controls.
-14. Player aging visuals are driven by Max Life: Town and Field start with `player_age_1.png`, certification at `60` Max Life uses `player_age_2.png`, and final certification at `20` or lower uses `player_age_3.png`.
+14. Player aging visuals are driven by Max Life: Town and Field start with `player_age_1.png`, certification at `60` Max Life uses `player_age_2.png`, and final certification at `20` or lower uses `player_age_3.png`. Equipped Training Sword and Leather Armor switch to matching equipment variants with brown leather armor.
+15. Final certification shows a Game Over run summary with collected items, unlocked facilities, Rebirth, and End Game actions. If the player chooses End Game, the next New Game auto-rebirths the ended run while preserving persistent unlocks.
 
 ## Architecture
 
@@ -55,6 +56,8 @@ MVC + SOLID remains active convention:
 | Player aging | `scripts/models/player_aging_model.gd` | Pure Max Life to sprite age-stage mapping for Town/Field player visuals. |
 | NPC data resources | `scripts/models/npc_definition.gd`, `resources/npc_definitions/` | Quest giver, vendor, facility role definitions. |
 | Dialog view | `scripts/views/town_dialog_view.gd` | Dumb dialog panel with button signals. |
+| Quest dialog flow | `scripts/models/quest_dialog_flow.gd` | Reusable normal/incomplete/claim/reward panel state model for quest givers. |
+| Run summary | `scripts/models/run_summary_model.gd` | Pure Game Over summary text for run items and unlocked facilities. |
 | Save manager | `scripts/managers/save_manager.gd` | Build/apply save data and JSON file round trip. |
 | Audio manager | `scripts/managers/audio_manager.gd` | Minimal SFX/music request boundary. |
 | Settings model | `scripts/models/settings_model.gd` | Volume clamp, fullscreen flag, serialization. |
@@ -90,7 +93,7 @@ Passed for MVP:
 - Player moves on ground click.
 - Quest Giver opens dialog after approach.
 - Accept Quest keeps HP at `100 / 100`.
-- Complete Quest changes HP to `60 / 60`.
+- Claim Reward changes HP to `60 / 60`.
 - Vendor/Guard dialogs open without quest button.
 - Daily task completion updates XP.
 - Options button opens settings panel.

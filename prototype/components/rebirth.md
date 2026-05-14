@@ -23,14 +23,17 @@ On Reborn:
 - Life resets to 100.
 - Max Life resets to 100 unless meta rules later preserve sacrifices differently.
 - Aging sprite resets to Born.
-- Inventory resets to starter loadout.
+- Inventory resets to empty equipment, consumable, shortcut, and item stacks.
 - Swordsman Guild unlock persists through `ProfileSystem`.
 - Current run XP reset/persist remains TBD.
 
 ## Current Implementation
 
-- Town shows `UI/RebirthPanel` after final Swordsman Guild certification.
-- The Rebirth button calls `PlayerStats.rebirth()`.
+- Town shows `UI/RebirthPanel` as the Game Over run summary after final Swordsman Guild certification.
+- The panel summarizes run items and unlocked facilities.
+- The Rebirth button calls `PlayerStats.rebirth()` and resets run inventory.
+- The End Game button returns to the main menu.
+- Starting New Game after End Game auto-rebirths the ended run before Town loads, preserving persistent unlocks.
 - `ProfileSystem` saves the persistent player profile to `user://life_well_spent_profile.json`.
 
 ## Open Decisions

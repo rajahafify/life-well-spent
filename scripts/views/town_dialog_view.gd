@@ -16,6 +16,8 @@ var _next_button: Button
 var _close_dialog_button: Button
 var _pages: Array[String] = []
 var _page_index: int = 0
+var _can_offer_quest: bool = false
+var _has_active_quest: bool = false
 
 
 func _ready() -> void:
@@ -73,11 +75,15 @@ func next_page() -> void:
 
 func configure_buttons(can_offer_quest: bool, has_active_quest: bool) -> void:
 	ensure_ready()
-	if _accept_quest_button:
-		_accept_quest_button.visible = can_offer_quest
-	if _complete_quest_button:
-		_complete_quest_button.visible = has_active_quest
+	_can_offer_quest = can_offer_quest
+	_has_active_quest = has_active_quest
 	_update_dialog_navigation_buttons()
+
+
+func set_complete_action_text(text: String) -> void:
+	ensure_ready()
+	if _complete_quest_button:
+		_complete_quest_button.text = text
 
 
 func set_body(text: String) -> void:
@@ -134,6 +140,10 @@ func _update_page() -> void:
 
 func _update_dialog_navigation_buttons() -> void:
 	var is_last_page := _page_index >= _pages.size() - 1
+	if _accept_quest_button:
+		_accept_quest_button.visible = _can_offer_quest and is_last_page
+	if _complete_quest_button:
+		_complete_quest_button.visible = _has_active_quest and is_last_page
 	if _next_button:
 		_next_button.visible = not is_last_page
 	if _close_dialog_button:

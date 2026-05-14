@@ -231,6 +231,7 @@ Each system should list:
 - `Close` appears only on the final page and hides dialog.
 - Dialog action buttons stay at the bottom-right of the dialog panel.
 - Dialog blocks player movement.
+- Quest-giver dialogs use the same flow: normal dialog, incomplete quest with Close only on the final page, complete quest with `Claim Reward` only on the final page, then a separate Reward panel.
 - Text must be readable at 1080p.
 - Portrait appears above dialog box.
 - Portrait uses face crop from character LPC spritesheet.
@@ -386,7 +387,7 @@ Each system should list:
 - If player attacks: enemy HP decreases.
 - If enemy attacks: current Life decreases.
 - If enemy HP <= 0: enemy defeated and reward hook fires.
-- If Life <= 0: player defeat / Game Over flow TBD.
+- If Life <= 0: show the Game Over run summary with collected items, unlocked facilities, Rebirth, and End Game actions.
 
 ---
 
@@ -604,12 +605,20 @@ Each system should list:
 - `assets/player_age_1.png`
 - `assets/player_age_2.png`
 - `assets/player_age_3.png`
+- `assets/player_age_1_sword.png`
+- `assets/player_age_2_sword.png`
+- `assets/player_age_3_sword.png`
+- `assets/player_age_1_sword_armor.png`
+- `assets/player_age_2_sword_armor.png`
+- `assets/player_age_3_sword_armor.png`
 
 ### Rules
 
 - Max Life above `60` uses age stage 1.
 - Max Life `60` through `21` uses age stage 2.
 - Max Life `20` or lower uses age stage 3.
+- Equipped Training Sword uses the matching `_sword` spritesheet for the current age stage.
+- Equipped Training Sword plus Leather Armor uses the matching `_sword_armor` spritesheet for the current age stage. The armor layer is brown leather, not generator-default grey.
 - Aging sprites are presentation only; Life and quest rules stay in progression models.
 
 ### Conditions

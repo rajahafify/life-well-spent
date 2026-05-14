@@ -16,12 +16,15 @@ const COMBAT_SCRIPT := preload("res://scripts/models/combat_system.gd")
 const INVENTORY_SCRIPT := preload("res://scripts/models/inventory_model.gd")
 const DROP_SYSTEM_SCRIPT := preload("res://scripts/models/drop_system.gd")
 const PLAYER_AGING_SCRIPT := preload("res://scripts/models/player_aging_model.gd")
+const EQUIPMENT_STATS_SCRIPT := preload("res://scripts/models/equipment_stats.gd")
 const DAMAGE_TEXT_SCRIPT := preload("res://scripts/views/damage_text_component.gd")
 const FIELD_CAMERA_CONTROLLER_SCRIPT := preload("res://scripts/controllers/field_camera_controller.gd")
 const FIELD_ENEMY_SPAWN_CONTROLLER_SCRIPT := preload("res://scripts/controllers/field_enemy_spawn_controller.gd")
 const FIELD_COMBAT_CONTROLLER_SCRIPT := preload("res://scripts/controllers/field_combat_controller.gd")
 const ENEMY_COLLISION_RADIUS := 56.0
 const ENEMY_APPROACH_DISTANCE := 96.0
+const PLAYER_ATTACK_READY_RANGE := 112.0
+const PLAYER_ATTACK_LEASH_RANGE := 192.0
 const LOOT_TOAST_DURATION := 1.4
 const APPLE_HEAL_AMOUNT := 20
 
@@ -41,6 +44,7 @@ var player_attack_interval: float = 1.0
 var player_attack_timer: float = 0.0
 var player_xp: int = 0
 var player_target_enemy_instance_id: String = ""
+var player_target_attack_ready: bool = false
 var inventory = null
 var enemy_states: Dictionary = {}
 var enemy_views: Dictionary = {}
@@ -56,6 +60,7 @@ var _camera_controller = FIELD_CAMERA_CONTROLLER_SCRIPT.new()
 var _spawn_controller = FIELD_ENEMY_SPAWN_CONTROLLER_SCRIPT.new()
 var _combat_controller = FIELD_COMBAT_CONTROLLER_SCRIPT.new()
 var _player_aging = PLAYER_AGING_SCRIPT.new()
+var _equipment_stats = EQUIPMENT_STATS_SCRIPT.new()
 var _local_inventory_model = null
 var _player_damage_label: Label
 var _player_damage_text
@@ -79,6 +84,7 @@ func _ready() -> void:
 	if inventory == null:
 		_local_inventory_model = INVENTORY_SCRIPT.new()
 		inventory = _local_inventory_model
+	_bind_profile_player()
 	QuestSystem.setup_core_quests()
 	_connect_hud()
 	_update_quest_window()
@@ -100,6 +106,17 @@ func _is_test_run() -> bool:
 		if str(arg).contains("tests/test_runner.tscn"):
 			return true
 	return false
+
+
+func _bind_profile_player() -> void:
+	var profile := _profile_system()
+	if profile == null or not profile.has_method("player"):
+		return
+	var profile_player = profile.player()
+	if profile_player == null:
+		return
+	player_life = int(profile_player.max_hp)
+	player_max_life = int(profile_player.max_hp)
 
 
 func _exit_tree() -> void:
@@ -133,6 +150,9 @@ func _cleanup_combat_refs() -> void:
 	if _player_aging:
 		_player_aging.free()
 		_player_aging = null
+	if _equipment_stats:
+		_equipment_stats.free()
+		_equipment_stats = null
 	if _local_inventory_model:
 		_local_inventory_model.free()
 		_local_inventory_model = null
@@ -167,6 +187,8 @@ func _connect_hud() -> void:
 		_hud.set_life(player_life, player_max_life)
 		if _hud.has_signal("shortcut_pressed") and not _hud.shortcut_pressed.is_connected(_on_shortcut_pressed):
 			_hud.shortcut_pressed.connect(_on_shortcut_pressed)
+		if _hud.has_signal("equipment_changed") and not _hud.equipment_changed.is_connected(_on_equipment_changed):
+			_hud.equipment_changed.connect(_on_equipment_changed)
 
 
 func _physics_process(delta: float) -> void:
@@ -206,6 +228,7 @@ func close_inventory_window() -> void:
 
 func stop_auto_attack() -> void:
 	player_target_enemy_instance_id = ""
+	player_target_attack_ready = false
 	player_attack_timer = 0.0
 
 
@@ -266,6 +289,7 @@ func engage_enemy(instance_id: String) -> void:
 	if not enemy_states.has(instance_id):
 		return
 	player_target_enemy_instance_id = instance_id
+	player_target_attack_ready = false
 	var state = enemy_states[instance_id]
 	var view := enemy_views.get(instance_id, null) as Node2D
 	if view:
@@ -346,8 +370,8 @@ func player_combat_dict() -> Dictionary:
 	return {
 		"life": player_life,
 		"max_life": player_max_life,
-		"attack": player_attack,
-		"defense": player_defense,
+		"attack": player_attack + _equipment_stats.attack_bonus_for_weapon(_equipped_weapon_id()),
+		"defense": player_defense + _equipment_stats.defense_bonus_for_armor(_equipped_armor_id()),
 		"xp": player_xp,
 	}
 
@@ -360,6 +384,7 @@ func apply_player_combat_dict(next_player: Dictionary) -> void:
 	player_life = int(next_player.get("life", player_life))
 	player_max_life = int(next_player.get("max_life", player_max_life))
 	player_life = clampi(player_life, 0, player_max_life)
+	_sync_profile_player()
 
 
 func _spawn_initial_slime() -> void:
@@ -454,6 +479,7 @@ func remove_enemy(instance_id: String) -> void:
 	enemy_states.erase(instance_id)
 	if player_target_enemy_instance_id == instance_id:
 		player_target_enemy_instance_id = ""
+		player_target_attack_ready = false
 
 
 func _update_enemy_view(state) -> void:
@@ -560,6 +586,11 @@ func grant_enemy_drops(state) -> void:
 func _on_shortcut_pressed(_slot_number: int, item_id: String) -> void:
 	if item_id == "apple":
 		_use_apple()
+
+
+func _on_equipment_changed() -> void:
+	_update_player_age_sprite()
+	_update_combat_ui()
 
 
 func _use_apple() -> bool:
@@ -696,7 +727,7 @@ func _update_player_age_sprite() -> void:
 		return
 	var sprite := _player.get_node_or_null("Sprite") as Sprite2D
 	if sprite:
-		sprite.texture = _load_texture(_player_aging.texture_path_for_max_hp(player_max_life))
+		sprite.texture = _load_texture(_player_aging.texture_path_for_max_hp_and_equipment(player_max_life, _equipped_weapon_id(), _equipped_armor_id()))
 
 
 func _load_texture(texture_path: String) -> Texture2D:
@@ -734,6 +765,26 @@ func player_movement() -> CharacterMovement:
 	return _player.get_node_or_null("Sprite") as CharacterMovement
 
 
+func player_attack_ready_range() -> float:
+	return PLAYER_ATTACK_READY_RANGE
+
+
+func player_attack_leash_range() -> float:
+	return PLAYER_ATTACK_LEASH_RANGE
+
+
+func is_player_target_attack_ready() -> bool:
+	return player_target_attack_ready
+
+
+func mark_player_target_attack_ready() -> void:
+	player_target_attack_ready = true
+
+
+func clear_player_target_attack_ready() -> void:
+	player_target_attack_ready = false
+
+
 func _inventory_system() -> Node:
 	if not is_inside_tree():
 		return null
@@ -747,10 +798,43 @@ func _inventory_model_for_hud():
 	return inventory
 
 
+func _equipped_weapon_id() -> String:
+	var inventory_model = _inventory_model_for_hud()
+	if inventory_model == null:
+		return ""
+	return str(inventory_model.weapon_slot)
+
+
+func _equipped_armor_id() -> String:
+	var inventory_model = _inventory_model_for_hud()
+	if inventory_model == null:
+		return ""
+	return str(inventory_model.armor_slot)
+
+
 func _feedback_system() -> Node:
 	if not is_inside_tree():
 		return null
 	return get_node_or_null("/root/FeedbackSystem")
+
+
+func _profile_system() -> Node:
+	if is_inside_tree():
+		return get_node_or_null("/root/ProfileSystem")
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return null
+	return tree.root.get_node_or_null("ProfileSystem")
+
+
+func _sync_profile_player() -> void:
+	var profile := _profile_system()
+	if profile == null or not profile.has_method("player"):
+		return
+	var profile_player = profile.player()
+	if profile_player == null:
+		return
+	profile_player.max_hp = player_max_life
 
 
 func _play_feedback_sfx(sfx_name: String) -> void:

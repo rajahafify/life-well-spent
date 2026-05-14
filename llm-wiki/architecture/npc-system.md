@@ -94,7 +94,7 @@ CharacterBody2D Npc
 - Dialog is modal: opening calls `stop_moving()` and disables player movement; closing re-enables it.
 - Reuse CharacterMovement for player/NPC facing and animation.
 - MVC: model pure, view dumb, controller signals.
-- Dialog presentation extracted to `TownDialogView`; `TownSceneController` owns quest decisions and receives button signals.
+- Dialog presentation extracted to `TownDialogView`; reusable quest panel state is built by `QuestDialogFlow`; scene controllers own quest side effects and receive button signals.
 - Collision is solid only; sprite click owns interaction.
 - Emits interaction signal with NPC instance; town controller owns quest flow and delegates dialog UI rendering to `TownDialogView`.
 - Horizontal dir prefer (abs(x)>=y).

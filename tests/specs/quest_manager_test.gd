@@ -250,6 +250,24 @@ func test_swordsman_guild_bat_wing_objective_tracks_item_progress() -> void:
 	assert_eq("Gather 2 Bat Wings for Guildmaster guard training. (1/2)", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
 
 
+func test_swordsman_guild_bat_wing_objective_syncs_existing_inventory_count() -> void:
+	_start_swordsman_chain()
+	_record_enemy_defeats("slime_spiked", 10)
+	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	assert_true(qm.sync_current_item_objective("bat_wing", 4))
+	assert_eq("Gather 2 Bat Wings for Guildmaster guard training. (2/2)", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+	assert_true(qm.is_current_side_quest_step_complete("rebuilding_swordsman_guild"))
+
+
+func test_swordsman_guild_bat_wing_inventory_sync_is_not_recounted_on_repeat() -> void:
+	_start_swordsman_chain()
+	_record_enemy_defeats("slime_spiked", 10)
+	qm.advance_side_quest_step("rebuilding_swordsman_guild")
+	assert_true(qm.sync_current_item_objective("bat_wing", 1))
+	assert_false(qm.sync_current_item_objective("bat_wing", 1))
+	assert_eq("Gather 2 Bat Wings for Guildmaster guard training. (1/2)", qm.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+
+
 func test_swordsman_guild_bat_wing_objective_ignores_enemy_defeats() -> void:
 	_start_swordsman_chain()
 	_record_enemy_defeats("slime_spiked", 10)

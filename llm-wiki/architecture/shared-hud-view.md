@@ -1,7 +1,7 @@
 ---
 title: SharedHUDView
 type: reference
-updated: 2026-05-13
+updated: 2026-05-14
 sources:
   - scenes/ui/shared_hud.tscn
   - scripts/views/shared_hud_view.gd
@@ -21,6 +21,7 @@ tags: [architecture, ui, hud]
 
 ```gdscript
 signal shortcut_pressed(slot_number: int, item_id: String)
+signal equipment_changed
 
 func ensure_ready() -> void
 func set_inventory_model(inventory_model) -> void
@@ -35,12 +36,13 @@ func close_inventory_window() -> void
 - Gameplay scenes instance `scenes/ui/shared_hud.tscn` as their `UI` CanvasLayer.
 - Scene controllers feed the HUD current Life and quest text; the HUD does not query gameplay state directly.
 - The HUD receives the global inventory model from `InventorySystem` and opens `InventoryWindowView` from the Inventory button or `I` key.
+- Equipment requests emitted by the inventory window are applied to the inventory model, then the slot list is refreshed in place. Successful equipment changes emit `equipment_changed` so Town and Field can refresh the player sprite immediately.
 - The shortcut bar renders 9 inventory-backed slots with high-contrast white slot boxes and dark borders. Number keys `1` through `9` emit `shortcut_pressed(slot_number, item_id)`; gameplay controllers decide what mapped items do.
 - Scene-specific objective/inventory labels are removed from Field; reusable HUD owns those common surfaces.
 
 ## Test Coverage
 
-- `tests/specs/shared_hud_view_test.gd` covers scene structure, Life updates, quest rendering, Inventory button, `I` key toggle, echo-key rejection, shortcut bar rendering, visible shortcut styling, shortcut number mapping, and `1` key signal emission.
+- `tests/specs/shared_hud_view_test.gd` covers scene structure, Life updates, quest rendering, Inventory button, `I` key toggle, echo-key rejection, equipment button application, `equipment_changed`, shortcut bar rendering, visible shortcut styling, shortcut number mapping, and `1` key signal emission.
 - `tests/specs/field_scene_test.gd` covers Field using the shared HUD and handling Apple shortcut consumption.
 - `tests/specs/town_scene_dialog_test.gd` covers Town using the shared HUD.
 

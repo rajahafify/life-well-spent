@@ -3,18 +3,18 @@ class_name InventoryModel
 extends Object
 
 var item_counts: Dictionary = {}
-var weapon_slot: String = "wooden_sword"
-var armor_slot: String = "cloth_armor"
-var consumable_slot: String = "apple"
-var shortcut_slots: Array[String] = ["apple", "", "", "", "", "", "", "", ""]
+var weapon_slot: String = ""
+var armor_slot: String = ""
+var consumable_slot: String = ""
+var shortcut_slots: Array[String] = ["", "", "", "", "", "", "", "", ""]
 
 
 func reset() -> void:
 	item_counts.clear()
-	weapon_slot = "wooden_sword"
-	armor_slot = "cloth_armor"
-	consumable_slot = "apple"
-	shortcut_slots = ["apple", "", "", "", "", "", "", "", ""]
+	weapon_slot = ""
+	armor_slot = ""
+	consumable_slot = ""
+	shortcut_slots = ["", "", "", "", "", "", "", "", ""]
 
 
 func add_item(item_id: String, amount: int = 1) -> bool:
@@ -38,23 +38,24 @@ func consume_item(item_id: String, amount: int = 1) -> bool:
 
 
 func equip_weapon(item_id: String) -> bool:
-	if item_id.strip_edges() == "":
+	if not can_equip_weapon(item_id):
 		return false
 	weapon_slot = item_id
 	return true
 
 
 func equip_armor(item_id: String) -> bool:
-	if item_id.strip_edges() == "":
+	if not can_equip_armor(item_id):
 		return false
 	armor_slot = item_id
 	return true
 
 
 func set_consumable(item_id: String) -> bool:
-	if item_id.strip_edges() == "":
+	if not can_set_consumable(item_id):
 		return false
 	consumable_slot = item_id
+	assign_shortcut(1, item_id)
 	return true
 
 
@@ -83,10 +84,10 @@ func to_dict() -> Dictionary:
 
 func apply_dict(data: Dictionary) -> void:
 	item_counts = Dictionary(data.get("item_counts", {})).duplicate(true)
-	weapon_slot = str(data.get("weapon_slot", "wooden_sword"))
-	armor_slot = str(data.get("armor_slot", "cloth_armor"))
-	consumable_slot = str(data.get("consumable_slot", "apple"))
-	shortcut_slots = _normalized_shortcut_slots(Array(data.get("shortcut_slots", ["apple"])))
+	weapon_slot = str(data.get("weapon_slot", ""))
+	armor_slot = str(data.get("armor_slot", ""))
+	consumable_slot = str(data.get("consumable_slot", ""))
+	shortcut_slots = _normalized_shortcut_slots(Array(data.get("shortcut_slots", [])))
 
 
 func slot_summary_text() -> String:
@@ -103,8 +104,32 @@ func items_list() -> Array[Dictionary]:
 			rows.append({
 				"item_id": str(item_id),
 				"quantity": count,
+				"equipment_slot": equipment_slot_for_item(str(item_id)),
 			})
 	return rows
+
+
+func can_equip_weapon(item_id: String) -> bool:
+	return equipment_slot_for_item(item_id) == "weapon" and quantity(item_id) > 0
+
+
+func can_equip_armor(item_id: String) -> bool:
+	return equipment_slot_for_item(item_id) == "armor" and quantity(item_id) > 0
+
+
+func can_set_consumable(item_id: String) -> bool:
+	return equipment_slot_for_item(item_id) == "consumable" and quantity(item_id) > 0
+
+
+func equipment_slot_for_item(item_id: String) -> String:
+	match item_id.strip_edges():
+		"training_sword":
+			return "weapon"
+		"leather_armor":
+			return "armor"
+		"apple":
+			return "consumable"
+	return ""
 
 
 func _normalized_shortcut_slots(values: Array) -> Array[String]:

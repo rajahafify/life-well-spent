@@ -1,7 +1,7 @@
 ---
 title: Field Scene
 type: reference
-updated: 2026-05-13
+updated: 2026-05-14
 tags: [scenes, field, prototype]
 ---
 
@@ -59,6 +59,7 @@ Legacy primitive Field art nodes (`Ground`, `Paths`, `ForestEdge`, and `Props`) 
 `Field` is thin glue:
 
 - starts Player at named spawn point `SpawnPoints/FromTownGateway`, near TownGateway
+- reads `ProfileSystem.player().max_hp` on scene start so Field Life and player aging match the Life spent in Town
 - keeps Player outside the TownGateway trigger on scene load
 - routes ground clicks to `CharacterMovement`
 - continues updating the move destination while the left mouse button is held and no dialog is open
@@ -76,6 +77,7 @@ Legacy primitive Field art nodes (`Ground`, `Paths`, `ForestEdge`, and `Props`) 
 - spawns five Slimes, five Bats, and two Rats from `EnemyLibrary.for_id()`
 - routes enemy click to player approach + auto-attack
 - keeps player approach points outside the enlarged enemy footprint (`96px` stop distance)
+- requires the player to reach close attack-ready range (`112px`) before attacking, then keeps attacks active inside a wider `192px` leash so moving enemies do not force constant repositioning
 - delegates player auto-attack and enemy behavior/combat loops to `FieldCombatController`
 - applies `CombatSystem` damage to enemy HP and player Life through the combat helper
 - uses prototype balance scaling: player attack is 40 and enemy HP is 10x larger, while player Life and enemy attack values stay unchanged
@@ -83,6 +85,8 @@ Legacy primitive Field art nodes (`Ground`, `Paths`, `ForestEdge`, and `Props`) 
 - delegates chance-based drop rolls to the pure `DropSystem`
 - uses the shared HUD inventory window opened from the `Inventory` button or `I` key
 - handles shared HUD shortcut slot `1` as Apple use: consumes one Apple, heals current Life by up to 20 without exceeding Max Life, refreshes Life UI, and shows a toast
+- applies equipped item combat bonuses through `EquipmentStats`: Training Sword adds attack and Leather Armor adds defense
+- refreshes the player sprite through `PlayerAgingModel.texture_path_for_max_hp_and_equipment()` so equipped Training Sword and Leather Armor use age-matched equipment spritesheets
 - emits enemy hit feedback through reusable `HitFeedbackComponent` / `DamageTextComponent` children
 - adds lightweight combat feedback: enemy hit flash, floating damage text, short camera shake on hits, SFX requests through `FeedbackSystem`, and a temporary loot toast when drops are granted
 - plays enemy death animation before removal and grants XP once when HP reaches zero
@@ -104,6 +108,7 @@ Current Field combat scope is five Slimes, five Bats, and two Rats.
 - Hits add a brief camera shake, enemy flash, and RO-style parabolic floating damage text for combat readability.
 - Enemy damage numbers are white; player damage numbers are red.
 - Player click targets an enemy and moves toward it without aggroing immediately.
+- Player movement is required until the player reaches close attack-ready range next to the enemy sprite. After that, attacks continue while the enemy remains inside the larger leash.
 - Player auto-attacks with LPC `slash` animation while in range.
 - First player hit aggros the enemy.
 - Aggro enemy chases if player moves away.
@@ -114,6 +119,8 @@ Current Field combat scope is five Slimes, five Bats, and two Rats.
 - Current rare drops are 5% chance: Slime -> `apple`, Bat -> `training_sword`, Rat -> `leather_armor`.
 - Drop grants show a short `+ item xN` loot toast.
 - Pressing shortcut `1` uses Apple if the player has one and current Life is below Max Life. Apple heals up to 20 current Life, consumes one stack item, and cannot restore Max Life.
+- Equipping Training Sword adds 20 player attack and switches the player to the matching sword spritesheet for the current age stage.
+- Equipping Leather Armor adds 1 player defense. If Training Sword is also equipped, the player switches to the matching sword+armor spritesheet.
 - Inventory overlay: `scenes/ui/inventory_window.tscn`, opened by `SharedHUDView`.
 - Initial spawn positions are random inside `SpawnZones/Grassland`, avoiding Player, Town portal, Forest Guard, imported collision blockers, and nearby enemy overlap.
 - Defeated enemy slots do not respawn on portal changes; they become available after the global 60 second respawn timer.
@@ -121,10 +128,10 @@ Current Field combat scope is five Slimes, five Bats, and two Rats.
 
 ## Test Coverage
 
-- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, generated `FieldMap` and `FieldCollision`, north TownGateway placement, shared HUD, Inventory button/window and `I` key toggle, HUD pointer blocking for movement, Apple shortcut use, removal of legacy primitive Field art and the old visible ForestBlocker bar, southeast Forest Guard/gateway placement, enemy collision rejection, spawn zone, enlarged Slime/Bat/Rat sprite and collision footprint, player approach spacing, per-enemy HP bars, removal of text-based enemy HP labels, click targeting without immediate aggro, player auto-attack, first-hit aggro, enemy Life damage, hit shake/flash, loot toast, chase, death removal/XP/drop grant, Guard dialog, bottom-right dialog buttons, QuestSystem Forest Guard checkpoint and Forest Gate objective progression without early Guildmaster chain activation, certified Forest Guard open-path copy, certified Forest Gateway transition to Forest, Quest Window refresh, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
+- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, generated `FieldMap` and `FieldCollision`, north TownGateway placement, shared HUD, Inventory button/window and `I` key toggle, HUD pointer blocking for movement, Apple shortcut use, equipped Training Sword attack damage, removal of legacy primitive Field art and the old visible ForestBlocker bar, southeast Forest Guard/gateway placement, enemy collision rejection, spawn zone, enlarged Slime/Bat/Rat sprite and collision footprint, player approach spacing, per-enemy HP bars, removal of text-based enemy HP labels, click targeting without immediate aggro, player auto-attack, first-hit aggro, enemy Life damage, hit shake/flash, loot toast, chase, death removal/XP/drop grant, Guard dialog, bottom-right dialog buttons, QuestSystem Forest Guard checkpoint and Forest Gate objective progression without early Guildmaster chain activation, certified Forest Guard open-path copy, certified Forest Gateway transition to Forest, Quest Window refresh, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
 - Gateway, NPC placement, biome, movement, enemy behavior, combat, drop, and dialog systems remain covered by their model/scene specs.
 
-Latest Field validation: Field scene specs included in the full suite. Full suite currently reports `396 tests, 396 passed, 0 failed`.
+Latest Field validation: Field scene specs included in the full suite. Full suite currently reports `434 tests, 434 passed, 0 failed`.
 
 ## Related
 
@@ -139,4 +146,5 @@ Latest Field validation: Field scene specs included in the full suite. Full suit
 - `llm-wiki/architecture/quest-system.md`
 - `llm-wiki/architecture/shared-hud-view.md`
 - `llm-wiki/architecture/inventory-system.md`
+- `llm-wiki/architecture/equipment-stats.md`
 - `llm-wiki/architecture/feedback-components.md`

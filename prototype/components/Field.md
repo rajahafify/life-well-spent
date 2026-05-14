@@ -152,6 +152,7 @@ Current combat behavior:
 - Player Life stays at `100/100`, and enemy attack values against Player are unchanged.
 - Slime starts at 140 HP and takes 30 visible damage from Player attack 40 against defense 10; Bat starts at 80 HP; Rat starts at 60 HP.
 - Clicking an enemy engages it and moves Player toward attack range.
+- Player must first reach close attack-ready range next to the enemy sprite; after that, attacks continue inside a larger leash so moving enemies do not force tight sprite-to-sprite repositioning.
 - Player auto-attacks while in range.
 - First player hit aggros the enemy.
 - Aggro enemy chases Player if Player moves away.
@@ -166,7 +167,7 @@ Current combat behavior:
 - Slime, Bat, and Rat each have a 1-in-5 chance to drop their material.
 - Rare drops are 1-in-20: Slime -> `apple`, Bat -> `training_sword`, Rat -> `leather_armor`.
 - Enemy sprites render larger in Field, with larger click collision and wider player/enemy spacing so enemies do not stand underneath the player sprite.
-- Shortcut slot `1` starts mapped to `apple`; pressing `1` in Field uses one Apple if available and current Life is below Max Life.
+- Shortcut slot `1` is empty until the player equips an Apple as the current consumable; pressing `1` in Field uses one Apple if available and current Life is below Max Life.
 
 Still future:
 
@@ -368,7 +369,7 @@ Future rules:
 Current Field slice:
 
 - On scene start: show objective prompt.
-- On scene start: Player sprite is selected from Max Life through `PlayerAgingModel`.
+- On scene start: Player Life and sprite are selected from `ProfileSystem` Max Life through `PlayerAgingModel`.
 - On ground click while dialog is closed: route Player movement to `CharacterMovement`.
 - While left mouse is held and dialog is closed: keep updating Player movement destination to the mouse position.
 - While the pointer is over HUD controls: do not route mouse input to Player movement.
@@ -383,7 +384,7 @@ Current Field slice:
 - On aggro: enemy chases Player until attack range.
 - On enemy attack interval: enemy damages current Life.
 - On enemy HP `<= 0`: enemy dies, is removed after death animation timing, and grants XP once.
-- On enemy reward grant while Swordsman Guild certification is active: matching Slime/Rat defeats or Bat Wing drops advance the current Guildmaster objective.
+- On enemy reward grant while Swordsman Guild certification is active: matching Slime/Rat defeats advance the current Guildmaster objective; Bat Wing ownership is synced from inventory in Town.
 - On enemy reward grant: rolled material and Apple chance drops are added to `InventoryModel`.
 - On shortcut `1` with Apple available and Life below Max Life: consume one Apple, heal up to 20 current Life, refresh Life HUD, and show a loot toast.
 - On shortcut `1` with no Apple: show `No apple`.
@@ -422,7 +423,7 @@ Field now uses Kenney Tiny Town tile art imported from Tiled.
 - Rat uses cataloged enemy sprite asset `rat`.
 - Enemy sprites are enlarged for gameplay readability, with HP bars repositioned below the larger footprint.
 - Forest Guard uses `assets/npcs/forest_guard.png`.
-- Player uses `assets/player_age_1.png`, `assets/player_age_2.png`, or `assets/player_age_3.png` depending on Max Life.
+- Player uses `assets/player_age_1.png`, `assets/player_age_2.png`, or `assets/player_age_3.png` depending on Max Life. If `training_sword` is equipped, Field uses the matching `_sword` variant. If `training_sword` and `leather_armor` are both equipped, Field uses the matching `_sword_armor` variant.
 - HUD/dialog uses the same Town dialog styling.
 - Dialog buttons stay at the bottom-right of the dialog panel.
 
@@ -546,4 +547,4 @@ Player can:
 - [x] Inventory/consume behavior exists in Field.
 - [x] Certified Forest Gateway shows the open-path endpoint instead of the original Guard block.
 - [x] Certified Forest Guard interaction shows the open-path endpoint without reverting the quest objective.
-- [ ] Weapon/armor equipment effects exist in Field.
+- [x] Weapon/armor equipment effects exist in Field.
