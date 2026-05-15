@@ -5,6 +5,7 @@ extends CanvasLayer
 signal shortcut_pressed(slot_number: int, item_id: String)
 signal equipment_changed
 signal end_game_requested
+signal game_speed_changed(speed_id: String)
 
 @onready var _life_label: Label = $LifeLabel
 @onready var _inventory_button: Button = $InventoryButton
@@ -13,6 +14,7 @@ signal end_game_requested
 @onready var _quest_window: PanelContainer = $QuestWindow
 @onready var _inventory_window: PanelContainer = $InventoryWindow
 @onready var _options_panel: PanelContainer = $OptionsPanel
+@onready var _game_speed_option: OptionButton = $OptionsPanel/VBox/GameSpeedOption
 
 var _inventory_model = null
 
@@ -31,6 +33,7 @@ func ensure_ready() -> void:
 	_quest_window = get_node_or_null("QuestWindow") as PanelContainer
 	_inventory_window = get_node_or_null("InventoryWindow") as PanelContainer
 	_options_panel = get_node_or_null("OptionsPanel") as PanelContainer
+	_game_speed_option = get_node_or_null("OptionsPanel/VBox/GameSpeedOption") as OptionButton
 
 
 func set_inventory_model(inventory_model) -> void:
@@ -117,6 +120,8 @@ func _connect_inventory_controls() -> void:
 	var end_game := get_node_or_null("OptionsPanel/VBox/EndGameButton") as Button
 	if end_game and not end_game.pressed.is_connected(_on_end_game_pressed):
 		end_game.pressed.connect(_on_end_game_pressed)
+	if _game_speed_option and not _game_speed_option.item_selected.is_connected(_on_game_speed_selected):
+		_game_speed_option.item_selected.connect(_on_game_speed_selected)
 	if _inventory_window and _inventory_window.has_signal("close_requested") and not _inventory_window.close_requested.is_connected(close_inventory_window):
 		_inventory_window.close_requested.connect(close_inventory_window)
 	if _inventory_window and _inventory_window.has_signal("equip_item_requested") and not _inventory_window.equip_item_requested.is_connected(_on_equip_item_requested):
@@ -200,6 +205,12 @@ func _on_equip_item_requested(item_id: String, equipment_slot: String) -> void:
 
 func _on_end_game_pressed() -> void:
 	end_game_requested.emit()
+
+
+func _on_game_speed_selected(index: int) -> void:
+	var speed_ids := ["normal", "fast", "ultra"]
+	var speed_id: String = speed_ids[index] if index >= 0 and index < speed_ids.size() else "normal"
+	game_speed_changed.emit(speed_id)
 
 
 func _mark_input_handled() -> void:

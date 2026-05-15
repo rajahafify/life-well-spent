@@ -22,6 +22,7 @@ func setup() -> void:
 
 
 func teardown() -> void:
+	Engine.time_scale = 1.0
 	if hud:
 		hud.free()
 		hud = null
@@ -40,6 +41,7 @@ func test_shared_hud_has_life_inventory_button_quest_tracker_and_window() -> voi
 	assert_not_null(hud.get_node_or_null("QuestWindow") as PanelContainer)
 	assert_not_null(hud.get_node_or_null("InventoryWindow") as PanelContainer)
 	assert_not_null(hud.get_node_or_null("OptionsPanel") as PanelContainer)
+	assert_not_null(hud.get_node_or_null("OptionsPanel/VBox/GameSpeedOption") as OptionButton)
 	assert_eq("Inventory", (hud.get_node("InventoryButton") as Button).text)
 	assert_eq("Options", (hud.get_node("OptionsButton") as Button).text)
 	assert_false((hud.get_node("InventoryWindow") as PanelContainer).visible)
@@ -137,6 +139,23 @@ func test_options_button_opens_modal_and_end_game_emits_signal() -> void:
 	assert_eq("Options", (panel.get_node("VBox/TitleLabel") as Label).text)
 	(panel.get_node("VBox/EndGameButton") as Button).pressed.emit()
 	assert_eq([true], emitted)
+
+
+func test_options_panel_game_speed_emits_selected_speed() -> void:
+	if hud == null:
+		return
+	var option := hud.get_node("OptionsPanel/VBox/GameSpeedOption") as OptionButton
+	var selected: Array = []
+	hud.game_speed_changed.connect(func(speed_id: String): selected.append(speed_id))
+	assert_eq(3, option.item_count)
+	assert_eq("Normal", option.get_item_text(0))
+	assert_eq("Fast", option.get_item_text(1))
+	assert_eq("Ultra", option.get_item_text(2))
+	option.select(1)
+	option.item_selected.emit(1)
+	option.select(2)
+	option.item_selected.emit(2)
+	assert_eq(["fast", "ultra"], selected)
 
 
 func test_options_panel_blocks_world_mouse_input() -> void:

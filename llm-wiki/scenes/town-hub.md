@@ -9,7 +9,7 @@ tags: [scenes, town, prototype]
 
 ## Overview
 
-`scenes/town_scene.tscn` is the first-slice **Town** scene for the prototype. It replaces the previous MVP town-hub task/quest UI with a systemic prototype slice: hopeful post-Demon-King worldbuilding, three old institutions, shared gameplay HUD, QuestSystem-aware Guildmaster dialog, and a direct glowing gateway to Field.
+`scenes/town_scene.tscn` is the first-slice **Town** scene for the prototype. It replaces the previous MVP town-hub task/quest UI with a systemic prototype slice: hopeful post-Demon-King worldbuilding, three old institutions, shared gameplay HUD, QuestSystem-aware Guildmaster dialog, and a direct animated-arrow gateway to Field.
 
 First-slice goal:
 
@@ -106,7 +106,7 @@ But quiet days are worth protecting too.
 After the Swordsman Guild is unlocked and the player is reborn or continues the run, the Shopkeeper shows a yellow quest marker. His quest teaser asks the player to help reopen the shop now that the Guild will bring travelers back through Town. Accepting the teaser stores `merchant_job_teaser` in player unlock state and opens a modal-style dialog:
 
 ```text
-Merchant Job will be available in the full game.
+Merchant Job will be available in a future update.
 
 You will enter caves, explore old ruins, bring back exciting new items, and sell them in the shop.
 ```
@@ -128,7 +128,7 @@ Old roads have a way of calling again.
 After the Swordsman Guild is unlocked and the player is reborn or continues the run, the Smith shows a yellow quest marker. His quest teaser says that the reopened Guild means people will need access to weapons and armor, and asks the player to help reopen the blacksmith. Accepting the teaser stores `blacksmith_job_teaser` in player unlock state and opens a modal-style dialog:
 
 ```text
-Blacksmith Job will be available in the full game.
+Blacksmith Job will be available in a future update.
 
 You will learn recipes, craft weapons and armor from customer orders, and go hunting for the materials each job needs.
 ```
@@ -147,7 +147,7 @@ You will learn recipes, craft weapons and armor from customer orders, and go hun
 - handles RO-style NPC approach after sprite click: far NPC click moves Player to the NPC talk point, near/in-range sprite click opens dialog
 - shows paged NPC dialog via `TownDialogView.show_dialog()`
 - builds quest-giver panel state through the reusable `QuestDialogFlow` model
-- uses the dialog Accept action for post-Guild Smith and Shopkeeper full-game job teasers
+- uses the dialog Accept action for post-Guild Smith and Shopkeeper future-update job teasers
 - reads `QuestSystem.current_main_objective_id()` so Guildmaster dialog can react to the Forest Gate objective
 - routes Guildmaster reward-claim button presses through `ProgressionModel.complete_swordsman_certification_step()`
 - syncs the Bat Wing guard objective from current inventory before showing or completing Guildmaster dialog
@@ -188,7 +188,7 @@ Tiny Town visual art is imported as `TownMap`, an instanced generated scene from
 - `tests/specs/town_prototype_test.gd` also covers the generated Tiny Town `TownMap` and `TownCollision` instance paths, position, scale, and collision blocker shape.
 - `tests/specs/town_prototype_test.gd` covers the Tiny Town-facing NPC placements: Shopkeeper at `Vector2(512, 1140)`, Guildmaster at `Vector2(960, 450)`, and Smith at `Vector2(1472, 820)`.
 - `tests/specs/town_prototype_test.gd` covers the south-road Field gateway at `Vector2(960, 1320)` and its safe spawn at `Vector2(960, 980)`, far enough to avoid auto-transition.
-- `tests/specs/town_scene_dialog_test.gd` covers startup reborn dialog, no repeated reborn dialog on later Town entry, readable 1080p dialog text, bottom-right dialog buttons, shared HUD, HUD pointer blocking for movement, top-right Quest Tracker, NPC face portrait crop above the box, paged NPC dialog, RO-style sprite-click NPC approach, pending dialog open in talk range after click, camera follow, held-mouse destination updates, desynced NPC idle timing, hidden overhead NPC names, first-slice quest buttons hidden, QuestSystem Guildmaster certification prompt, certification Life spend, final Swordsman Guild unlock, post-Guild Smith/Shopkeeper quest markers and full-game job preview copy, click-to-move routing/blocking, dialog close behavior, and direct Field gateway request.
+- `tests/specs/town_scene_dialog_test.gd` covers startup reborn dialog, no repeated reborn dialog on later Town entry, readable 1080p dialog text, bottom-right dialog buttons, shared HUD, HUD pointer blocking for movement, top-right Quest Tracker, NPC face portrait crop above the box, paged NPC dialog, RO-style sprite-click NPC approach, pending dialog open in talk range after click, camera follow, held-mouse destination updates, desynced NPC idle timing, hidden overhead NPC names, first-slice quest buttons hidden, QuestSystem Guildmaster certification prompt, certification Life spend, final Swordsman Guild unlock, post-Guild Smith/Shopkeeper quest markers and future-update job preview copy, click-to-move routing/blocking, dialog close behavior, and direct Field gateway request.
 - `tests/specs/npc_controller_test.gd` and `tests/specs/scene_smoke_test.gd` cover removal of proximity-based NPC dialog triggers.
 - `tests/specs/scene_smoke_test.gd` covers Town dialog smoke behavior.
 

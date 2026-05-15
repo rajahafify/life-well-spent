@@ -35,11 +35,12 @@ func texture_path_for_max_hp_and_equipment(max_hp: int, weapon_id: String, armor
 - Bare sprites stay weaponless and armorless.
 - Equipping `training_sword` switches to `player_age_1_sword.png`, `player_age_2_sword.png`, or `player_age_3_sword.png`.
 - Equipping both `training_sword` and `leather_armor` switches to `player_age_1_sword_armor.png`, `player_age_2_sword_armor.png`, or `player_age_3_sword_armor.png`. These sheets use a brown leather armor palette instead of the LPC generator's default grey armor output.
+- Training Sword variants include sword pixels on all four LPC thrust attack rows (`up`, `left`, `down`, `right`) so equipped combat does not fall back visually to hand-only attack frames.
 
 ## Test Coverage
 
 - `tests/specs/player_aging_model_test.gd` covers stage thresholds, bare texture path mapping, Training Sword texture path mapping, and sword+armor texture path mapping.
-- `tests/specs/player_aging_assets_test.gd` covers the visible hair/beard color story, verifies the generated bare aging sheets do not include a sword layer, verifies the sword and sword+armor variants include equipment pixels, and verifies the armor palette reads as brown leather.
+- `tests/specs/player_aging_assets_test.gd` covers the visible hair/beard color story, verifies the generated bare aging sheets do not include a sword layer, verifies the sword and sword+armor variants include equipment pixels on every thrust attack direction, and verifies the armor palette reads as brown leather.
 - `tests/specs/town_scene_dialog_test.gd` covers Town applying age stage 1 on start and updating to stages 2 and 3 after certification.
 - `tests/specs/field_scene_test.gd` covers Field applying the default age stage 1 player sprite.
 

@@ -21,5 +21,13 @@ func test_feedback_system_records_sfx_requests_without_source_node_ownership() -
 	assert_eq(1, system.spawned_sfx_count)
 
 
+func test_feedback_system_loads_registered_audio_stream_resource() -> void:
+	var system := _feedback_system()
+	var player = system.play_sfx("quest_reward")
+	assert_not_null(player)
+	if player:
+		assert_not_null(player.stream)
+
+
 func _feedback_system() -> Node:
 	return Engine.get_main_loop().root.get_node("FeedbackSystem")

@@ -16,6 +16,7 @@ signal interacted(npc)
 @export var solid_radius: float = 20.0
 @export var talk_stop_buffer: float = 24.0
 @export var name_label_path: NodePath = ^"NameLabel"
+@export var sprite_texture: Texture2D
 @export var definition: Resource
 
 var npc_state: NpcState
@@ -27,6 +28,8 @@ func _ready():
 	_apply_definition()
 	_ensure_state()
 	_character_movement = get_node_or_null(character_movement_path) as CharacterMovement
+	if _character_movement and sprite_texture:
+		_character_movement.texture = sprite_texture
 	_name_label = get_node_or_null(name_label_path) as Label
 	if _name_label:
 		_name_label.text = display_name

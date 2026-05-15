@@ -26,6 +26,7 @@ func setup() -> void:
 
 
 func teardown() -> void:
+	Engine.time_scale = 1.0
 	if root:
 		root.free()
 		root = null
@@ -171,6 +172,28 @@ func test_town_gateway_sits_at_north_road_entry() -> void:
 		assert_eq(Vector2(1552, 160), spawn.position)
 		assert_eq(spawn.global_position, player.global_position)
 		assert_true(spawn.global_position.distance_to(gateway.global_position) > 64.0, "Player should start clear of the portal trigger")
+
+
+func test_town_gateway_has_centered_animated_exit_arrow() -> void:
+	if root == null:
+		return
+	var visual := root.get_node_or_null("TownGateway/Visual") as ColorRect
+	var label := root.get_node_or_null("TownGateway/Label")
+	var arrow := root.get_node_or_null("TownGateway/ExitArrow") as Polygon2D
+	var animation_player := root.get_node_or_null("TownGateway/ArrowAnimation") as AnimationPlayer
+	assert_not_null(visual, "Town gateway should keep an invisible trigger visual node")
+	assert_null(label, "Town gateway should not use text over the player")
+	assert_not_null(arrow, "Town gateway should have a visible directional arrow")
+	assert_not_null(animation_player, "Town gateway arrow should have animation")
+	if visual:
+		assert_eq(0.0, visual.color.a)
+	if arrow:
+		assert_eq(32.0, arrow.position.x)
+		assert_true(arrow.color.r >= 1.0 and arrow.color.g >= 0.9, "gateway arrow should be bright yellow")
+		assert_true(arrow.polygon.size() >= 7, "gateway arrow should have a readable chunky silhouette")
+	if animation_player:
+		assert_true(animation_player.has_animation("pulse"), "gateway arrow should pulse")
+		assert_eq("pulse", animation_player.autoplay)
 
 
 func test_forest_guard_and_gate_are_at_southeast_road_end() -> void:
@@ -473,6 +496,23 @@ func test_equipped_training_sword_increases_player_attack_damage() -> void:
 	assert_eq(90, root.enemy_state("field_slime_001").hp)
 
 
+func test_equipped_training_sword_uses_weapon_thrust_attack_animation() -> void:
+	if root == null:
+		return
+	var player: Node2D = root.get_node("Player") as Node2D
+	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
+	root.inventory.add_item("training_sword", 1)
+	root.inventory.equip_weapon("training_sword")
+	player.global_position = Vector2(500, 500)
+	slime.global_position = Vector2(530, 500)
+	root.enemy_state("field_slime_001").position = slime.global_position
+	root.engage_enemy("field_slime_001")
+	root._physics_process(1.5)
+	var movement = root.get_node("Player/Sprite")
+	assert_eq("attacking", movement._anim.state)
+	assert_eq("thrust", movement._anim.attack_style)
+
+
 func test_auto_attack_waits_until_player_reaches_close_attack_ready_range() -> void:
 	if root == null:
 		return
@@ -753,6 +793,23 @@ func test_options_end_game_requests_main_menu() -> void:
 	var end_game := root.get_node("UI/OptionsPanel/VBox/EndGameButton") as Button
 	end_game.pressed.emit()
 	assert_eq("res://scenes/main_menu.tscn", root.requested_scene_path)
+
+
+func test_options_game_speed_changes_engine_time_scale() -> void:
+	if root == null:
+		return
+	var options := root.get_node("UI/OptionsButton") as Button
+	options.pressed.emit()
+	var speed_option := root.get_node("UI/OptionsPanel/VBox/GameSpeedOption") as OptionButton
+	speed_option.select(1)
+	speed_option.item_selected.emit(1)
+	assert_eq(2.0, Engine.time_scale)
+	speed_option.select(2)
+	speed_option.item_selected.emit(2)
+	assert_eq(4.0, Engine.time_scale)
+	speed_option.select(0)
+	speed_option.item_selected.emit(0)
+	assert_eq(1.0, Engine.time_scale)
 
 
 func test_far_forest_guard_click_moves_player_before_dialog() -> void:

@@ -347,13 +347,14 @@ Run this after each polish slice:
 22. Confirm Forest path opens.
 23. Confirm the Smith has a centered pulsing yellow marker after rebirth.
 24. Talk to Smith and confirm the reopen-blacksmith quest mentions post-Guild weapon and armor demand.
-25. Accept the Smith quest and confirm the Blacksmith Job full-game preview modal describes recipes, crafting orders, and material hunting.
+25. Accept the Smith quest and confirm the Blacksmith Job future-update preview modal describes recipes, crafting orders, and material hunting.
 26. Confirm the Shopkeeper has a centered pulsing yellow marker after rebirth.
 27. Talk to Shopkeeper and confirm the merchant quest mentions reopening the shop for returning travelers.
-28. Accept the Shopkeeper quest and confirm the Merchant Job full-game preview modal describes caves, ruins, exciting items, and selling in the shop.
-29. Repeat or restore near Summary.
-30. Test New Game branch.
-31. Confirm Forest path still opens.
+28. Accept the Shopkeeper quest and confirm the Merchant Job future-update preview modal describes caves, ruins, exciting items, and selling in the shop.
+29. Walk to the south Town road and confirm the Field exit reads as a deliberate map transition: the trigger fill is invisible, and a centered bright yellow arrow pulses at the road edge.
+30. Repeat or restore near Summary.
+31. Test New Game branch.
+32. Confirm Forest path still opens.
 
 ## Automated Test Expectations
 

@@ -19,6 +19,7 @@ func setup() -> void:
 
 
 func teardown() -> void:
+	Engine.time_scale = 1.0
 	if root:
 		root.free()
 		root = null
@@ -492,6 +493,19 @@ func test_options_end_game_requests_main_menu() -> void:
 	assert_eq("res://scenes/main_menu.tscn", root.requested_scene_path)
 
 
+func test_options_game_speed_changes_engine_time_scale() -> void:
+	_close_start_dialog()
+	var options := root.get_node("UI/OptionsButton") as Button
+	options.pressed.emit()
+	var speed_option := root.get_node("UI/OptionsPanel/VBox/GameSpeedOption") as OptionButton
+	speed_option.select(1)
+	speed_option.item_selected.emit(1)
+	assert_eq(2.0, Engine.time_scale)
+	speed_option.select(2)
+	speed_option.item_selected.emit(2)
+	assert_eq(4.0, Engine.time_scale)
+
+
 func test_rebirth_panel_blocks_player_movement() -> void:
 	_close_start_dialog()
 	root.show_rebirth_panel()
@@ -689,7 +703,7 @@ func test_accepting_smith_teaser_shows_blacksmith_job_full_game_modal() -> void:
 	assert_in("blacksmith_job_teaser", root.player_stats.unlocked_facilities)
 	assert_false(marker.visible)
 	assert_eq("Blacksmith Job", title.text)
-	assert_true(body.text.contains("available in the full game"))
+	assert_true(body.text.contains("available in a future update"))
 	(root.get_node("UI/DialogPanel") as TownDialogView).next_page()
 	assert_true(body.text.contains("learn recipes"))
 	assert_true(body.text.contains("craft weapons and armor"))
@@ -729,7 +743,7 @@ func test_accepting_shopkeeper_teaser_shows_merchant_job_full_game_modal() -> vo
 	assert_in("merchant_job_teaser", root.player_stats.unlocked_facilities)
 	assert_false(marker.visible)
 	assert_eq("Merchant Job", title.text)
-	assert_true(body.text.contains("available in the full game"))
+	assert_true(body.text.contains("available in a future update"))
 	(root.get_node("UI/DialogPanel") as TownDialogView).next_page()
 	assert_true(body.text.contains("enter caves"))
 	assert_true(body.text.contains("explore old ruins"))

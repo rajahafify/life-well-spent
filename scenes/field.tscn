@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scripts/controllers/field.gd" id="1_field"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
@@ -25,6 +25,40 @@ radius = 64.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_forest_gate"]
 size = Vector2(180, 90)
+
+[sub_resource type="Animation" id="Animation_town_gateway_arrow_pulse"]
+resource_name = "pulse"
+length = 0.9
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ExitArrow:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.45, 0.9),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(32, -30), Vector2(32, -44), Vector2(32, -30)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("ExitArrow:scale")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.45, 0.9),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.12, 1.12), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_town_gateway_arrow"]
+_data = {
+"pulse": SubResource("Animation_town_gateway_arrow_pulse")
+}
 
 [node name="Field" type="Node2D"]
 script = ExtResource("1_field")
@@ -72,15 +106,19 @@ offset_left = -64.0
 offset_top = -64.0
 offset_right = 64.0
 offset_bottom = 64.0
-color = Color(0.1, 0.8, 0.9, 0.55)
+color = Color(1, 0.85, 0.16, 0)
 
-[node name="Label" type="Label" parent="TownGateway"]
-offset_left = -48.0
-offset_top = 72.0
-offset_right = 48.0
-offset_bottom = 98.0
-text = "Town"
-horizontal_alignment = 1
+[node name="ExitArrow" type="Polygon2D" parent="TownGateway"]
+position = Vector2(32, -30)
+color = Color(1, 0.96, 0.08, 1)
+polygon = PackedVector2Array(-62, -28, 62, -28, 62, 20, 94, 20, 0, 104, -94, 20, -62, 20)
+
+[node name="ArrowAnimation" type="AnimationPlayer" parent="TownGateway"]
+root_node = NodePath("..")
+libraries = {
+"": SubResource("AnimationLibrary_town_gateway_arrow")
+}
+autoplay = "pulse"
 
 [node name="ForestGateway" type="Area2D" parent="."]
 position = Vector2(2768, 2112)
@@ -97,6 +135,7 @@ solid_radius = 40.0
 talk_stop_buffer = 60.0
 role = "forest_guard"
 dialog_text = "Stop.\n\nThe Demon King is gone.\nBut old places do not become safe overnight.\n\nThe Forest remembers what we forgot.\nReturn to Town.\nEarn certification from the Swordsman Guild."
+sprite_texture = ExtResource("5_guard")
 
 [node name="Sprite" parent="ForestGuard"]
 texture = ExtResource("5_guard")

@@ -14,6 +14,8 @@ func test_settings_model_defaults() -> void:
 	var settings = _new_script_object("res://scripts/models/settings_model.gd")
 	assert_eq(1.0, settings.master_volume)
 	assert_false(settings.fullscreen)
+	assert_eq("normal", settings.game_speed)
+	assert_eq(1.0, settings.game_speed_multiplier())
 	settings.free()
 
 
@@ -23,6 +25,21 @@ func test_settings_model_clamps_volume() -> void:
 	assert_eq(1.0, settings.master_volume)
 	settings.set_master_volume(-1.0)
 	assert_eq(0.0, settings.master_volume)
+	settings.free()
+
+
+func test_settings_model_maps_game_speed_to_multiplier() -> void:
+	var settings = _new_script_object("res://scripts/models/settings_model.gd")
+	settings.set_game_speed("fast")
+	assert_eq("fast", settings.game_speed)
+	assert_eq(2.0, settings.game_speed_multiplier())
+	settings.set_game_speed("ultra")
+	assert_eq("ultra", settings.game_speed)
+	assert_eq(4.0, settings.game_speed_multiplier())
+	settings.set_game_speed("invalid")
+	assert_eq("normal", settings.game_speed)
+	assert_eq(1.0, settings.game_speed_multiplier())
+	assert_eq(4.0, settings.multiplier_for_game_speed("ultra"))
 	settings.free()
 
 
@@ -41,6 +58,8 @@ func test_feedback_system_plays_registered_audio_cue() -> void:
 	assert_eq("quest_reward", feedback_scene.last_sfx)
 	assert_eq(1, feedback_scene.spawned_sfx_count)
 	assert_not_null(player)
+	if player:
+		assert_not_null(player.stream)
 	feedback_scene.free()
 
 

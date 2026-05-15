@@ -128,3 +128,16 @@ func test_npc_scene_hides_overhead_name_label() -> void:
 	if label:
 		assert_false(label.visible, "NPC name label should be hidden by default")
 	npc.free()
+
+
+func test_npc_controller_applies_exported_sprite_texture() -> void:
+	var scene: PackedScene = load("res://scenes/npc.tscn")
+	assert_not_null(scene, "npc scene should load")
+	if scene == null:
+		return
+	var npc: NpcController = scene.instantiate() as NpcController
+	npc.sprite_texture = load("res://assets/npcs/guildmaster.png") as Texture2D
+	npc._ready()
+	var sprite: Sprite2D = npc.get_node("Sprite") as Sprite2D
+	assert_true(sprite.texture.resource_path.ends_with("guildmaster.png"))
+	npc.free()

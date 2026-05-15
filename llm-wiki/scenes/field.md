@@ -1,7 +1,7 @@
 ---
 title: Field Scene
 type: reference
-updated: 2026-05-14
+updated: 2026-05-15
 tags: [scenes, field, prototype]
 ---
 
@@ -9,7 +9,7 @@ tags: [scenes, field, prototype]
 
 ## Overview
 
-`scenes/field.tscn` is the playable Field outside Town. Current slice has click movement, camera follow, generated Tiny Town field art/collision, Forest Guard blocking the southeast Forest path, a direct Town gateway centered on the north road entry, shared gameplay HUD, QuestSystem Forest Gate progression, and the first Slime/Bat/Rat combat flow.
+`scenes/field.tscn` is the playable Field outside Town. Current slice has click movement, camera follow, generated Tiny Town field art/collision, Forest Guard blocking the southeast Forest path, a direct Town gateway centered on the north road entry with an invisible trigger and pulsing yellow exit arrow, shared gameplay HUD, QuestSystem Forest Gate progression, and the first Slime/Bat/Rat combat flow.
 
 ## Scene Structure
 
@@ -20,7 +20,7 @@ Field (Node2D, Field)
 - SpawnZones/Grassland (hidden ColorRect enemy spawn region)
 - SpawnPoints/FromTownGateway, SpawnPoints/Default
 - Player (player.tscn, starts at FromTownGateway, south of TownGateway trigger)
-- TownGateway (north road entry)
+- TownGateway (north road entry, invisible trigger with animated ExitArrow)
 - ForestGateway (southeast road end)
 - ForestGuard (NpcController, forest_guard.png, southeast road end)
 - Enemies
@@ -70,6 +70,7 @@ Legacy primitive Field art nodes (`Ground`, `Paths`, `ForestEdge`, and `Props`) 
 - handles far-click Guard approach before dialog
 - marks the `forest_guard` checkpoint only after the Forest Guard dialog is closed, whether reached by NPC click or Forest Gateway collision
 - direct Town gateway request to `res://scenes/town_scene.tscn`, with the scene-tree change deferred outside the physics callback
+- uses a centered animated bright-yellow arrow at the Town gateway instead of a visible cyan trigger block or text label over the player
 - blocks Forest gateway at the southeast road end, marks the `forest_guard` checkpoint, advances `Explore the World` to `Get Swordsman Certification.`, and opens Guard warning; Guildmaster starts `Rebuilding Swordsman Guild` later in Town
 - after `swordsman_certification`, Forest Guard no longer repeats the Guard block, preserves the `enter_forest` objective, and shows the open-path copy: `The path to forest is open.`
 - after `swordsman_certification`, Forest gateway transitions to `res://scenes/forest.tscn`
@@ -87,6 +88,7 @@ Legacy primitive Field art nodes (`Ground`, `Paths`, `ForestEdge`, and `Props`) 
 - handles shared HUD shortcut slot `1` as Apple use: consumes one Apple, heals current Life by up to 20 without exceeding Max Life, refreshes Life UI, and shows a toast
 - applies equipped item combat bonuses through `EquipmentStats`: Training Sword adds attack and Leather Armor adds defense
 - refreshes the player sprite through `PlayerAgingModel.texture_path_for_max_hp_and_equipment()` so equipped Training Sword and Leather Armor use age-matched equipment spritesheets
+- selects the player attack animation from equipment: unarmed uses LPC `slash`, equipped Training Sword uses LPC `thrust`
 - emits enemy hit feedback through reusable `HitFeedbackComponent` / `DamageTextComponent` children
 - adds lightweight combat feedback: enemy hit flash, floating damage text, short camera shake on hits, SFX requests through `FeedbackSystem`, and a temporary loot toast when drops are granted
 - plays enemy death animation before removal and grants XP once when HP reaches zero
@@ -109,7 +111,7 @@ Current Field combat scope is five Slimes, five Bats, and two Rats.
 - Enemy damage numbers are white; player damage numbers are red.
 - Player click targets an enemy and moves toward it without aggroing immediately.
 - Player movement is required until the player reaches close attack-ready range next to the enemy sprite. After that, attacks continue while the enemy remains inside the larger leash.
-- Player auto-attacks with LPC `slash` animation while in range.
+- Player auto-attacks with LPC `slash` animation while unarmed and LPC `thrust` animation when Training Sword is equipped.
 - First player hit aggros the enemy.
 - Aggro enemy chases if player moves away.
 - Enemy attacks current Life on its attack interval.
@@ -119,7 +121,7 @@ Current Field combat scope is five Slimes, five Bats, and two Rats.
 - Current rare drops are 5% chance: Slime -> `apple`, Bat -> `training_sword`, Rat -> `leather_armor`.
 - Drop grants show a short `+ item xN` loot toast.
 - Pressing shortcut `1` uses Apple if the player has one and current Life is below Max Life. Apple heals up to 20 current Life, consumes one stack item, and cannot restore Max Life.
-- Equipping Training Sword adds 20 player attack and switches the player to the matching sword spritesheet for the current age stage.
+- Equipping Training Sword adds 20 player attack, switches the player to the matching sword spritesheet for the current age stage, and changes the attack animation to the weapon thrust row so the sword is visible during combat.
 - Equipping Leather Armor adds 1 player defense. If Training Sword is also equipped, the player switches to the matching sword+armor spritesheet.
 - Inventory overlay: `scenes/ui/inventory_window.tscn`, opened by `SharedHUDView`.
 - Initial spawn positions are random inside `SpawnZones/Grassland`, avoiding Player, Town portal, Forest Guard, imported collision blockers, and nearby enemy overlap.
@@ -128,10 +130,10 @@ Current Field combat scope is five Slimes, five Bats, and two Rats.
 
 ## Test Coverage
 
-- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, generated `FieldMap` and `FieldCollision`, north TownGateway placement, shared HUD, Inventory button/window and `I` key toggle, HUD pointer blocking for movement, Apple shortcut use, equipped Training Sword attack damage, removal of legacy primitive Field art and the old visible ForestBlocker bar, southeast Forest Guard/gateway placement, enemy collision rejection, spawn zone, enlarged Slime/Bat/Rat sprite and collision footprint, player approach spacing, per-enemy HP bars, removal of text-based enemy HP labels, click targeting without immediate aggro, player auto-attack, first-hit aggro, enemy Life damage, hit shake/flash, loot toast, chase, death removal/XP/drop grant, Guard dialog, bottom-right dialog buttons, QuestSystem Forest Guard checkpoint and Forest Gate objective progression without early Guildmaster chain activation, certified Forest Guard open-path copy, certified Forest Gateway transition to Forest, Quest Window refresh, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
+- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, generated `FieldMap` and `FieldCollision`, north TownGateway placement, shared HUD, Inventory button/window and `I` key toggle, HUD pointer blocking for movement, Apple shortcut use, equipped Training Sword attack damage and weapon thrust animation, removal of legacy primitive Field art and the old visible ForestBlocker bar, southeast Forest Guard/gateway placement, enemy collision rejection, spawn zone, enlarged Slime/Bat/Rat sprite and collision footprint, player approach spacing, per-enemy HP bars, removal of text-based enemy HP labels, click targeting without immediate aggro, player auto-attack, first-hit aggro, enemy Life damage, hit shake/flash, loot toast, chase, death removal/XP/drop grant, Guard dialog, bottom-right dialog buttons, QuestSystem Forest Guard checkpoint and Forest Gate objective progression without early Guildmaster chain activation, certified Forest Guard open-path copy, certified Forest Gateway transition to Forest, Quest Window refresh, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
 - Gateway, NPC placement, biome, movement, enemy behavior, combat, drop, and dialog systems remain covered by their model/scene specs.
 
-Latest Field validation: Field scene specs included in the full suite. Full suite currently reports `434 tests, 434 passed, 0 failed`.
+Latest Field validation: Field scene specs included in the full suite. Full suite currently reports `491 tests, 491 passed, 0 failed`.
 
 ## Related
 

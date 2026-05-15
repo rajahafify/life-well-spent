@@ -208,6 +208,30 @@ func test_field_gateway_label_copy() -> void:
 	root.free()
 
 
+func test_field_gateway_has_centered_animated_exit_arrow() -> void:
+	var root := _instantiate_town()
+	if root == null:
+		return
+	var visual := root.get_node_or_null("FieldGateway/Visual") as ColorRect
+	var sign := root.get_node_or_null("FieldGateway/ExitLandmark/Sign")
+	var arrow := root.get_node_or_null("FieldGateway/ExitArrow") as Polygon2D
+	var animation_player := root.get_node_or_null("FieldGateway/ArrowAnimation") as AnimationPlayer
+	assert_not_null(visual, "Field gateway should keep an invisible trigger visual node")
+	assert_null(sign, "Field gateway should not use a signpost")
+	assert_not_null(arrow, "Field gateway should have a visible directional arrow")
+	assert_not_null(animation_player, "Field gateway arrow should have animation")
+	if visual:
+		assert_eq(0.0, visual.color.a)
+	if arrow:
+		assert_eq(32.0, arrow.position.x)
+		assert_true(arrow.color.r >= 1.0 and arrow.color.g >= 0.9, "gateway arrow should be bright yellow")
+		assert_true(arrow.polygon.size() >= 7, "gateway arrow should have a readable chunky silhouette")
+	if animation_player:
+		assert_true(animation_player.has_animation("pulse"), "gateway arrow should pulse")
+		assert_eq("pulse", animation_player.autoplay)
+	root.free()
+
+
 func test_guildmaster_dialog_copy_is_defined() -> void:
 	var root := _instantiate_town()
 	if root == null:
@@ -245,9 +269,15 @@ func test_worldbuilding_npc_sprites_use_custom_textures() -> void:
 	var root := _instantiate_town()
 	if root == null:
 		return
+	var guildmaster: NpcController = root.get_node("Guildmaster") as NpcController
+	var shopkeeper: NpcController = root.get_node("Shopkeeper") as NpcController
+	var smith: NpcController = root.get_node("Smith") as NpcController
 	var guild_sprite: Sprite2D = root.get_node("Guildmaster/Sprite") as Sprite2D
 	var shop_sprite: Sprite2D = root.get_node("Shopkeeper/Sprite") as Sprite2D
 	var smith_sprite: Sprite2D = root.get_node("Smith/Sprite") as Sprite2D
+	assert_true(guildmaster.sprite_texture.resource_path.ends_with("guildmaster.png"))
+	assert_true(shopkeeper.sprite_texture.resource_path.ends_with("shopkeeper.png"))
+	assert_true(smith.sprite_texture.resource_path.ends_with("smith.png"))
 	assert_true(guild_sprite.texture.resource_path.ends_with("guildmaster.png"))
 	assert_true(shop_sprite.texture.resource_path.ends_with("shopkeeper.png"))
 	assert_true(smith_sprite.texture.resource_path.ends_with("smith.png"))

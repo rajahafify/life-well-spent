@@ -31,7 +31,7 @@
 | [architecture/profile-system](architecture/profile-system.md) | reference | 2026-05-13 | Persistent player profile autoload for Swordsman Guild unlocks and rebirth state. |
 | [architecture/inventory-window-view](architecture/inventory-window-view.md) | reference | 2026-05-14 | Reusable inventory overlay scene showing slots, item stacks, and equipment actions. |
 | [architecture/shared-hud-view](architecture/shared-hud-view.md) | reference | 2026-05-13 | Reusable gameplay HUD for player Life, Inventory, Quest Tracker, and 1-9 shortcut bar. |
-| [architecture/feedback-components](architecture/feedback-components.md) | reference | 2026-05-13 | Reusable combat feedback components for hit flash, floating damage text, loot toast, camera shake, and SFX requests. |
+| [architecture/feedback-components](architecture/feedback-components.md) | reference | 2026-05-15 | Reusable combat feedback components for hit flash, floating damage text, loot toast, camera shake, and export-safe SFX playback. |
 | [architecture/game-balance](architecture/game-balance.md) | reference | 2026-05-14 | Shared pure constants model for quest cost, animation timings, Field tuning, and item healing. |
 | [assets/lpc-sprite-generator](assets/lpc-sprite-generator.md) | reference | 2026-05-09 | LPC sprite generator tool — prompt-driven character spritesheet pipeline. |
 | [assets/assets-viewer](assets/assets-viewer.md) | reference | 2026-05-12 | In-project gallery scene that recursively displays enemy, NPC, and player PNG assets as thumbnails. |
@@ -39,16 +39,16 @@
 | [assets/tiny-town-map-import](assets/tiny-town-map-import.md) | reference | 2026-05-12 | TMJ-to-Godot visual map importer for the Tiny Town TownMap scene. |
 | [scenes/main-menu](scenes/main-menu.md) | reference | 2026-05-15 | Main menu scene with centered controls, young-to-old player image below the menu, and confirmed New Game reset. |
 | [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-15 | Prototype Town scene - Guildmaster certification chain, Smith/Shopkeeper job teaser quests, reborn dialog, and direct Field gateway. |
-| [scenes/field](scenes/field.md) | reference | 2026-05-14 | Playable Field slice - profile-backed age, 12 active enemy slots, close-ready attack leash, enemy HP bars, Forest Guard gate, and Forest endpoint. |
+| [scenes/field](scenes/field.md) | reference | 2026-05-15 | Playable Field slice - profile-backed age, equipped weapon attack animation, 12 active enemy slots, close-ready attack leash, enemy HP bars, Forest Guard gate, and Forest endpoint. |
 | [scenes/forest](scenes/forest.md) | reference | 2026-05-13 | Forest endpoint scene reached after Swordsman certification, with return gateway to Field. |
 | [architecture/animation-controller](architecture/animation-controller.md) | reference | 2026-05-12 | LPC spritesheet animation state machine. Idle, walking, slash/thrust attack frame advance via `tick(delta)`. |
 | [architecture/player-movement](architecture/player-movement.md) | reference | 2026-05-11 | CharacterMovement Sprite2D view. Click-to-move/static facing, collision/dialog stop, modal move lock, AnimationController frames. |
-| [architecture/npc-system](architecture/npc-system.md) | reference | 2026-05-11 | NPC scene/controller/dialog wiring with TownDialogView, RO-style pending approach, talk range, name labels, modal quest UI. |
+| [architecture/npc-system](architecture/npc-system.md) | reference | 2026-05-15 | NPC scene/controller/dialog wiring with root-exported sprite texture assignment, TownDialogView, RO-style pending approach, talk range, name labels, modal quest UI. |
 | [architecture/player-stats](architecture/player-stats.md) | reference | 2026-05-13 | Player HP, level, death/rebirth, game-over request, XP, persistent facilities, and serialization. |
 | [architecture/life-tracker](architecture/life-tracker.md) | reference | 2026-05-11 | Daily tasks, habits, completions, streaks, and XP rewards. |
 | [architecture/progression-model](architecture/progression-model.md) | reference | 2026-05-13 | Life task completion, player XP, linked quest completion, Swordsman certification, HP spend, and facility unlock rules. |
 | [architecture/player-aging-model](architecture/player-aging-model.md) | reference | 2026-05-14 | Pure Max Life and equipped equipment to player sprite mapping for bare, Training Sword, and brown leather armor age-stage visuals. |
 | [architecture/npc-definition](architecture/npc-definition.md) | reference | 2026-05-11 | Resource-backed NPC role variants for quest givers, vendors, and facilities. |
-| [architecture/settings-model](architecture/settings-model.md) | reference | 2026-05-11 | User options state with volume clamp and fullscreen flag. |
-| [architecture/persistence-audio-settings](architecture/persistence-audio-settings.md) | reference | 2026-05-11 | SaveManager, AudioManager, SettingsModel, and SceneTransitionController system boundaries. |
+| [architecture/settings-model](architecture/settings-model.md) | reference | 2026-05-15 | User options state with volume clamp, fullscreen flag, and game speed multipliers. |
+| [architecture/persistence-audio-settings](architecture/persistence-audio-settings.md) | reference | 2026-05-15 | SaveManager, AudioManager, SettingsModel speed presets, and SceneTransitionController system boundaries. |
 | [architecture/gdai-mcp-runtime-guard](architecture/gdai-mcp-runtime-guard.md) | reference | 2026-05-11 | Keeps GDAI MCP enabled in editor while skipping runtime startup during headless tests. |

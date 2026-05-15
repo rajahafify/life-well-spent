@@ -1,5 +1,36 @@
 # Wiki Log
 
+## [2026-05-15] fix | Repair equipped sword attack sprites
+
+- RED: added `tests/specs/player_aging_assets_test.gd` coverage requiring Training Sword attack rows to differ from bare sheets in every thrust direction.
+- Regenerated the Training Sword thrust overlay into all sword and sword+armor player aging sheets so up, left, down, and right attacks visibly use the sword.
+- Updated Player Aging Model wiki docs.
+- Validation: full suite `499 tests, 499 passed, 0 failed`.
+
+## [2026-05-15] feat | Add gameplay speed option
+
+- RED: added SettingsModel, SharedHUD, Field, and Town specs for `normal`, `fast`, and `ultra` game speed selection.
+- Added Game Speed to the shared Options modal and emitted `game_speed_changed` for scene controllers.
+- Field and Town now apply selected speed through `Engine.time_scale`: normal `1x`, fast `2x`, ultra `4x`; End Game resets speed to normal.
+- Updated settings and shared HUD wiki docs.
+- Validation: full suite `495 tests, 495 passed, 0 failed`.
+
+## [2026-05-15] polish | Landmark Town/Field exits
+
+- RED: added `tests/specs/town_prototype_test.gd` coverage requiring a visible `TO FIELD` sign and directional arrow at the Town Field gateway.
+- GREEN: replaced the cyan-looking portal block with a subtle warm trigger tint and added solid signpost/arrow world art beside the south road.
+- Follow-up: removed the signpost, made the trigger fill invisible, centered a larger high-contrast arrow, and added a looping pulse animation.
+- Follow-up: applied the same invisible-trigger and pulsing-arrow treatment to Field's north Town gateway and removed the over-player `Town` label.
+- DOCS: updated Town Hub, Field Scene, and prototype polish QA notes for the animated world-exit pattern.
+- Validation: full suite `489 tests, 489 passed, 0 failed`.
+
+## [2026-05-15] copy | Rename job teaser availability to future update
+
+- RED: updated `tests/specs/town_scene_dialog_test.gd` expectations for Smith and Shopkeeper job preview availability copy.
+- GREEN: changed Town Smith and Shopkeeper preview dialogs to "available in a future update".
+- DOCS: updated Town Hub, Quest System, and prototype polish QA language to use future-update terminology.
+- Validation: full suite `488 tests, 488 passed, 0 failed`.
+
 ## [2026-05-15] polish | Add aging image main menu
 
 - RED: added Main Menu specs for an icon-green background and a young-to-old player image below the centered menu.
@@ -9,7 +40,7 @@
 
 ## [2026-05-15] polish | Add post-Guild job teaser quests
 
-- RED: added Town dialog specs for Smith and Shopkeeper post-Guild markers, quest-start copy, Accept Quest actions, and full-game job preview dialogs.
+- RED: added Town dialog specs for Smith and Shopkeeper post-Guild markers, quest-start copy, Accept Quest actions, and future-update job preview dialogs.
 - Smith now offers a reopen-blacksmith teaser after Swordsman Guild unlock and previews the future Blacksmith Job loop.
 - Shopkeeper now offers a reopen-shop teaser after Swordsman Guild unlock and previews the future Merchant Job loop.
 - Validation: focused TownSceneDialog suite `53 tests, 53 passed, 0 failed`; full suite `483 tests, 483 passed, 0 failed`.
@@ -937,6 +968,13 @@
 - Updated asset catalog, enemy asset tools wiki, wiki index, and enemy sprite metadata docs.
 - Validation: `223 tests, 223 passed, 0 failed`.
 
+## [2026-05-15] fix | Make exported PC build keep NPC sprites and SFX
+
+- RED: added NPC controller, Town prototype, FeedbackSystem, and audio transition regression coverage for root-exported NPC textures and loaded SFX streams.
+- Added `NpcController.sprite_texture` and set Town/Field NPC instances from their root controller exports so release builds do not fall back to the base player sprite.
+- Changed `FeedbackSystem` to load registered audio cues as Godot `AudioStream` resources, which works with imported/remapped audio in exported builds.
+- Validation: `488 tests, 488 passed, 0 failed`.
+
 ## [2026-05-12] fix | Enforce Field collision for enemies
 
 - RED: updated `tests/specs/field_scene_test.gd` to require enemy movement through `FieldCollision` and removal of the old visible ForestBlocker bar.
@@ -977,3 +1015,10 @@
 - Added `_tick_enemy_spawns()` to poll `EnemySpawnManager` once per second and fill eligible missing slots up to the biome cap.
 - Updated Field and enemy spawn docs.
 - Validation: Field scene specs `24 tests, 24 passed`; EnemySpawnSystem specs `5 tests, 5 passed`.
+
+## [2026-05-15] fix | Use weapon attack animation when Training Sword is equipped
+
+- RED: added `tests/specs/field_scene_test.gd` coverage that an equipped Training Sword uses the LPC `thrust` attack animation.
+- Updated Field combat orchestration so `FieldCombatController` asks Field for the current player attack animation style instead of always playing unarmed `slash`.
+- Updated Field scene wiki docs and index entry.
+- Validation: full suite `491 tests, 491 passed, 0 failed`.

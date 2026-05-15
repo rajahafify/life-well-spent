@@ -33,34 +33,6 @@ func play_sfx(sfx_name: String, stream: AudioStream = null, bus_name: String = "
 
 func _stream_for_sfx(sfx_name: String) -> AudioStream:
 	var path := AUDIO_CUE_LIBRARY.path_for(sfx_name)
-	if path == "" or not FileAccess.file_exists(path):
+	if path == "":
 		return null
-	return _load_wav_stream(path)
-
-
-func _load_wav_stream(path: String) -> AudioStreamWAV:
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file == null:
-		return null
-	var bytes := file.get_buffer(file.get_length())
-	file.close()
-	if bytes.size() < 44:
-		return null
-	var channels := int(bytes.decode_u16(22))
-	var sample_rate := int(bytes.decode_u32(24))
-	var bits_per_sample := int(bytes.decode_u16(34))
-	if bits_per_sample != 16:
-		return null
-	var data_offset := 36
-	while data_offset + 8 <= bytes.size():
-		var chunk_id := bytes.slice(data_offset, data_offset + 4).get_string_from_ascii()
-		var chunk_size := int(bytes.decode_u32(data_offset + 4))
-		if chunk_id == "data":
-			var stream := AudioStreamWAV.new()
-			stream.format = AudioStreamWAV.FORMAT_16_BITS
-			stream.mix_rate = sample_rate
-			stream.stereo = channels == 2
-			stream.data = bytes.slice(data_offset + 8, data_offset + 8 + chunk_size)
-			return stream
-		data_offset += 8 + chunk_size
-	return null
+	return load(path) as AudioStream

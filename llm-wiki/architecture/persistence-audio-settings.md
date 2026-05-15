@@ -31,6 +31,8 @@ AudioManager.stop_music()
 
 SettingsModel.set_master_volume(value)
 SettingsModel.set_fullscreen(value)
+SettingsModel.set_game_speed(value)
+SettingsModel.game_speed_multiplier()
 
 SceneTransitionController.request_transition(scene_path)
 SceneTransitionController.execute_transition()
@@ -39,14 +41,14 @@ SceneTransitionController.execute_transition()
 ## Design Decisions
 - SaveManager is manager boundary because it uses `FileAccess` and `JSON`.
 - ProfileSystem is the autoload boundary for persistent player profile state. Town reads its `PlayerStats` instance when running in the scene tree.
-- SettingsModel stays pure and clamps values.
+- SettingsModel stays pure, clamps values, and maps game speed presets to runtime multipliers without touching `Engine`.
 - AudioManager currently records requested audio names; future work can attach streams/buses.
 - SceneTransitionController separates transition requests from callers.
 
 ## Test Coverage
 - `tests/specs/save_manager_test.gd`: build/apply/file round trip, corrupted/missing file recovery, empty data handling, and profile data preserving Swordsman Guild unlock.
 - `tests/specs/profile_system_test.gd`: redirected profile path save/load.
-- `tests/specs/settings_audio_transition_test.gd`: settings clamp, SFX request, transition request.
+- `tests/specs/settings_audio_transition_test.gd`: settings clamp, game speed multiplier mapping, SFX request, transition request.
 
 ## Related
 - [LifeTracker](life-tracker.md)

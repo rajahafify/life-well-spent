@@ -15,6 +15,7 @@ const ENEMY_STATE_SCRIPT := preload("res://scripts/models/enemy_state.gd")
 const INVENTORY_SCRIPT := preload("res://scripts/models/inventory_model.gd")
 const FIELD_RUNTIME_CONTEXT_SCRIPT := preload("res://scripts/controllers/field_runtime_context.gd")
 const GAME_BALANCE_SCRIPT := preload("res://scripts/models/game_balance.gd")
+const SETTINGS_SCRIPT := preload("res://scripts/models/settings_model.gd")
 const DAMAGE_TEXT_SCRIPT := preload("res://scripts/views/damage_text_component.gd")
 const ENEMY_COLLISION_RADIUS := GAME_BALANCE_SCRIPT.FIELD_ENEMY_COLLISION_RADIUS
 const ENEMY_APPROACH_DISTANCE := GAME_BALANCE_SCRIPT.FIELD_ENEMY_APPROACH_DISTANCE
@@ -159,6 +160,8 @@ func _connect_hud() -> void:
 			_hud.equipment_changed.connect(_on_equipment_changed)
 		if _hud.has_signal("end_game_requested") and not _hud.end_game_requested.is_connected(_on_options_end_game_requested):
 			_hud.end_game_requested.connect(_on_options_end_game_requested)
+		if _hud.has_signal("game_speed_changed") and not _hud.game_speed_changed.is_connected(_on_game_speed_changed):
+			_hud.game_speed_changed.connect(_on_game_speed_changed)
 
 
 func _physics_process(delta: float) -> void:
@@ -640,7 +643,12 @@ func request_scene(scene_path: String) -> void:
 
 
 func _on_options_end_game_requested() -> void:
+	Engine.time_scale = 1.0
 	request_scene(MAIN_MENU_PATH)
+
+
+func _on_game_speed_changed(speed_id: String) -> void:
+	Engine.time_scale = SETTINGS_SCRIPT.multiplier_for_game_speed(speed_id)
 
 
 func _change_scene_to_file(scene_path: String) -> void:
@@ -749,6 +757,12 @@ func player_attack_ready_range() -> float:
 
 func player_attack_leash_range() -> float:
 	return PLAYER_ATTACK_LEASH_RANGE
+
+
+func player_attack_animation_style() -> String:
+	if _equipped_weapon_id() == "training_sword":
+		return "thrust"
+	return "slash"
 
 
 func is_player_target_attack_ready() -> bool:

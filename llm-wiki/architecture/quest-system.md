@@ -52,7 +52,7 @@ func apply_dict(data: Dictionary) -> void
 - Field reports enemy defeats through `record_enemy_defeated()` and material drops through `record_item_gathered()`, allowing shared quest state to track the 10-Slime, 2-Bat-Wing, and 2-Rat Guildmaster objectives across scene changes.
 - Town syncs the Bat Wing objective from current inventory through `sync_current_item_objective()`, so already-owned Bat Wings count toward the Guildmaster guard trial.
 - Town gates the Guildmaster `Claim Reward` button through `is_current_side_quest_step_complete()` so Max Life cannot be spent before the active objective is complete.
-- Town quest markers use a large, outlined, pulsing `!` placed close above the NPC head: yellow for a new quest, white for active incomplete quest, and green for completed unclaimed quest. The Smith and Shopkeeper show yellow markers after rebirth with the Swordsman Guild unlocked until their full-game job teaser quests are accepted.
+- Town quest markers use a large, outlined, pulsing `!` placed close above the NPC head: yellow for a new quest, white for active incomplete quest, and green for completed unclaimed quest. The Smith and Shopkeeper show yellow markers after rebirth with the Swordsman Guild unlocked until their future-update job teaser quests are accepted.
 - Town selects Guildmaster dialog copy from the current Swordsman Guild side-chain step so stance training, guard training, and the final Life oath read as distinct trials while using the same `QuestDialogFlow` panel structure.
 - Reward panels use a consistent three-line format that names the reward and immediate result, and certified Guildmaster dialog points to the Forest path without repeating completed objectives.
 

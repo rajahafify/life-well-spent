@@ -3,6 +3,7 @@
 .godot/shader_cache/
 .godot/uid_cache.bin
 .godot/imported/
+.godot/exported/
 .godot/global_script_class_cache.cfg
 
 # Godot — exported builds
@@ -21,6 +22,7 @@ export_templates/
 /html5/
 /linux/
 /windows/
+/builds/
 
 # Pi (Pi Coding Agent) — runtime cache
 .pi/

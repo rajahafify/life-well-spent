@@ -11,6 +11,7 @@ const PROGRESSION_SCRIPT := preload("res://scripts/models/progression_model.gd")
 const PLAYER_AGING_SCRIPT := preload("res://scripts/models/player_aging_model.gd")
 const QUEST_DIALOG_FLOW_SCRIPT := preload("res://scripts/models/quest_dialog_flow.gd")
 const RUN_SUMMARY_SCRIPT := preload("res://scripts/models/run_summary_model.gd")
+const SETTINGS_SCRIPT := preload("res://scripts/models/settings_model.gd")
 const REBORN_DIALOG := "You have been reborn.\nWill you spend this life well?"
 const MAIN_MENU_PATH := "res://scenes/main_menu.tscn"
 const GAME_OVER_PATH := "res://scenes/game_over.tscn"
@@ -34,9 +35,9 @@ const SWORDSMAN_CERTIFIED_COPY := "The Guild is awake again.\n\nThe Forest path 
 const BLACKSMITH_TEASER_UNLOCK := "blacksmith_job_teaser"
 const MERCHANT_TEASER_UNLOCK := "merchant_job_teaser"
 const BLACKSMITH_QUEST_INTRO := "Now that the Swordsman Guild is open, people will need weapons that hold and armor that fits.\n\nMy forge can serve them again, but not while it sits cold.\n\nHelp me reopen the blacksmith."
-const BLACKSMITH_JOB_PREVIEW := "Blacksmith Job will be available in the full game.\n\nYou will learn recipes, craft weapons and armor from customer orders, and go hunting for the materials each job needs."
+const BLACKSMITH_JOB_PREVIEW := "Blacksmith Job will be available in a future update.\n\nYou will learn recipes, craft weapons and armor from customer orders, and go hunting for the materials each job needs."
 const SHOPKEEPER_QUEST_INTRO := "The Guild will bring travelers back through Town, and travelers need a reason to stop.\n\nHelp me reopen the shop with goods worth crossing the road for."
-const MERCHANT_JOB_PREVIEW := "Merchant Job will be available in the full game.\n\nYou will enter caves, explore old ruins, bring back exciting new items, and sell them in the shop."
+const MERCHANT_JOB_PREVIEW := "Merchant Job will be available in a future update.\n\nYou will enter caves, explore old ruins, bring back exciting new items, and sell them in the shop."
 const MARKER_YELLOW := Color(1.0, 0.86, 0.12, 1.0)
 const MARKER_WHITE := Color.WHITE
 const MARKER_GREEN := Color(0.2, 1.0, 0.32, 1.0)
@@ -114,6 +115,8 @@ func _connect_hud() -> void:
 			_hud.equipment_changed.connect(_on_equipment_changed)
 		if _hud.has_signal("end_game_requested") and not _hud.end_game_requested.is_connected(_on_options_end_game_requested):
 			_hud.end_game_requested.connect(_on_options_end_game_requested)
+		if _hud.has_signal("game_speed_changed") and not _hud.game_speed_changed.is_connected(_on_game_speed_changed):
+			_hud.game_speed_changed.connect(_on_game_speed_changed)
 
 
 func _connect_dialog() -> void:
@@ -387,6 +390,7 @@ func _on_rebirth_pressed() -> void:
 
 
 func _on_end_game_pressed() -> void:
+	Engine.time_scale = 1.0
 	requested_scene_path = MAIN_MENU_PATH
 	if is_inside_tree():
 		call_deferred("_change_scene_to_file", MAIN_MENU_PATH)
@@ -394,6 +398,10 @@ func _on_end_game_pressed() -> void:
 
 func _on_options_end_game_requested() -> void:
 	_on_end_game_pressed()
+
+
+func _on_game_speed_changed(speed_id: String) -> void:
+	Engine.time_scale = SETTINGS_SCRIPT.multiplier_for_game_speed(speed_id)
 
 
 func _update_game_over_summary() -> void:

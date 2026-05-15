@@ -1,7 +1,7 @@
 ---
 title: NPC System
 type: reference
-updated: 2026-05-11
+updated: 2026-05-15
 tags: [architecture, game-design]
 ---
 
@@ -47,6 +47,7 @@ signal interacted(npc)
 @export var solid_radius: float = 20.0
 @export var talk_stop_buffer: float = 24.0
 @export var name_label_path: NodePath = ^"NameLabel"
+@export var sprite_texture: Texture2D
 
 interact_with_player(player_global_pos) → face_toward_player(player_global_pos), emit interacted(self)
 face_toward_player(player_global_pos) → state.interacting=true, state.face_player(delta), view.set_facing(state.facing)
@@ -93,6 +94,7 @@ CharacterBody2D Npc
 - Far-click approach point is `solid_radius + talk_stop_buffer`, clamped inside talk radius.
 - Dialog is modal: opening calls `stop_moving()` and disables player movement; closing re-enables it.
 - Reuse CharacterMovement for player/NPC facing and animation.
+- Scene instances set `sprite_texture` on the root `NpcController`; `_ready()` applies it to the `Sprite` view. This avoids release-export fallback to the base `npc.tscn` player sprite when inherited child texture overrides are not preserved as expected.
 - MVC: model pure, view dumb, controller signals.
 - Dialog presentation extracted to `TownDialogView`; reusable quest panel state is built by `QuestDialogFlow`; scene controllers own quest side effects and receive button signals.
 - Collision is solid only; sprite click owns interaction.
@@ -101,7 +103,7 @@ CharacterBody2D Npc
 
 ## Test Coverage
 - `npc_state_test.gd` (14): initial, face_player dirs/edge, quest assign/clear-to-null, interacting.
-- `npc_controller_test.gd`: explicit player target faces right/up, syncs state/view, emits actor only from explicit interaction, exposes dialog metadata defaults, talk range true/false, talk point, visible overhead name label.
+- `npc_controller_test.gd`: explicit player target faces right/up, syncs state/view, emits actor only from explicit interaction, exposes dialog metadata defaults, talk range true/false, talk point, hidden overhead name label, and root-exported sprite texture application.
 - `scene_smoke_test.gd`: player scene separated from NPC controller; NPC Sprite static and markerless; solid collision without proximity dialog trigger; town UI wiring.
 - `town_scene_dialog_test.gd` (15): dialog panel, TownDialogView scene wiring/API, NPC metadata, vendor no quest button, accept-free/complete-cost quest UI, close behavior, far-click pending approach, automatic open in range, near-click immediate open, modal movement lock, mutual facing.
 - Full suite: 128 tests pass.

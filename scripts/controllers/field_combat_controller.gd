@@ -30,7 +30,7 @@ func tick_player_auto_attack(owner, delta: float) -> void:
 		return
 	owner.player_attack_timer = 0.0
 	owner.play_feedback_sfx("player_attack")
-	movement.play_attack("slash")
+	movement.play_attack(owner.player_attack_animation_style())
 	var result: Dictionary = owner.combat_system().player_attack_enemy(owner.player_combat_dict(), state.to_combat_dict())
 	owner.start_camera_shake()
 	owner.play_feedback_sfx("enemy_hit")
