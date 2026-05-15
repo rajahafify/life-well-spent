@@ -19,7 +19,7 @@
 | [architecture/npc-placement](architecture/npc-placement.md) | reference | 2026-05-11 | Stable NPC map placement data, including Forest Guard gateway blocking. |
 | [architecture/biome-definition](architecture/biome-definition.md) | reference | 2026-05-12 | Field grassland palette, Slime/Bat/Rat enemy pool, props, and biome filters. |
 | [architecture/quest-manager](architecture/quest-manager.md) | concept | 2026-05-13 | Quest catalog, main objective progression, Guildmaster-started side chain activation, objective-backed certification steps, certification state, and free acceptance. |
-| [architecture/quest-system](architecture/quest-system.md) | reference | 2026-05-13 | Game-wide quest autoload sharing main quest, Guildmaster side quest objective progress, and certification state across scenes. |
+| [architecture/quest-system](architecture/quest-system.md) | reference | 2026-05-15 | Game-wide quest autoload sharing main quest, Guildmaster side quest objective progress, certification state, and post-Guild job teaser markers across scenes. |
 | [architecture/quest-dialog-flow](architecture/quest-dialog-flow.md) | reference | 2026-05-14 | Pure reusable quest dialog panel flow for normal, incomplete, claimable, and reward states. |
 | [architecture/quest-window-view](architecture/quest-window-view.md) | reference | 2026-05-12 | Reusable top-right quest objective UI view for Town and Field. |
 | [architecture/inventory-model](architecture/inventory-model.md) | reference | 2026-05-14 | Pure inventory model for stack counts, owned equipment checks, Weapon/Armor/Consumable slots, and 1-9 shortcut slots. |
@@ -38,7 +38,7 @@
 | [assets/slime-asset-view](assets/slime-asset-view.md) | reference | 2026-05-12 | Enemy and character asset tools: focused AssetView preview plus looping AssetGallery SpriteFrames/LPC previews. |
 | [assets/tiny-town-map-import](assets/tiny-town-map-import.md) | reference | 2026-05-12 | TMJ-to-Godot visual map importer for the Tiny Town TownMap scene. |
 | [scenes/main-menu](scenes/main-menu.md) | reference | 2026-05-15 | Main menu scene with Continue preserving progress and confirmed New Game reset. |
-| [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-14 | Prototype Town scene - Guildmaster-started certification chain, inventory-count Bat Wing objective, reborn dialog, and direct Field gateway. |
+| [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-15 | Prototype Town scene - Guildmaster certification chain, Smith/Shopkeeper job teaser quests, reborn dialog, and direct Field gateway. |
 | [scenes/field](scenes/field.md) | reference | 2026-05-14 | Playable Field slice - profile-backed age, 12 active enemy slots, close-ready attack leash, enemy HP bars, Forest Guard gate, and Forest endpoint. |
 | [scenes/forest](scenes/forest.md) | reference | 2026-05-13 | Forest endpoint scene reached after Swordsman certification, with return gateway to Field. |
 | [architecture/animation-controller](architecture/animation-controller.md) | reference | 2026-05-12 | LPC spritesheet animation state machine. Idle, walking, slash/thrust attack frame advance via `tick(delta)`. |

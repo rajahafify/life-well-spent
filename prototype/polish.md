@@ -67,7 +67,7 @@ Implemented foundation:
 Latest validation baseline:
 
 ```text
-478 tests, 478 passed, 0 failed
+483 tests, 483 passed, 0 failed
 ```
 
 Known non-failing test output:
@@ -345,9 +345,14 @@ Run this after each polish slice:
 21. Test Rebirth branch.
 22. Confirm Forest path opens.
 23. Confirm the Smith has a centered pulsing yellow marker after rebirth.
-24. Repeat or restore near Summary.
-25. Test New Game branch.
-26. Confirm Forest path still opens.
+24. Talk to Smith and confirm the reopen-blacksmith quest mentions post-Guild weapon and armor demand.
+25. Accept the Smith quest and confirm the Blacksmith Job full-game preview modal describes recipes, crafting orders, and material hunting.
+26. Confirm the Shopkeeper has a centered pulsing yellow marker after rebirth.
+27. Talk to Shopkeeper and confirm the merchant quest mentions reopening the shop for returning travelers.
+28. Accept the Shopkeeper quest and confirm the Merchant Job full-game preview modal describes caves, ruins, exciting items, and selling in the shop.
+29. Repeat or restore near Summary.
+30. Test New Game branch.
+31. Confirm Forest path still opens.
 
 ## Automated Test Expectations
 

@@ -87,6 +87,12 @@ func set_complete_action_text(text: String) -> void:
 		_complete_quest_button.text = text
 
 
+func set_accept_action_text(text: String) -> void:
+	ensure_ready()
+	if _accept_quest_button:
+		_accept_quest_button.text = text
+
+
 func set_body(text: String) -> void:
 	ensure_ready()
 	_pages = _split_pages(text)

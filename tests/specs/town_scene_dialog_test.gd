@@ -645,6 +645,97 @@ func test_smith_marker_is_yellow_after_rebirth_with_swordsman_unlock() -> void:
 	assert_eq(Color(1.0, 0.86, 0.12, 1.0), marker.get_theme_color("font_color"))
 
 
+func test_shopkeeper_marker_is_yellow_after_rebirth_with_swordsman_unlock() -> void:
+	_close_start_dialog()
+	root.player_stats.unlocked_facilities.append("swordsman_guild")
+	root.player_stats.game_over_requested = false
+	root.update_quest_markers()
+	var marker := root.get_node("Shopkeeper/QuestMarker") as Label
+	assert_true(marker.visible)
+	assert_eq("!", marker.text)
+	assert_eq(Color(1.0, 0.86, 0.12, 1.0), marker.get_theme_color("font_color"))
+
+
+func test_smith_reopen_blacksmith_quest_offer_mentions_guild_demand() -> void:
+	_close_start_dialog()
+	root.player_stats.unlocked_facilities.append("swordsman_guild")
+	var npc: NpcController = root.get_node("Smith") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var title: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	var accept: Button = root.get_node("UI/DialogPanel/VBox/Buttons/AcceptQuestButton") as Button
+	assert_eq("Smith", title.text)
+	assert_true(body.text.contains("Swordsman Guild is open"))
+	assert_true(body.text.contains("weapons"))
+	assert_true(body.text.contains("armor"))
+	_advance_dialog_to_last_page()
+	assert_true(accept.visible)
+	assert_eq("Accept Quest", accept.text)
+
+
+func test_accepting_smith_teaser_shows_blacksmith_job_full_game_modal() -> void:
+	_close_start_dialog()
+	root.player_stats.unlocked_facilities.append("swordsman_guild")
+	var npc: NpcController = root.get_node("Smith") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	_advance_dialog_to_last_page()
+	var accept: Button = root.get_node("UI/DialogPanel/VBox/Buttons/AcceptQuestButton") as Button
+	accept.pressed.emit()
+	var title: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	var marker := root.get_node("Smith/QuestMarker") as Label
+	assert_in("blacksmith_job_teaser", root.player_stats.unlocked_facilities)
+	assert_false(marker.visible)
+	assert_eq("Blacksmith Job", title.text)
+	assert_true(body.text.contains("available in the full game"))
+	(root.get_node("UI/DialogPanel") as TownDialogView).next_page()
+	assert_true(body.text.contains("learn recipes"))
+	assert_true(body.text.contains("craft weapons and armor"))
+	assert_true(body.text.contains("hunting for the materials"))
+
+
+func test_shopkeeper_merchant_quest_offer_mentions_reopening_shop() -> void:
+	_close_start_dialog()
+	root.player_stats.unlocked_facilities.append("swordsman_guild")
+	var npc: NpcController = root.get_node("Shopkeeper") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var title: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	var accept: Button = root.get_node("UI/DialogPanel/VBox/Buttons/AcceptQuestButton") as Button
+	assert_eq("Shopkeeper", title.text)
+	assert_true(body.text.contains("The Guild will bring travelers"))
+	(root.get_node("UI/DialogPanel") as TownDialogView).next_page()
+	assert_true(body.text.contains("reopen the shop"))
+	_advance_dialog_to_last_page()
+	assert_true(accept.visible)
+	assert_eq("Accept Quest", accept.text)
+
+
+func test_accepting_shopkeeper_teaser_shows_merchant_job_full_game_modal() -> void:
+	_close_start_dialog()
+	root.player_stats.unlocked_facilities.append("swordsman_guild")
+	var npc: NpcController = root.get_node("Shopkeeper") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	_advance_dialog_to_last_page()
+	var accept: Button = root.get_node("UI/DialogPanel/VBox/Buttons/AcceptQuestButton") as Button
+	accept.pressed.emit()
+	var title: Label = root.get_node("UI/DialogPanel/VBox/NameLabel") as Label
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	var marker := root.get_node("Shopkeeper/QuestMarker") as Label
+	assert_in("merchant_job_teaser", root.player_stats.unlocked_facilities)
+	assert_false(marker.visible)
+	assert_eq("Merchant Job", title.text)
+	assert_true(body.text.contains("available in the full game"))
+	(root.get_node("UI/DialogPanel") as TownDialogView).next_page()
+	assert_true(body.text.contains("enter caves"))
+	assert_true(body.text.contains("explore old ruins"))
+	assert_true(body.text.contains("sell them in the shop"))
+
+
 func test_town_routes_player_movement_to_character_movement() -> void:
 	_close_start_dialog()
 	var movement: CharacterMovement = root.get_node("Player/Sprite") as CharacterMovement

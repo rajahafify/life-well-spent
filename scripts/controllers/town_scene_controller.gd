@@ -31,6 +31,12 @@ const SWORDSMAN_QUEST_COPY := {
 	},
 }
 const SWORDSMAN_CERTIFIED_COPY := "The Guild is awake again.\n\nThe Forest path will know you now."
+const BLACKSMITH_TEASER_UNLOCK := "blacksmith_job_teaser"
+const MERCHANT_TEASER_UNLOCK := "merchant_job_teaser"
+const BLACKSMITH_QUEST_INTRO := "Now that the Swordsman Guild is open, people will need weapons that hold and armor that fits.\n\nMy forge can serve them again, but not while it sits cold.\n\nHelp me reopen the blacksmith."
+const BLACKSMITH_JOB_PREVIEW := "Blacksmith Job will be available in the full game.\n\nYou will learn recipes, craft weapons and armor from customer orders, and go hunting for the materials each job needs."
+const SHOPKEEPER_QUEST_INTRO := "The Guild will bring travelers back through Town, and travelers need a reason to stop.\n\nHelp me reopen the shop with goods worth crossing the road for."
+const MERCHANT_JOB_PREVIEW := "Merchant Job will be available in the full game.\n\nYou will enter caves, explore old ruins, bring back exciting new items, and sell them in the shop."
 const MARKER_YELLOW := Color(1.0, 0.86, 0.12, 1.0)
 const MARKER_WHITE := Color.WHITE
 const MARKER_GREEN := Color(0.2, 1.0, 0.32, 1.0)
@@ -49,6 +55,7 @@ var _progression = null
 var _player_aging = PLAYER_AGING_SCRIPT.new()
 var _quest_dialog_flow = QUEST_DIALOG_FLOW_SCRIPT.new()
 var _run_summary = RUN_SUMMARY_SCRIPT.new()
+var _active_offer_role: String = ""
 
 
 func _exit_tree() -> void:
@@ -113,6 +120,8 @@ func _connect_dialog() -> void:
 	_dialog_view.ensure_ready()
 	if not _dialog_view.close_requested.is_connected(close_dialog):
 		_dialog_view.close_requested.connect(close_dialog)
+	if not _dialog_view.accept_quest_requested.is_connected(_on_accept_quest_requested):
+		_dialog_view.accept_quest_requested.connect(_on_accept_quest_requested)
 	if not _dialog_view.complete_quest_requested.is_connected(_on_complete_quest_requested):
 		_dialog_view.complete_quest_requested.connect(_on_complete_quest_requested)
 
@@ -217,6 +226,7 @@ func _change_scene_to_file(scene_path: String) -> void:
 func close_dialog() -> void:
 	_dialog_view.hide_dialog()
 	_pending_npc = null
+	_active_offer_role = ""
 
 
 func _update_camera() -> void:
@@ -250,6 +260,13 @@ func _dialog_panel_for(npc: NpcController) -> Dictionary:
 		var objective := QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild")
 		var copy := _swordsman_quest_copy()
 		return _quest_dialog_flow.quest_panel(npc.display_name, str(copy["intro"]), str(copy["claim"]), objective, _can_claim_swordsman_reward(npc))
+	if npc.role == "smith" and _can_offer_blacksmith_teaser():
+		_active_offer_role = "smith"
+		return _job_teaser_offer_panel(npc.display_name, BLACKSMITH_QUEST_INTRO)
+	if npc.role == "shopkeeper" and _can_offer_merchant_teaser():
+		_active_offer_role = "shopkeeper"
+		return _job_teaser_offer_panel(npc.display_name, SHOPKEEPER_QUEST_INTRO)
+	_active_offer_role = ""
 	return _quest_dialog_flow.normal_panel(npc.display_name, npc.dialog_text)
 
 
@@ -257,10 +274,11 @@ func _apply_dialog_panel(panel: Dictionary, portrait_texture: Texture2D = null) 
 	_dialog_view.show_dialog(
 		str(panel.get("title", "")),
 		str(panel.get("body", "")),
-		false,
+		bool(panel.get("can_offer_quest", false)),
 		bool(panel.get("can_claim_reward", false)),
 		portrait_texture
 	)
+	_dialog_view.set_accept_action_text(str(panel.get("accept_text", "Accept")))
 	_dialog_view.set_complete_action_text(str(panel.get("action_text", "Claim Reward")))
 
 
@@ -299,6 +317,22 @@ func _on_complete_quest_requested() -> void:
 	_update_quest_window()
 	_show_swordsman_reward_dialog(completed_step)
 	update_quest_markers()
+
+
+func _on_accept_quest_requested() -> void:
+	match _active_offer_role:
+		"smith":
+			player_stats.unlock_facility(BLACKSMITH_TEASER_UNLOCK)
+			_active_offer_role = ""
+			update_quest_markers()
+			_apply_dialog_panel(_quest_dialog_flow.normal_panel("Blacksmith Job", BLACKSMITH_JOB_PREVIEW))
+			_save_profile()
+		"shopkeeper":
+			player_stats.unlock_facility(MERCHANT_TEASER_UNLOCK)
+			_active_offer_role = ""
+			update_quest_markers()
+			_apply_dialog_panel(_quest_dialog_flow.normal_panel("Merchant Job", MERCHANT_JOB_PREVIEW))
+			_save_profile()
 
 
 func _update_life_hud() -> void:
@@ -459,6 +493,7 @@ func _sync_swordsman_inventory_objective() -> void:
 func update_quest_markers() -> void:
 	_update_npc_marker("Guildmaster", _guildmaster_marker_color())
 	_update_npc_marker("Smith", _smith_marker_color())
+	_update_npc_marker("Shopkeeper", _shopkeeper_marker_color())
 
 
 func _guildmaster_marker_color() -> Color:
@@ -474,13 +509,43 @@ func _guildmaster_marker_color() -> Color:
 
 
 func _smith_marker_color() -> Color:
-	if player_stats == null:
-		return Color.TRANSPARENT
-	if player_stats.game_over_requested:
-		return Color.TRANSPARENT
-	if player_stats.unlocked_facilities.has("swordsman_guild"):
+	if _can_offer_blacksmith_teaser():
 		return MARKER_YELLOW
 	return Color.TRANSPARENT
+
+
+func _shopkeeper_marker_color() -> Color:
+	if _can_offer_merchant_teaser():
+		return MARKER_YELLOW
+	return Color.TRANSPARENT
+
+
+func _can_offer_blacksmith_teaser() -> bool:
+	return _has_swordsman_unlock_for_teasers() and not player_stats.unlocked_facilities.has(BLACKSMITH_TEASER_UNLOCK)
+
+
+func _can_offer_merchant_teaser() -> bool:
+	return _has_swordsman_unlock_for_teasers() and not player_stats.unlocked_facilities.has(MERCHANT_TEASER_UNLOCK)
+
+
+func _has_swordsman_unlock_for_teasers() -> bool:
+	if player_stats == null:
+		return false
+	if player_stats.game_over_requested:
+		return false
+	return player_stats.unlocked_facilities.has("swordsman_guild")
+
+
+func _job_teaser_offer_panel(title: String, body: String) -> Dictionary:
+	return {
+		"state": "quest_offer",
+		"title": title,
+		"body": body,
+		"can_offer_quest": true,
+		"can_claim_reward": false,
+		"accept_text": "Accept Quest",
+		"action_text": "Claim Reward",
+	}
 
 
 func _update_npc_marker(npc_name: String, color: Color) -> void:

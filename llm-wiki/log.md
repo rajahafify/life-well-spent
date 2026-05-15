@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-15] polish | Add post-Guild job teaser quests
+
+- RED: added Town dialog specs for Smith and Shopkeeper post-Guild markers, quest-start copy, Accept Quest actions, and full-game job preview dialogs.
+- Smith now offers a reopen-blacksmith teaser after Swordsman Guild unlock and previews the future Blacksmith Job loop.
+- Shopkeeper now offers a reopen-shop teaser after Swordsman Guild unlock and previews the future Merchant Job loop.
+- Validation: focused TownSceneDialog suite `53 tests, 53 passed, 0 failed`; full suite `483 tests, 483 passed, 0 failed`.
+
 ## [2026-05-15] polish | Tune NPC quest marker placement
 
 - RED: extended Town dialog marker coverage for size, outline, pulse metadata, centered bounds, and close-above-head placement.
