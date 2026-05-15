@@ -32,3 +32,32 @@ func test_close_button_only_appears_on_final_dialog_page() -> void:
 	dialog.next_page()
 	assert_true(close.visible, "close should appear on the final dialog page")
 	root.free()
+
+
+func test_controller_accept_advances_dialog_to_next_page() -> void:
+	var root = _scene.instantiate()
+	var dialog := root.get_node("UI/DialogPanel") as TownDialogView
+	dialog.ensure_ready()
+	dialog.show_dialog_pages("Guildmaster", ["First.", "Last."], false, false)
+	var event := InputEventJoypadButton.new()
+	event.button_index = JOY_BUTTON_A
+	event.pressed = true
+	dialog._unhandled_input(event)
+	var close := dialog.get_node("VBox/Buttons/CloseButton") as Button
+	assert_true(close.visible)
+	root.free()
+
+
+func test_controller_accept_emits_close_on_final_close_page() -> void:
+	var root = _scene.instantiate()
+	var dialog := root.get_node("UI/DialogPanel") as TownDialogView
+	var closed := []
+	dialog.close_requested.connect(func(): closed.append(true))
+	dialog.ensure_ready()
+	dialog.show_dialog_pages("Guildmaster", ["Done."], false, false)
+	var event := InputEventJoypadButton.new()
+	event.button_index = JOY_BUTTON_A
+	event.pressed = true
+	dialog._unhandled_input(event)
+	assert_eq([true], closed)
+	root.free()

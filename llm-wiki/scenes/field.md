@@ -9,7 +9,7 @@ tags: [scenes, field, prototype]
 
 ## Overview
 
-`scenes/field.tscn` is the playable Field outside Town. Current slice has click movement, camera follow, generated Tiny Town field art/collision, Forest Guard blocking the southeast Forest path, a direct Town gateway centered on the north road entry with an invisible trigger and pulsing yellow exit arrow, shared gameplay HUD, QuestSystem Forest Gate progression, and the first Slime/Bat/Rat combat flow.
+`scenes/field.tscn` is the playable Field outside Town. Current slice has click movement, controller movement, camera follow, generated Tiny Town field art/collision, Forest Guard blocking the southeast Forest path, a direct Town gateway centered on the north road entry with an invisible trigger and pulsing yellow exit arrow, shared gameplay HUD, QuestSystem Forest Gate progression, and the first Slime/Bat/Rat combat flow.
 
 ## Scene Structure
 
@@ -63,6 +63,8 @@ Legacy primitive Field art nodes (`Ground`, `Paths`, `ForestEdge`, and `Props`) 
 - keeps Player outside the TownGateway trigger on scene load
 - routes ground clicks to `CharacterMovement`
 - continues updating the move destination while the left mouse button is held and no dialog is open
+- supports controller input: left stick / D-pad moves the player, `A` talks to the nearest Forest Guard in range or attacks the nearest enemy when no NPC is nearby, `X` toggles Inventory, and `Start` toggles Options
+- creates `UI/InteractionPrompt` at runtime; it follows and centers above the current NPC/enemy target, shows `Press A to talk` near NPC interaction range and `Press A to attack` near enemy interaction range, then hides while dialog, inventory, or options panels are open
 - ignores world movement input while the pointer is over HUD controls
 - delegates camera follow and shake to `FieldCameraController`
 - uses `TownDialogView` for Forest Guard dialog
@@ -130,10 +132,10 @@ Current Field combat scope is five Slimes, five Bats, and two Rats.
 
 ## Test Coverage
 
-- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, generated `FieldMap` and `FieldCollision`, north TownGateway placement, shared HUD, Inventory button/window and `I` key toggle, HUD pointer blocking for movement, Apple shortcut use, equipped Training Sword attack damage and weapon thrust animation, removal of legacy primitive Field art and the old visible ForestBlocker bar, southeast Forest Guard/gateway placement, enemy collision rejection, spawn zone, enlarged Slime/Bat/Rat sprite and collision footprint, player approach spacing, per-enemy HP bars, removal of text-based enemy HP labels, click targeting without immediate aggro, player auto-attack, first-hit aggro, enemy Life damage, hit shake/flash, loot toast, chase, death removal/XP/drop grant, Guard dialog, bottom-right dialog buttons, QuestSystem Forest Guard checkpoint and Forest Gate objective progression without early Guildmaster chain activation, certified Forest Guard open-path copy, certified Forest Gateway transition to Forest, Quest Window refresh, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
+- `tests/specs/field_scene_test.gd` covers scene load, root/class, Player/Camera/gateways, generated `FieldMap` and `FieldCollision`, north TownGateway placement, shared HUD, Inventory button/window and `I` key toggle, controller movement, controller Forest Guard interaction, controller talk/attack prompts, controller A-button enemy targeting, controller Inventory toggle, HUD pointer blocking for movement, Apple shortcut use, equipped Training Sword attack damage and weapon thrust animation, removal of legacy primitive Field art and the old visible ForestBlocker bar, southeast Forest Guard/gateway placement, enemy collision rejection, spawn zone, enlarged Slime/Bat/Rat sprite and collision footprint, player approach spacing, per-enemy HP bars, removal of text-based enemy HP labels, click targeting without immediate aggro, player auto-attack, first-hit aggro, enemy Life damage, hit shake/flash, loot toast, chase, death removal/XP/drop grant, Guard dialog, bottom-right dialog buttons, QuestSystem Forest Guard checkpoint and Forest Gate objective progression without early Guildmaster chain activation, certified Forest Guard open-path copy, certified Forest Gateway transition to Forest, Quest Window refresh, movement/camera, dialog paging/movement lock, deferred direct Town gateway, and blocked Forest gateway.
 - Gateway, NPC placement, biome, movement, enemy behavior, combat, drop, and dialog systems remain covered by their model/scene specs.
 
-Latest Field validation: Field scene specs included in the full suite. Full suite currently reports `491 tests, 491 passed, 0 failed`.
+Latest Field validation: Field scene specs included in the full suite. Full suite currently reports `505 tests, 505 passed, 0 failed`.
 
 ## Related
 

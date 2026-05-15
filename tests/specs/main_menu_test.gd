@@ -204,6 +204,22 @@ func test_new_game_button_opens_reset_confirmation() -> void:
 	root.free()
 
 
+func test_controller_down_then_accept_opens_new_game_confirmation() -> void:
+	var root = _scene.instantiate() as MainMenuController
+	root._ready()
+	var panel := root.get_node("CenterContainer/UI/NewGameConfirmPanel") as PanelContainer
+	var down := InputEventJoypadButton.new()
+	down.button_index = JOY_BUTTON_DPAD_DOWN
+	down.pressed = true
+	root._unhandled_input(down)
+	var accept := InputEventJoypadButton.new()
+	accept.button_index = JOY_BUTTON_A
+	accept.pressed = true
+	root._unhandled_input(accept)
+	assert_true(panel.visible)
+	root.free()
+
+
 func test_confirm_new_game_resets_progress_from_zero() -> void:
 	var root = _scene.instantiate() as MainMenuController
 	var profile := FakeProfileSystem.new()

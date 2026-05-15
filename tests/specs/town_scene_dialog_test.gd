@@ -530,6 +530,54 @@ func test_town_follow_held_mouse_updates_player_destination() -> void:
 	assert_eq(target, movement.destination)
 
 
+func test_controller_direction_moves_player_in_town() -> void:
+	_close_start_dialog()
+	var player: Node2D = root.get_node("Player") as Node2D
+	var movement: CharacterMovement = root.get_node("Player/Sprite") as CharacterMovement
+	movement._ready()
+	player.global_position = Vector2(600, 600)
+	assert_true(root.controller_move_player(Vector2.DOWN))
+	assert_true(movement.moving)
+	assert_eq(Vector2(600, 696), movement.destination)
+
+
+func test_controller_interact_opens_nearby_guildmaster_dialog() -> void:
+	_close_start_dialog()
+	var player: Node2D = root.get_node("Player") as Node2D
+	var guildmaster: Node2D = root.get_node("Guildmaster") as Node2D
+	player.global_position = guildmaster.global_position + Vector2(0, 36)
+	var event := InputEventJoypadButton.new()
+	event.button_index = JOY_BUTTON_A
+	event.pressed = true
+	root._unhandled_input(event)
+	assert_true((root.get_node("UI/DialogPanel") as TownDialogView).visible)
+
+
+func test_controller_talk_prompt_shows_near_guildmaster() -> void:
+	_close_start_dialog()
+	var player: Node2D = root.get_node("Player") as Node2D
+	var guildmaster: Node2D = root.get_node("Guildmaster") as Node2D
+	player.global_position = guildmaster.global_position + Vector2(0, 36)
+	root.update_interaction_prompt()
+	var prompt := root.get_node("UI/InteractionPrompt") as Label
+	assert_true(prompt.visible)
+	assert_eq("Press A to talk", prompt.text)
+	var camera: Camera2D = root.get_node("Camera2D") as Camera2D
+	var viewport_half_width := float(ProjectSettings.get_setting("display/window/size/viewport_width", 1280)) * 0.5
+	var prompt_center_x := prompt.position.x + (prompt.custom_minimum_size.x * 0.5)
+	var expected_center_x := guildmaster.global_position.x - camera.global_position.x + viewport_half_width
+	assert_eq(expected_center_x, prompt_center_x)
+
+
+func test_controller_options_button_toggles_options_panel() -> void:
+	_close_start_dialog()
+	var event := InputEventJoypadButton.new()
+	event.button_index = JOY_BUTTON_START
+	event.pressed = true
+	root._unhandled_input(event)
+	assert_true((root.get_node("UI/OptionsPanel") as PanelContainer).visible)
+
+
 func test_far_guildmaster_interaction_moves_player_without_opening_dialog() -> void:
 	_close_start_dialog()
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController

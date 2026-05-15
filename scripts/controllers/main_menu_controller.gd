@@ -6,6 +6,8 @@ extends Control
 const TOWN_SCENE_PATH := "res://scenes/town_scene.tscn"
 
 var requested_scene_path: String = ""
+var _menu_selection_index: int = 0
+var _confirm_selection_index: int = 0
 
 
 # ── References ─────────────────────────────────────────────────────────
@@ -37,6 +39,7 @@ func _ready() -> void:
 	_confirm_new_game_btn.pressed.connect(_on_confirm_new_game_pressed)
 	_cancel_new_game_btn.pressed.connect(_on_cancel_new_game_pressed)
 	_quit_btn.pressed.connect(_on_quit_pressed)
+	_grab_selected_menu_focus()
 
 
 # ── Actions ────────────────────────────────────────────────────────────
@@ -49,6 +52,8 @@ func _on_continue_pressed() -> void:
 
 func _on_new_game_pressed() -> void:
 	_confirm_panel.visible = true
+	_confirm_selection_index = 0
+	_grab_selected_menu_focus()
 
 
 func _on_confirm_new_game_pressed() -> void:
@@ -58,6 +63,26 @@ func _on_confirm_new_game_pressed() -> void:
 
 func _on_cancel_new_game_pressed() -> void:
 	_confirm_panel.visible = false
+	_grab_selected_menu_focus()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not (event is InputEventJoypadButton) or not event.pressed:
+		return
+	match event.button_index:
+		JOY_BUTTON_DPAD_DOWN:
+			_move_controller_selection(1)
+			_mark_input_handled()
+		JOY_BUTTON_DPAD_UP:
+			_move_controller_selection(-1)
+			_mark_input_handled()
+		JOY_BUTTON_A:
+			_press_selected_controller_button()
+			_mark_input_handled()
+		JOY_BUTTON_B:
+			if _confirm_panel.visible:
+				_on_cancel_new_game_pressed()
+				_mark_input_handled()
 
 
 func start_new_game_from_zero(profile_system, inventory_system) -> bool:
@@ -78,6 +103,45 @@ func start_new_game_from_zero(profile_system, inventory_system) -> bool:
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()
+
+
+func _move_controller_selection(delta: int) -> void:
+	var buttons := _controller_buttons()
+	if buttons.is_empty():
+		return
+	if _confirm_panel.visible:
+		_confirm_selection_index = wrapi(_confirm_selection_index + delta, 0, buttons.size())
+	else:
+		_menu_selection_index = wrapi(_menu_selection_index + delta, 0, buttons.size())
+	_grab_selected_menu_focus()
+
+
+func _press_selected_controller_button() -> void:
+	var button := _selected_controller_button()
+	if button:
+		button.pressed.emit()
+
+
+func _grab_selected_menu_focus() -> void:
+	if not is_inside_tree():
+		return
+	var button := _selected_controller_button()
+	if button:
+		button.grab_focus()
+
+
+func _selected_controller_button() -> Button:
+	var buttons := _controller_buttons()
+	if buttons.is_empty():
+		return null
+	var index := _confirm_selection_index if _confirm_panel.visible else _menu_selection_index
+	return buttons[clampi(index, 0, buttons.size() - 1)]
+
+
+func _controller_buttons() -> Array[Button]:
+	if _confirm_panel.visible:
+		return [_confirm_new_game_btn, _cancel_new_game_btn]
+	return [_continue_btn, _new_game_btn, _quit_btn]
 
 
 func continue_existing_run(profile_system, inventory_system) -> bool:
@@ -109,3 +173,9 @@ func _inventory_system() -> Node:
 	if not is_inside_tree():
 		return null
 	return get_node_or_null("/root/InventorySystem")
+
+
+func _mark_input_handled() -> void:
+	var viewport := get_viewport()
+	if viewport:
+		viewport.set_input_as_handled()

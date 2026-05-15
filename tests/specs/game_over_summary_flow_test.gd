@@ -64,6 +64,18 @@ func test_game_over_scene_continues_to_summary_scene() -> void:
 	root.free()
 
 
+func test_controller_accept_continues_game_over_to_summary_scene() -> void:
+	var scene := load(GAME_OVER_SCENE) as PackedScene
+	var root = scene.instantiate()
+	root._ready()
+	var event := InputEventJoypadButton.new()
+	event.button_index = JOY_BUTTON_A
+	event.pressed = true
+	root._unhandled_input(event)
+	assert_eq(SUMMARY_SCENE, root.requested_scene_path)
+	root.free()
+
+
 func test_summary_scene_renders_run_summary() -> void:
 	var scene := load(SUMMARY_SCENE) as PackedScene
 	assert_not_null(scene)
@@ -107,5 +119,21 @@ func test_summary_second_choice_is_end_game_to_main_menu_without_rebirth() -> vo
 	assert_true(profile.fake_player.game_over_requested)
 	assert_eq(20, profile.fake_player.max_hp)
 	assert_false(inventory.reset_called)
+	assert_eq("res://scenes/main_menu.tscn", root.requested_scene_path)
+	root.free()
+
+
+func test_controller_down_then_accept_selects_summary_end_game() -> void:
+	var scene := load(SUMMARY_SCENE) as PackedScene
+	var root = scene.instantiate()
+	root._ready()
+	var down := InputEventJoypadButton.new()
+	down.button_index = JOY_BUTTON_DPAD_DOWN
+	down.pressed = true
+	root._unhandled_input(down)
+	var accept := InputEventJoypadButton.new()
+	accept.button_index = JOY_BUTTON_A
+	accept.pressed = true
+	root._unhandled_input(accept)
 	assert_eq("res://scenes/main_menu.tscn", root.requested_scene_path)
 	root.free()

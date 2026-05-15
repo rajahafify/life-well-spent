@@ -141,6 +141,23 @@ func test_options_button_opens_modal_and_end_game_emits_signal() -> void:
 	assert_eq([true], emitted)
 
 
+func test_controller_options_menu_can_move_to_close_and_accept() -> void:
+	if hud == null:
+		return
+	hud.toggle_options_panel()
+	var panel := hud.get_node("OptionsPanel") as PanelContainer
+	var down := InputEventJoypadButton.new()
+	down.button_index = JOY_BUTTON_DPAD_DOWN
+	down.pressed = true
+	hud._unhandled_input(down)
+	hud._unhandled_input(down)
+	var accept := InputEventJoypadButton.new()
+	accept.button_index = JOY_BUTTON_A
+	accept.pressed = true
+	hud._unhandled_input(accept)
+	assert_false(panel.visible)
+
+
 func test_options_panel_game_speed_emits_selected_speed() -> void:
 	if hud == null:
 		return

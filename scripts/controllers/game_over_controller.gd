@@ -22,7 +22,17 @@ func _ready() -> void:
 		button.add_theme_font_size_override("font_size", 28)
 		if not button.pressed.is_connected(_on_continue_pressed):
 			button.pressed.connect(_on_continue_pressed)
+		if is_inside_tree():
+			button.grab_focus()
 	_play_feedback_sfx("game_over")
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not (event is InputEventJoypadButton) or not event.pressed:
+		return
+	if event.button_index == JOY_BUTTON_A:
+		_on_continue_pressed()
+		_mark_input_handled()
 
 
 func _on_continue_pressed() -> void:
@@ -49,3 +59,9 @@ func _play_feedback_sfx(sfx_name: String) -> void:
 	var system := _feedback_system()
 	if system and system.has_method("play_sfx"):
 		system.play_sfx(sfx_name)
+
+
+func _mark_input_handled() -> void:
+	var viewport := get_viewport()
+	if viewport:
+		viewport.set_input_as_handled()

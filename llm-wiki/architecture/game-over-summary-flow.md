@@ -32,16 +32,17 @@ func end_game_to_main_menu(profile_system, inventory_system) -> bool
 ## Design Decisions
 
 - Town final certification still shows the Guildmaster reward panel, saves profile state, and then requests `res://scenes/game_over.tscn`.
-- `GameOverController` owns the short transition beat and routes `Continue` to `res://scenes/summary_scene.tscn`.
+- `GameOverController` owns the short transition beat and routes `Continue` to `res://scenes/summary_scene.tscn`; controller `A` activates Continue.
 - `SummarySceneController` renders `RunSummaryModel` output from `ProfileSystem.player()` and `InventorySystem.model()`.
 - Summary actions are `Rebirth` and `End Game`.
 - `Rebirth` resets the ended run, clears runtime inventory through `InventorySystem.reset()`, saves the profile, and enters Town.
 - `End Game` saves the profile and returns to Main Menu without rebirth; Main Menu `Continue` is responsible for auto-rebirth from an ended saved run while preserving unlocks.
+- Summary supports controller D-pad selection between `Rebirth` and `End Game`, with `A` activating the selected action.
 - SFX are requested for Game Over, Summary open, Rebirth, and End Game through `FeedbackSystem`.
 
 ## Test Coverage
 
-- `tests/specs/game_over_summary_flow_test.gd` covers Game Over continuation, Summary rendering, Summary rebirth reset, and Summary End Game routing without rebirth.
+- `tests/specs/game_over_summary_flow_test.gd` covers Game Over continuation, controller Continue, Summary rendering, Summary rebirth reset, Summary End Game routing without rebirth, and controller Summary selection.
 - `tests/specs/town_scene_dialog_test.gd` covers final certification routing to Game Over.
 - `tests/specs/run_summary_model_test.gd` covers Life spent, readable item names, and unlock text.
 

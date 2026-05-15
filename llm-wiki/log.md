@@ -1,5 +1,15 @@
 # Wiki Log
 
+## [2026-05-15] feat | Add controller interaction prompts
+
+- RED: added Field and Town specs for contextual `Press A to talk` / `Press A to attack` prompts and A-button enemy targeting.
+- Field and Town now create an `UI/InteractionPrompt` label and hide it while dialog, inventory, options, or rebirth panels are open.
+- Field controller now maps `A` to talk first, then target/attack the nearest enemy when no NPC is nearby.
+- Follow-up: prompts now follow and center above the current NPC/enemy target instead of staying fixed at the bottom of the screen.
+- Follow-up: prompt vertical placement moved closer to the target sprite for readability.
+- Added `prototype/controller-support.md` to list configured controller actions and remaining input gaps.
+- Validation: full suite `515 tests, 515 passed, 0 failed`.
+
 ## [2026-05-15] fix | Repair equipped sword attack sprites
 
 - RED: added `tests/specs/player_aging_assets_test.gd` coverage requiring Training Sword attack rows to differ from bare sheets in every thrust direction.
@@ -982,6 +992,15 @@
 - Removed `ForestBlocker` from `scenes/field.tscn`; the Forest Guard remains at the southeast road end and blockers come from `FieldCollision`.
 - Updated Field scene wiki docs.
 - Validation: `250 tests, 250 passed, 0 failed`; Godot MCP main-scene play reports no errors.
+
+## [2026-05-15] feat | Add controller support
+
+- RED: added Field and Town scene specs for controller movement, nearby NPC interaction, Inventory toggle, and Options toggle.
+- Town and Field now support left stick / D-pad movement, `A` interaction, `X` Inventory, and `Start` Options without changing the project input map.
+- RED: added Main Menu, TownDialogView, SharedHUD, Game Over, and Summary specs for controller menu/dialog control.
+- Main Menu, dialog panels, Options modal, Game Over, and Summary now support controller selection/confirmation.
+- DOCS: updated Town Hub, Field Scene, Main Menu Flow, Game Over Summary Flow, Shared HUD, and prototype polish QA notes for controller support.
+- Validation: full suite `511 tests, 511 passed, 0 failed`.
 
 ## [2026-05-12] refine | Import expanded Field map
 

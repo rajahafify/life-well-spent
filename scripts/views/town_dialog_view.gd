@@ -112,6 +112,19 @@ func is_open() -> bool:
 	return visible
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if not visible or not (event is InputEventJoypadButton) or not event.pressed:
+		return
+	match event.button_index:
+		JOY_BUTTON_A:
+			_press_current_controller_action()
+			_mark_input_handled()
+		JOY_BUTTON_B:
+			if _close_dialog_button and _close_dialog_button.visible:
+				_on_close_dialog_pressed()
+				_mark_input_handled()
+
+
 func _split_pages(body_text: String) -> Array[String]:
 	var pages: Array[String] = []
 	for page in body_text.split("\n\n"):
@@ -156,6 +169,32 @@ func _update_dialog_navigation_buttons() -> void:
 		_next_button.visible = not is_last_page
 	if _close_dialog_button:
 		_close_dialog_button.visible = is_last_page and not _has_active_quest
+	_grab_first_visible_button_focus()
+
+
+func _press_current_controller_action() -> void:
+	if _next_button and _next_button.visible:
+		next_page()
+		return
+	if _complete_quest_button and _complete_quest_button.visible:
+		_on_complete_quest_pressed()
+		return
+	if _accept_quest_button and _accept_quest_button.visible:
+		_on_accept_quest_pressed()
+		return
+	if _close_dialog_button and _close_dialog_button.visible:
+		_on_close_dialog_pressed()
+		return
+	_on_close_dialog_pressed()
+
+
+func _grab_first_visible_button_focus() -> void:
+	if not is_inside_tree():
+		return
+	for button in [_next_button, _complete_quest_button, _accept_quest_button, _close_dialog_button]:
+		if button and button.visible:
+			button.grab_focus()
+			return
 
 
 func _connect_buttons() -> void:
@@ -194,3 +233,9 @@ func _play_feedback_sfx(sfx_name: String) -> void:
 	var system := _feedback_system()
 	if system and system.has_method("play_sfx"):
 		system.play_sfx(sfx_name)
+
+
+func _mark_input_handled() -> void:
+	var viewport := get_viewport()
+	if viewport:
+		viewport.set_input_as_handled()

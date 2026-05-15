@@ -38,8 +38,8 @@
 | [assets/slime-asset-view](assets/slime-asset-view.md) | reference | 2026-05-12 | Enemy and character asset tools: focused AssetView preview plus looping AssetGallery SpriteFrames/LPC previews. |
 | [assets/tiny-town-map-import](assets/tiny-town-map-import.md) | reference | 2026-05-12 | TMJ-to-Godot visual map importer for the Tiny Town TownMap scene. |
 | [scenes/main-menu](scenes/main-menu.md) | reference | 2026-05-15 | Main menu scene with centered controls, young-to-old player image below the menu, and confirmed New Game reset. |
-| [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-15 | Prototype Town scene - Guildmaster certification chain, Smith/Shopkeeper job teaser quests, reborn dialog, and direct Field gateway. |
-| [scenes/field](scenes/field.md) | reference | 2026-05-15 | Playable Field slice - profile-backed age, equipped weapon attack animation, 12 active enemy slots, close-ready attack leash, enemy HP bars, Forest Guard gate, and Forest endpoint. |
+| [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-15 | Prototype Town scene - controller movement/actions, Guildmaster certification chain, Smith/Shopkeeper job teaser quests, reborn dialog, and direct Field gateway. |
+| [scenes/field](scenes/field.md) | reference | 2026-05-15 | Playable Field slice - controller movement/actions, profile-backed age, equipped weapon attack animation, 12 active enemy slots, close-ready attack leash, enemy HP bars, Forest Guard gate, and Forest endpoint. |
 | [scenes/forest](scenes/forest.md) | reference | 2026-05-13 | Forest endpoint scene reached after Swordsman certification, with return gateway to Field. |
 | [architecture/animation-controller](architecture/animation-controller.md) | reference | 2026-05-12 | LPC spritesheet animation state machine. Idle, walking, slash/thrust attack frame advance via `tick(delta)`. |
 | [architecture/player-movement](architecture/player-movement.md) | reference | 2026-05-11 | CharacterMovement Sprite2D view. Click-to-move/static facing, collision/dialog stop, modal move lock, AnimationController frames. |

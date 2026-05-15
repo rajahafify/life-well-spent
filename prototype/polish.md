@@ -44,6 +44,8 @@ Implemented foundation:
 - Town, Field, and Forest endpoint scenes exist.
 - Main Menu can continue the saved run or start a confirmed progress reset.
 - Town and Field share HUD, quest tracker, inventory, options modal, Life display, and shortcut bar.
+- Town and Field support controller basics: left stick / D-pad movement, `A` interaction, `X` Inventory, and `Start` Options.
+- Menu/dialog surfaces support controller actions: D-pad selects menu rows, `A` confirms/advances, and `B` cancels or closes where available.
 - Forest Guard blocks access until Swordsman Guild certification.
 - Guildmaster owns a 3-step quest chain:
   - Defeat 10 Slimes
@@ -68,7 +70,7 @@ Implemented foundation:
 Latest validation baseline:
 
 ```text
-486 tests, 486 passed, 0 failed
+511 tests, 511 passed, 0 failed
 ```
 
 Known non-failing test output:
@@ -352,9 +354,16 @@ Run this after each polish slice:
 27. Talk to Shopkeeper and confirm the merchant quest mentions reopening the shop for returning travelers.
 28. Accept the Shopkeeper quest and confirm the Merchant Job future-update preview modal describes caves, ruins, exciting items, and selling in the shop.
 29. Walk to the south Town road and confirm the Field exit reads as a deliberate map transition: the trigger fill is invisible, and a centered bright yellow arrow pulses at the road edge.
-30. Repeat or restore near Summary.
-31. Test New Game branch.
-32. Confirm Forest path still opens.
+30. With a controller, confirm left stick / D-pad movement works in Town and Field.
+31. With a controller, confirm `A` opens nearby NPC dialog, advances dialog pages, claims rewards on final pages, and closes final Close pages.
+32. Stand near a Town NPC and confirm the interaction prompt says `Press A to talk`.
+33. Stand near the Field guard and confirm the interaction prompt says `Press A to talk`.
+34. Stand near a Field enemy with no NPC nearby and confirm the interaction prompt says `Press A to attack`; press `A` and confirm the player targets/attacks that enemy.
+35. With a controller, confirm `X` toggles Inventory and `Start` toggles Options; in Options, use D-pad to select Close and `A` to close it.
+36. On Game Over and Summary, confirm controller `A` and D-pad selection can continue without mouse input.
+37. Repeat or restore near Summary.
+38. Test New Game branch.
+39. Confirm Forest path still opens.
 
 ## Automated Test Expectations
 
@@ -370,6 +379,7 @@ Expected coverage areas:
 - Game Over summary.
 - Rebirth and End Game continuation.
 - Field combat movement edge cases.
+- Controller interaction prompts for talk and attack.
 
 Full suite must pass before commit:
 

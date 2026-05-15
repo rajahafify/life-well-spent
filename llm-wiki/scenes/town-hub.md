@@ -9,7 +9,7 @@ tags: [scenes, town, prototype]
 
 ## Overview
 
-`scenes/town_scene.tscn` is the first-slice **Town** scene for the prototype. It replaces the previous MVP town-hub task/quest UI with a systemic prototype slice: hopeful post-Demon-King worldbuilding, three old institutions, shared gameplay HUD, QuestSystem-aware Guildmaster dialog, and a direct animated-arrow gateway to Field.
+`scenes/town_scene.tscn` is the first-slice **Town** scene for the prototype. It replaces the previous MVP town-hub task/quest UI with a systemic prototype slice: hopeful post-Demon-King worldbuilding, three old institutions, shared gameplay HUD, controller support, QuestSystem-aware Guildmaster dialog, and a direct animated-arrow gateway to Field.
 
 First-slice goal:
 
@@ -141,6 +141,9 @@ You will learn recipes, craft weapons and armor from customer orders, and go hun
 - connects worldbuilding NPC `interacted(npc)` signals
 - routes ground clicks to `CharacterMovement` while dialog is closed
 - continues updating the move destination while the left mouse button is held and no dialog is open
+- supports controller input: left stick / D-pad moves the player, `A` interacts with the nearest Town NPC in range, `X` toggles Inventory, and `Start` toggles Options
+- creates `UI/InteractionPrompt` at runtime; it follows and centers above the current NPC target, shows `Press A to talk` when a Town NPC is in interaction range, and hides while dialog, inventory, options, or rebirth panels are open
+- supports controller dialog flow through `TownDialogView`: `A` advances the visible dialog action and `B` closes when Close is available
 - ignores world movement input while the pointer is over HUD controls
 - follows player with a camera offset for RO-style play
 - blocks click-to-move while dialog is open
@@ -183,8 +186,8 @@ Tiny Town visual art is imported as `TownMap`, an instanced generated scene from
 ## Tests
 
 - `tests/specs/town_prototype_test.gd` covers root/class naming, buildings, NPCs, custom NPC sprite textures, NPC scale matching player, dialog copy, absence of persistent reborn HUD label, Field gateway label, 1080p viewport, and primitive mouse filter settings.
-- `tests/specs/town_dialog_view_test.gd` covers final-page-only Claim Reward and Close button visibility.
-- `tests/specs/town_scene_dialog_test.gd` covers Guildmaster certification, reusable quest dialog flow application, final Game Over summary panel display, Rebirth button reset behavior, persistent Swordsman Guild unlock preservation, Smith/Shopkeeper job teaser acceptance, End Game routing, and direct Field gateway transition.
+- `tests/specs/town_dialog_view_test.gd` covers final-page-only Claim Reward and Close button visibility plus controller accept behavior for Next and Close.
+- `tests/specs/town_scene_dialog_test.gd` covers Guildmaster certification, reusable quest dialog flow application, controller movement, controller Guildmaster interaction, controller talk prompt, controller Options toggle, final Game Over summary panel display, Rebirth button reset behavior, persistent Swordsman Guild unlock preservation, Smith/Shopkeeper job teaser acceptance, End Game routing, and direct Field gateway transition.
 - `tests/specs/town_prototype_test.gd` also covers the generated Tiny Town `TownMap` and `TownCollision` instance paths, position, scale, and collision blocker shape.
 - `tests/specs/town_prototype_test.gd` covers the Tiny Town-facing NPC placements: Shopkeeper at `Vector2(512, 1140)`, Guildmaster at `Vector2(960, 450)`, and Smith at `Vector2(1472, 820)`.
 - `tests/specs/town_prototype_test.gd` covers the south-road Field gateway at `Vector2(960, 1320)` and its safe spawn at `Vector2(960, 980)`, far enough to avoid auto-transition.

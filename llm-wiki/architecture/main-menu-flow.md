@@ -29,10 +29,11 @@ func start_new_game_from_zero(profile_system, inventory_system) -> bool
 - Confirming New Game resets `PlayerStats` through `apply_dict({})`, clears runtime inventory, saves the profile, and enters Town with no unlocked facilities.
 - The destructive path is explicit so End Game from Summary can return to Main Menu without silently resetting or rebirthing the player.
 - The visual treatment stays in the scene: `Background` uses the icon's green tone, shrink-centered action controls keep the menu aligned, and `IconContainer` positions the young-to-old player art lower without adding controller logic.
+- Controller menu support uses D-pad up/down to select buttons, `A` to activate, and `B` to cancel the New Game confirmation.
 
 ## Test Coverage
 
-- `tests/specs/main_menu_test.gd` covers aging image wiring below the menu, lower image spacing, centered action controls, icon-colored background, Continue button structure/text, Continue auto-rebirth preservation, active-run Continue no-op, New Game confirmation visibility, and confirmed New Game progress reset.
+- `tests/specs/main_menu_test.gd` covers aging image wiring below the menu, lower image spacing, centered action controls, icon-colored background, Continue button structure/text, Continue auto-rebirth preservation, active-run Continue no-op, controller New Game confirmation selection, New Game confirmation visibility, and confirmed New Game progress reset.
 
 ## Related
 

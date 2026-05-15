@@ -23,6 +23,10 @@ const PLAYER_ATTACK_READY_RANGE := GAME_BALANCE_SCRIPT.FIELD_PLAYER_ATTACK_READY
 const PLAYER_ATTACK_LEASH_RANGE := GAME_BALANCE_SCRIPT.FIELD_PLAYER_ATTACK_LEASH_RANGE
 const LOOT_TOAST_DURATION := GAME_BALANCE_SCRIPT.FIELD_LOOT_TOAST_DURATION
 const APPLE_HEAL_AMOUNT := GAME_BALANCE_SCRIPT.APPLE_HEAL_AMOUNT
+const CONTROLLER_MOVE_DISTANCE := 96.0
+const CONTROLLER_DEADZONE := 0.35
+const CONTROLLER_INTERACT_RANGE := 180.0
+const INTERACTION_PROMPT_SIZE := Vector2(360, 44)
 
 @onready var _dialog_view: TownDialogView = $UI/DialogPanel
 @onready var _hud: CanvasLayer = $UI
@@ -56,6 +60,7 @@ var _player_damage_text
 var _player_damage_timer: float = 0.0
 var _loot_toast_label: Label
 var _loot_toast_timer: float = 0.0
+var _interaction_prompt: Label
 var _pending_forest_guard_checkpoint: bool = false
 
 
@@ -152,6 +157,7 @@ func _connect_forest_guard() -> void:
 func _connect_hud() -> void:
 	if _hud:
 		_hud.ensure_ready()
+		_ensure_interaction_prompt()
 		_hud.set_inventory_model(_inventory_model_for_hud())
 		_hud.set_life(player_life, player_max_life)
 		if _hud.has_signal("shortcut_pressed") and not _hud.shortcut_pressed.is_connected(_on_shortcut_pressed):
@@ -166,6 +172,8 @@ func _connect_hud() -> void:
 
 func _physics_process(delta: float) -> void:
 	_update_camera()
+	_tick_controller_movement()
+	update_interaction_prompt()
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		follow_held_mouse(get_global_mouse_position(), get_viewport().get_mouse_position())
 	if _pending_npc != null and _pending_npc.is_player_in_talk_range(_player.global_position):
@@ -187,6 +195,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		stop_auto_attack()
 		move_player_to(get_global_mouse_position())
+	elif event is InputEventJoypadButton and event.pressed:
+		_handle_controller_button(event.button_index)
 
 
 func toggle_inventory_window() -> void:
@@ -251,11 +261,171 @@ func move_player_to(target: Vector2) -> bool:
 	return true
 
 
+func controller_move_player(direction: Vector2) -> bool:
+	if direction.length() < CONTROLLER_DEADZONE:
+		return false
+	stop_auto_attack()
+	return move_player_to(_player.global_position + direction.normalized() * CONTROLLER_MOVE_DISTANCE)
+
+
 func follow_held_mouse(target: Vector2, screen_position: Vector2 = Vector2.INF) -> bool:
 	var pointer_position := target if screen_position == Vector2.INF else screen_position
 	if _hud_blocks_world_mouse(pointer_position):
 		return false
 	return move_player_to(target)
+
+
+func _tick_controller_movement() -> void:
+	var direction := _controller_direction()
+	if direction.length() >= CONTROLLER_DEADZONE:
+		controller_move_player(direction)
+
+
+func _controller_direction() -> Vector2:
+	var direction := Vector2.ZERO
+	if Input.get_connected_joypads().size() > 0:
+		var device_id: int = int(Input.get_connected_joypads()[0])
+		direction = Vector2(Input.get_joy_axis(device_id, JOY_AXIS_LEFT_X), Input.get_joy_axis(device_id, JOY_AXIS_LEFT_Y))
+		if Input.is_joy_button_pressed(device_id, JOY_BUTTON_DPAD_LEFT):
+			direction.x -= 1.0
+		if Input.is_joy_button_pressed(device_id, JOY_BUTTON_DPAD_RIGHT):
+			direction.x += 1.0
+		if Input.is_joy_button_pressed(device_id, JOY_BUTTON_DPAD_UP):
+			direction.y -= 1.0
+		if Input.is_joy_button_pressed(device_id, JOY_BUTTON_DPAD_DOWN):
+			direction.y += 1.0
+	return direction
+
+
+func _handle_controller_button(button_index: int) -> void:
+	match button_index:
+		JOY_BUTTON_A:
+			if not interact_with_nearest_npc():
+				interact_with_nearest_enemy()
+		JOY_BUTTON_X:
+			toggle_inventory_window()
+		JOY_BUTTON_START:
+			if _hud:
+				_hud.toggle_options_panel()
+
+
+func interact_with_nearest_npc() -> bool:
+	var npc := _nearest_controller_npc([_forest_guard])
+	if npc == null:
+		return false
+	_on_npc_interacted(npc)
+	return true
+
+
+func interact_with_nearest_enemy() -> bool:
+	var enemy_id := _nearest_controller_enemy_id()
+	if enemy_id.is_empty():
+		return false
+	engage_enemy(enemy_id)
+	return true
+
+
+func update_interaction_prompt() -> void:
+	_ensure_interaction_prompt()
+	if _interaction_prompt == null:
+		return
+	var prompt_text := ""
+	var prompt_target: Node2D = null
+	if not _world_prompt_blocked():
+		var npc := _nearest_controller_npc([_forest_guard])
+		if npc != null:
+			prompt_text = "Press A to talk"
+			prompt_target = npc
+		else:
+			var enemy_id := _nearest_controller_enemy_id()
+			if not enemy_id.is_empty():
+				prompt_text = "Press A to attack"
+				prompt_target = enemy_views.get(enemy_id, null) as Node2D
+	_interaction_prompt.text = prompt_text
+	_interaction_prompt.visible = not prompt_text.is_empty()
+	if _interaction_prompt.visible and prompt_target != null:
+		_position_interaction_prompt(prompt_target.global_position)
+
+
+func _nearest_controller_npc(candidates: Array) -> NpcController:
+	var best: NpcController = null
+	var best_distance := CONTROLLER_INTERACT_RANGE
+	for candidate in candidates:
+		var npc := candidate as NpcController
+		if npc == null:
+			continue
+		var distance := _player.global_position.distance_to(npc.global_position)
+		if distance <= best_distance:
+			best = npc
+			best_distance = distance
+	return best
+
+
+func _nearest_controller_enemy_id() -> String:
+	var best_id := ""
+	var best_distance := CONTROLLER_INTERACT_RANGE
+	for instance_id in enemy_views.keys():
+		if not enemy_states.has(instance_id):
+			continue
+		var view := enemy_views.get(instance_id, null) as Node2D
+		if view == null:
+			continue
+		var distance := _player.global_position.distance_to(view.global_position)
+		if distance <= best_distance:
+			best_id = str(instance_id)
+			best_distance = distance
+	return best_id
+
+
+func _world_prompt_blocked() -> bool:
+	if _dialog_view != null and _dialog_view.is_open():
+		return true
+	if _hud == null:
+		return false
+	var inventory_window := _hud.get_node_or_null("InventoryWindow") as Control
+	if inventory_window != null and inventory_window.visible:
+		return true
+	var options_panel := _hud.get_node_or_null("OptionsPanel") as Control
+	if options_panel != null and options_panel.visible:
+		return true
+	return false
+
+
+func _ensure_interaction_prompt() -> void:
+	if _interaction_prompt != null and is_instance_valid(_interaction_prompt):
+		return
+	if _hud == null:
+		return
+	_interaction_prompt = _hud.get_node_or_null("InteractionPrompt") as Label
+	if _interaction_prompt == null:
+		_interaction_prompt = Label.new()
+		_interaction_prompt.name = "InteractionPrompt"
+		_hud.add_child(_interaction_prompt)
+	_interaction_prompt.custom_minimum_size = INTERACTION_PROMPT_SIZE
+	_interaction_prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_interaction_prompt.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_interaction_prompt.add_theme_font_size_override("font_size", 24)
+	_interaction_prompt.add_theme_color_override("font_color", Color(1.0, 0.94, 0.54, 1.0))
+	_interaction_prompt.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.85))
+	_interaction_prompt.add_theme_constant_override("shadow_offset_x", 2)
+	_interaction_prompt.add_theme_constant_override("shadow_offset_y", 2)
+	_position_interaction_prompt(Vector2.ZERO)
+	_interaction_prompt.visible = false
+
+
+func _position_interaction_prompt(target_world_position: Vector2) -> void:
+	if _interaction_prompt == null:
+		return
+	var viewport_size := Vector2(
+		ProjectSettings.get_setting("display/window/size/viewport_width", 1280),
+		ProjectSettings.get_setting("display/window/size/viewport_height", 720)
+	)
+	if is_inside_tree():
+		viewport_size = get_viewport_rect().size
+	var camera := get_node_or_null("Camera2D") as Camera2D
+	var camera_position := camera.global_position if camera != null else Vector2.ZERO
+	var screen_anchor := target_world_position - camera_position + (viewport_size * 0.5) + Vector2(0, -58)
+	_interaction_prompt.position = screen_anchor - Vector2(INTERACTION_PROMPT_SIZE.x * 0.5, INTERACTION_PROMPT_SIZE.y)
 
 
 func engage_enemy(instance_id: String) -> void:

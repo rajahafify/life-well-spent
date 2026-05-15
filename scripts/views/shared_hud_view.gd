@@ -17,6 +17,7 @@ signal game_speed_changed(speed_id: String)
 @onready var _game_speed_option: OptionButton = $OptionsPanel/VBox/GameSpeedOption
 
 var _inventory_model = null
+var _options_selection_index: int = 0
 
 
 func _ready() -> void:
@@ -79,6 +80,8 @@ func toggle_options_panel() -> void:
 	ensure_ready()
 	if _options_panel:
 		_options_panel.visible = not _options_panel.visible
+		_options_selection_index = 0
+		_grab_selected_options_focus()
 
 
 func close_options_panel() -> void:
@@ -96,6 +99,9 @@ func blocks_world_mouse_at(screen_position: Vector2) -> bool:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventJoypadButton and event.pressed:
+		_handle_controller_input(event.button_index)
+		return
 	if not (event is InputEventKey) or not event.pressed or event.echo:
 		return
 	if _is_inventory_key(event):
@@ -211,6 +217,81 @@ func _on_game_speed_selected(index: int) -> void:
 	var speed_ids := ["normal", "fast", "ultra"]
 	var speed_id: String = speed_ids[index] if index >= 0 and index < speed_ids.size() else "normal"
 	game_speed_changed.emit(speed_id)
+
+
+func _handle_controller_input(button_index: int) -> void:
+	if _options_panel and _options_panel.visible:
+		match button_index:
+			JOY_BUTTON_DPAD_DOWN:
+				_move_options_selection(1)
+				_mark_input_handled()
+			JOY_BUTTON_DPAD_UP:
+				_move_options_selection(-1)
+				_mark_input_handled()
+			JOY_BUTTON_DPAD_LEFT:
+				_cycle_game_speed(-1)
+				_mark_input_handled()
+			JOY_BUTTON_DPAD_RIGHT:
+				_cycle_game_speed(1)
+				_mark_input_handled()
+			JOY_BUTTON_A:
+				_press_selected_options_control()
+				_mark_input_handled()
+			JOY_BUTTON_B:
+				close_options_panel()
+				_mark_input_handled()
+
+
+func _move_options_selection(delta: int) -> void:
+	var controls := _options_controls()
+	if controls.is_empty():
+		return
+	_options_selection_index = wrapi(_options_selection_index + delta, 0, controls.size())
+	_grab_selected_options_focus()
+
+
+func _press_selected_options_control() -> void:
+	var control := _selected_options_control()
+	if control == _game_speed_option:
+		_cycle_game_speed(1)
+	elif control is Button:
+		(control as Button).pressed.emit()
+
+
+func _cycle_game_speed(delta: int) -> void:
+	if _selected_options_control() != _game_speed_option or _game_speed_option == null or _game_speed_option.item_count == 0:
+		return
+	var next_index := wrapi(_game_speed_option.selected + delta, 0, _game_speed_option.item_count)
+	_game_speed_option.select(next_index)
+	_on_game_speed_selected(next_index)
+
+
+func _grab_selected_options_focus() -> void:
+	if not is_inside_tree():
+		return
+	var control := _selected_options_control()
+	if control:
+		control.grab_focus()
+
+
+func _selected_options_control() -> Control:
+	var controls := _options_controls()
+	if controls.is_empty():
+		return null
+	return controls[clampi(_options_selection_index, 0, controls.size() - 1)]
+
+
+func _options_controls() -> Array[Control]:
+	var controls: Array[Control] = []
+	if _game_speed_option:
+		controls.append(_game_speed_option)
+	var end_game := get_node_or_null("OptionsPanel/VBox/EndGameButton") as Button
+	if end_game:
+		controls.append(end_game)
+	var close_button := get_node_or_null("OptionsPanel/VBox/CloseButton") as Button
+	if close_button:
+		controls.append(close_button)
+	return controls
 
 
 func _mark_input_handled() -> void:

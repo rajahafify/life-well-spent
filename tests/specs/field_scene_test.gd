@@ -763,6 +763,90 @@ func test_field_follow_held_mouse_updates_player_destination() -> void:
 	assert_eq(target, movement.destination)
 
 
+func test_controller_direction_moves_player_in_field() -> void:
+	if root == null:
+		return
+	var player: Node2D = root.get_node("Player") as Node2D
+	var movement = root.get_node("Player/Sprite")
+	movement._ready()
+	player.global_position = Vector2(600, 600)
+	assert_true(root.controller_move_player(Vector2.RIGHT))
+	assert_true(movement.moving)
+	assert_eq(Vector2(696, 600), movement.destination)
+
+
+func test_controller_interact_opens_nearby_forest_guard_dialog() -> void:
+	if root == null:
+		return
+	var player: Node2D = root.get_node("Player") as Node2D
+	var guard: Node2D = root.get_node("ForestGuard") as Node2D
+	player.global_position = guard.global_position + Vector2(0, 36)
+	var event := InputEventJoypadButton.new()
+	event.button_index = JOY_BUTTON_A
+	event.pressed = true
+	root._unhandled_input(event)
+	assert_true((root.get_node("UI/DialogPanel") as TownDialogView).visible)
+
+
+func test_controller_talk_prompt_shows_near_forest_guard() -> void:
+	if root == null:
+		return
+	var player: Node2D = root.get_node("Player") as Node2D
+	var guard: Node2D = root.get_node("ForestGuard") as Node2D
+	player.global_position = guard.global_position + Vector2(0, 36)
+	root.update_interaction_prompt()
+	var prompt := root.get_node("UI/InteractionPrompt") as Label
+	assert_true(prompt.visible)
+	assert_eq("Press A to talk", prompt.text)
+	var camera: Camera2D = root.get_node("Camera2D") as Camera2D
+	var viewport_half_width := float(ProjectSettings.get_setting("display/window/size/viewport_width", 1280)) * 0.5
+	var prompt_center_x := prompt.position.x + (prompt.custom_minimum_size.x * 0.5)
+	var expected_center_x := guard.global_position.x - camera.global_position.x + viewport_half_width
+	assert_eq(expected_center_x, prompt_center_x)
+
+
+func test_controller_attack_prompt_shows_near_enemy() -> void:
+	if root == null:
+		return
+	var enemy_id: String = root.enemy_ids()[0]
+	var enemy: Node2D = root.enemy_view(enemy_id) as Node2D
+	var player: Node2D = root.get_node("Player") as Node2D
+	player.global_position = enemy.global_position
+	root.update_interaction_prompt()
+	var prompt := root.get_node("UI/InteractionPrompt") as Label
+	assert_true(prompt.visible)
+	assert_eq("Press A to attack", prompt.text)
+	var camera: Camera2D = root.get_node("Camera2D") as Camera2D
+	var viewport_half_width := float(ProjectSettings.get_setting("display/window/size/viewport_width", 1280)) * 0.5
+	var prompt_center_x := prompt.position.x + (prompt.custom_minimum_size.x * 0.5)
+	var expected_center_x := enemy.global_position.x - camera.global_position.x + viewport_half_width
+	assert_eq(expected_center_x, prompt_center_x)
+
+
+func test_controller_a_targets_nearby_enemy_when_no_npc_is_near() -> void:
+	if root == null:
+		return
+	var enemy_id: String = root.enemy_ids()[0]
+	var enemy: Node2D = root.enemy_view(enemy_id) as Node2D
+	var player: Node2D = root.get_node("Player") as Node2D
+	player.global_position = enemy.global_position
+	var event := InputEventJoypadButton.new()
+	event.button_index = JOY_BUTTON_A
+	event.pressed = true
+	root._unhandled_input(event)
+	assert_eq(enemy_id, root.player_target_id())
+
+
+func test_controller_inventory_button_toggles_inventory_window() -> void:
+	if root == null:
+		return
+	var event := InputEventJoypadButton.new()
+	event.button_index = JOY_BUTTON_X
+	event.pressed = true
+	root._unhandled_input(event)
+	assert_true((root.get_node("UI/InventoryWindow") as PanelContainer).visible)
+
+
 func test_inventory_button_area_blocks_player_movement() -> void:
 	if root == null:
 		return
