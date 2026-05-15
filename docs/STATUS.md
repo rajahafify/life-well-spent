@@ -4,7 +4,7 @@
 
 ## QA Status
 
-- Automated suite: `483 tests, 483 passed, 0 failed`
+- Automated suite: `486 tests, 486 passed, 0 failed`
 - Manual QA: playable end-to-end through Swordsman Guild unlock, Game Over run summary, Rebirth or End Game, and certified Forest access.
 - Godot warnings/errors: headless suite passes. Current known non-failing output includes existing `assets-gallery.tscn` invalid UID fallback warnings and resource cleanup warnings.
 
@@ -44,7 +44,7 @@ MVC + SOLID remains active convention:
 | Feature | Files | Status |
 |---------|-------|--------|
 | Test runner | `tests/test_helper.gd`, `tests/test_runner.gd` | Minitest-style GDScript specs; shadow warnings removed. |
-| Main menu | `scenes/main_menu.tscn`, `scripts/controllers/main_menu_controller.gd` | Continue preserves progress; confirmed New Game resets progress and enters town. |
+| Main menu | `scenes/main_menu.tscn`, `scripts/controllers/main_menu_controller.gd` | Centered controls with young-to-old player image below; Continue preserves progress; confirmed New Game resets progress and enters town. |
 | Town hub | `scenes/town_scene.tscn`, `scripts/controllers/town_scene_controller.gd` | Player, NPCs, dialog, daily task UI, settings panel, owned model cleanup. |
 | Player movement | `scripts/views/character_movement.gd` | Click-to-move, facing, animation, movement lock, owned animation-model cleanup. |
 | Animation model | `scripts/models/animation_controller.gd` | LPC idle/walk frame state. |
@@ -89,7 +89,7 @@ MVC + SOLID remains active convention:
 
 Passed for MVP:
 
-- Main menu loads; Continue enters town preserving progress, and New Game asks for reset confirmation before entering town.
+- Main menu loads with centered controls, an icon-green background, and the young-to-old player image below the menu; Continue enters town preserving progress, and New Game asks for reset confirmation before entering town.
 - Player moves on ground click.
 - Quest Giver opens dialog after approach.
 - Accept Quest keeps HP at `100 / 100`.

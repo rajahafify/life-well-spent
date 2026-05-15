@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-15] polish | Add aging image main menu
+
+- RED: added Main Menu specs for an icon-green background and a young-to-old player image below the centered menu.
+- Main Menu now keeps controls center stage and uses `icon.png` as supporting aging art below the actions.
+- Follow-up: centered the title/buttons independently and moved the icon into a separate lower `IconContainer` so it no longer overlaps the Quit button.
+- Validation: focused MainMenu suite `18 tests, 18 passed, 0 failed`; full suite `486 tests, 486 passed, 0 failed`.
+
 ## [2026-05-15] polish | Add post-Guild job teaser quests
 
 - RED: added Town dialog specs for Smith and Shopkeeper post-Guild markers, quest-start copy, Accept Quest actions, and full-game job preview dialogs.

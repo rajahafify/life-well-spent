@@ -1,27 +1,41 @@
 [gd_scene format=3 uid="uid://dbx4aggl8g1gg"]
 
 [ext_resource type="Script" uid="uid://b65dnatj811ax" path="res://scripts/controllers/main_menu_controller.gd" id="1_l6cm7"]
+[ext_resource type="Texture2D" path="res://icon.png" id="2_aging"]
 
 [node name="MainMenu" type="Control" unique_id=1727634857]
-self_modulate = Color(0.05, 0.05, 0.08, 1)
+self_modulate = Color(0.38, 0.62, 0.43, 1)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource("1_l6cm7")
 
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.38, 0.62, 0.43, 1)
+
 [node name="CenterContainer" type="CenterContainer" parent="." unique_id=86621286]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="UI" type="VBoxContainer" parent="CenterContainer" unique_id=868556811]
 layout_mode = 2
+theme_override_constants/separation = 14
 alignment = 1
 
 [node name="Title" type="Label" parent="CenterContainer/UI" unique_id=1232128236]
 layout_mode = 2
-size_flags_horizontal = 2
+size_flags_horizontal = 4
 text = "Life Well Spent"
 horizontal_alignment = 1
 
@@ -29,13 +43,13 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(200, 40)
 default_button = true
 layout_mode = 2
-size_flags_horizontal = 2
+size_flags_horizontal = 4
 text = "Continue"
 
 [node name="NewGameButton" type="Button" parent="CenterContainer/UI" unique_id=1855082109]
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
-size_flags_horizontal = 2
+size_flags_horizontal = 4
 text = "New Game"
 
 [node name="NewGameConfirmPanel" type="PanelContainer" parent="CenterContainer/UI"]
@@ -67,5 +81,21 @@ text = "Cancel"
 [node name="QuitButton" type="Button" parent="CenterContainer/UI" unique_id=224057009]
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
-size_flags_horizontal = 2
+size_flags_horizontal = 4
 text = "Quit"
+
+[node name="IconContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchor_top = 0.68
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AgingImage" type="TextureRect" parent="IconContainer"]
+custom_minimum_size = Vector2(560, 420)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("2_aging")
+expand_mode = 1
+stretch_mode = 5

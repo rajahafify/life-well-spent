@@ -59,6 +59,7 @@ Implemented foundation:
 - Rebirth resets run state and preserves Swordsman Guild.
 - Summary `Rebirth` resets the ended run into a fresh Town start.
 - Summary `End Game` returns to Main Menu without rebirth; Main Menu Continue can then auto-rebirth while preserving persistent unlocks.
+- Main Menu keeps Continue/New Game/Quit centered, shows the young-to-old player image lower below the menu, and uses an icon-green background.
 - Quest markers appear above Town NPCs: yellow for a new quest, white for active incomplete quest, and green for completed unclaimed quest.
 - Certified Forest path opens to the Forest endpoint.
 - Prototype SFX cues exist for loot, equipment, rewards, Guild unlock, Game Over, Summary open, Rebirth, New Game, dialog paging/closing, Forest opening, Apple use, quest updates, player attacks, enemy hits, player hurt, and enemy defeats.
@@ -67,7 +68,7 @@ Implemented foundation:
 Latest validation baseline:
 
 ```text
-483 tests, 483 passed, 0 failed
+486 tests, 486 passed, 0 failed
 ```
 
 Known non-failing test output:
@@ -323,7 +324,7 @@ Done when:
 Run this after each polish slice:
 
 1. Start from Main Menu.
-2. Click `Continue` to preserve progress, or `New Game` and confirm to reset progress.
+2. Confirm the Main Menu controls are center stage, the player aging image sits below them, then click `Continue` to preserve progress, or `New Game` and confirm to reset progress.
 3. Confirm Reborn dialog appears once.
 4. Go to Field.
 5. Trigger Forest Guard block.

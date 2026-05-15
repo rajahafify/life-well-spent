@@ -77,6 +77,44 @@ func test_has_ui_vbox() -> void:
 
 # ─── Title ────────────────────────────────────────────────────────────
 
+func test_main_menu_uses_aging_image_below_menu() -> void:
+	var root = _scene.instantiate()
+	var icon_container := root.get_node("IconContainer") as CenterContainer
+	var hero := root.get_node("IconContainer/AgingImage") as TextureRect
+	assert_not_null(icon_container)
+	assert_not_null(hero)
+	assert_true(hero.texture.resource_path.ends_with("icon.png"))
+	assert_eq(TextureRect.STRETCH_KEEP_ASPECT_CENTERED, hero.stretch_mode)
+	assert_eq(Vector2(560, 420), hero.custom_minimum_size)
+	assert_true(abs(icon_container.anchor_top - 0.68) < 0.001)
+	assert_eq(1.0, icon_container.anchor_bottom)
+	root.free()
+
+
+func test_main_menu_keeps_menu_center_stage_on_icon_colored_background() -> void:
+	var root = _scene.instantiate()
+	var background := root.get_node("Background") as ColorRect
+	var center := root.get_node("CenterContainer") as CenterContainer
+	assert_not_null(background)
+	assert_eq(Color(0.38, 0.62, 0.43, 1.0), background.color)
+	assert_eq(0.0, center.anchor_top)
+	assert_eq(1.0, center.anchor_bottom)
+	root.free()
+
+
+func test_main_menu_title_and_buttons_are_centered_with_wide_icon() -> void:
+	var root = _scene.instantiate()
+	var title := root.get_node("CenterContainer/UI/Title") as Label
+	var continue_button := root.get_node("CenterContainer/UI/ContinueButton") as Button
+	var new_game_button := root.get_node("CenterContainer/UI/NewGameButton") as Button
+	var quit_button := root.get_node("CenterContainer/UI/QuitButton") as Button
+	assert_eq(Control.SIZE_SHRINK_CENTER, title.size_flags_horizontal)
+	assert_eq(Control.SIZE_SHRINK_CENTER, continue_button.size_flags_horizontal)
+	assert_eq(Control.SIZE_SHRINK_CENTER, new_game_button.size_flags_horizontal)
+	assert_eq(Control.SIZE_SHRINK_CENTER, quit_button.size_flags_horizontal)
+	root.free()
+
+
 func test_has_title_label() -> void:
 	var root = _scene.instantiate()
 	var title = root.get_node("CenterContainer/UI/Title")
