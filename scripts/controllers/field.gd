@@ -5,6 +5,7 @@ extends Node2D
 
 const TOWN_PATH := "res://scenes/town_scene.tscn"
 const FOREST_PATH := "res://scenes/forest.tscn"
+const MAIN_MENU_PATH := "res://scenes/main_menu.tscn"
 const FOREST_TO_BE_CONTINUED := "The path to forest is open."
 const CAMERA_OFFSET := Vector2(0, -150)
 const FOREST_GUARD_DIALOG := "Stop.\n\nThe Demon King is gone.\nBut old places do not become safe overnight.\n\nThe Forest remembers what we forgot.\nReturn to Town.\nEarn certification from the Swordsman Guild."
@@ -156,6 +157,8 @@ func _connect_hud() -> void:
 			_hud.shortcut_pressed.connect(_on_shortcut_pressed)
 		if _hud.has_signal("equipment_changed") and not _hud.equipment_changed.is_connected(_on_equipment_changed):
 			_hud.equipment_changed.connect(_on_equipment_changed)
+		if _hud.has_signal("end_game_requested") and not _hud.end_game_requested.is_connected(_on_options_end_game_requested):
+			_hud.end_game_requested.connect(_on_options_end_game_requested)
 
 
 func _physics_process(delta: float) -> void:
@@ -558,6 +561,7 @@ func _on_shortcut_pressed(_slot_number: int, item_id: String) -> void:
 func _on_equipment_changed() -> void:
 	_update_player_age_sprite()
 	_update_combat_ui()
+	_play_feedback_sfx("equip_item")
 
 
 func _use_apple() -> bool:
@@ -576,6 +580,7 @@ func _use_apple() -> bool:
 	if _hud and _hud.has_method("set_inventory_model"):
 		_hud.set_inventory_model(_inventory_model_for_hud())
 	_show_loot_toast("Used apple +%d Life" % [player_life - before])
+	_play_feedback_sfx("apple_use")
 	return true
 
 
@@ -622,6 +627,7 @@ func _on_town_gateway_body_entered(body: Node) -> void:
 func _on_forest_gateway_body_entered(body: Node) -> void:
 	if body.name == "Player":
 		if QuestSystem.has_certification("swordsman_certification"):
+			_play_feedback_sfx("forest_open")
 			request_scene(FOREST_PATH)
 			return
 		_open_dialog(_forest_guard)
@@ -631,6 +637,10 @@ func request_scene(scene_path: String) -> void:
 	requested_scene_path = scene_path
 	if is_inside_tree():
 		call_deferred("_change_scene_to_file", scene_path)
+
+
+func _on_options_end_game_requested() -> void:
+	request_scene(MAIN_MENU_PATH)
 
 
 func _change_scene_to_file(scene_path: String) -> void:
@@ -720,7 +730,8 @@ func _reach_forest_guard_checkpoint() -> void:
 	if QuestSystem.current_main_objective_id() == "enter_forest":
 		return
 	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
-	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	if QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification"):
+		_play_feedback_sfx("quest_update")
 	_update_quest_window()
 
 
@@ -780,9 +791,12 @@ func _equipped_armor_id() -> String:
 
 
 func _feedback_system() -> Node:
-	if not is_inside_tree():
+	if is_inside_tree():
+		return get_node_or_null("/root/FeedbackSystem")
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null:
 		return null
-	return get_node_or_null("/root/FeedbackSystem")
+	return tree.root.get_node_or_null("FeedbackSystem")
 
 
 func _profile_system() -> Node:

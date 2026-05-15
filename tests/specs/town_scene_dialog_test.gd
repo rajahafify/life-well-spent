@@ -10,6 +10,9 @@ var root: Node
 func setup() -> void:
 	if QuestSystem:
 		QuestSystem.reset()
+	var feedback := _feedback_system()
+	if feedback:
+		feedback.reset()
 	var scene: PackedScene = load("res://scenes/town_scene.tscn")
 	root = scene.instantiate()
 	root._ready()
@@ -37,6 +40,13 @@ func _gather_swordsman_item(item_id: String, count: int) -> void:
 
 func _inventory_model():
 	return root._inventory_model_for_hud()
+
+
+func _feedback_system() -> Node:
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return null
+	return tree.root.get_node_or_null("FeedbackSystem")
 
 
 func _advance_dialog_to_last_page() -> void:
@@ -198,10 +208,12 @@ func test_guildmaster_completed_step_shows_claim_reward_dialog_action() -> void:
 	npc.interacted.emit(npc)
 	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
 	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
-	assert_true(body.text.contains("completed this Guildmaster trial"))
+	var close: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CloseButton") as Button
+	assert_true(body.text.contains("Your stance held"))
 	assert_false(complete.visible)
 	_advance_dialog_to_last_page()
 	assert_true(complete.visible)
+	assert_false(close.visible)
 	assert_eq("Claim Reward", complete.text)
 
 
@@ -223,8 +235,9 @@ func test_guildmaster_step_one_advances_to_next_guildmaster_quest() -> void:
 	assert_eq("Gather 2 Bat Wings for Guildmaster guard training. (0/2)", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
 	assert_false(complete.visible)
 	assert_eq("Reward", (root.get_node("UI/DialogPanel/VBox/NameLabel") as Label).text)
-	assert_eq("Reward: 1 x Training Sword", (root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label).text)
+	assert_eq("Reward\n1 x Training Sword\nAdded to your inventory.", (root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label).text)
 	assert_eq(1, _inventory_model().quantity("training_sword"))
+	assert_eq("quest_reward", _feedback_system().last_sfx)
 
 
 func test_guildmaster_step_two_uses_bat_wings_already_in_inventory() -> void:
@@ -245,6 +258,38 @@ func test_guildmaster_step_two_uses_bat_wings_already_in_inventory() -> void:
 	assert_eq("Gather 2 Bat Wings for Guildmaster guard training. (2/2)", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
 
 
+func test_guildmaster_step_two_uses_guard_training_dialog_copy() -> void:
+	_close_start_dialog()
+	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	QuestSystem.activate_swordsman_guild_chain()
+	_record_swordsman_objective("slime_spiked", 10)
+	QuestSystem.advance_side_quest_step("rebuilding_swordsman_guild")
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	assert_true(body.text.contains("A swordsman does not stand alone"))
+	assert_eq("Gather 2 Bat Wings for Guildmaster guard training. (0/2)", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+
+
+func test_guildmaster_step_two_completed_uses_armor_claim_copy() -> void:
+	_close_start_dialog()
+	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	QuestSystem.activate_swordsman_guild_chain()
+	_record_swordsman_objective("slime_spiked", 10)
+	QuestSystem.advance_side_quest_step("rebuilding_swordsman_guild")
+	_gather_swordsman_item("bat_wing", 2)
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	assert_true(body.text.contains("You watched the sky"))
+	(root.get_node("UI/DialogPanel") as TownDialogView).next_page()
+	assert_true(body.text.contains("leather armor"))
+
+
 func test_guildmaster_step_two_advances_to_life_oath_quest() -> void:
 	_close_start_dialog()
 	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
@@ -259,8 +304,44 @@ func test_guildmaster_step_two_advances_to_life_oath_quest() -> void:
 	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
 	complete.pressed.emit()
 	assert_eq("Defeat 2 Rats for the Guildmaster's Life oath. (0/2)", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
-	assert_eq("Reward: 1 x Leather Armor", (root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label).text)
+	assert_eq("Reward\n1 x Leather Armor\nAdded to your inventory.", (root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label).text)
 	assert_eq(1, _inventory_model().quantity("leather_armor"))
+
+
+func test_guildmaster_step_three_uses_life_oath_dialog_copy() -> void:
+	_close_start_dialog()
+	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	QuestSystem.activate_swordsman_guild_chain()
+	_record_swordsman_objective("slime_spiked", 10)
+	QuestSystem.advance_side_quest_step("rebuilding_swordsman_guild")
+	_gather_swordsman_item("bat_wing", 2)
+	QuestSystem.advance_side_quest_step("rebuilding_swordsman_guild")
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	assert_true(body.text.contains("The last oath costs attention"))
+	assert_eq("Defeat 2 Rats for the Guildmaster's Life oath. (0/2)", QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild"))
+
+
+func test_guildmaster_step_three_completed_uses_certification_claim_copy() -> void:
+	_close_start_dialog()
+	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	QuestSystem.activate_swordsman_guild_chain()
+	_record_swordsman_objective("slime_spiked", 10)
+	QuestSystem.advance_side_quest_step("rebuilding_swordsman_guild")
+	_gather_swordsman_item("bat_wing", 2)
+	QuestSystem.advance_side_quest_step("rebuilding_swordsman_guild")
+	_record_swordsman_objective("rat", 2)
+	var npc: NpcController = root.get_node("Guildmaster") as NpcController
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	assert_true(body.text.contains("The road is clear"))
+	(root.get_node("UI/DialogPanel") as TownDialogView).next_page()
+	assert_true(body.text.contains("reopen the Guild"))
 
 
 func test_guildmaster_certification_completion_spends_life_to_60() -> void:
@@ -293,21 +374,28 @@ func test_guildmaster_final_certification_unlocks_achievement() -> void:
 	var complete: Button = root.get_node("UI/DialogPanel/VBox/Buttons/CompleteQuestButton") as Button
 	complete.pressed.emit()
 	_gather_swordsman_item("bat_wing", 2)
+	root.close_dialog()
+	npc.interacted.emit(npc)
+	_advance_dialog_to_last_page()
 	complete.pressed.emit()
 	_record_swordsman_objective("rat", 2)
+	root.close_dialog()
+	npc.interacted.emit(npc)
+	_advance_dialog_to_last_page()
 	complete.pressed.emit()
 	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
 	assert_true(QuestSystem.has_certification("swordsman_certification"))
 	assert_in("swordsman_guild", root.player_stats.unlocked_facilities)
 	assert_true(root.player_stats.game_over_requested)
 	assert_eq("Reward", (root.get_node("UI/DialogPanel/VBox/NameLabel") as Label).text)
-	assert_eq("Reward: Swordsman Guild Unlocked", body.text)
+	assert_eq("Reward\nSwordsman Guild Unlocked\nThe Forest path is open.", body.text)
+	assert_eq("res://scenes/game_over.tscn", root.requested_scene_path)
 	assert_eq("enter_forest", QuestSystem.current_main_objective_id())
 	var sprite := root.get_node("Player/Sprite") as Sprite2D
 	assert_true(sprite.texture.resource_path.ends_with("player_age_3.png"))
 
 
-func test_guildmaster_final_certification_shows_game_over_summary_panel() -> void:
+func test_certified_guildmaster_dialog_points_to_forest_without_repeating_trials() -> void:
 	_close_start_dialog()
 	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
 	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
@@ -322,6 +410,27 @@ func test_guildmaster_final_certification_shows_game_over_summary_panel() -> voi
 	complete.pressed.emit()
 	_record_swordsman_objective("rat", 2)
 	complete.pressed.emit()
+	root.close_dialog()
+	root.show_rebirth_panel()
+	var rebirth := root.get_node("UI/RebirthPanel/VBox/RebirthButton") as Button
+	rebirth.pressed.emit()
+	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
+	npc.interacted.emit(npc)
+	var body: Label = root.get_node("UI/DialogPanel/VBox/BodyLabel") as Label
+	assert_true(body.text.contains("The Guild is awake again"))
+	(root.get_node("UI/DialogPanel") as TownDialogView).next_page()
+	assert_true(body.text.contains("The Forest path will know you"))
+	assert_false(body.text.contains("Defeat 10 Slimes"))
+
+
+func test_game_over_summary_panel_lists_run_gains() -> void:
+	_close_start_dialog()
+	_inventory_model().add_item("training_sword", 1)
+	_inventory_model().add_item("leather_armor", 1)
+	root.player_stats.max_hp = 20
+	root.player_stats.game_over_requested = true
+	root.player_stats.unlock_facility("swordsman_guild")
+	root.show_rebirth_panel()
 	var panel := root.get_node_or_null("UI/RebirthPanel") as PanelContainer
 	var title := root.get_node_or_null("UI/RebirthPanel/VBox/TitleLabel") as Label
 	var label := root.get_node_or_null("UI/RebirthPanel/VBox/MessageLabel") as Label
@@ -337,10 +446,12 @@ func test_guildmaster_final_certification_shows_game_over_summary_panel() -> voi
 		assert_eq("Game Over", title.text)
 		assert_true(label.text.contains("spent this life"))
 		assert_true(summary.text.contains("Run Summary"))
-		assert_true(summary.text.contains("training_sword x1"))
-		assert_true(summary.text.contains("leather_armor x1"))
+		assert_true(summary.text.contains("Training Sword x1"))
+		assert_true(summary.text.contains("Leather Armor x1"))
+		assert_true(summary.text.contains("Life Spent: 80"))
 		assert_true(summary.text.contains("Swordsman Guild"))
 		assert_eq("End Game", end_button.text)
+		assert_eq("game_over", _feedback_system().last_sfx)
 
 
 func test_rebirth_button_resets_life_and_preserves_swordsman_guild() -> void:
@@ -360,6 +471,7 @@ func test_rebirth_button_resets_life_and_preserves_swordsman_guild() -> void:
 	assert_false((root.get_node("UI/RebirthPanel") as PanelContainer).visible)
 	assert_eq("Life: 100/100", (root.get_node("UI/LifeLabel") as Label).text)
 	assert_eq(0, _inventory_model().quantity("training_sword"))
+	assert_eq("rebirth", _feedback_system().last_sfx)
 
 
 func test_end_game_button_requests_main_menu() -> void:
@@ -368,6 +480,15 @@ func test_end_game_button_requests_main_menu() -> void:
 	root.show_rebirth_panel()
 	var button := root.get_node("UI/RebirthPanel/VBox/EndGameButton") as Button
 	button.pressed.emit()
+	assert_eq("res://scenes/main_menu.tscn", root.requested_scene_path)
+
+
+func test_options_end_game_requests_main_menu() -> void:
+	_close_start_dialog()
+	var options := root.get_node("UI/OptionsButton") as Button
+	options.pressed.emit()
+	var end_game := root.get_node("UI/OptionsPanel/VBox/EndGameButton") as Button
+	end_game.pressed.emit()
 	assert_eq("res://scenes/main_menu.tscn", root.requested_scene_path)
 
 
@@ -473,6 +594,57 @@ func test_paged_dialog_hides_close_until_last_page() -> void:
 	assert_true(close.visible)
 
 
+func test_guildmaster_marker_is_yellow_for_new_swordsman_quest() -> void:
+	_close_start_dialog()
+	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	root.update_quest_markers()
+	var marker := root.get_node("Guildmaster/QuestMarker") as Label
+	assert_true(marker.visible)
+	assert_eq("!", marker.text)
+	assert_eq(Color(1.0, 0.86, 0.12, 1.0), marker.get_theme_color("font_color"))
+	assert_eq(56, marker.get_theme_font_size("font_size"))
+	assert_eq(8, marker.get_theme_constant("outline_size"))
+	assert_true(marker.has_meta("pulse_marker"))
+	assert_eq(Vector2(-48, -92), marker.position)
+	assert_eq(Vector2(96, 72), marker.size)
+	assert_eq(Vector2(48, 36), marker.pivot_offset)
+
+
+func test_guildmaster_marker_is_white_for_active_incomplete_quest() -> void:
+	_close_start_dialog()
+	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	QuestSystem.activate_swordsman_guild_chain()
+	root.update_quest_markers()
+	var marker := root.get_node("Guildmaster/QuestMarker") as Label
+	assert_true(marker.visible)
+	assert_eq(Color.WHITE, marker.get_theme_color("font_color"))
+
+
+func test_guildmaster_marker_is_green_for_completed_unclaimed_quest() -> void:
+	_close_start_dialog()
+	QuestSystem.mark_main_checkpoint("explore_the_world", "forest_guard")
+	QuestSystem.advance_main_quest_objective("explore_the_world", "get_swordsman_certification")
+	QuestSystem.activate_swordsman_guild_chain()
+	_record_swordsman_objective("slime_spiked", 10)
+	root.update_quest_markers()
+	var marker := root.get_node("Guildmaster/QuestMarker") as Label
+	assert_true(marker.visible)
+	assert_eq(Color(0.2, 1.0, 0.32, 1.0), marker.get_theme_color("font_color"))
+
+
+func test_smith_marker_is_yellow_after_rebirth_with_swordsman_unlock() -> void:
+	_close_start_dialog()
+	root.player_stats.unlocked_facilities.append("swordsman_guild")
+	root.player_stats.game_over_requested = false
+	root.update_quest_markers()
+	var marker := root.get_node("Smith/QuestMarker") as Label
+	assert_true(marker.visible)
+	assert_eq("!", marker.text)
+	assert_eq(Color(1.0, 0.86, 0.12, 1.0), marker.get_theme_color("font_color"))
+
+
 func test_town_routes_player_movement_to_character_movement() -> void:
 	_close_start_dialog()
 	var movement: CharacterMovement = root.get_node("Player/Sprite") as CharacterMovement
@@ -552,4 +724,3 @@ func test_field_gateway_defers_scene_change_outside_physics_callback() -> void:
 func test_field_gateway_uses_direct_transition_without_prompt() -> void:
 	assert_null(root.get_node_or_null("UI/PortalChoices"), "direct gateways should not show confirmation choices")
 	assert_null(root.get_node_or_null("UI/PortalPrompt"), "direct gateways should not show confirmation prompt")
-

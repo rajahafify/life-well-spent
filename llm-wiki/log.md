@@ -1,5 +1,72 @@
 # Wiki Log
 
+## [2026-05-15] polish | Tune NPC quest marker placement
+
+- RED: extended Town dialog marker coverage for size, outline, pulse metadata, centered bounds, and close-above-head placement.
+- Town quest markers now use a larger outlined pulsing `!` positioned closer to the NPC head while preserving yellow, white, and green quest states.
+- Validation: full suite `478 tests, 478 passed, 0 failed`.
+
+## [2026-05-15] polish | Split Continue from New Game reset
+
+- RED: added Main Menu specs for a Continue button, destructive New Game confirmation, progress-preserving Continue, and zero-progress New Game reset.
+- Main Menu now shows `Continue`, `New Game`, and `Quit`.
+- `Continue` keeps the old auto-rebirth behavior for ended runs while preserving unlocked facilities.
+- `New Game` opens a confirmation panel and, when confirmed, resets profile progress and inventory before entering Town.
+- Validation: full suite `478 tests, 478 passed, 0 failed`.
+
+## [2026-05-15] polish | Add shared Options modal
+
+- RED: added SharedHUD, Town, and Field specs for an Options button under Inventory, modal visibility, End Game signal emission, HUD pointer blocking, and scene routing to Main Menu.
+- SharedHUD now owns `OptionsButton` and `OptionsPanel` with `End Game` and `Close` actions.
+- Town and Field listen for `end_game_requested` and route to `res://scenes/main_menu.tscn`.
+- Validation: full suite `474 tests, 474 passed, 0 failed`.
+
+## [2026-05-15] polish | Quest markers and Summary End Game
+
+- RED: added Summary flow specs for End Game to Main Menu without rebirth and Town dialog specs for claim-only reward action plus NPC quest marker colors.
+- Summary now shows `Rebirth` and `End Game`; End Game saves and returns to Main Menu without resetting the ended run.
+- Claimable Guildmaster quest panels now show `Claim Reward` as the only final-page action.
+- Town now renders `!` quest markers above NPCs: yellow for new quests, white for active incomplete quests, green for completed unclaimed quests, and yellow above Smith after rebirth with Swordsman Guild unlocked.
+- Validation: full suite `469 tests, 469 passed, 0 failed`.
+
+## [2026-05-15] polish | Remove rejected melody cues and quiet combat SFX
+
+- RED: added `AudioCueLibrary` spec coverage for lower battle cue volume.
+- Removed rejected generated melody cues from the audio library and prototype docs.
+- `FeedbackSystem` now applies cue-specific `volume_db` from `AudioCueLibrary`; combat cues play at `-12.0 dB`.
+- Validation: full suite `464 tests, 464 passed, 0 failed`.
+
+## [2026-05-14] polish | Add battle juice SFX
+
+- RED: extended audio cue and Field scene specs for registered battle assets and combat event hooks.
+- Added local WAV cues for player attack, enemy hit, player hurt, and enemy defeat.
+- Field combat now requests SFX for swing start, enemy damage, player damage, and defeated enemies.
+- Validation: full suite `463 tests, 463 passed, 0 failed`.
+
+## [2026-05-14] polish | Dedicated Game Over and Summary scenes
+
+- RED: added Game Over/Summary flow specs for scene continuation, summary rendering, and restart reset.
+- Added `game_over.tscn` and `summary_scene.tscn` with controller scripts.
+- Town final certification now routes to Game Over, then Summary, then Rebirth or New Game into Town.
+- Added extra UI sound cues for dialog next/close, Summary open, and New Game.
+- Validation: full suite `462 tests, 462 passed, 0 failed`.
+
+## [2026-05-14] polish | Step-specific Guildmaster dialog
+
+- RED: added Town dialog specs requiring separate Guildmaster copy for the Bat Wing guard trial and Rat Life oath trial.
+- Town now selects Guildmaster active/claim copy from the current Swordsman Guild side-chain step while preserving the shared `QuestDialogFlow` structure.
+- Reward panels now use a clearer three-line format, and certified Guildmaster dialog points to the Forest path instead of repeating completed trial objectives.
+- Updated prototype polish notes and quest documentation for the dialog polish slice.
+- Validation: full suite `456 tests, 456 passed, 0 failed`.
+
+## [2026-05-14] feature | Add prototype sound cues
+
+- RED: added audio cue, FeedbackSystem, Town, and Field specs for registered SFX assets and key gameplay sound triggers.
+- Added local WAV cues for loot drops, equipment, quest rewards, Guild unlock, Game Over, Rebirth, Forest opening, Apple use, and quest updates.
+- `FeedbackSystem` now resolves registered cue names through `AudioCueLibrary` and spawns `AudioStreamPlayer` instances when a stream is available.
+- Town and Field now request SFX for reward claims, final unlock, Game Over, Rebirth, Apple use, equipment changes, Forest opening, quest updates, and loot drops.
+- Validation: full suite `451 tests, 451 passed, 0 failed`.
+
 ## [2026-05-14] refactor | Address Field and persistence review debt
 
 - RED: added `FieldRuntimeContext`, `GameBalance`, `SaveManager`, and `ProfileSystem` specs for collaborator ownership, centralized Field tuning, corrupted/missing save recovery, and redirected profile paths.

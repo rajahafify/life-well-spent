@@ -58,7 +58,7 @@ func test_item_reward_panel_uses_standard_reward_shape() -> void:
 	var panel: Dictionary = flow.reward_item_panel("Training Sword", 1)
 	assert_eq("reward", panel["state"])
 	assert_eq("Reward", panel["title"])
-	assert_eq("Reward: 1 x Training Sword", panel["body"])
+	assert_eq("Reward\n1 x Training Sword\nAdded to your inventory.", panel["body"])
 	assert_false(panel["can_claim_reward"])
 
 
@@ -66,4 +66,4 @@ func test_unlock_reward_panel_uses_standard_reward_shape() -> void:
 	if flow == null:
 		return
 	var panel: Dictionary = flow.reward_unlock_panel("Swordsman Guild Unlocked")
-	assert_eq("Reward: Swordsman Guild Unlocked", panel["body"])
+	assert_eq("Reward\nSwordsman Guild Unlocked\nThe Forest path is open.", panel["body"])

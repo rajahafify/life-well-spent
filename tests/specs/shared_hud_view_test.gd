@@ -35,11 +35,15 @@ func test_shared_hud_has_life_inventory_button_quest_tracker_and_window() -> voi
 		return
 	assert_not_null(hud.get_node_or_null("LifeLabel") as Label)
 	assert_not_null(hud.get_node_or_null("InventoryButton") as Button)
+	assert_not_null(hud.get_node_or_null("OptionsButton") as Button)
 	assert_not_null(hud.get_node_or_null("ShortcutBar") as HBoxContainer)
 	assert_not_null(hud.get_node_or_null("QuestWindow") as PanelContainer)
 	assert_not_null(hud.get_node_or_null("InventoryWindow") as PanelContainer)
+	assert_not_null(hud.get_node_or_null("OptionsPanel") as PanelContainer)
 	assert_eq("Inventory", (hud.get_node("InventoryButton") as Button).text)
+	assert_eq("Options", (hud.get_node("OptionsButton") as Button).text)
 	assert_false((hud.get_node("InventoryWindow") as PanelContainer).visible)
+	assert_false((hud.get_node("OptionsPanel") as PanelContainer).visible)
 
 
 func test_shared_hud_updates_life_and_quest_tracker() -> void:
@@ -60,7 +64,7 @@ func test_inventory_button_and_i_key_toggle_inventory_window() -> void:
 	var window := hud.get_node("InventoryWindow") as PanelContainer
 	button.pressed.emit()
 	assert_true(window.visible)
-	assert_eq("slime_gel x2", (window.get_node("VBox/ItemList").get_child(0) as Label).text)
+	assert_eq("Slime Gel x2", (window.get_node("VBox/ItemList").get_child(0) as Label).text)
 	button.pressed.emit()
 	assert_false(window.visible)
 	var event := InputEventKey.new()
@@ -80,7 +84,7 @@ func test_inventory_window_equip_button_updates_weapon_slot() -> void:
 	(row.get_child(1) as Button).pressed.emit()
 	assert_eq("training_sword", inventory.weapon_slot)
 	var slots := hud.get_node("InventoryWindow/VBox/SlotList") as VBoxContainer
-	assert_eq("Weapon: training_sword", (slots.get_child(0) as Label).text)
+	assert_eq("Weapon: Training Sword", (slots.get_child(0) as Label).text)
 
 
 func test_inventory_window_equip_button_emits_equipment_changed() -> void:
@@ -107,7 +111,7 @@ func test_inventory_window_equip_button_updates_consumable_slot_and_shortcut() -
 	assert_eq("apple", inventory.consumable_slot)
 	assert_eq("apple", inventory.shortcut_item(1))
 	var slots := hud.get_node("InventoryWindow/VBox/SlotList") as VBoxContainer
-	assert_eq("Consumable: apple", (slots.get_child(2) as Label).text)
+	assert_eq("Consumable: Apple", (slots.get_child(2) as Label).text)
 	assert_eq("1\napple", (hud.get_node("ShortcutBar") as HBoxContainer).get_child(0).text)
 
 
@@ -119,6 +123,30 @@ func test_inventory_button_blocks_world_mouse_input() -> void:
 	var outside := Vector2(button.position.x + button.size.x + 200.0, button.position.y + button.size.y + 200.0)
 	assert_true(hud.blocks_world_mouse_at(inside))
 	assert_false(hud.blocks_world_mouse_at(outside))
+
+
+func test_options_button_opens_modal_and_end_game_emits_signal() -> void:
+	if hud == null:
+		return
+	var options_button := hud.get_node("OptionsButton") as Button
+	var panel := hud.get_node("OptionsPanel") as PanelContainer
+	var emitted: Array = []
+	hud.end_game_requested.connect(func(): emitted.append(true))
+	options_button.pressed.emit()
+	assert_true(panel.visible)
+	assert_eq("Options", (panel.get_node("VBox/TitleLabel") as Label).text)
+	(panel.get_node("VBox/EndGameButton") as Button).pressed.emit()
+	assert_eq([true], emitted)
+
+
+func test_options_panel_blocks_world_mouse_input() -> void:
+	if hud == null:
+		return
+	var options_button := hud.get_node("OptionsButton") as Button
+	options_button.pressed.emit()
+	var panel := hud.get_node("OptionsPanel") as PanelContainer
+	var inside := panel.position + (panel.size * 0.5)
+	assert_true(hud.blocks_world_mouse_at(inside))
 
 
 func test_shortcut_bar_renders_nine_slots_and_number_keys_emit_slot() -> void:

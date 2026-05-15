@@ -29,10 +29,11 @@ func tick_player_auto_attack(owner, delta: float) -> void:
 	if owner.player_attack_timer < owner.player_attack_interval:
 		return
 	owner.player_attack_timer = 0.0
+	owner.play_feedback_sfx("player_attack")
 	movement.play_attack("slash")
 	var result: Dictionary = owner.combat_system().player_attack_enemy(owner.player_combat_dict(), state.to_combat_dict())
 	owner.start_camera_shake()
-	owner.play_feedback_sfx("player_hit")
+	owner.play_feedback_sfx("enemy_hit")
 	state.apply_combat_dict(result["enemy_state"])
 	state.is_aggro = true
 	if state.behavior_state != "die":
@@ -81,6 +82,7 @@ func _handle_enemy_defeated(owner, state, result: Dictionary) -> void:
 		owner.record_enemy_defeat(state.enemy_id)
 		state.reward_granted = true
 		EnemySpawnManager.mark_defeated(state.instance_id)
+		owner.play_feedback_sfx("enemy_defeat")
 	state.behavior_state = "die"
 	state.is_defeated = true
 	owner.update_enemy_view(state)

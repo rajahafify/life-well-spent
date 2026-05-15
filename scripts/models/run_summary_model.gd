@@ -6,7 +6,8 @@ extends Object
 func summary_lines(player_stats, inventory) -> Array[String]:
 	var lines: Array[String] = []
 	lines.append("Run Summary")
-	lines.append("Items: %s" % _items_text(inventory))
+	lines.append("Life Spent: %d" % _life_spent(player_stats))
+	lines.append("Items Found: %s" % _items_text(inventory))
 	lines.append("Unlocks: %s" % _unlocks_text(player_stats))
 	return lines
 
@@ -20,7 +21,7 @@ func _items_text(inventory) -> String:
 		return "none"
 	var parts: Array[String] = []
 	for row in inventory.items_list():
-		parts.append("%s x%d" % [str(row.get("item_id", "")), int(row.get("quantity", 0))])
+		parts.append("%s x%d" % [_display_name_for_item(str(row.get("item_id", ""))), int(row.get("quantity", 0))])
 	return "none" if parts.is_empty() else ", ".join(parts)
 
 
@@ -42,3 +43,27 @@ func _display_name_for_unlock(unlock_id: String) -> String:
 			return "Swordsman Guild"
 		_:
 			return unlock_id.capitalize()
+
+
+func _display_name_for_item(item_id: String) -> String:
+	match item_id:
+		"training_sword":
+			return "Training Sword"
+		"leather_armor":
+			return "Leather Armor"
+		"bat_wing":
+			return "Bat Wing"
+		"slime_gel":
+			return "Slime Gel"
+		"rat_tail":
+			return "Rat Tail"
+		"apple":
+			return "Apple"
+	return item_id.capitalize()
+
+
+func _life_spent(player_stats) -> int:
+	if player_stats == null:
+		return 0
+	var max_hp := int(player_stats.max_hp) if "max_hp" in player_stats else 100
+	return maxi(0, 100 - max_hp)

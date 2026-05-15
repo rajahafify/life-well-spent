@@ -1,23 +1,31 @@
 ---
 title: Main Menu Scene
 type: reference
-updated: 2026-05-14
+updated: 2026-05-15
 tags: [scenes, ui, entry-point]
 ---
 
 # Main Menu Scene
 
 ## Overview
-The entry point scene for Life Well Spent. Displays the game title with New Game and Quit buttons. On New Game, it normalizes any ended run through rebirth and transitions to the Town scene.
+
+The entry point scene for Life Well Spent. It displays the game title with Continue, New Game, and Quit buttons. Continue preserves progress and normalizes any ended run through rebirth before Town. New Game opens a reset confirmation and starts from zero only after confirmation.
 
 ## Scene Structure
-```
+
+```text
 MainMenu (Control)
-├── CenterContainer
-│   └── UI (VBoxContainer)
-│       ├── Title (Label)
-│       ├── NewGameButton (Button)
-│       └── QuitButton (Button)
+  CenterContainer
+    UI (VBoxContainer)
+      Title (Label)
+      ContinueButton (Button)
+      NewGameButton (Button)
+      NewGameConfirmPanel (PanelContainer)
+        VBox
+          MessageLabel
+          ConfirmButton
+          CancelButton
+      QuitButton (Button)
 ```
 
 ## Controller: MainMenuController
@@ -26,41 +34,24 @@ MainMenu (Control)
 class_name MainMenuController
 extends Control
 
-@onready var _title: Label = $CenterContainer/UI/Title
-@onready var _new_game_btn: Button = $CenterContainer/UI/NewGameButton
-@onready var _quit_btn: Button = $CenterContainer/UI/QuitButton
-
-func _ready() -> void:
-    _title.text = "Life Well Spent"
-    _new_game_btn.text = "New Game"
-    _quit_btn.text = "Quit"
-    _title.add_theme_font_size_override("font_size", 36)
-    $CenterContainer/UI.add_theme_constant_override("separation", 16)
-    _new_game_btn.pressed.connect(_on_new_game_pressed)
-    _quit_btn.pressed.connect(_on_quit_pressed)
-
-func _on_new_game_pressed() -> void:
-    _auto_rebirth_ended_run(_profile_system(), _inventory_system())
-    get_tree().change_scene_to_file("res://scenes/town_scene.tscn")
-
-func _on_quit_pressed() -> void:
-    get_tree().quit()
+func continue_existing_run(profile_system, inventory_system) -> bool
+func start_new_game_from_zero(profile_system, inventory_system) -> bool
 ```
 
 ## Design Decisions
-- **Thin controller:** Handles button signals and delegates ended-run normalization to a small helper before scene transition.
-- **Centered layout:** CenterContainer → VBoxContainer with alignment=CENTER, buttons centered via SHRINK_CENTER size flags.
-- **Title:** 36px font size via `add_theme_font_size_override`.
-- **Buttons:** Custom minimum size 200×40px, 16px vertical separation.
-- **Background:** Dark `Color(0.05, 0.05, 0.08)` via `self_modulate` on root.
-- **Scene transition:** Hardcoded path to `town_scene.tscn`. Will be configurable when GameState model exists.
-- **Ended run:** If `ProfileSystem.player().game_over_requested` is true, New Game calls `PlayerStats.rebirth()`, resets `InventorySystem`, saves the profile, and preserves persistent unlocks such as `swordsman_guild`.
-- **Quit button:** Calls `get_tree().quit()` — standard behavior.
+
+- **Thin controller:** Handles button signals and delegates continue/reset rules to small helpers before scene transition.
+- **Centered layout:** CenterContainer to VBoxContainer with centered buttons.
+- **Continue:** If `ProfileSystem.player().game_over_requested` is true, Continue calls `PlayerStats.rebirth()`, resets `InventorySystem`, saves the profile, and preserves persistent unlocks such as `swordsman_guild`.
+- **New Game:** Opens a confirmation panel. Confirming resets `PlayerStats` through `apply_dict({})`, resets `InventorySystem`, saves the profile, and enters Town from zero progress.
+- **Quit button:** Calls `get_tree().quit()`.
 
 ## Specs
-- `tests/specs/main_menu_test.gd` — 8 specs covering scene structure and button text
-- All 64 tests in suite pass
+
+- `tests/specs/main_menu_test.gd` covers scene structure, button text, Continue auto-rebirth preservation, New Game confirmation, and confirmed progress reset.
 
 ## Related
-- `scenes/town_scene.tscn` - next scene after New Game
-- `scripts/models/player_stats.gd` — player state for game session
+
+- [Main Menu Flow](../architecture/main-menu-flow.md)
+- `scenes/town_scene.tscn`
+- `scripts/models/player_stats.gd`

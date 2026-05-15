@@ -4,12 +4,15 @@ extends CanvasLayer
 
 signal shortcut_pressed(slot_number: int, item_id: String)
 signal equipment_changed
+signal end_game_requested
 
 @onready var _life_label: Label = $LifeLabel
 @onready var _inventory_button: Button = $InventoryButton
+@onready var _options_button: Button = $OptionsButton
 @onready var _shortcut_bar: HBoxContainer = $ShortcutBar
 @onready var _quest_window: PanelContainer = $QuestWindow
 @onready var _inventory_window: PanelContainer = $InventoryWindow
+@onready var _options_panel: PanelContainer = $OptionsPanel
 
 var _inventory_model = null
 
@@ -23,9 +26,11 @@ func _ready() -> void:
 func ensure_ready() -> void:
 	_life_label = get_node_or_null("LifeLabel") as Label
 	_inventory_button = get_node_or_null("InventoryButton") as Button
+	_options_button = get_node_or_null("OptionsButton") as Button
 	_shortcut_bar = get_node_or_null("ShortcutBar") as HBoxContainer
 	_quest_window = get_node_or_null("QuestWindow") as PanelContainer
 	_inventory_window = get_node_or_null("InventoryWindow") as PanelContainer
+	_options_panel = get_node_or_null("OptionsPanel") as PanelContainer
 
 
 func set_inventory_model(inventory_model) -> void:
@@ -67,9 +72,21 @@ func close_inventory_window() -> void:
 		_inventory_window.visible = false
 
 
+func toggle_options_panel() -> void:
+	ensure_ready()
+	if _options_panel:
+		_options_panel.visible = not _options_panel.visible
+
+
+func close_options_panel() -> void:
+	ensure_ready()
+	if _options_panel:
+		_options_panel.visible = false
+
+
 func blocks_world_mouse_at(screen_position: Vector2) -> bool:
 	ensure_ready()
-	for control in [_inventory_button, _inventory_window, _quest_window, _shortcut_bar]:
+	for control in [_inventory_button, _options_button, _inventory_window, _options_panel, _quest_window, _shortcut_bar]:
 		if _visible_control_contains(control, screen_position):
 			return true
 	return false
@@ -92,6 +109,14 @@ func _connect_inventory_controls() -> void:
 	ensure_ready()
 	if _inventory_button and not _inventory_button.pressed.is_connected(toggle_inventory_window):
 		_inventory_button.pressed.connect(toggle_inventory_window)
+	if _options_button and not _options_button.pressed.is_connected(toggle_options_panel):
+		_options_button.pressed.connect(toggle_options_panel)
+	var options_close := get_node_or_null("OptionsPanel/VBox/CloseButton") as Button
+	if options_close and not options_close.pressed.is_connected(close_options_panel):
+		options_close.pressed.connect(close_options_panel)
+	var end_game := get_node_or_null("OptionsPanel/VBox/EndGameButton") as Button
+	if end_game and not end_game.pressed.is_connected(_on_end_game_pressed):
+		end_game.pressed.connect(_on_end_game_pressed)
 	if _inventory_window and _inventory_window.has_signal("close_requested") and not _inventory_window.close_requested.is_connected(close_inventory_window):
 		_inventory_window.close_requested.connect(close_inventory_window)
 	if _inventory_window and _inventory_window.has_signal("equip_item_requested") and not _inventory_window.equip_item_requested.is_connected(_on_equip_item_requested):
@@ -171,6 +196,10 @@ func _on_equip_item_requested(item_id: String, equipment_slot: String) -> void:
 	_render_shortcut_bar()
 	if changed:
 		equipment_changed.emit()
+
+
+func _on_end_game_pressed() -> void:
+	end_game_requested.emit()
 
 
 func _mark_input_handled() -> void:

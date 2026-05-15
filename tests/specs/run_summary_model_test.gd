@@ -34,12 +34,17 @@ func test_summary_lists_items_and_unlocks() -> void:
 	player.unlock_facility("swordsman_guild")
 	var text: String = summary.summary_text(player, inventory)
 	assert_true(text.contains("Run Summary"))
-	assert_true(text.contains("bat_wing x2"))
-	assert_true(text.contains("training_sword x1"))
+	assert_true(text.contains("Items Found: Bat Wing x2, Training Sword x1"))
 	assert_true(text.contains("Swordsman Guild"))
 
 
 func test_summary_uses_none_when_run_has_no_gains() -> void:
 	var text: String = summary.summary_text(player, inventory)
-	assert_true(text.contains("Items: none"))
+	assert_true(text.contains("Items Found: none"))
 	assert_true(text.contains("Unlocks: none"))
+
+
+func test_summary_includes_life_spent_line() -> void:
+	player.max_hp = 20
+	var text: String = summary.summary_text(player, inventory)
+	assert_true(text.contains("Life Spent: 80"))

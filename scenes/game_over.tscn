@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/controllers/game_over_controller.gd" id="1_game_over"]
+
+[node name="GameOver" type="Control"]
+self_modulate = Color(0.04, 0.03, 0.03, 1)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_game_over")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="UI" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/UI"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Game Over"
+horizontal_alignment = 1
+
+[node name="MessageLabel" type="Label" parent="CenterContainer/UI"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "You spent this life."
+horizontal_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="CenterContainer/UI"]
+custom_minimum_size = Vector2(220, 52)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Continue"

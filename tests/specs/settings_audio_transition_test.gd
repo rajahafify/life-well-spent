@@ -33,6 +33,17 @@ func test_audio_manager_tracks_named_sfx_requests() -> void:
 	audio.free()
 
 
+func test_feedback_system_plays_registered_audio_cue() -> void:
+	var feedback_scene := Node.new()
+	var script := load("res://scripts/managers/feedback_system.gd") as GDScript
+	feedback_scene.set_script(script)
+	var player = feedback_scene.play_sfx("quest_reward")
+	assert_eq("quest_reward", feedback_scene.last_sfx)
+	assert_eq(1, feedback_scene.spawned_sfx_count)
+	assert_not_null(player)
+	feedback_scene.free()
+
+
 func test_scene_transition_controller_requests_target_scene() -> void:
 	var controller = _new_script_object("res://scripts/controllers/scene_transition_controller.gd")
 	controller.request_transition("res://scenes/town_scene.tscn")

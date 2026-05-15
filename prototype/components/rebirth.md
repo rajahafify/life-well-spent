@@ -33,7 +33,8 @@ On Reborn:
 - The panel summarizes run items and unlocked facilities.
 - The Rebirth button calls `PlayerStats.rebirth()` and resets run inventory.
 - The End Game button returns to the main menu.
-- Starting New Game after End Game auto-rebirths the ended run before Town loads, preserving persistent unlocks.
+- Continue after End Game auto-rebirths the ended run before Town loads, preserving persistent unlocks.
+- New Game after End Game requires confirmation and resets progress from zero.
 - `ProfileSystem` saves the persistent player profile to `user://life_well_spent_profile.json`.
 
 ## Open Decisions

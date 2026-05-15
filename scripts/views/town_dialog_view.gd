@@ -71,6 +71,7 @@ func next_page() -> void:
 		_page_index += 1
 		_update_page()
 		_update_dialog_navigation_buttons()
+		_play_feedback_sfx("dialog_next")
 
 
 func configure_buttons(can_offer_quest: bool, has_active_quest: bool) -> void:
@@ -98,6 +99,7 @@ func hide_dialog() -> void:
 	visible = false
 	if _portrait:
 		_portrait.visible = false
+	_play_feedback_sfx("dialog_close")
 
 
 func is_open() -> bool:
@@ -147,7 +149,7 @@ func _update_dialog_navigation_buttons() -> void:
 	if _next_button:
 		_next_button.visible = not is_last_page
 	if _close_dialog_button:
-		_close_dialog_button.visible = is_last_page
+		_close_dialog_button.visible = is_last_page and not _has_active_quest
 
 
 func _connect_buttons() -> void:
@@ -171,3 +173,18 @@ func _on_complete_quest_pressed() -> void:
 
 func _on_close_dialog_pressed() -> void:
 	close_requested.emit()
+
+
+func _feedback_system() -> Node:
+	if is_inside_tree():
+		return get_node_or_null("/root/FeedbackSystem")
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return null
+	return tree.root.get_node_or_null("FeedbackSystem")
+
+
+func _play_feedback_sfx(sfx_name: String) -> void:
+	var system := _feedback_system()
+	if system and system.has_method("play_sfx"):
+		system.play_sfx(sfx_name)

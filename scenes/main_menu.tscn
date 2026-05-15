@@ -25,12 +25,44 @@ size_flags_horizontal = 2
 text = "Life Well Spent"
 horizontal_alignment = 1
 
-[node name="NewGameButton" type="Button" parent="CenterContainer/UI" unique_id=1855082109]
+[node name="ContinueButton" type="Button" parent="CenterContainer/UI"]
 custom_minimum_size = Vector2(200, 40)
 default_button = true
 layout_mode = 2
 size_flags_horizontal = 2
+text = "Continue"
+
+[node name="NewGameButton" type="Button" parent="CenterContainer/UI" unique_id=1855082109]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+size_flags_horizontal = 2
 text = "New Game"
+
+[node name="NewGameConfirmPanel" type="PanelContainer" parent="CenterContainer/UI"]
+visible = false
+custom_minimum_size = Vector2(360, 180)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/UI/NewGameConfirmPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="MessageLabel" type="Label" parent="CenterContainer/UI/NewGameConfirmPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "starting a new game will reset progress"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="ConfirmButton" type="Button" parent="CenterContainer/UI/NewGameConfirmPanel/VBox"]
+custom_minimum_size = Vector2(220, 44)
+layout_mode = 2
+text = "Start New Game"
+
+[node name="CancelButton" type="Button" parent="CenterContainer/UI/NewGameConfirmPanel/VBox"]
+custom_minimum_size = Vector2(220, 44)
+layout_mode = 2
+text = "Cancel"
 
 [node name="QuitButton" type="Button" parent="CenterContainer/UI" unique_id=224057009]
 custom_minimum_size = Vector2(200, 40)

@@ -15,6 +15,8 @@ var root: Node
 func setup() -> void:
 	if ProfileSystem:
 		ProfileSystem.reset_for_tests()
+	if FeedbackSystem:
+		FeedbackSystem.reset()
 	var scene: PackedScene = load(FIELD_SCENE)
 	assert_not_null(scene, "Field scene should load")
 	if scene:
@@ -369,6 +371,7 @@ func test_shortcut_one_uses_apple_to_heal_life_and_consume_item() -> void:
 	var loot_toast := root.get_node("UI/LootToast") as Label
 	assert_true(loot_toast.visible)
 	assert_eq("Used apple +20 Life", loot_toast.text)
+	assert_eq("apple_use", FeedbackSystem.last_sfx)
 
 
 func test_shortcut_one_without_apple_shows_feedback() -> void:
@@ -512,6 +515,8 @@ func test_enemy_attack_damages_player_life_and_shows_red_damage() -> void:
 	root.enemy_state("field_slime_001").position = slime.global_position
 	root.engage_enemy("field_slime_001")
 	root._physics_process(1.5)
+	FeedbackSystem.reset()
+	root.stop_auto_attack()
 	root._physics_process(1.5)
 	assert_true(root.player_life < 100)
 	assert_true(root.is_camera_shaking(), "enemy hit should also start a small camera shake")
@@ -519,6 +524,7 @@ func test_enemy_attack_damages_player_life_and_shows_red_damage() -> void:
 	assert_true(player_damage_label.visible)
 	assert_eq("1", player_damage_label.text)
 	assert_eq(Color(1.0, 0.2, 0.2, 1.0), player_damage_label.get_theme_color("font_color"), "player damage should be red")
+	assert_eq("player_hurt", FeedbackSystem.last_sfx)
 
 
 func test_auto_attack_shows_white_enemy_hit_text_and_flash() -> void:
@@ -553,6 +559,20 @@ func test_auto_attack_plays_visible_slash_animation() -> void:
 	assert_eq("slash", movement._anim.attack_style)
 	root._physics_process(0.016)
 	assert_eq("attacking", movement._anim.state, "movement stop should not cancel visible slash animation")
+
+
+func test_auto_attack_plays_swing_and_enemy_hit_sfx() -> void:
+	if root == null:
+		return
+	var player: Node2D = root.get_node("Player") as Node2D
+	var slime: Node2D = root.get_node("Enemies/Slime") as Node2D
+	player.global_position = Vector2(500, 500)
+	slime.global_position = Vector2(530, 500)
+	root.enemy_state("field_slime_001").position = slime.global_position
+	root.engage_enemy("field_slime_001")
+	root._physics_process(1.5)
+	assert_eq("enemy_hit", FeedbackSystem.last_sfx)
+	assert_true(FeedbackSystem.spawned_sfx_count >= 2, "auto attack should play at least swing and enemy hit cues")
 
 
 func test_player_can_stop_auto_attack_by_moving_away() -> void:
@@ -597,6 +617,7 @@ func test_slime_dies_plays_death_before_removal() -> void:
 	var sprite := slime.get_node("AnimatedSprite2D") as AnimatedSprite2D
 	assert_eq("death", sprite.animation)
 	assert_eq(5, root.player_xp)
+	assert_eq("enemy_defeat", FeedbackSystem.last_sfx)
 	assert_true(root.has_method("_drop_succeeds"), "Field should roll chance-based drops")
 	assert_true(root._drop_succeeds({"chance_numerator": 1, "chance_denominator": 5}, 1))
 	assert_false(root._drop_succeeds({"chance_numerator": 1, "chance_denominator": 5}, 2))
@@ -711,6 +732,27 @@ func test_inventory_button_area_blocks_player_movement() -> void:
 	var target := button.position + (button.size * 0.5)
 	assert_false(root.follow_held_mouse(target))
 	assert_false(movement.moving)
+
+
+func test_options_button_area_blocks_player_movement() -> void:
+	if root == null:
+		return
+	var button := root.get_node("UI/OptionsButton") as Button
+	var movement = root.get_node("Player/Sprite")
+	movement._ready()
+	var target := button.position + (button.size * 0.5)
+	assert_false(root.follow_held_mouse(target))
+	assert_false(movement.moving)
+
+
+func test_options_end_game_requests_main_menu() -> void:
+	if root == null:
+		return
+	var options := root.get_node("UI/OptionsButton") as Button
+	options.pressed.emit()
+	var end_game := root.get_node("UI/OptionsPanel/VBox/EndGameButton") as Button
+	end_game.pressed.emit()
+	assert_eq("res://scenes/main_menu.tscn", root.requested_scene_path)
 
 
 func test_far_forest_guard_click_moves_player_before_dialog() -> void:
@@ -848,6 +890,7 @@ func test_forest_gateway_transitions_to_forest_after_swordsman_certification() -
 	var player: Node = root.get_node("Player")
 	root._on_forest_gateway_body_entered(player)
 	assert_eq("res://scenes/forest.tscn", root.requested_scene_path)
+	assert_eq("forest_open", FeedbackSystem.last_sfx)
 
 
 func test_forest_guard_interaction_after_certification_does_not_revert_objective() -> void:

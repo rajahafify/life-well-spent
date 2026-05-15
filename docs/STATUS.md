@@ -4,7 +4,7 @@
 
 ## QA Status
 
-- Automated suite: `449 tests, 449 passed, 0 failed`
+- Automated suite: `478 tests, 478 passed, 0 failed`
 - Manual QA: playable end-to-end through Swordsman Guild unlock, Game Over run summary, Rebirth or End Game, and certified Forest access.
 - Godot warnings/errors: headless suite passes. Current known non-failing output includes existing `assets-gallery.tscn` invalid UID fallback warnings and resource cleanup warnings.
 
@@ -24,9 +24,9 @@ Life Well Spent now has a playable MVP foundation:
 10. Legacy demo scene/controller have been removed; `town_scene.tscn` is the playable MVP flow.
 11. Field is playable with shared HUD, Slime/Bat/Rat combat, drops, respawn polling, Forest Guard gate, and extracted camera/spawn/combat helper controllers.
 12. Swordsman Guild certification is playable from the Guildmaster after the Forest Guard checkpoint as three objective-backed quest steps: defeat 10 Slimes, own 2 Bat Wings, and defeat 2 Rats. Each step spends Max Life, rewards Training Sword, Leather Armor, then the Swordsman Guild unlock, advances the quest objective to `Enter the Forest.`, and changes the Forest Guard and Forest gate to an open Forest path endpoint without reverting the objective.
-13. Town/Field movement supports updating the destination while the left mouse button is held, except while the pointer is over HUD controls.
+13. Town/Field movement supports updating the destination while the left mouse button is held, except while the pointer is over HUD controls. The shared HUD has an Options modal with End Game routing to Main Menu.
 14. Player aging visuals are driven by Max Life: Town and Field start with `player_age_1.png`, certification at `60` Max Life uses `player_age_2.png`, and final certification at `20` or lower uses `player_age_3.png`. Equipped Training Sword and Leather Armor switch to matching equipment variants with brown leather armor.
-15. Final certification shows a Game Over run summary with collected items, unlocked facilities, Rebirth, and End Game actions. If the player chooses End Game, the next New Game auto-rebirths the ended run while preserving persistent unlocks.
+15. Final certification routes Town to a dedicated Game Over scene, then to a Summary scene that shows Life spent, collected items, unlocked facilities, and Rebirth/End Game actions. Rebirth resets the ended run while preserving persistent unlocks; End Game returns to Main Menu without rebirth.
 
 ## Architecture
 
@@ -44,7 +44,7 @@ MVC + SOLID remains active convention:
 | Feature | Files | Status |
 |---------|-------|--------|
 | Test runner | `tests/test_helper.gd`, `tests/test_runner.gd` | Minitest-style GDScript specs; shadow warnings removed. |
-| Main menu | `scenes/main_menu.tscn`, `scripts/controllers/main_menu_controller.gd` | New Game → town hub. |
+| Main menu | `scenes/main_menu.tscn`, `scripts/controllers/main_menu_controller.gd` | Continue preserves progress; confirmed New Game resets progress and enters town. |
 | Town hub | `scenes/town_scene.tscn`, `scripts/controllers/town_scene_controller.gd` | Player, NPCs, dialog, daily task UI, settings panel, owned model cleanup. |
 | Player movement | `scripts/views/character_movement.gd` | Click-to-move, facing, animation, movement lock, owned animation-model cleanup. |
 | Animation model | `scripts/models/animation_controller.gd` | LPC idle/walk frame state. |
@@ -89,14 +89,14 @@ MVC + SOLID remains active convention:
 
 Passed for MVP:
 
-- Main menu loads and New Game enters town.
+- Main menu loads; Continue enters town preserving progress, and New Game asks for reset confirmation before entering town.
 - Player moves on ground click.
 - Quest Giver opens dialog after approach.
 - Accept Quest keeps HP at `100 / 100`.
 - Claim Reward changes HP to `60 / 60`.
 - Vendor/Guard dialogs open without quest button.
 - Daily task completion updates XP.
-- Options button opens settings panel.
+- Options button opens the End Game modal.
 
 ## Remaining Production Work
 

@@ -6,6 +6,8 @@ System inventory lives in [`../game-systems.md`](../game-systems.md). Append it 
 
 Field development decisions live in [`../field-development-decisions.md`](../field-development-decisions.md).
 
+Prototype polish plan lives in [`../polish.md`](../polish.md).
+
 ## Components
 
 - `town.md` — safe base and first scene.

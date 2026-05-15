@@ -1,0 +1,50 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/controllers/summary_scene_controller.gd" id="1_summary"]
+
+[node name="SummaryScene" type="Control"]
+self_modulate = Color(0.06, 0.06, 0.08, 1)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_summary")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="UI" type="VBoxContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(720, 360)
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/UI"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Run Summary"
+horizontal_alignment = 1
+
+[node name="SummaryLabel" type="Label" parent="CenterContainer/UI"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Run Summary"
+horizontal_alignment = 1
+
+[node name="Buttons" type="HBoxContainer" parent="CenterContainer/UI"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="RebirthButton" type="Button" parent="CenterContainer/UI/Buttons"]
+custom_minimum_size = Vector2(180, 52)
+layout_mode = 2
+text = "Rebirth"
+
+[node name="NewGameButton" type="Button" parent="CenterContainer/UI/Buttons"]
+custom_minimum_size = Vector2(180, 52)
+layout_mode = 2
+text = "End Game"

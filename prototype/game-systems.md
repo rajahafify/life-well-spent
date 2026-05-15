@@ -231,7 +231,10 @@ Each system should list:
 - `Close` appears only on the final page and hides dialog.
 - Dialog action buttons stay at the bottom-right of the dialog panel.
 - Dialog blocks player movement.
-- Quest-giver dialogs use the same flow: normal dialog, incomplete quest with Close only on the final page, complete quest with `Claim Reward` only on the final page, then a separate Reward panel.
+- Quest-giver dialogs use the same flow: normal dialog, incomplete quest with Close only on the final page, complete quest with `Claim Reward` only on the final page and no parallel Close action, then a separate Reward panel.
+- The Guildmaster uses distinct trial copy for stance training, guard training, and the final Life oath while preserving the shared quest dialog flow.
+- Reward panels use a concise three-line shape: `Reward`, the concrete item or unlock, and the immediate result.
+- Completed Guildmaster certification uses post-completion copy that points to the Forest path instead of repeating trial objectives.
 - Text must be readable at 1080p.
 - Portrait appears above dialog box.
 - Portrait uses face crop from character LPC spritesheet.
@@ -290,6 +293,7 @@ Each system should list:
 - If dialog closed and ground clicked: move to target.
 - If dialog open and ground clicked: ignore.
 - If pointer is over HUD controls: ignore world movement input.
+- Shared HUD Options opens a modal; `End Game` emits a scene-level request to return to Main Menu.
 - Each physics tick: camera position = player position + offset.
 
 ---
@@ -387,7 +391,7 @@ Each system should list:
 - If player attacks: enemy HP decreases.
 - If enemy attacks: current Life decreases.
 - If enemy HP <= 0: enemy defeated and reward hook fires.
-- If Life <= 0: show the Game Over run summary with collected items, unlocked facilities, Rebirth, and End Game actions.
+- If Life <= 0 or final certification completes: route to Game Over, then Summary with collected items, unlocked facilities, Rebirth, and End Game actions.
 
 ---
 
@@ -620,6 +624,47 @@ Each system should list:
 - Equipped Training Sword uses the matching `_sword` spritesheet for the current age stage.
 - Equipped Training Sword plus Leather Armor uses the matching `_sword_armor` spritesheet for the current age stage. The armor layer is brown leather, not generator-default grey.
 - Aging sprites are presentation only; Life and quest rules stay in progression models.
+
+---
+
+# Audio Feedback
+
+## Core Idea
+
+Short SFX cues confirm important prototype actions without changing gameplay rules.
+
+## Current Implementation
+
+- `scripts/models/audio_cue_library.gd` maps SFX names to local WAV assets in `assets/audio/`.
+- `scripts/managers/feedback_system.gd` loads registered WAV cues and spawns `AudioStreamPlayer` instances on the `SFX` bus.
+- Unknown SFX names are recorded for tests but do not spawn a player.
+
+## Current Cues
+
+- `loot_drop`
+- `equip_item`
+- `quest_reward`
+- `guild_unlock`
+- `game_over`
+- `rebirth`
+- `forest_open`
+- `apple_use`
+- `quest_update`
+- `dialog_next`
+- `dialog_close`
+- `summary_open`
+- `new_game`
+- `player_attack`
+- `enemy_hit`
+- `player_hurt`
+- `enemy_defeat`
+
+## Rules
+
+- Sounds support feedback only; models do not depend on audio.
+- Controllers request named cues through `FeedbackSystem`.
+- Battle cues use lower cue volume than UI and reward feedback.
+- Tests assert cue names and asset presence, not subjective sound quality.
 
 ### Conditions
 

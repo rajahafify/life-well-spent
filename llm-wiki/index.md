@@ -26,6 +26,8 @@
 | [architecture/inventory-system](architecture/inventory-system.md) | reference | 2026-05-14 | Game-wide inventory autoload for drops, empty starter slots, reset, and shared HUD inventory display. |
 | [architecture/equipment-stats](architecture/equipment-stats.md) | reference | 2026-05-14 | Pure equipped item combat bonuses for Training Sword attack and Leather Armor defense. |
 | [architecture/run-summary-model](architecture/run-summary-model.md) | reference | 2026-05-14 | Pure Game Over summary formatter for run items and unlocked facilities. |
+| [architecture/game-over-summary-flow](architecture/game-over-summary-flow.md) | reference | 2026-05-14 | Dedicated Game Over and Summary scenes for the completed first-life loop. |
+| [architecture/main-menu-flow](architecture/main-menu-flow.md) | reference | 2026-05-15 | Main Menu Continue preserves progress; confirmed New Game resets profile progress and inventory. |
 | [architecture/profile-system](architecture/profile-system.md) | reference | 2026-05-13 | Persistent player profile autoload for Swordsman Guild unlocks and rebirth state. |
 | [architecture/inventory-window-view](architecture/inventory-window-view.md) | reference | 2026-05-14 | Reusable inventory overlay scene showing slots, item stacks, and equipment actions. |
 | [architecture/shared-hud-view](architecture/shared-hud-view.md) | reference | 2026-05-13 | Reusable gameplay HUD for player Life, Inventory, Quest Tracker, and 1-9 shortcut bar. |
@@ -35,7 +37,7 @@
 | [assets/assets-viewer](assets/assets-viewer.md) | reference | 2026-05-12 | In-project gallery scene that recursively displays enemy, NPC, and player PNG assets as thumbnails. |
 | [assets/slime-asset-view](assets/slime-asset-view.md) | reference | 2026-05-12 | Enemy and character asset tools: focused AssetView preview plus looping AssetGallery SpriteFrames/LPC previews. |
 | [assets/tiny-town-map-import](assets/tiny-town-map-import.md) | reference | 2026-05-12 | TMJ-to-Godot visual map importer for the Tiny Town TownMap scene. |
-| [scenes/main-menu](scenes/main-menu.md) | reference | 2026-05-14 | Main menu scene with New Game auto-rebirth for ended runs before Town transition. |
+| [scenes/main-menu](scenes/main-menu.md) | reference | 2026-05-15 | Main menu scene with Continue preserving progress and confirmed New Game reset. |
 | [scenes/town-hub](scenes/town-hub.md) | reference | 2026-05-14 | Prototype Town scene - Guildmaster-started certification chain, inventory-count Bat Wing objective, reborn dialog, and direct Field gateway. |
 | [scenes/field](scenes/field.md) | reference | 2026-05-14 | Playable Field slice - profile-backed age, 12 active enemy slots, close-ready attack leash, enemy HP bars, Forest Guard gate, and Forest endpoint. |
 | [scenes/forest](scenes/forest.md) | reference | 2026-05-13 | Forest endpoint scene reached after Swordsman certification, with return gateway to Field. |

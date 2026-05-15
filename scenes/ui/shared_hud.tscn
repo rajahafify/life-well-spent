@@ -35,6 +35,14 @@ offset_bottom = 124.0
 theme_override_font_sizes/font_size = 22
 text = "Inventory"
 
+[node name="OptionsButton" type="Button" parent="."]
+offset_left = 28.0
+offset_top = 134.0
+offset_right = 168.0
+offset_bottom = 174.0
+theme_override_font_sizes/font_size = 22
+text = "Options"
+
 [node name="ShortcutBar" type="HBoxContainer" parent="."]
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -54,3 +62,32 @@ offset_bottom = 150.0
 script = ExtResource("2_quest_window")
 
 [node name="InventoryWindow" parent="." instance=ExtResource("3_inventory_window")]
+
+[node name="OptionsPanel" type="PanelContainer" parent="."]
+visible = false
+offset_left = 420.0
+offset_top = 250.0
+offset_right = 860.0
+offset_bottom = 500.0
+
+[node name="VBox" type="VBoxContainer" parent="OptionsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TitleLabel" type="Label" parent="OptionsPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "Options"
+horizontal_alignment = 1
+
+[node name="EndGameButton" type="Button" parent="OptionsPanel/VBox"]
+custom_minimum_size = Vector2(220, 52)
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "End Game"
+
+[node name="CloseButton" type="Button" parent="OptionsPanel/VBox"]
+custom_minimum_size = Vector2(220, 52)
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Close"

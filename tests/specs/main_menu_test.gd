@@ -8,12 +8,22 @@ class FakePlayer:
 	var game_over_requested: bool = true
 	var max_hp: int = 0
 	var hp: int = 0
+	var xp: int = 10
 	var unlocked_facilities: Array[String] = ["swordsman_guild"]
 
 	func rebirth() -> void:
 		max_hp = 100
 		hp = 100
 		game_over_requested = false
+
+	func apply_dict(data: Dictionary) -> void:
+		max_hp = int(data.get("max_hp", 100))
+		hp = max_hp
+		xp = int(data.get("xp", 0))
+		game_over_requested = bool(data.get("game_over_requested", false))
+		unlocked_facilities.clear()
+		for facility in data.get("unlocked_facilities", []):
+			unlocked_facilities.append(str(facility))
 
 
 class FakeProfileSystem:
@@ -93,6 +103,13 @@ func test_has_new_game_button() -> void:
 	root.free()
 
 
+func test_has_continue_button() -> void:
+	var root = _scene.instantiate()
+	var btn = root.get_node("CenterContainer/UI/ContinueButton")
+	assert_not_null(btn, "should have ContinueButton")
+	root.free()
+
+
 func test_new_game_button_text() -> void:
 	var root = _scene.instantiate()
 	var btn: Button = root.get_node("CenterContainer/UI/NewGameButton") as Button
@@ -103,11 +120,21 @@ func test_new_game_button_text() -> void:
 	root.free()
 
 
-func test_new_game_auto_rebirths_ended_run_before_entering_town() -> void:
+func test_continue_button_text() -> void:
+	var root = _scene.instantiate()
+	var btn: Button = root.get_node("CenterContainer/UI/ContinueButton") as Button
+	assert_not_null(btn)
+	var controller: MainMenuController = root as MainMenuController
+	controller._ready()
+	assert_eq("Continue", btn.text, "button should say 'Continue'")
+	root.free()
+
+
+func test_continue_auto_rebirths_ended_run_before_entering_town() -> void:
 	var root = _scene.instantiate() as MainMenuController
 	var profile := FakeProfileSystem.new()
 	var inventory := FakeInventorySystem.new()
-	assert_true(root._auto_rebirth_ended_run(profile, inventory))
+	assert_true(root.continue_existing_run(profile, inventory))
 	assert_false(profile.fake_player.game_over_requested)
 	assert_eq(100, profile.fake_player.max_hp)
 	assert_eq(100, profile.fake_player.hp)
@@ -117,14 +144,40 @@ func test_new_game_auto_rebirths_ended_run_before_entering_town() -> void:
 	root.free()
 
 
-func test_new_game_does_not_rebirth_active_run() -> void:
+func test_continue_does_not_rebirth_active_run() -> void:
 	var root = _scene.instantiate() as MainMenuController
 	var profile := FakeProfileSystem.new()
 	var inventory := FakeInventorySystem.new()
 	profile.fake_player.game_over_requested = false
-	assert_false(root._auto_rebirth_ended_run(profile, inventory))
+	assert_false(root.continue_existing_run(profile, inventory))
 	assert_false(inventory.reset_called)
 	assert_false(profile.saved)
+	root.free()
+
+
+func test_new_game_button_opens_reset_confirmation() -> void:
+	var root = _scene.instantiate() as MainMenuController
+	root._ready()
+	var panel := root.get_node("CenterContainer/UI/NewGameConfirmPanel") as PanelContainer
+	assert_false(panel.visible)
+	(root.get_node("CenterContainer/UI/NewGameButton") as Button).pressed.emit()
+	assert_true(panel.visible)
+	assert_true((panel.get_node("VBox/MessageLabel") as Label).text.contains("starting a new game will reset progress"))
+	root.free()
+
+
+func test_confirm_new_game_resets_progress_from_zero() -> void:
+	var root = _scene.instantiate() as MainMenuController
+	var profile := FakeProfileSystem.new()
+	var inventory := FakeInventorySystem.new()
+	assert_true(root.start_new_game_from_zero(profile, inventory))
+	assert_eq(100, profile.fake_player.max_hp)
+	assert_eq(0, profile.fake_player.xp)
+	assert_false(profile.fake_player.game_over_requested)
+	assert_eq([], profile.fake_player.unlocked_facilities)
+	assert_true(inventory.reset_called)
+	assert_true(profile.saved)
+	assert_eq("res://scenes/town_scene.tscn", root.requested_scene_path)
 	root.free()
 
 

@@ -13,8 +13,27 @@ const QUEST_DIALOG_FLOW_SCRIPT := preload("res://scripts/models/quest_dialog_flo
 const RUN_SUMMARY_SCRIPT := preload("res://scripts/models/run_summary_model.gd")
 const REBORN_DIALOG := "You have been reborn.\nWill you spend this life well?"
 const MAIN_MENU_PATH := "res://scenes/main_menu.tscn"
+const GAME_OVER_PATH := "res://scenes/game_over.tscn"
 const SWORDSMAN_QUEST_INTRO := "You found the Forest gate, and now you need Swordsman Certification.\n\nCertification is not earned with coin.\nIt is earned with life."
 const SWORDSMAN_QUEST_CLAIM := "You have completed this Guildmaster trial.\n\nClaim your reward when you are ready."
+const SWORDSMAN_QUEST_COPY := {
+	0: {
+		"intro": SWORDSMAN_QUEST_INTRO,
+		"claim": "Your stance held.\n\nTake up the training sword when you are ready.",
+	},
+	1: {
+		"intro": "A swordsman does not stand alone.\n\nBring back proof that you can watch the sky and guard the road.",
+		"claim": "You watched the sky and brought back what the road asked for.\n\nClaim your leather armor when you are ready.",
+	},
+	2: {
+		"intro": "The last oath costs attention.\n\nClear the rats from the training path, then I will reopen the Guild under your name.",
+		"claim": "The road is clear.\n\nClaim your certification, and I will reopen the Guild.",
+	},
+}
+const SWORDSMAN_CERTIFIED_COPY := "The Guild is awake again.\n\nThe Forest path will know you now."
+const MARKER_YELLOW := Color(1.0, 0.86, 0.12, 1.0)
+const MARKER_WHITE := Color.WHITE
+const MARKER_GREEN := Color(0.2, 1.0, 0.32, 1.0)
 
 @onready var _dialog_view: TownDialogView = $UI/DialogPanel
 @onready var _hud: CanvasLayer = $UI
@@ -66,6 +85,7 @@ func _ready() -> void:
 	_connect_worldbuilding_npcs()
 	_connect_rebirth_panel()
 	_refresh_rebirth_panel()
+	update_quest_markers()
 	_update_camera()
 
 
@@ -85,6 +105,8 @@ func _connect_hud() -> void:
 		_update_life_hud()
 		if _hud.has_signal("equipment_changed") and not _hud.equipment_changed.is_connected(_on_equipment_changed):
 			_hud.equipment_changed.connect(_on_equipment_changed)
+		if _hud.has_signal("end_game_requested") and not _hud.end_game_requested.is_connected(_on_options_end_game_requested):
+			_hud.end_game_requested.connect(_on_options_end_game_requested)
 
 
 func _connect_dialog() -> void:
@@ -211,6 +233,7 @@ func _npc_portrait_texture(npc: NpcController) -> Texture2D:
 func _update_quest_window() -> void:
 	if _hud:
 		_hud.show_quest("Explore the World", _current_quest_objective_text(), QuestSystem.current_main_checkpoint_text())
+	update_quest_markers()
 
 
 func _current_quest_objective_text() -> String:
@@ -221,11 +244,12 @@ func _current_quest_objective_text() -> String:
 
 
 func _dialog_panel_for(npc: NpcController) -> Dictionary:
+	if npc.role == "guildmaster" and QuestSystem.has_certification("swordsman_certification"):
+		return _quest_dialog_flow.normal_panel(npc.display_name, SWORDSMAN_CERTIFIED_COPY)
 	if npc.role == "guildmaster" and QuestSystem.current_main_objective_id() == "get_swordsman_certification":
-		if QuestSystem.has_certification("swordsman_certification"):
-			return _quest_dialog_flow.normal_panel(npc.display_name, "You carry Swordsman Certification now.\n\nThe Forest gate will recognize you.")
 		var objective := QuestSystem.current_side_quest_objective_text("rebuilding_swordsman_guild")
-		return _quest_dialog_flow.quest_panel(npc.display_name, SWORDSMAN_QUEST_INTRO, SWORDSMAN_QUEST_CLAIM, objective, _can_claim_swordsman_reward(npc))
+		var copy := _swordsman_quest_copy()
+		return _quest_dialog_flow.quest_panel(npc.display_name, str(copy["intro"]), str(copy["claim"]), objective, _can_claim_swordsman_reward(npc))
 	return _quest_dialog_flow.normal_panel(npc.display_name, npc.dialog_text)
 
 
@@ -266,12 +290,15 @@ func _on_complete_quest_requested() -> void:
 	_update_quest_window()
 	if QuestSystem.has_certification("swordsman_certification"):
 		_apply_dialog_panel(_quest_dialog_flow.reward_unlock_panel("Swordsman Guild Unlocked"))
+		_play_feedback_sfx("guild_unlock")
 		_save_profile()
-		show_rebirth_panel()
+		update_quest_markers()
+		request_game_over()
 		return
 	_sync_swordsman_inventory_objective()
 	_update_quest_window()
 	_show_swordsman_reward_dialog(completed_step)
+	update_quest_markers()
 
 
 func _update_life_hud() -> void:
@@ -284,6 +311,13 @@ func show_rebirth_panel() -> void:
 	if panel:
 		_update_game_over_summary()
 		panel.visible = true
+		_play_feedback_sfx("game_over")
+
+
+func request_game_over() -> void:
+	requested_scene_path = GAME_OVER_PATH
+	if is_inside_tree():
+		call_deferred("_change_scene_to_file", GAME_OVER_PATH)
 
 
 func _refresh_rebirth_panel() -> void:
@@ -314,12 +348,18 @@ func _on_rebirth_pressed() -> void:
 		_hud.set_inventory_model(_inventory_model_for_hud())
 	_save_profile()
 	_refresh_rebirth_panel()
+	update_quest_markers()
+	_play_feedback_sfx("rebirth")
 
 
 func _on_end_game_pressed() -> void:
 	requested_scene_path = MAIN_MENU_PATH
 	if is_inside_tree():
 		call_deferred("_change_scene_to_file", MAIN_MENU_PATH)
+
+
+func _on_options_end_game_requested() -> void:
+	_on_end_game_pressed()
 
 
 func _update_game_over_summary() -> void:
@@ -416,6 +456,71 @@ func _sync_swordsman_inventory_objective() -> void:
 		QuestSystem.sync_current_item_objective("bat_wing", int(inventory_model.quantity("bat_wing")))
 
 
+func update_quest_markers() -> void:
+	_update_npc_marker("Guildmaster", _guildmaster_marker_color())
+	_update_npc_marker("Smith", _smith_marker_color())
+
+
+func _guildmaster_marker_color() -> Color:
+	if QuestSystem.has_certification("swordsman_certification"):
+		return Color.TRANSPARENT
+	if QuestSystem.current_main_objective_id() != "get_swordsman_certification":
+		return Color.TRANSPARENT
+	if not QuestSystem.is_side_quest_active("rebuilding_swordsman_guild"):
+		return MARKER_YELLOW
+	if QuestSystem.is_current_side_quest_step_complete("rebuilding_swordsman_guild"):
+		return MARKER_GREEN
+	return MARKER_WHITE
+
+
+func _smith_marker_color() -> Color:
+	if player_stats == null:
+		return Color.TRANSPARENT
+	if player_stats.game_over_requested:
+		return Color.TRANSPARENT
+	if player_stats.unlocked_facilities.has("swordsman_guild"):
+		return MARKER_YELLOW
+	return Color.TRANSPARENT
+
+
+func _update_npc_marker(npc_name: String, color: Color) -> void:
+	var npc := get_node_or_null(npc_name) as Node2D
+	if npc == null:
+		return
+	var marker := npc.get_node_or_null("QuestMarker") as Label
+	if marker == null:
+		marker = Label.new()
+		marker.name = "QuestMarker"
+		marker.text = "!"
+		marker.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		marker.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		marker.add_theme_font_size_override("font_size", 56)
+		marker.add_theme_constant_override("outline_size", 8)
+		marker.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.95))
+		marker.custom_minimum_size = Vector2(96, 72)
+		marker.size = Vector2(96, 72)
+		marker.pivot_offset = Vector2(48, 36)
+		marker.position = Vector2(-48, -92)
+		marker.z_index = 20
+		npc.add_child(marker)
+		_start_marker_pulse(marker)
+	marker.text = "!"
+	marker.visible = color.a > 0.0
+	if marker.visible:
+		marker.add_theme_color_override("font_color", color)
+		_start_marker_pulse(marker)
+
+
+func _start_marker_pulse(marker: Label) -> void:
+	if marker.has_meta("pulse_marker"):
+		return
+	marker.set_meta("pulse_marker", true)
+	var tween := marker.create_tween()
+	tween.set_loops()
+	tween.tween_property(marker, "scale", Vector2(1.18, 1.18), 0.45).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(marker, "scale", Vector2.ONE, 0.45).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
 func _show_swordsman_reward_dialog(completed_step: int) -> void:
 	var reward := _swordsman_reward_for_step(completed_step)
 	if reward.is_empty():
@@ -426,6 +531,7 @@ func _show_swordsman_reward_dialog(completed_step: int) -> void:
 		inventory_model.add_item(str(reward["item_id"]), int(reward["quantity"]))
 	if _hud and _hud.has_method("set_inventory_model"):
 		_hud.set_inventory_model(inventory_model)
+	_play_feedback_sfx("quest_reward")
 	_apply_dialog_panel(_quest_dialog_flow.reward_item_panel(str(reward["display_name"]), int(reward["quantity"])))
 
 
@@ -436,3 +542,23 @@ func _swordsman_reward_for_step(completed_step: int) -> Dictionary:
 		1:
 			return {"item_id": "leather_armor", "display_name": "Leather Armor", "quantity": 1}
 	return {}
+
+
+func _swordsman_quest_copy() -> Dictionary:
+	var step := QuestSystem.side_quest_step("rebuilding_swordsman_guild")
+	return SWORDSMAN_QUEST_COPY.get(step, SWORDSMAN_QUEST_COPY[0])
+
+
+func _feedback_system() -> Node:
+	if is_inside_tree():
+		return get_node_or_null("/root/FeedbackSystem")
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return null
+	return tree.root.get_node_or_null("FeedbackSystem")
+
+
+func _play_feedback_sfx(sfx_name: String) -> void:
+	var system := _feedback_system()
+	if system and system.has_method("play_sfx"):
+		system.play_sfx(sfx_name)

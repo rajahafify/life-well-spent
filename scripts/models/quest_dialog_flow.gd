@@ -33,11 +33,11 @@ func quest_panel(title: String, intro_text: String, claim_text: String, objectiv
 
 
 func reward_item_panel(display_name: String, quantity: int = 1) -> Dictionary:
-	return reward_text_panel("Reward: %d x %s" % [quantity, display_name])
+	return reward_text_panel("Reward\n%d x %s\nAdded to your inventory." % [quantity, display_name])
 
 
 func reward_unlock_panel(display_name: String) -> Dictionary:
-	return reward_text_panel("Reward: %s" % display_name)
+	return reward_text_panel("Reward\n%s\nThe Forest path is open." % display_name)
 
 
 func reward_text_panel(body: String) -> Dictionary:

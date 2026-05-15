@@ -26,7 +26,7 @@ func summary_text(player_stats, inventory) -> String
 - Town owns the Game Over panel, button wiring, scene transition, rebirth reset, and profile save side effects.
 - The summary model only formats data. It does not depend on nodes, scenes, or autoloads.
 - Prototype run items are summarized from the current inventory. Rebirth resets run inventory after the player chooses Rebirth.
-- If the player chooses End Game instead, Main Menu auto-rebirths the ended run on the next New Game before entering Town.
+- If the player chooses End Game instead, Main Menu can preserve progress through `Continue` or fully reset through confirmed `New Game`.
 - Facility IDs are mapped to readable unlock names such as `Swordsman Guild`.
 
 ## Test Coverage
