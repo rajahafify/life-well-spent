@@ -7,12 +7,10 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: pages
+  group: gh-pages
   cancel-in-progress: false
 
 jobs:
@@ -59,22 +57,13 @@ jobs:
           mkdir -p builds/web
           ./Godot_v*linux.x86_64 --headless --export-release "Web" "builds/web/index.html"
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
+      - name: Disable Jekyll
+        run: touch builds/web/.nojekyll
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Publish web export to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: builds/web
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: builds/web
+          force_orphan: true

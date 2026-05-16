@@ -3,9 +3,9 @@
 ## [2026-05-16] chore | Add tag-based Web release workflow
 
 - Added `.github/workflows/web-release.yml` to build the Godot `Web` export on `v*` tags or manual dispatch.
-- The workflow downloads Godot 4.6.2 plus matching export templates, exports to `builds/web/index.html`, and deploys `builds/web` through GitHub Pages.
+- The workflow downloads Godot 4.6.2 plus matching export templates, exports to `builds/web/index.html`, and publishes `builds/web` to the `gh-pages` branch with `.nojekyll`.
 - Updated `architecture/ci.md` and the wiki index with the GitHub Pages release path.
-- Validation: local Web export command succeeded before workflow setup; YAML reviewed against current `export_presets.cfg`.
+- Validation: local Web export command succeeded before workflow setup; first Pages artifact contained the Godot web files, but GitHub continued serving the branch README, so the workflow now uses the deterministic `gh-pages` branch path.
 
 ## [2026-05-16] fix | Embed NPC portraits in dialog panels
 
