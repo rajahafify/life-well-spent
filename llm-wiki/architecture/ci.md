@@ -21,7 +21,7 @@ tags: [architecture]
 3. Disable the editor-only MCP plugin for CI
 4. Import Godot assets
 5. Run `tests/test_runner.tscn` with `--headless --quit`
-6. Fail the job when the summary is not `0 failed` or Godot emits warnings/errors.
+6. Fail the job when the summary is not `0 failed` or Godot emits script/parse errors.
 
 ## Web Release Workflow
 `.github/workflows/web-release.yml` publishes the Godot `Web` export to the `gh-pages` branch on version tag pushes matching `v*` and on manual dispatch. GitHub Pages serves that branch root.

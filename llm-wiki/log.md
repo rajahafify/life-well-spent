@@ -4,6 +4,7 @@
 
 - Added `.github/workflows/web-release.yml` to build the Godot `Web` export on `v*` tags or manual dispatch.
 - The workflow downloads Godot 4.6.2 plus matching export templates, exports to `builds/web/index.html`, and publishes `builds/web` to the `gh-pages` branch with `.nojekyll`.
+- Updated `.github/workflows/tests.yml` so CI still fails on failed specs or script/parse errors, but does not reject an otherwise green suite for known Godot asset UID/resource cleanup warnings.
 - Updated `architecture/ci.md` and the wiki index with the GitHub Pages release path.
 - Validation: local Web export command succeeded before workflow setup; first Pages artifact contained the Godot web files, but GitHub continued serving the branch README, so the workflow now uses the deterministic `gh-pages` branch path.
 
