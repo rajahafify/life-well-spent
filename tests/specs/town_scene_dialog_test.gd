@@ -133,16 +133,18 @@ func test_dialog_buttons_stick_to_bottom_right() -> void:
 	assert_eq(BoxContainer.ALIGNMENT_END, buttons.alignment)
 
 
-func test_dialog_shows_npc_portrait_from_sprite_sheet_above_box() -> void:
+func test_dialog_shows_npc_portrait_from_sprite_sheet_inside_box() -> void:
 	_close_start_dialog()
 	var npc: NpcController = root.get_node("Guildmaster") as NpcController
 	root.get_node("Player").global_position = npc.global_position + Vector2(40, 0)
 	npc.interacted.emit(npc)
-	var portrait: TextureRect = root.get_node("UI/DialogPortrait") as TextureRect
+	var detached_portrait: TextureRect = root.get_node("UI/DialogPortrait") as TextureRect
+	var portrait: TextureRect = root.get_node("UI/DialogPanel/VBox/Portrait") as TextureRect
 	var dialog: PanelContainer = root.get_node("UI/DialogPanel") as PanelContainer
+	assert_false(detached_portrait.visible)
 	assert_true(portrait.visible)
 	assert_true(portrait.texture is AtlasTexture)
-	assert_true(portrait.position.y < dialog.position.y, "portrait should sit above dialog box, not inside text flow")
+	assert_true(portrait.get_parent() == dialog.get_node("VBox"), "portrait should be inside dialog text flow")
 	var atlas := (portrait.texture as AtlasTexture).atlas
 	assert_true(atlas.resource_path.ends_with("guildmaster.png"))
 	assert_eq(Rect2(80, 648, 32, 32), (portrait.texture as AtlasTexture).region)

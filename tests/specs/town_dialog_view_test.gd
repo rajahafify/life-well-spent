@@ -61,3 +61,30 @@ func test_controller_accept_emits_close_on_final_close_page() -> void:
 	dialog._unhandled_input(event)
 	assert_eq([true], closed)
 	root.free()
+
+
+func test_dialog_layout_sticks_to_top_on_720p_viewport() -> void:
+	var root = _scene.instantiate()
+	var dialog := root.get_node("UI/DialogPanel") as TownDialogView
+	dialog.ensure_ready()
+	dialog.show_dialog_pages("Reborn", ["You have been reborn."], false, false)
+	dialog.apply_layout_for_viewport(Vector2(1280, 720))
+	assert_eq(220.0, dialog.position.y)
+	assert_true(dialog.position.y + dialog.size.y < 720.0)
+	root.free()
+
+
+func test_dialog_embeds_portrait_inside_panel_on_720p_viewport() -> void:
+	var root = _scene.instantiate()
+	var dialog := root.get_node("UI/DialogPanel") as TownDialogView
+	var detached_portrait := root.get_node("UI/DialogPortrait") as TextureRect
+	var image := Image.create(832, 832, false, Image.FORMAT_RGBA8)
+	var texture := ImageTexture.create_from_image(image)
+	dialog.ensure_ready()
+	dialog.show_dialog_pages("Smith", ["I used to shape steel for adventurers."], false, false, texture)
+	dialog.apply_layout_for_viewport(Vector2(1280, 720))
+	var embedded_portrait := dialog.get_node("VBox/Portrait") as TextureRect
+	assert_false(detached_portrait.visible)
+	assert_true(embedded_portrait.visible)
+	assert_eq(Vector2(112, 112), embedded_portrait.custom_minimum_size)
+	root.free()

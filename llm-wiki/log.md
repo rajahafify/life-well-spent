@@ -1,5 +1,19 @@
 # Wiki Log
 
+## [2026-05-16] fix | Embed NPC portraits in dialog panels
+
+- RED: updated TownDialogView specs to require the NPC portrait inside the dialog box and the old detached portrait hidden.
+- TownDialogView now migrates its legacy VBox into an internal HBox at runtime, with a 112px embedded portrait column and text/actions on the right.
+- This keeps town and field dialog compatible with existing scenes while preventing portrait/world overlap on 720p screens.
+- Validation: full suite `518 tests, 518 passed, 0 failed`.
+
+## [2026-05-16] fix | Improve 720p menu and dialog layout
+
+- RED: added Main Menu and TownDialogView specs for 720p-safe menu art sizing and top-sticky dialog placement.
+- Main Menu now shrinks and lowers the aging image on short viewports so it does not cover the centered menu.
+- TownDialogView now applies responsive top placement with margins, keeping dialog panels visible on 720p screens.
+- Validation: full suite `517 tests, 517 passed, 0 failed`.
+
 ## [2026-05-15] feat | Add controller interaction prompts
 
 - RED: added Field and Town specs for contextual `Press A to talk` / `Press A to attack` prompts and A-button enemy targeting.

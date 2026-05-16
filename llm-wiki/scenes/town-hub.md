@@ -54,11 +54,13 @@ Town (Node2D, Town)
 ├── Camera2D
 └── UI (CanvasLayer)
     ├── LifeLabel / InventoryButton / QuestWindow / InventoryWindow
-    ├── DialogPanel (TownDialogView)
+    ├── DialogPanel (TownDialogView with embedded NPC portrait)
     └── RebirthPanel
 ```
 
 ## NPC Dialog
+
+`TownDialogView` renders NPC portraits inside the dialog panel itself. Legacy scenes still contain the old detached `DialogPortrait` node, but the view hides it and migrates the panel content into a horizontal layout at runtime: portrait on the left, name/body/actions on the right. This avoids portrait overlap with world NPC sprites on 720p screens while keeping the old scene files compatible.
 
 ### Guildmaster
 
@@ -144,6 +146,7 @@ You will learn recipes, craft weapons and armor from customer orders, and go hun
 - supports controller input: left stick / D-pad moves the player, `A` interacts with the nearest Town NPC in range, `X` toggles Inventory, and `Start` toggles Options
 - creates `UI/InteractionPrompt` at runtime; it follows and centers above the current NPC target, shows `Press A to talk` when a Town NPC is in interaction range, and hides while dialog, inventory, options, or rebirth panels are open
 - supports controller dialog flow through `TownDialogView`: `A` advances the visible dialog action and `B` closes when Close is available
+- uses `TownDialogView` responsive placement and embedded portrait layout so dialog remains visible on 720p screens without detached portrait overlap
 - ignores world movement input while the pointer is over HUD controls
 - follows player with a camera offset for RO-style play
 - blocks click-to-move while dialog is open
@@ -165,7 +168,7 @@ You will learn recipes, craft weapons and armor from customer orders, and go hun
 - records Field transition request through `request_field()`
 - records the direct Field transition when the Player enters `FieldGateway`, then defers the actual scene change outside the physics callback
 - hides NPC overhead names; names appear in dialog only
-- passes NPC sprite texture to `TownDialogView` for face portrait display above the dialog box
+- passes NPC sprite texture to `TownDialogView` for face portrait display inside the dialog box
 - hides NPC dialog when `TownDialogView.close_requested` emits
 
 Shop and forge logic are not active in this slice. Town can now read QuestSystem state, present the Guildmaster certification prompt after the Forest Gate is reached, and complete the three-step Swordsman Guild Life-spend chain.
@@ -186,7 +189,7 @@ Tiny Town visual art is imported as `TownMap`, an instanced generated scene from
 ## Tests
 
 - `tests/specs/town_prototype_test.gd` covers root/class naming, buildings, NPCs, custom NPC sprite textures, NPC scale matching player, dialog copy, absence of persistent reborn HUD label, Field gateway label, 1080p viewport, and primitive mouse filter settings.
-- `tests/specs/town_dialog_view_test.gd` covers final-page-only Claim Reward and Close button visibility plus controller accept behavior for Next and Close.
+- `tests/specs/town_dialog_view_test.gd` covers final-page-only Claim Reward and Close button visibility, controller accept behavior for Next and Close, and 720p top-sticky dialog layout.
 - `tests/specs/town_scene_dialog_test.gd` covers Guildmaster certification, reusable quest dialog flow application, controller movement, controller Guildmaster interaction, controller talk prompt, controller Options toggle, final Game Over summary panel display, Rebirth button reset behavior, persistent Swordsman Guild unlock preservation, Smith/Shopkeeper job teaser acceptance, End Game routing, and direct Field gateway transition.
 - `tests/specs/town_prototype_test.gd` also covers the generated Tiny Town `TownMap` and `TownCollision` instance paths, position, scale, and collision blocker shape.
 - `tests/specs/town_prototype_test.gd` covers the Tiny Town-facing NPC placements: Shopkeeper at `Vector2(512, 1140)`, Guildmaster at `Vector2(960, 450)`, and Smith at `Vector2(1472, 820)`.

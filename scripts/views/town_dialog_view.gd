@@ -8,6 +8,7 @@ signal complete_quest_requested
 signal close_requested
 
 var _portrait: TextureRect
+var _external_portrait: TextureRect
 var _name_label: Label
 var _body_label: Label
 var _accept_quest_button: Button
@@ -25,8 +26,13 @@ func _ready() -> void:
 
 
 func ensure_ready() -> void:
+	if _external_portrait == null:
+		_external_portrait = get_node_or_null("../DialogPortrait") as TextureRect
+	if _external_portrait:
+		_external_portrait.visible = false
+	_ensure_embedded_layout()
 	if _portrait == null:
-		_portrait = get_node_or_null("../DialogPortrait") as TextureRect
+		_portrait = get_node_or_null("HBox/Portrait") as TextureRect
 	if _portrait == null:
 		_portrait = get_node_or_null("VBox/Portrait") as TextureRect
 	if _name_label == null:
@@ -61,6 +67,7 @@ func show_dialog_pages(display_name: String, pages: Array[String], can_offer_que
 	if _portrait:
 		_portrait.texture = _portrait_atlas(portrait_texture)
 		_portrait.visible = _portrait.texture != null
+	_apply_responsive_layout()
 	_update_page()
 	configure_buttons(can_offer_quest, has_active_quest)
 
@@ -105,11 +112,37 @@ func hide_dialog() -> void:
 	visible = false
 	if _portrait:
 		_portrait.visible = false
+	if _external_portrait:
+		_external_portrait.visible = false
 	_play_feedback_sfx("dialog_close")
 
 
 func is_open() -> bool:
 	return visible
+
+
+func apply_layout_for_viewport(viewport_size: Vector2) -> void:
+	var margin := 24.0
+	var top_margin := 220.0
+	var panel_width: float = min(800.0, max(320.0, viewport_size.x - (margin * 2.0)))
+	var panel_height: float = min(260.0, max(200.0, viewport_size.y - top_margin - margin))
+	position = Vector2((viewport_size.x - panel_width) * 0.5, top_margin)
+	size = Vector2(panel_width, panel_height)
+	custom_minimum_size = Vector2(panel_width, panel_height)
+	if _portrait:
+		_portrait.visible = _portrait.texture != null
+	if _external_portrait:
+		_external_portrait.visible = false
+
+
+func _apply_responsive_layout() -> void:
+	var viewport_size := Vector2(
+		ProjectSettings.get_setting("display/window/size/viewport_width", 1280),
+		ProjectSettings.get_setting("display/window/size/viewport_height", 720)
+	)
+	if is_inside_tree():
+		viewport_size = get_viewport_rect().size
+	apply_layout_for_viewport(viewport_size)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -142,6 +175,24 @@ func _portrait_atlas(source: Texture2D) -> Texture2D:
 	# Crop face from the standing-down LPC frame (column 1, walk-down row 10).
 	atlas.region = Rect2(80, 648, 32, 32)
 	return atlas
+
+
+func _ensure_embedded_layout() -> void:
+	var vbox := get_node_or_null("VBox") as VBoxContainer
+	if vbox == null or vbox.get_node_or_null("Portrait") != null:
+		return
+	var scene_owner := owner
+	var portrait := TextureRect.new()
+	portrait.name = "Portrait"
+	portrait.custom_minimum_size = Vector2(112, 112)
+	portrait.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	portrait.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	portrait.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	vbox.add_child(portrait)
+	vbox.move_child(portrait, 0)
+	if scene_owner:
+		portrait.owner = scene_owner
 
 
 func _apply_text_sizes() -> void:

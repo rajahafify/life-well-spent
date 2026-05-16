@@ -33,7 +33,7 @@ Field (Node2D, Field)
   - InventoryButton
   - InventoryWindow
   - QuestWindow
-  - DialogPanel (TownDialogView)
+  - DialogPanel (TownDialogView with embedded NPC portrait)
 ```
 
 ## Generated Map
@@ -68,6 +68,7 @@ Legacy primitive Field art nodes (`Ground`, `Paths`, `ForestEdge`, and `Props`) 
 - ignores world movement input while the pointer is over HUD controls
 - delegates camera follow and shake to `FieldCameraController`
 - uses `TownDialogView` for Forest Guard dialog
+- uses `TownDialogView` responsive placement and embedded portrait layout so Forest Guard dialog remains visible on 720p screens without detached portrait overlap
 - updates `SharedHUDView` with player Life and `QuestSystem.current_main_objective_text()`
 - handles far-click Guard approach before dialog
 - marks the `forest_guard` checkpoint only after the Forest Guard dialog is closed, whether reached by NPC click or Forest Gateway collision

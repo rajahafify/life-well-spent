@@ -364,6 +364,8 @@ Run this after each polish slice:
 37. Repeat or restore near Summary.
 38. Test New Game branch.
 39. Confirm Forest path still opens.
+40. Resize or run at 720p and confirm the Main Menu buttons are not covered by the aging image.
+41. Resize or run at 720p and confirm dialog panels stay visible and show the NPC portrait inside the dialog box without overlapping the world NPC.
 
 ## Automated Test Expectations
 
@@ -380,6 +382,7 @@ Expected coverage areas:
 - Rebirth and End Game continuation.
 - Field combat movement edge cases.
 - Controller interaction prompts for talk and attack.
+- 720p-safe Main Menu and embedded-portrait dialog layout.
 
 Full suite must pass before commit:
 

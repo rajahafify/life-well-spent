@@ -91,6 +91,17 @@ func test_main_menu_uses_aging_image_below_menu() -> void:
 	root.free()
 
 
+func test_main_menu_shrinks_aging_image_on_720p_viewport() -> void:
+	var root = _scene.instantiate() as MainMenuController
+	root._ready()
+	var icon_container := root.get_node("IconContainer") as CenterContainer
+	var hero := root.get_node("IconContainer/AgingImage") as TextureRect
+	root.apply_layout_for_viewport(Vector2(1280, 720))
+	assert_eq(Vector2(380, 285), hero.custom_minimum_size)
+	assert_true(icon_container.anchor_top >= 0.72)
+	root.free()
+
+
 func test_main_menu_keeps_menu_center_stage_on_icon_colored_background() -> void:
 	var root = _scene.instantiate()
 	var background := root.get_node("Background") as ColorRect

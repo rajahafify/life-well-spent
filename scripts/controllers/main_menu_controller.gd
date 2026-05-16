@@ -19,6 +19,8 @@ var _confirm_selection_index: int = 0
 @onready var _confirm_new_game_btn: Button = $CenterContainer/UI/NewGameConfirmPanel/VBox/ConfirmButton
 @onready var _cancel_new_game_btn: Button = $CenterContainer/UI/NewGameConfirmPanel/VBox/CancelButton
 @onready var _quit_btn: Button = $CenterContainer/UI/QuitButton
+@onready var _icon_container: CenterContainer = $IconContainer
+@onready var _aging_image: TextureRect = $IconContainer/AgingImage
 
 
 # ── Bootstrap ──────────────────────────────────────────────────────────
@@ -33,6 +35,7 @@ func _ready() -> void:
 	_title.add_theme_font_size_override("font_size", 36)
 	$CenterContainer/UI.add_theme_constant_override("separation", 16)
 	_confirm_panel.visible = false
+	_apply_responsive_layout()
 
 	_continue_btn.pressed.connect(_on_continue_pressed)
 	_new_game_btn.pressed.connect(_on_new_game_pressed)
@@ -40,6 +43,29 @@ func _ready() -> void:
 	_cancel_new_game_btn.pressed.connect(_on_cancel_new_game_pressed)
 	_quit_btn.pressed.connect(_on_quit_pressed)
 	_grab_selected_menu_focus()
+
+
+func apply_layout_for_viewport(viewport_size: Vector2) -> void:
+	if viewport_size.y <= 760.0:
+		_aging_image.custom_minimum_size = Vector2(380, 285)
+		_icon_container.anchor_top = 0.72
+		_icon_container.offset_top = 0.0
+		_icon_container.offset_bottom = 0.0
+	else:
+		_aging_image.custom_minimum_size = Vector2(560, 420)
+		_icon_container.anchor_top = 0.68
+		_icon_container.offset_top = 0.0
+		_icon_container.offset_bottom = 0.0
+
+
+func _apply_responsive_layout() -> void:
+	var viewport_size := Vector2(
+		ProjectSettings.get_setting("display/window/size/viewport_width", 1280),
+		ProjectSettings.get_setting("display/window/size/viewport_height", 720)
+	)
+	if is_inside_tree():
+		viewport_size = get_viewport_rect().size
+	apply_layout_for_viewport(viewport_size)
 
 
 # ── Actions ────────────────────────────────────────────────────────────
