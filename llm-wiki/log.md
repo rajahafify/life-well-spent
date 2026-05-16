@@ -1,5 +1,12 @@
 # Wiki Log
 
+## [2026-05-16] chore | Add tag-based Web release workflow
+
+- Added `.github/workflows/web-release.yml` to build the Godot `Web` export on `v*` tags or manual dispatch.
+- The workflow downloads Godot 4.6.2 plus matching export templates, exports to `builds/web/index.html`, and deploys `builds/web` through GitHub Pages.
+- Updated `architecture/ci.md` and the wiki index with the GitHub Pages release path.
+- Validation: local Web export command succeeded before workflow setup; YAML reviewed against current `export_presets.cfg`.
+
 ## [2026-05-16] fix | Embed NPC portraits in dialog panels
 
 - RED: updated TownDialogView specs to require the NPC portrait inside the dialog box and the old detached portrait hidden.

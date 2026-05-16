@@ -7,6 +7,7 @@
 | [architecture/architecture](architecture/architecture.md) | decision | 2026-05-08 | MVC + SOLID architecture pattern. |
 | [architecture/spec-driven-dev](architecture/spec-driven-dev.md) | decision | 2026-05-10 | Spec-driven development workflow + TDD enforcement. |
 | [architecture/test-runner](architecture/test-runner.md) | reference | 2026-05-11 | Minitest-style GDScript spec runner — loads specs, runs tests, reports results. |
+| [architecture/ci](architecture/ci.md) | reference | 2026-05-16 | GitHub Actions test workflow plus tag/manual Web export deployment to GitHub Pages. |
 | [architecture/gateway-definition](architecture/gateway-definition.md) | reference | 2026-05-12 | Pure gateway target, lock rules, and named spawn IDs for direct map transitions. |
 
 | [architecture/combat-system](architecture/combat-system.md) | reference | 2026-05-13 | Pure Field combat rules for enemy HP, current Life damage, 10x Field outgoing damage tuning, Max Life pressure, defeat, and XP hooks. |

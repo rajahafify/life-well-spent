@@ -1,0 +1,80 @@
+name: Web Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download Godot
+        run: |
+          curl -L -o godot.zip \
+            "https://downloads.godotengine.org/?version=4.6.2&flavor=stable&slug=linux.x86_64.zip&platform=linux.64"
+          unzip -o godot.zip
+          chmod +x Godot_v*linux.x86_64
+
+      - name: Download Godot export templates
+        run: |
+          curl -L -o export_templates.tpz \
+            "https://downloads.godotengine.org/?version=4.6.2&flavor=stable&slug=export_templates.tpz"
+          mkdir -p "$HOME/.local/share/godot/export_templates/4.6.2.stable"
+          unzip -o export_templates.tpz "templates/web*.zip" -d /tmp/godot_templates
+          cp /tmp/godot_templates/templates/web*.zip \
+            "$HOME/.local/share/godot/export_templates/4.6.2.stable/"
+
+      - name: Disable editor-only MCP plugin in CI
+        run: |
+          rm -rf addons/gdai-mcp-plugin-godot
+          rm -f .godot/extension_list.cfg
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('project.godot')
+          text = path.read_text()
+          text = text.replace('enabled=PackedStringArray("res://addons/gdai-mcp-plugin-godot/plugin.cfg")', 'enabled=PackedStringArray()')
+          path.write_text(text)
+          PY
+
+      - name: Import Godot assets
+        run: ./Godot_v*linux.x86_64 --headless --import --quit
+
+      - name: Build web export
+        run: |
+          mkdir -p builds/web
+          ./Godot_v*linux.x86_64 --headless --export-release "Web" "builds/web/index.html"
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: builds/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
